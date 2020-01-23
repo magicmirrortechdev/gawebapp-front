@@ -12,6 +12,8 @@ import Jobs from "views/examples/Jobs.jsx";
 import AddJob from "views/examples/AddJob.jsx";
 import AddWorker from "views/examples/AddWorker.jsx";
 import AddEstimate from "views/examples/AddEstimate.jsx";
+import Reports from "./views/examples/Reports";
+import AddReport from "./views/examples/AddReport";
 
 
 
@@ -48,7 +50,7 @@ var routes = [
     path: "/reports",
     name: "Reports",
     icon: "ni ni-ruler-pencil text-red",
-    component: Jobs,
+    component: Reports,
     layout: "/admin"
   },
   {
@@ -102,6 +104,11 @@ var routes = [
   { 
     path: "/addworker",
     component: AddWorker,
+    layout: "/admin"
+  },
+  {
+    path: "/addreport",
+    component: AddReport,
     layout: "/admin"
   },
   { 
