@@ -238,6 +238,7 @@ class AddWorker extends React.Component {
                               className="form-control-alternative"
                               type="file"
                               onChange={this.uploadPhoto}
+                              multiple
                             />
                           </FormGroup>
                           <FormGroup>

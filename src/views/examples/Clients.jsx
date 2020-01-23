@@ -30,7 +30,6 @@ class Clients extends React.Component {
           }
         })
 
-        console.log('Aqui está el state', this.state.clients )
       })
       .catch(err => {
         console.log(err)

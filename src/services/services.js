@@ -29,6 +29,9 @@ class AuthService {
     addWorker(data) {
         return this.service.post('/addworker', data)
     }
+    addEstimate(data) {
+        return this.service.post('/addestimate', data)
+    }
 
 }
 

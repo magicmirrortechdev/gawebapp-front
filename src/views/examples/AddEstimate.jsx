@@ -21,28 +21,35 @@ import {
 import Header from "components/Headers/Header.jsx";
 const authService = new AuthService()
 
-
+let date = new Date()
+let day = date.getDate()
+let month = date.getMonth() + 1
+let year = date.getFullYear()
 
 class AddEstimate extends React.Component {
+  
   state = {
-    cart:[]
+    
+    items:[],
+    itemName: '',
+    description: '',
+    quantity: parseInt(''),
+    rate: parseInt(''),
+    subtotal: 0,
+    tax: 0,
+    discount: 0,
+    paid: 0,
+    total: 0,
+    dateCreate: month<10 ? (`${day}-0${month}-${year}`):(`${day}-${month}-${year}`)
   };
 
-  
-
   addToCart = (product) =>{
-    this.setState(prevState => {
-      return {
-        cart:[prevState.cart.push(product)]
-      }
-    })
+    var joined = this.state.items.concat(product);
+    this.setState({items: joined})
     document.getElementById("itemName").value = "";
     document.getElementById("description").value = "";
     document.getElementById("quantity").value = "";
-    document.getElementById("rate").value = "";
-
-    console.log("El cart", this.state.cart)
-
+    document.getElementById("rate").value = "";    
   }
   handleInput = e => {
     e.persist()
@@ -64,10 +71,10 @@ class AddEstimate extends React.Component {
   handleSubmit = (e, props) => {
     e.preventDefault()
         authService
-          .addExpense(this.state)
+          .addEstimate(this.state)
           .then(response => {
             //aquí deberia ir una notificacion o un swal o un toastr
-            this.props.history.push(`expenses`)
+            this.props.history.push(`estimates`)
             console.log(response)
           })
           .catch(err => {
@@ -77,15 +84,33 @@ class AddEstimate extends React.Component {
           })
   }
 
+  
+
   render() {
+    let date = new Date()
+
+    let day = date.getDate()
+    let month = date.getMonth() + 1
+    let year = date.getFullYear()
+
    let product={
-    itemName: Form.itemName,
-    description: Form.description,
-    quantity: parseInt(Form.amount),
-    rate: parseInt(Form.rate),
+    itemName: this.state.itemName,
+    description: this.state.description,
+    quantity: parseInt(this.state.quantity),
+    rate: parseInt(this.state.rate),
+    subtotal: parseInt(this.state.quantity * this.state.rate),
 
   }
-  console.log("elproduct", product)
+  
+
+  let subtotal = this.state.items.reduce((acc, current, i) => acc + current.subtotal, 0)
+  let tax = parseInt(this.state.tax) * subtotal / 100
+  let discount = parseInt(this.state.discount)
+  let paid = parseInt(this.state.paid)
+  let dateCreate = this.state.dateCreate
+
+  let total = subtotal + tax - discount - paid
+  
     return (
       <>
         <Header />
@@ -106,17 +131,17 @@ class AddEstimate extends React.Component {
                   <Form onSubmit={this.handleSubmit}>
                     <div className="pl-lg-4">
                       <Row>
-                        <Col md="7">
+                        <Col md="8">
                           <FormGroup>
                             <label
                               className="form-control-label d-inline-block"
-                              htmlFor="input-date"
+                              htmlFor="input-name"
                             >
-                              Client
+                              Client Name
                             </label>
                             <Input
                               className="form-control-alternative"
-                              placeholder="Select a date"
+                              placeholder="Enter the name client"
                               name="clientName"
                               type="text"
                               onChange={this.handleInput}
@@ -124,7 +149,7 @@ class AddEstimate extends React.Component {
                             <br/>
                             <Input
                               className="form-control-alternative"
-                              placeholder="Enter the email of client"
+                              placeholder="Enter the email client"
                               name="email"
                               type="email"
                               onChange={this.handleInput}
@@ -132,7 +157,7 @@ class AddEstimate extends React.Component {
                             <br/>
                             <Input
                               className="form-control-alternative"
-                              placeholder="Enter the email of client"
+                              placeholder="Enter the address client"
                               name="address"
                               type="text"
                               onChange={this.handleInput}
@@ -146,6 +171,7 @@ class AddEstimate extends React.Component {
                             >
                               Items
                             </label>
+                            
                             <Table className="align-items-center table-flush" responsive>
                               <thead className="thead-light">
                               <tr>
@@ -154,29 +180,34 @@ class AddEstimate extends React.Component {
                                 <th scope="col">Quantity</th>
                                 <th scope="col">Rate</th>
                                 <th scope="col">Total</th>
+                                <th scope="col">Options</th>
                               </tr>
                              </thead>
                               <tbody>
-                               {this.state.cart.map((el, i) => (
+                               {this.state.items.map((el, i) => (
                                 <tr key={i}>
                                   <td >
-                                   {el.name}
+                                   {el.itemName}
                                   </td>
                                 <td>
                                 {el.description}
                                 </td>
                                 <td>
-                                ${el.quantity}
+                                {el.quantity}
                                 </td>
                                 <td>
                                 ${el.rate}
+                                </td>
+                                <td>
+                                  $ {el.subtotal}
                                 </td>
                                 <td>
                                 <Button
                                 onClick={e =>
                   
                                 this.setState(prevState => {
-                                return prevState.cart.filter(e => e !== this.state.cart[i])
+                                var filter = this.state.items.filter(e => e !== this.state.items[i])
+                                    this.setState({items: filter})
                                 })
                                 }
                                 style={{width:'100px', height:'20px', fontSize:'10px', paddingTop:'0'}}
@@ -187,17 +218,12 @@ class AddEstimate extends React.Component {
                                   &nbsp; Delete
                
                                   </Button>
-                                   </td>
-                                   </tr>
-                                 ))}
-                                 <tr>
-                                   <td></td>
-                                   <td></td>
-                                   <td><b>Total:</b> $ {this.state.cart.reduce((acc, current, i) => acc + current.amount, 0)}</td>
-                                   <td></td>
-                                 </tr>
+                                </td>
+                               </tr>
+                                 )) }
                               </tbody>
                             </Table>
+                            <br/>
                             <Input
                               name="itemName"
                               className="form-control-alternative"
@@ -219,7 +245,7 @@ class AddEstimate extends React.Component {
                             <Input
                               name="quantity"
                               className="form-control-alternative"
-                              placeholder="Enter a quantity"
+                              placeholder="Enter a quantity of item"
                               type="number"
                               id="quantity"
                               onChange={this.handleInput}
@@ -242,61 +268,6 @@ class AddEstimate extends React.Component {
                               Add Item
                             </button>
                           </FormGroup>
-
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-category"
-                            >
-                              Category
-                            </label>
-                            <Input
-                              name="category"
-                              className="form-control-alternative"
-                              placeholder="Enter a category"
-                              type="select"
-                              onChange={this.handleInput}
-                            >
-                            <option>Choose One</option>
-                            <option>Job Materials</option>
-                            <option>Gas</option>
-                            <option>Suplies</option>
-                            <option>Sub Contractors</option>
-                            </Input>
-                          </FormGroup>
-
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-last-name"
-                            >
-                              Job
-                            </label>
-                            <Input
-                              name="job"
-                              className="form-control-alternative"
-                              placeholder="Enter a job or search your job list"
-                              type="text"
-                              onChange={this.handleInput}
-                            />
-                          </FormGroup>
-
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-first-name"
-                            >
-                              Description
-                            </label>
-                            <Input
-                              name="description"
-                              className="form-control-alternative"
-                              placeholder="Enter a description (optional)"
-                              type="text"
-                              onChange={this.handleInput}
-                            />
-                          </FormGroup>
-
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -320,30 +291,143 @@ class AddEstimate extends React.Component {
                               className="form-control-label"
                               htmlFor="input-first-name"
                             >
-                              Total
+                              Comments
                             </label>
                             <Input
-                              name="total"
+                              name="comments"
                               className="form-control-alternative"
-                              placeholder="Enter the total"
-                              type="number"
+                              placeholder="Enter a comments (optional)"
+                              type="textarea"
+                              rows="6"
                               onChange={this.handleInput}
                             />
                           </FormGroup>
+
+                          
                         </Col>
-                        <Col lg="5">
+                        <Col lg="4">
+                            <h4
+                              
+                            >
+                              Estimate
+                            </h4>
+                            <FormGroup>
                             <label
                               className="form-control-label"
                               htmlFor="input-first-name"
+                              style={{display:"inline-flex", alignItems:"center", }}
                             >
-                              Image Preview
+                              Date 
                             </label>
-                          {this.state.img && <img width="510px" height="500px" src={this.state.img} alt="photo_url" />}
-                        </Col>
-                      </Row>
-                      
-                      
-                      <Row>
+                            <Input
+                              
+                              name="dateCreate"
+                              value={month<10 ? (`${day}-0${month}-${year}`):(`${day}-${month}-${year}`)}
+                              className="form-control-alternative"
+                              type="text"
+                              onChange={this.handleInput}
+                              disabled
+                              width="50%"
+                              
+                            />
+                            
+                          </FormGroup>
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-first-name"
+                              style={{display:"inline-flex", alignItems:"center", }}
+                            >
+                              Subtotal 
+                            </label>
+                            <Input
+                              
+                              name="subTotal"
+                              value={ parseInt(subtotal) }
+                              className="form-control-alternative"
+                              type="number"
+                              onChange={this.handleInput}
+                              disabled
+                            />
+                            
+                          </FormGroup>
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-tax"
+                              style={{display:"inline-flex", alignItems:"center", }}
+                            >
+                              Tax 
+                            </label>
+                            <Input
+                              
+                              name="tax"
+                              defaultValue="0"
+                              className="form-control-alternative"
+                              type="number"
+                              onChange={this.handleInput}
+
+                              
+                            />
+                            
+                          </FormGroup>
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-first-name"
+                              style={{display:"inline-flex", alignItems:"center", }}
+                            >
+                              Discount 
+                            </label>
+                            <Input
+                              
+                              name="discount"
+                              defaultValue="0"
+                              className="form-control-alternative"
+                              type="number"
+                              onChange={this.handleInput}
+
+                              
+                            />
+                            
+                          </FormGroup>
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-first-name"
+                              style={{display:"inline-flex", alignItems:"center", }}
+                            >
+                              Paid 
+                            </label>
+                            <Input
+                              
+                              name="paid"
+                              defaultValue="0"
+                              className="form-control-alternative"
+                              type="number"
+                              onChange={this.handleInput}
+                            />
+                            
+                          </FormGroup>
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-total"
+                              style={{display:"inline-flex", alignItems:"center", }}
+                            >
+                              Total 
+                            </label>
+                            <Input
+                              disabled
+                              name="total"
+                              value={total}
+                              className="form-control-alternative"
+                              type="number"
+                              onChange={this.handleInput}
+                            />
+                            
+                          </FormGroup>
+                          <Row>
                         <Col lg="6">
                           <FormGroup>
                         
@@ -355,6 +439,11 @@ class AddEstimate extends React.Component {
                           </FormGroup>
                         </Col>
                       </Row>
+                        </Col>
+                      </Row>
+                      
+                      
+                      
                     </div>
                   </Form>
                 </CardBody>
