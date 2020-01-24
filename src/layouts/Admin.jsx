@@ -23,9 +23,31 @@ class Admin extends React.Component {
             path={prop.layout + prop.path}
             component={prop.component}
             key={key}
+            exact
           />
         );
-      } else {
+      }else if (prop.layout === "/admin/estimates") {
+        return (
+          <Route
+            path={prop.layout + prop.path}
+            component={prop.component}
+            key={key}
+            exact
+          />
+        );
+      }
+      else if (prop.layout === "/admin/jobs") {
+        return (
+          <Route
+            path={prop.layout + prop.path}
+            component={prop.component}
+            key={key}
+            exact
+          />
+        );
+      }
+      
+      else {
         return null;
       }
     });

@@ -43,20 +43,10 @@ class AddExpense extends React.Component {
     this.setState(prevState => ({ ...prevState, img }))
   }
 
-  handleSubmit = (e, props) => {
+  handleSubmit = async (e, props) => {
     e.preventDefault()
-        authService
-          .addExpense(this.state)
-          .then(response => {
-            //aquí deberia ir una notificacion o un swal o un toastr
-            this.props.history.push(`expenses`)
-            console.log(response)
-          })
-          .catch(err => {
-            //aquí deberia ir una notificacion o un swal o un toastr
-            console.log(err.response)
-            alert(err.response.data.msg || err.response.data.err.message)
-          })
+        await axios.patch(`http://localhost:3000/addexpense/${this.props.match.params.id}`,this.state)
+        this.props.history.push('/admin/jobs')
   }
 
   render() {
@@ -134,23 +124,6 @@ class AddExpense extends React.Component {
                             <option>Sub Contractors</option>
                             </Input>
                           </FormGroup>
-
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-last-name"
-                            >
-                              Job
-                            </label>
-                            <Input
-                              name="job"
-                              className="form-control-alternative"
-                              placeholder="Enter a job or search your job list"
-                              type="text"
-                              onChange={this.handleInput}
-                            />
-                          </FormGroup>
-
                           <FormGroup>
                             <label
                               className="form-control-label"

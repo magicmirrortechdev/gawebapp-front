@@ -1,7 +1,7 @@
 import React from "react";
-import { Link } from 'react-router-dom'
 import axios from 'axios'
 import AuthService from '../../services/services'
+import { NavLink as NavLinkRRD, Link } from "react-router-dom";
 
 import {
   Card,
@@ -10,11 +10,10 @@ import {
   Row,
   Col,
   Table,
-  Dropdown,
   DropdownToggle,
-  Media,
   DropdownMenu,
-  DropdownItem
+  DropdownItem,
+  UncontrolledDropdown
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
@@ -110,17 +109,29 @@ class Icons extends React.Component {
                         <td>{e.status}</td>
                         <td>${subtotal + tax - paid - discount}USD</td>
                         <td>
-                        <DropdownToggle>
-                        <Media className="align-items-center">
-                        <Media className="ml-2 d-none d-lg-block">
-                        <span className="mb-0 mt-0 text-sm font-weight-bold">
-                          ...
-                        </span>
-                        </Media>
-                        </Media>
-                        </DropdownToggle>
-                        <DropdownMenu>
-                          <DropdownItem onClick={()=>{
+                        <UncontrolledDropdown>
+                                                        <DropdownToggle>
+                                                            ...
+                                                        </DropdownToggle>
+                                                        <DropdownMenu
+                                                         modifiers={{
+      setMaxHeight: {
+        enabled: true,
+        order: 890,
+        fn: (data) => {
+          return {
+            ...data,
+            styles: {
+              ...data.styles,
+              overflow: 'auto',
+              maxHeight: 100,
+            },
+          };
+        },
+      },
+    }}
+                                                        >
+                                                        <DropdownItem onClick={()=>{
                             authService
                               .convertInvoice(e._id)
                               .then(response => {
@@ -166,9 +177,30 @@ class Icons extends React.Component {
                               })
                           }}>Decline</DropdownItem>
                           <DropdownItem>Sent Email</DropdownItem>
-                          <DropdownItem>Update</DropdownItem>
-                          <DropdownItem>Delete</DropdownItem>
-                        </DropdownMenu>
+                          <DropdownItem to={`/admin/estimates/${e._id}`} tag={Link}>Update</DropdownItem>
+                          <DropdownItem onClick={()=>{
+                            authService
+                              .estimateDelete(e._id)
+                              .then(({data}) => {
+                                alert('Estimate Delete')
+                                window.location.reload()
+                                
+                              })
+                              .catch(err => {
+                                //aquí deberia ir una notificacion o un swal o un toastr
+                                console.log(err.response)
+                                alert(err.response.data.msg || err.response.data.err.message)
+                              })
+                          }}><span
+                                  className="text-danger">Delete</span></DropdownItem>
+                          </DropdownMenu>
+                          </UncontrolledDropdown>
+                        
+                          
+                          
+                          
+                          
+                          
                         </td>
                         </tr>
                       </tbody>

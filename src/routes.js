@@ -4,6 +4,7 @@ import Index from "views/Index.jsx";
 import Login from "views/examples/Login.jsx";
 import Expenses from "views/examples/Expenses.jsx";
 import Estimates from "views/examples/Estimates.jsx";
+import UpdateEstimate from "views/examples/UpdateEstimate.jsx";
 import Invoices from "views/examples/Invoices.jsx";
 import Clients from "views/examples/Clients.jsx";
 import AddClient from "views/examples/AddClient.jsx";
@@ -37,8 +38,9 @@ var routes = [
     path: "/:id",
     name: "Edit Estimate",
     icon: "ni ni-ruler-pencil text-blue",
-    component: Estimates,
-    layout: "/admin/estimate"
+    component: UpdateEstimate,
+    layout: "/admin/estimates",
+    invisible:true
   },
   {
     path: "/jobs",
@@ -75,6 +77,7 @@ var routes = [
     icon: "ni ni-single-02 text-yellow",
     component: Clients,
     layout: "/admin"
+    
   },
   {
     path: "/expenses",
@@ -93,38 +96,44 @@ var routes = [
   { 
     path: "/addclient",
     component: AddClient,
-    layout: "/admin"
+    layout: "/admin",
+    invisible:true
   },
   { 
     path: "/addestimate",
     component: AddEstimate,
-    layout: "/admin"
+    layout: "/admin",
+    invisible:true
   },
   { 
-    path: "/addexpense",
+    path: "/:id/addexpense",
     component: AddExpense,
-    layout: "/admin",
+    layout: "/admin/jobs",
     invisible: true
   },
   { 
     path: "/addjob",
     component: AddJob,
-    layout: "/admin"
+    layout: "/admin",
+    invisible:true
   },
   { 
     path: "/addworker",
     component: AddWorker,
-    layout: "/admin"
+    layout: "/admin",
+    invisible:true
   },
   {
     path: "/addreport",
     component: AddReport,
-    layout: "/admin"
+    layout: "/admin",
+    invisible:true
   },
   { 
     path: "/login",
     component: Login,
-    layout: "/auth"
+    layout: "/auth",
+    invisible:true
   }
 
 ];

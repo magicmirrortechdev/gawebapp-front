@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+import AuthService from '../../services/services'
 
 import {
   Card,
@@ -9,9 +10,16 @@ import {
   Row,
   Col,
   Table,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+  UncontrolledDropdown
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
+
+const authService = new AuthService()
+
 
 class Jobs extends React.Component {
   state = {
@@ -85,6 +93,80 @@ class Jobs extends React.Component {
                         <td>{e.dateEnd}</td>
                         <td>{e.workers}</td>
                         <td>${subtotal + tax - paid - discount}USD</td>
+                        <td>
+                        <UncontrolledDropdown>
+                           <DropdownToggle>
+                              ...
+                          </DropdownToggle>
+                          <DropdownMenu
+                            modifiers={{
+                                    setMaxHeight: {
+                                      enabled: true,
+                                      order: 890,
+                                      fn: (data) => {
+                                        return {
+                                          ...data,
+                                          styles: {
+                                            ...data.styles,
+                                            overflow: 'auto',
+                                            maxHeight: 100,
+                                          },
+                                        };
+                                      },
+                                    },
+                                  }}
+                                                        >
+                                                        <DropdownItem onClick={()=>{
+                            authService
+                              .convertInvoice(e._id)
+                              .then(response => {
+                                //aquí deberia ir una notificacion o un swal o un toastr
+                                this.props.history.push(`invoices`)
+                                console.log(response)
+                                
+                              })
+                              .catch(err => {
+                                //aquí deberia ir una notificacion o un swal o un toastr
+                                console.log(err.response)
+                                alert(err.response.data.msg || err.response.data.err.message)
+                              })
+                          }}>Convert to Invoice</DropdownItem>
+                          <DropdownItem onClick={()=>{
+                            authService
+                              .convertJob(e._id)
+                              .then(response => {
+                                //aquí deberia ir una notificacion o un swal o un toastr
+                                this.props.history.push(`jobs`)
+                                console.log(response)
+                                
+                              })
+                              .catch(err => {
+                                //aquí deberia ir una notificacion o un swal o un toastr
+                                console.log(err.response)
+                                alert(err.response.data.msg || err.response.data.err.message)
+                              })
+                          }}>Add Worker</DropdownItem>
+                          <DropdownItem to={`/admin/jobs/${e._id}/addexpense`} tag={Link}>Add Expense</DropdownItem>
+                          <DropdownItem>Sent Email</DropdownItem>
+                          <DropdownItem to={`/admin/jobs/${e._id}`} tag={Link}>Update</DropdownItem>
+                          <DropdownItem onClick={()=>{
+                            authService
+                              .estimateDelete(e._id)
+                              .then(({data}) => {
+                                alert('Estimate Delete')
+                                window.location.reload()
+                                
+                              })
+                              .catch(err => {
+                                //aquí deberia ir una notificacion o un swal o un toastr
+                                console.log(err.response)
+                                alert(err.response.data.msg || err.response.data.err.message)
+                              })
+                          }}><span
+                                  className="text-danger">Delete</span></DropdownItem>
+                          </DropdownMenu>
+                          </UncontrolledDropdown>
+                        </td>
                         </tr>
                        
                     

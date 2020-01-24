@@ -20,9 +20,6 @@ class AuthService {
     addClient(data) {
         return this.service.post('/createclient', data)
     }
-    addExpense(data) {
-        return this.service.post('/addexpense', data)
-    }
     addJob(data) {
         return this.service.post('/createjob', data)
     }
@@ -40,6 +37,9 @@ class AuthService {
     }
     decline(data) {
         return this.service.patch(`/estimatedecline/${data}`)
+    }
+    estimateDelete(data) {
+        return this.service.delete(`/estimatedelete/${data}`)
     }
 
 }

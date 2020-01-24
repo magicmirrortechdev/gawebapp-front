@@ -57,6 +57,7 @@ class Sidebar extends React.Component {
   // creates the links that appear in the left menu / Sidebar
   createLinks = routes => {
     return routes.map((prop, key) => {
+      if(prop.invisible) return null;
       return (
         <NavItem key={key}>
           <NavLink
@@ -73,7 +74,7 @@ class Sidebar extends React.Component {
     });
   };
   render() {
-    const {  routes, logo } = this.props;
+    const {  routes, logo,  } = this.props;
     let navbarBrandProps;
     if (logo && logo.innerLink) {
       navbarBrandProps = {
@@ -86,6 +87,8 @@ class Sidebar extends React.Component {
         target: "_blank"
       };
     }
+    
+    
     return (
       <Navbar
         className="navbar-vertical fixed-left navbar-light bg-white"
@@ -216,7 +219,9 @@ class Sidebar extends React.Component {
 }
 
 Sidebar.defaultProps = {
-  routes: [{}]
+  routes: [{
+    invisible: false
+  }],
 };
 
 Sidebar.propTypes = {

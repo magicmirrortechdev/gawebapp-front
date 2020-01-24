@@ -10,9 +10,9 @@ import {
   Row,
   Col,
   Table,
-  Dropdown,
+
   DropdownToggle,
-  Media,
+
   DropdownMenu,
   UncontrolledDropdown,
   DropdownItem
