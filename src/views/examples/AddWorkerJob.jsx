@@ -37,7 +37,7 @@ class AddWorkerJob extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`http://localhost:3000/getusers`)
+      .get(`https://greenacorn.herokuapp.com/getusers`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
