@@ -117,7 +117,7 @@ class AddEstimate extends React.Component {
   console.log('el stateee',this.state)
     return (
       <>
-        <Header />
+        <Header forms={true}/>
         {/* Page content */}
         <Container className="mt--7" fluid>
           <Row className="mt-5">
