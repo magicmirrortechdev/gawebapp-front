@@ -110,34 +110,16 @@ class Icons extends React.Component {
                         <td>{e.status}</td>
                         <td>${subtotal + tax - paid - discount}USD</td>
                         <td>
-                        <Dropdown position="absolute" direction="up" isOpen={this.state.btnDropup} toggle={(e) => {this.setState({ btnDropup: !this.state.btnDropup }); }}>
-                        <DropdownToggle className="pr-0" nav >
+                        <DropdownToggle>
                         <Media className="align-items-center">
-                    <Media className="ml-2 d-none d-lg-block">
-                      <span className="mb-0 mt-0 text-sm font-weight-bold">
-                        ...
-                      </span>
-                    </Media>
-                  </Media>
+                        <Media className="ml-2 d-none d-lg-block">
+                        <span className="mb-0 mt-0 text-sm font-weight-bold">
+                          ...
+                        </span>
+                        </Media>
+                        </Media>
                         </DropdownToggle>
-                        <DropdownMenu
-                            modifiers={{
-                              setMaxHeight: {
-                                enabled: true,
-                                order: 890,
-                                fn: (data) => {
-                                  return {
-                                    ...data,
-                                    styles: {
-                                      ...data.styles,
-                                      overflow: 'auto',
-                                      maxHeight: 100,
-                                    },
-                                  };
-                                },
-                              },
-                            }}
-                          >
+                        <DropdownMenu>
                           <DropdownItem onClick={()=>{
                             authService
                               .convertInvoice(e._id)
@@ -187,7 +169,6 @@ class Icons extends React.Component {
                           <DropdownItem>Update</DropdownItem>
                           <DropdownItem>Delete</DropdownItem>
                         </DropdownMenu>
-                      </Dropdown>
                         </td>
                         </tr>
                       </tbody>
