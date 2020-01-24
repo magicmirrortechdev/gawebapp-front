@@ -30,7 +30,7 @@ class AddEstimate extends React.Component {
   
   state = {
     
-    clientName:'',
+    name:'',
     address:'',
     items:[],
     itemName: '',
@@ -146,7 +146,7 @@ class AddEstimate extends React.Component {
                             <Input
                               className="form-control-alternative"
                               placeholder="Enter the name client"
-                              name="clientName"
+                              name="name"
                               type="text"
                               onChange={this.handleInput}
                             />

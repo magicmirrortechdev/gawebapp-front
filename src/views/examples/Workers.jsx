@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+import AuthService from '../../services/services'
 
 import {
   Card,
@@ -8,10 +9,16 @@ import {
   Container,
   Row,
   Col,
-  Table
+  Table,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+  UncontrolledDropdown
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
+
+const authService = new AuthService()
 
 class Workers extends React.Component {
   state = {
@@ -90,7 +97,46 @@ class Workers extends React.Component {
                         <td>{e.email}</td>
                         <td>{e.payment}</td>
                         <td>{e.effective}</td>
-                        <td></td>
+                        <td>
+                        <UncontrolledDropdown>
+                        <DropdownToggle>
+                            ...
+                        </DropdownToggle>
+                        <DropdownMenu>
+                            <DropdownItem onClick={()=>{
+                              authService
+                                .paidInvoice(e._id)
+                                .then(({data}) => {
+                                  alert('The invoice is paid')
+                                  window.location.reload()
+                                  
+                                })
+                                .catch(err => {
+                                  console.log(err.response)
+                                  alert(err.response.data.msg || err.response.data.err.message)
+                                })
+                            }}
+                            
+                            >Accept Payment</DropdownItem>
+                            <DropdownItem>Send by email</DropdownItem>
+                            <DropdownItem onClick={()=>{
+                              authService
+                                .estimateDelete(e._id)
+                                .then(({data}) => {
+                                  alert('Invoice Delete')
+                                  window.location.reload()
+                                  
+                                })
+                                .catch(err => {
+                                  console.log(err.response)
+                                  alert(err.response.data.msg || err.response.data.err.message)
+                                })
+                            }}><span
+                                    className="text-danger">Delete</span></DropdownItem>
+                        </DropdownMenu>
+                    </UncontrolledDropdown>
+                        
+                        </td>
                         
                         </tr>
                        

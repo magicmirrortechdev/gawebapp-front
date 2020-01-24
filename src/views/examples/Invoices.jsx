@@ -102,11 +102,36 @@ class Invoices extends React.Component {
                                                             ...
                                                         </DropdownToggle>
                                                         <DropdownMenu>
-                                                            <DropdownItem>Details</DropdownItem>
-                                                            <DropdownItem>Export to Excel</DropdownItem>
-                                                            <DropdownItem>Edit</DropdownItem>
-                                                            <DropdownItem><span
-                                                                className="text-danger">Delete</span></DropdownItem>
+                                                            <DropdownItem onClick={()=>{
+                                                              authService
+                                                                .paidInvoice(e._id)
+                                                                .then(({data}) => {
+                                                                  alert('The invoice is paid')
+                                                                  window.location.reload()
+                                                                  
+                                                                })
+                                                                .catch(err => {
+                                                                  console.log(err.response)
+                                                                  alert(err.response.data.msg || err.response.data.err.message)
+                                                                })
+                                                            }}
+                                                            
+                                                            >Accept Payment</DropdownItem>
+                                                            <DropdownItem>Send by email</DropdownItem>
+                                                            <DropdownItem onClick={()=>{
+                                                              authService
+                                                                .estimateDelete(e._id)
+                                                                .then(({data}) => {
+                                                                  alert('Invoice Delete')
+                                                                  window.location.reload()
+                                                                  
+                                                                })
+                                                                .catch(err => {
+                                                                  console.log(err.response)
+                                                                  alert(err.response.data.msg || err.response.data.err.message)
+                                                                })
+                                                            }}><span
+                                                                    className="text-danger">Delete</span></DropdownItem>
                                                         </DropdownMenu>
                                                     </UncontrolledDropdown>
                         </td>

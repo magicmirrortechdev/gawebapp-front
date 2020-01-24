@@ -21,7 +21,7 @@ import Header from "components/Headers/Header.jsx";
 const authService = new AuthService()
 
 
-class Jobs extends React.Component {
+class Time extends React.Component {
   state = {
     jobs:[]
   };
@@ -134,7 +134,21 @@ class Jobs extends React.Component {
                           }}>Convert to Invoice</DropdownItem>
                           <DropdownItem to={`/admin/jobs/${e._id}`} tag={Link}>Update</DropdownItem>
                           <DropdownItem to={`/admin/jobs/${e._id}/addexpense`} tag={Link}>Add Expense</DropdownItem>                          
-                          <DropdownItem to={`/admin/jobs/addworker/${e._id}`} tag={Link}>Add Worker</DropdownItem>
+                          <DropdownItem onClick={()=>{
+                            authService
+                              .convertJob(e._id)
+                              .then(response => {
+                                //aquí deberia ir una notificacion o un swal o un toastr
+                                this.props.history.push(`jobs`)
+                                console.log(response)
+                                
+                              })
+                              .catch(err => {
+                                //aquí deberia ir una notificacion o un swal o un toastr
+                                console.log(err.response)
+                                alert(err.response.data.msg || err.response.data.err.message)
+                              })
+                          }}>Add Worker</DropdownItem>
 
                           <DropdownItem onClick={()=>{
                             authService
@@ -173,4 +187,4 @@ class Jobs extends React.Component {
   }
 }
 
-export default Jobs;
+export default Time;

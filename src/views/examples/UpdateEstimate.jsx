@@ -30,21 +30,49 @@ class UpdateEstimate extends React.Component {
   
   state = {
     
-    clientName:'',
+    name:'',
+    email:'',
     address:'',
     items:[],
     itemName: '',
     description: '',
+    comments:'',
     quantity: parseInt(''),
     rate: parseInt(''),
     subtotal: 0,
-    tax: 0,
-    discount: 0,
-    paid: 0,
+    tax: parseInt(''),
+    discount: parseInt(''),
+    paid: parseInt(''),
     total: 0,
-    dateCreate: month<10 ? (`${day}-0${month}-${year}`):(`${day}-${month}-${year}`),
+    dateCreate: '',
     jobName:''
+    
   };
+  componentDidMount() {
+    axios
+      .get(`http://localhost:3000/estimatedetail/${this.props.match.params.id}`)
+      .then(({ data }) => {
+        this.setState(prevState => {
+          return {
+            
+            ...prevState,
+            name: data.estimate.clientId.name,
+            email: data.estimate.clientId.email,
+            address: data.estimate.clientId.address,
+            tax: data.estimate.tax,
+            discount: data.estimate.discount,
+            paid: data.estimate.paid,
+            comments: data.estimate.comments,
+            ...data.estimate
+          }
+          
+        })
+        console.log(this.state)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
 
   addToCart = (product) =>{
     var joined = this.state.items.concat(product);
@@ -73,26 +101,17 @@ class UpdateEstimate extends React.Component {
 
   handleSubmit = (e, props) => {
     e.preventDefault()
-        authService
-          .addEstimate(this.state)
-          .then(response => {
-            //aquí deberia ir una notificacion o un swal o un toastr
-            this.props.history.push(`estimates`)
-            console.log(response)
-          })
-          .catch(err => {
-            //aquí deberia ir una notificacion o un swal o un toastr
-            console.log(err.response)
-            alert(err.response.data.msg || err.response.data.err.message)
-          })
+    axios
+      .patch(`http://localhost:3000/estimateupdate/${this.props.match.params.id}`, this.state)
+      .then((response) => {
+        this.props.history.push(`/admin/estimates`)
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   render() {
-    let date = new Date()
-
-    let day = date.getDate()
-    let month = date.getMonth() + 1
-    let year = date.getFullYear()
 
    let product={
     itemName: this.state.itemName,
@@ -102,8 +121,6 @@ class UpdateEstimate extends React.Component {
     subtotal: parseInt(this.state.quantity * this.state.rate),
 
   }
-  
-
   let subtotal = this.state.items.reduce((acc, current, i) => acc + current.subtotal, 0)
   let tax = parseInt(this.state.tax) * subtotal / 100
   let discount = parseInt(this.state.discount)
@@ -115,6 +132,7 @@ class UpdateEstimate extends React.Component {
   let jobName = address+clientName
   
   console.log('el stateee',this.state)
+  if (!this.state) return <p>Loading</p>
     return (
       <>
         <Header />
@@ -144,6 +162,7 @@ class UpdateEstimate extends React.Component {
                               Client Name
                             </label>
                             <Input
+                              defaultValue={`${this.state.name}`}
                               className="form-control-alternative"
                               placeholder="Enter the name client"
                               name="clientName"
@@ -152,6 +171,7 @@ class UpdateEstimate extends React.Component {
                             />
                             <br/>
                             <Input
+                            defaultValue={`${this.state.email}`}
                               className="form-control-alternative"
                               placeholder="Enter the email client"
                               name="email"
@@ -160,6 +180,7 @@ class UpdateEstimate extends React.Component {
                             />
                             <br/>
                             <Input
+                            defaultValue={`${this.state.address}`}
                               className="form-control-alternative"
                               placeholder="Enter the address client"
                               name="address"
@@ -249,7 +270,7 @@ class UpdateEstimate extends React.Component {
                             <Input
                               name="quantity"
                               className="form-control-alternative"
-                              placeholder="Enter a quantity of item"
+                              placeholder="0"
                               type="number"
                               id="quantity"
                               onChange={this.handleInput}
@@ -258,7 +279,7 @@ class UpdateEstimate extends React.Component {
                             <Input
                               name="rate"
                               className="form-control-alternative"
-                              placeholder="Enter a rate of item"
+                              placeholder="0"
                               type="number"
                               id="rate"
                               onChange={this.handleInput}
@@ -298,11 +319,11 @@ class UpdateEstimate extends React.Component {
                               Comments
                             </label>
                             <Input
+                              defaultValue={`${this.state.comments}`}
                               name="comments"
                               className="form-control-alternative"
                               placeholder="Enter a comments (optional)"
-                              type="textarea"
-                              rows="6"
+                              type="text"
                               onChange={this.handleInput}
                             />
                           </FormGroup>
@@ -321,12 +342,11 @@ class UpdateEstimate extends React.Component {
                               htmlFor="input-first-name"
                               style={{display:"inline-flex", alignItems:"center", }}
                             >
-                              Date 
+                              Date Create
                             </label>
                             <Input
-                              
+                            defaultValue={`${this.state.dateCreate}`}
                               name="dateCreate"
-                              value={month<10 ? (`${day}-0${month}-${year}`):(`${day}-${month}-${year}`)}
                               className="form-control-alternative"
                               type="text"
                               onChange={this.handleInput}
@@ -364,13 +384,11 @@ class UpdateEstimate extends React.Component {
                               Tax 
                             </label>
                             <Input
-                              
+                              value={this.state.tax}
                               name="tax"
-                              defaultValue="0"
                               className="form-control-alternative"
                               type="number"
                               onChange={this.handleInput}
-
                               
                             />
                             
@@ -384,14 +402,11 @@ class UpdateEstimate extends React.Component {
                               Discount 
                             </label>
                             <Input
-                              
+                              value={this.state.discount}
                               name="discount"
-                              defaultValue="0"
                               className="form-control-alternative"
                               type="number"
-                              onChange={this.handleInput}
-
-                              
+                              onChange={this.handleInput}                              
                             />
                             
                           </FormGroup>
@@ -406,7 +421,7 @@ class UpdateEstimate extends React.Component {
                             <Input
                               
                               name="paid"
-                              defaultValue="0"
+                              value={this.state.paid}
                               className="form-control-alternative"
                               type="number"
                               onChange={this.handleInput}

@@ -2,9 +2,10 @@
 import Index from "views/Index.jsx";
 
 import Login from "views/examples/Login.jsx";
-import Expenses from "views/examples/Expenses.jsx";
+import Time from "views/examples/Time.jsx";
 import Estimates from "views/examples/Estimates.jsx";
 import UpdateEstimate from "views/examples/UpdateEstimate.jsx";
+import UpdateJob from "views/examples/UpdateJob.jsx";
 import Invoices from "views/examples/Invoices.jsx";
 import Clients from "views/examples/Clients.jsx";
 import AddClient from "views/examples/AddClient.jsx";
@@ -13,6 +14,7 @@ import AddExpense from "views/examples/AddExpense.jsx";
 import Jobs from "views/examples/Jobs.jsx";
 import AddJob from "views/examples/AddJob.jsx";
 import AddWorker from "views/examples/AddWorker.jsx";
+import AddWorkerJob from "views/examples/AddWorkerJob.jsx";
 import AddEstimate from "views/examples/AddEstimate.jsx";
 import Reports from "./views/examples/Reports";
 import AddReport from "./views/examples/AddReport";
@@ -51,6 +53,22 @@ var routes = [
 
   },
   {
+    path: "/:id",
+    name: "Edit Job",
+    icon: "ni ni-ruler-pencil text-blue",
+    component: UpdateJob,
+    layout: "/admin/jobs",
+    invisible:true
+  },
+  {
+    path: "/addworker/:id",
+    name: "Edit Job",
+    icon: "ni ni-ruler-pencil text-blue",
+    component: AddWorkerJob,
+    layout: "/admin/jobs",
+    invisible:true
+  },
+  {
     path: "/invoices",
     name: "Invoices",
     icon: "ni ni-credit-card text-orange",
@@ -61,7 +79,7 @@ var routes = [
     path: "/time",
     name: "Time",
     icon: "ni ni-watch-time text-blue",
-    component: Jobs,
+    component: Time,
     layout: "/admin"
   },
   {
@@ -79,13 +97,13 @@ var routes = [
     layout: "/admin"
     
   },
-  {
-    path: "/expenses",
-    name: "Expenses",
-    icon: "ni ni-money-coins text-info",
-    component: Expenses,
-    layout: "/admin"
-  },
+  // {
+  //   path: "/expenses",
+  //   name: "Expenses",
+  //   icon: "ni ni-money-coins text-info",
+  //   component: Expenses,
+  //   layout: "/admin"
+  // },
   {
     path: "/workers",
     name: "Workers",
