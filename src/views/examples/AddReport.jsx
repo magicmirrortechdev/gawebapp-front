@@ -33,32 +33,42 @@ class AddReport extends React.Component {
 
   state = {
 
-    items:[],
+    estimates:[],
+    modalFindEstimates: false,
+    invoices:[],
+    modalFindInvoices: false,
+    expenses:[],
+    modalFindExpenses: false,
     jobstatus: 'Open',
-    itemName: '',
-    description: '',
-    quantity: parseInt(''),
-    rate: parseInt(''),
-    subtotal: 0,
-    tax: 0,
-    discount: 0,
-    paid: 0,
-    total: 0,
     dateCreate: month<10 ? (`${day}-0${month}-${year}`):(`${day}-${month}-${year}`)
   };
 
   handleInput = e => {
     e.preventDefault()
-    console.log(this.state);
     this.setState ({
       [e.target.name]: e.target.value
     })
-    console.log(this.state);
   }
 
   handleSubmit = (e, props) => {
     e.preventDefault()
 
+  }
+
+  addEstimates = e => {
+    e.preventDefault();
+    this.setState({
+      modalFindEstimate: true
+    })
+  }
+
+  addInvoices = e => {
+    e.preventDefault();
+
+  }
+
+  addExpenses = e => {
+    e.preventDefault();
   }
 
   render() {
@@ -68,23 +78,6 @@ class AddReport extends React.Component {
     let month = date.getMonth() + 1
     let year = date.getFullYear()
 
-    let product={
-      itemName: this.state.itemName,
-      description: this.state.description,
-      quantity: parseInt(this.state.quantity),
-      rate: parseInt(this.state.rate),
-      subtotal: parseInt(this.state.quantity * this.state.rate),
-
-    }
-
-
-    let subtotal = this.state.items.reduce((acc, current, i) => acc + current.subtotal, 0)
-    let tax = parseInt(this.state.tax) * subtotal / 100
-    let discount = parseInt(this.state.discount)
-    let paid = parseInt(this.state.paid)
-    let dateCreate = this.state.dateCreate
-
-    let total = subtotal + tax - discount - paid
 
     return (
         <>
@@ -168,7 +161,7 @@ class AddReport extends React.Component {
                               </label>
                               <InputGroup>
                                 <Input type="text" name="estimates"
-                                       placeholder="Enter an invoice number..."
+                                       placeholder="Enter an estimate, client name or date..."
                                        onChange={this.handleInput}
                                        className="form-control-alternative">
                                 </Input>
@@ -176,6 +169,24 @@ class AddReport extends React.Component {
                                   Add Estimate
                                 </Button>
                               </InputGroup>
+                              <br/>
+                              <Table bordered striped>
+                                <thead>
+                                  <th>Estimates</th>
+                                  <th></th>
+                                </thead>
+                                <tbody>
+                                  {this.state.estimates.length === 0 && (
+                                      <tr><td  colSpan={2}>No related estimates</td></tr>
+                                    )}
+                                  {this.state.estimates.length > 0 && (
+                                      <tr>
+                                        <td>
+                                        </td>
+                                      </tr>
+                                  )}
+                                </tbody>
+                              </Table>
                             </FormGroup>
 
                             <FormGroup>
@@ -194,6 +205,24 @@ class AddReport extends React.Component {
                                   Add Invoice
                                 </Button>
                               </InputGroup>
+                              <br/>
+                              <Table bordered striped>
+                                <thead>
+                                <th>Invoices</th>
+                                <th></th>
+                                </thead>
+                                <tbody>
+                                {this.state.invoices.length === 0 && (
+                                    <tr><td  colSpan={2}>No related invoices</td></tr>
+                                )}
+                                {this.state.invoices.length > 0 && (
+                                    <tr>
+                                      <td>
+                                      </td>
+                                    </tr>
+                                )}
+                                </tbody>
+                              </Table>
                             </FormGroup>
 
                             <FormGroup>
@@ -212,7 +241,24 @@ class AddReport extends React.Component {
                                   Add Expense
                                 </Button>
                               </InputGroup>
-
+                              <br/>
+                              <Table bordered striped>
+                                <thead>
+                                <th>Expenses</th>
+                                <th></th>
+                                </thead>
+                                <tbody>
+                                {this.state.expenses.length === 0 && (
+                                    <tr><td  colSpan={2}>No related expenses</td></tr>
+                                )}
+                                {this.state.expenses.length > 0 && (
+                                    <tr>
+                                      <td>
+                                      </td>
+                                    </tr>
+                                )}
+                                </tbody>
+                              </Table>
                             </FormGroup>
 
                           </Col>
