@@ -21,16 +21,16 @@ import Header from "components/Headers/Header.jsx";
 
 const authService = new AuthService()
 
-class Icons extends React.Component {
+class Invoices extends React.Component {
   state = {
-    estimates:[],
+    invoices:[],
     id:'',
     btnDropup: false
   };
 
   componentDidMount() {
     axios
-      .get(`http://localhost:3000/checkestimates`)
+      .get(`http://localhost:3000/checkinvoices`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -43,22 +43,8 @@ class Icons extends React.Component {
         console.log(err)
       })
   }
-  convertInvoice = (_id)=>{
-    authService
-    .convertInvoice(_id)
-    .then(response => {
-            //aquí deberia ir una notificacion o un swal o un toastr
-            this.props.history.push(`estimates`)
-            console.log(response)
-          })
-          .catch(err => {
-            //aquí deberia ir una notificacion o un swal o un toastr
-            console.log(err.response)
-            alert(err.response.data.msg || err.response.data.err.message)
-          })
-
-  }
   render() {
+    console.log(this.state.invoices)
     if (!this.state) return <p>Loading</p>
     return (
       <>
@@ -96,8 +82,8 @@ class Icons extends React.Component {
                       <th scope="col">Options</th>
                     </tr>
                   </thead>
-                  {this.state.estimates.length === 0 ?  <tbody><tr><td>No estimates register</td></tr></tbody>:
-                     this.state.estimates.map((e,i)=>{
+                  {this.state.invoices.length === 0 ?  <tbody><tr><td>No invoices register</td></tr></tbody>:
+                     this.state.invoices.map((e,i)=>{
                       let subtotal = e.items.reduce((acc, current, i) => acc + current.subtotal, 0)
                       let tax = parseInt(e.tax) * subtotal / 100
                       let discount = e.discount
@@ -110,15 +96,15 @@ class Icons extends React.Component {
                         <td>{e.status}</td>
                         <td>${subtotal + tax - paid - discount}USD</td>
                         <td>
-                        <Dropdown position="absolute" direction="up" isOpen={this.state.btnDropup} toggle={(e) => {this.setState({ btnDropup: !this.state.btnDropup }); }}>
+                        <Dropdown position="absolute" direction="up" isOpen={this.state.btnDropup} toggle={() => { this.setState({ btnDropup: !this.state.btnDropup }); }}>
                         <DropdownToggle className="pr-0" nav >
                         <Media className="align-items-center">
-                    <Media className="ml-2 d-none d-lg-block">
-                      <span className="mb-0 mt-0 text-sm font-weight-bold">
-                        ...
-                      </span>
-                    </Media>
-                  </Media>
+                        <Media className="ml-2 d-none d-lg-block">
+                          <span className="mb-0 mt-0 text-sm font-weight-bold">
+                            ...
+                          </span>
+                        </Media>
+                        </Media>
                         </DropdownToggle>
                         <DropdownMenu
                             modifiers={{
@@ -132,6 +118,7 @@ class Icons extends React.Component {
                                       ...data.styles,
                                       overflow: 'auto',
                                       maxHeight: 100,
+                                      position: 'absolute'
                                     },
                                   };
                                 },
@@ -144,8 +131,9 @@ class Icons extends React.Component {
                               .then(response => {
                                 //aquí deberia ir una notificacion o un swal o un toastr
                                 this.props.history.push(`invoices`)
-                                console.log(response)
-                                
+                                this.setState(prevState => {
+                                 return prevState.filter(e => e._id !== this.state.estimates._id)
+                                })
                               })
                               .catch(err => {
                                 //aquí deberia ir una notificacion o un swal o un toastr
@@ -153,36 +141,8 @@ class Icons extends React.Component {
                                 alert(err.response.data.msg || err.response.data.err.message)
                               })
                           }}>Convert to Invoice</DropdownItem>
-                          <DropdownItem onClick={()=>{
-                            authService
-                              .convertJob(e._id)
-                              .then(response => {
-                                //aquí deberia ir una notificacion o un swal o un toastr
-                                this.props.history.push(`jobs`)
-                                console.log(response)
-                                
-                              })
-                              .catch(err => {
-                                //aquí deberia ir una notificacion o un swal o un toastr
-                                console.log(err.response)
-                                alert(err.response.data.msg || err.response.data.err.message)
-                              })
-                          }}>Approve</DropdownItem>
-                          <DropdownItem onClick={()=>{
-                            authService
-                              .decline(e._id)
-                              .then(response => {
-                                //aquí deberia ir una notificacion o un swal o un toastr
-                                window.location.reload()
-                                console.log(response)
-                                
-                              })
-                              .catch(err => {
-                                //aquí deberia ir una notificacion o un swal o un toastr
-                                console.log(err.response)
-                                alert(err.response.data.msg || err.response.data.err.message)
-                              })
-                          }}>Decline</DropdownItem>
+                          <DropdownItem>Approve</DropdownItem>
+                          <DropdownItem>Decline</DropdownItem>
                           <DropdownItem>Sent Email</DropdownItem>
                           <DropdownItem>Update</DropdownItem>
                           <DropdownItem>Delete</DropdownItem>
@@ -206,4 +166,4 @@ class Icons extends React.Component {
 
 
 
-export default Icons;
+export default Invoices;

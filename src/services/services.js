@@ -32,6 +32,15 @@ class AuthService {
     addEstimate(data) {
         return this.service.post('/addestimate', data)
     }
+    convertInvoice(data) {
+        return this.service.patch(`/convertinvoice/${data}`)
+    }
+    convertJob(data) {
+        return this.service.patch(`/convertjob/${data}`)
+    }
+    decline(data) {
+        return this.service.patch(`/estimatedecline/${data}`)
+    }
 
 }
 

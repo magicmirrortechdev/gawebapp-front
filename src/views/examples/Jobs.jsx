@@ -55,29 +55,16 @@ class Jobs extends React.Component {
                     <div className="col">
                       <h3 className="mb-0">Information</h3>
                     </div>
-                    <div className="col text-right">
-                    <Link to="addjob">
-                      <p
-                        color="primary"
-                        size="sm" 
-                      >
-                        Create Report
-                      </p>
-                    </Link>
-                      
-                    </div>
                   </Row>
                 </CardHeader>
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
-                      <th scope="col">Client</th>
                       <th scope="col">Job Name</th>
                       <th scope="col">Date Start</th>
                       <th scope="col">Date End</th>
                       <th scope="col">Worker(s)</th>
-                      <th scope="col">Type</th>
-                      <th scope="col">Time</th>
+                      <th scope="col">Total</th>
                       <th scope="col">Options</th>
                     </tr>
                   </thead>
@@ -86,16 +73,18 @@ class Jobs extends React.Component {
 
                      {this.state.jobs.length === 0 ?  <tbody><tr><td>No jobs register</td></tr></tbody>:
                      this.state.jobs.map((e,i)=>{
+                      let subtotal = e.items.reduce((acc, current, i) => acc + current.subtotal, 0)
+                      let tax = parseInt(e.tax) * subtotal / 100
+                      let discount = e.discount
+                      let paid = e.paid
                       return(
                         <tbody key={i}>
                         <tr >
-                        <th scope="row" >{e.nameClient}</th>
-                        <td>{e.jobName}</td>
+                        <th scope="row" >{e.jobName}</th>
                         <td>{e.dateStart}</td>
                         <td>{e.dateEnd}</td>
-                        <td>{e.worker}</td>
-                        <td>Invoice</td>
-                        <td>{e.invoice}</td>
+                        <td>{e.workers}</td>
+                        <td>${subtotal + tax - paid - discount}USD</td>
                         </tr>
                        
                     

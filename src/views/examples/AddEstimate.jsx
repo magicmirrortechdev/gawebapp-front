@@ -30,6 +30,8 @@ class AddEstimate extends React.Component {
   
   state = {
     
+    clientName:'',
+    address:'',
     items:[],
     itemName: '',
     description: '',
@@ -40,7 +42,8 @@ class AddEstimate extends React.Component {
     discount: 0,
     paid: 0,
     total: 0,
-    dateCreate: month<10 ? (`${day}-0${month}-${year}`):(`${day}-${month}-${year}`)
+    dateCreate: month<10 ? (`${day}-0${month}-${year}`):(`${day}-${month}-${year}`),
+    jobName:''
   };
 
   addToCart = (product) =>{
@@ -84,8 +87,6 @@ class AddEstimate extends React.Component {
           })
   }
 
-  
-
   render() {
     let date = new Date()
 
@@ -107,10 +108,13 @@ class AddEstimate extends React.Component {
   let tax = parseInt(this.state.tax) * subtotal / 100
   let discount = parseInt(this.state.discount)
   let paid = parseInt(this.state.paid)
-  let dateCreate = this.state.dateCreate
+  let clientName = this.state.clientName
+  let address = this.state.address
 
   let total = subtotal + tax - discount - paid
+  let jobName = address+clientName
   
+  console.log('el stateee',this.state)
     return (
       <>
         <Header />
@@ -342,7 +346,7 @@ class AddEstimate extends React.Component {
                             </label>
                             <Input
                               
-                              name="subTotal"
+                              name="subtotal"
                               value={ parseInt(subtotal) }
                               className="form-control-alternative"
                               type="number"
@@ -424,6 +428,21 @@ class AddEstimate extends React.Component {
                               className="form-control-alternative"
                               type="number"
                               onChange={this.handleInput}
+                            />
+                            
+                          </FormGroup>
+                          <FormGroup>
+                            <Input
+                              
+                              name="jobName"
+                              value={jobName}
+                              className="form-control-alternative"
+                              type="text"
+                              onChange={this.handleInput}
+                              disabled
+                              width="50%"
+                              hidden
+                              
                             />
                             
                           </FormGroup>

@@ -4,6 +4,7 @@ import Index from "views/Index.jsx";
 import Login from "views/examples/Login.jsx";
 import Expenses from "views/examples/Expenses.jsx";
 import Estimates from "views/examples/Estimates.jsx";
+import Invoices from "views/examples/Invoices.jsx";
 import Clients from "views/examples/Clients.jsx";
 import AddClient from "views/examples/AddClient.jsx";
 import Workers from "views/examples/Workers.jsx";
@@ -31,10 +32,25 @@ var routes = [
     layout: "/admin"
   },
   {
+    path: "/:id",
+    name: "Edit Estimate",
+    icon: "ni ni-ruler-pencil text-blue",
+    component: Estimates,
+    layout: "/admin/estimate"
+  },
+  {
+    path: "/jobs",
+    name: "Jobs",
+    icon: "ni ni-settings text-gray",
+    component: Jobs,
+    layout: "/admin"
+
+  },
+  {
     path: "/invoices",
     name: "Invoices",
     icon: "ni ni-credit-card text-orange",
-    component: Estimates,
+    component: Invoices,
     layout: "/admin"
   },
   {
@@ -66,13 +82,6 @@ var routes = [
     layout: "/admin"
   },
   {
-    path: "/jobs",
-    name: "Jobs",
-    icon: "ni ni-settings text-gray",
-    component: Jobs,
-    layout: "/admin"
-  },
-  {
     path: "/workers",
     name: "Workers",
     icon: "ni ni-circle-08 text-pink",
@@ -92,7 +101,8 @@ var routes = [
   { 
     path: "/addexpense",
     component: AddExpense,
-    layout: "/admin"
+    layout: "/admin",
+    invisible: true
   },
   { 
     path: "/addjob",
