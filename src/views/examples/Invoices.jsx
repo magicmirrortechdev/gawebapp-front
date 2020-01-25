@@ -89,13 +89,14 @@ class Invoices extends React.Component {
                       let tax = parseInt(e.tax) * subtotal / 100
                       let discount = e.discount
                       let paid = e.paid
+                      let expensesCost = parseInt(e.expenses.reduce((acc, current, i) => acc + current.total, 0))
                       return(
                         <tbody key={i}>
                         <tr >
                         <th scope="row" >{e.clientId.name}</th>
                         <td>{e.dateCreate}</td>
                         <td>{e.status}</td>
-                        <td>${subtotal + tax - paid - discount}USD</td>                       
+                        <td>${subtotal + tax - paid - discount + expensesCost}USD</td>                       
                         <td>
                         <UncontrolledDropdown>
                                                         <DropdownToggle>
