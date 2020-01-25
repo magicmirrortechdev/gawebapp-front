@@ -37,7 +37,7 @@ class AddWorkerJob extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com/getusers`)
+      .get(`http://localhost:3000/getusers`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -55,11 +55,11 @@ class AddWorkerJob extends React.Component {
 
   handleSubmit = (e, props) => {
     e.preventDefault()
-        authService
-          .addWorker(this.state)
+        axios
+          .patch(`http://localhost:3000/addworkers/${this.props.match.params.id}`,{id2: this.state._id})
           .then(response => {
             //aquí deberia ir una notificacion o un swal o un toastr
-            this.props.history.push(`workers`)
+            this.props.history.push(`/admin/jobs`)
             console.log(response)
           })
           .catch(err => {
@@ -70,6 +70,7 @@ class AddWorkerJob extends React.Component {
   }
 
   render() {
+    console.log(this.state)
     return (
       <>
         <Header />
@@ -91,29 +92,21 @@ class AddWorkerJob extends React.Component {
                     <div className="pl-lg-4">
                       <Row>
                         <Col lg="6">
-                          <FormGroup>
-                            
-                            <Input
-                              hidden
-                              className="form-control-alternative"
-                              placeholder="Enter the worker name"
-                              name="id"
-                              type="text"
-                              onChange={this.handleInput}
-                            />
-                          </FormGroup>
+                      
                           
                           <FormGroup>
                             
                             <Input
-                              name="name"
+                              name="_id"
                               className="form-control-alternative"
                               type="select"
                               onChange={this.handleInput}
+                              
                             >
+                            <option>Select worker</option>
                             {this.state.users.map((e,i)=>{
                               return(
-                                <option key={i}>{e.name}</option>)
+                                <option key={i} value={`${e._id}`}>{e.name}</option>)
                             })
                             }
                             
@@ -133,7 +126,7 @@ class AddWorkerJob extends React.Component {
                               className="form-control-alternative"
                               color="info"
 
-                            >Register</Button>
+                            >Add Worker</Button>
                           </FormGroup>
                         </Col>
                       </Row>

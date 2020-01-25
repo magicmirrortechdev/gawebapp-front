@@ -29,7 +29,7 @@ class Jobs extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com/checkjobs`)
+      .get(`http://localhost:3000/checkjobs`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -38,7 +38,7 @@ class Jobs extends React.Component {
           }
         })
 
-        console.log('Aqui está el state', this.state.clients )
+        
       })
       .catch(err => {
         console.log(err)
@@ -49,6 +49,7 @@ class Jobs extends React.Component {
   
 
   render() {
+    console.log('Aqui está el state', this.state )
     if (!this.state) return <p>Loading</p>
     return (
       <>
@@ -92,7 +93,12 @@ class Jobs extends React.Component {
                         <th scope="row" >{e.jobName}</th>
                         <td>{e.dateStart}</td>
                         <td>{e.dateEnd}</td>
-                        <td>{e.workers}</td>
+                        <td>{e.workers.map((e,i)=>{
+                          return(
+                            <p style={{fontSize:"10px"}} key={i}>{e.workerId.name}</p>
+                          )
+                          
+                        })}</td>
                         <td>${subtotal + tax - paid - discount + expensesCost}USD</td>
                         <td>
                         <UncontrolledDropdown>

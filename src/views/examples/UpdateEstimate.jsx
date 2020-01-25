@@ -50,7 +50,7 @@ class UpdateEstimate extends React.Component {
     };
     componentDidMount() {
         axios
-            .get(`https://greenacorn.herokuapp.com/estimatedetail/${this.props.match.params.id}`)
+            .get(`http://localhost:3000/estimatedetail/${this.props.match.params.id}`)
             .then(({ data }) => {
                 this.setState(prevState => {
                     return {
@@ -95,14 +95,14 @@ class UpdateEstimate extends React.Component {
 
         const {
             data: { img }
-        } = await axios.post('https://greenacorn.herokuapp.com/upload', file)
+        } = await axios.post('http://localhost:3000/upload', file)
         this.setState(prevState => ({...prevState, img }))
     }
 
     handleSubmit = (e, props) => {
         e.preventDefault()
         axios
-            .patch(`https://greenacorn.herokuapp.com/estimateupdate/${this.props.match.params.id}`, this.state)
+            .patch(`http://localhost:3000/estimateupdate/${this.props.match.params.id}`, this.state)
             .then((response) => {
                 this.props.history.push(`/admin/estimates`)
             })

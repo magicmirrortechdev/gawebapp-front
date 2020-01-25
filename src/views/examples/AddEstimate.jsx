@@ -35,6 +35,7 @@ class AddEstimate extends React.Component {
     items:[],
     itemName: '',
     description: '',
+    photo:[],
     quantity: parseInt(''),
     rate: parseInt(''),
     subtotal: 0,
@@ -67,7 +68,7 @@ class AddEstimate extends React.Component {
 
     const {
       data: { img }
-    } = await axios.post('https://greenacorn.herokuapp.com/upload', file)
+    } = await axios.post('http://localhost:3000/upload', file)
     this.setState(prevState => ({ ...prevState, img }))
   }
 
@@ -83,7 +84,6 @@ class AddEstimate extends React.Component {
           .catch(err => {
             //aquí deberia ir una notificacion o un swal o un toastr
             console.log(err.response)
-            alert(err.response.data.msg || err.response.data.err.message)
           })
   }
 
@@ -286,7 +286,6 @@ class AddEstimate extends React.Component {
                               placeholder="Select a photo"
                               type="file"
                               onChange={this.uploadPhoto}
-                              multiple
                             />
                           </FormGroup>
 

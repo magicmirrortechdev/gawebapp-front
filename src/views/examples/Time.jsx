@@ -29,7 +29,7 @@ class Time extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com/checkjobs`)
+      .get(`http://localhost:3000/checkjobs`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -92,7 +92,7 @@ class Time extends React.Component {
                         <th scope="row" >{e.jobName}</th>
                         <td>{e.dateStart}</td>
                         <td>{e.dateEnd}</td>
-                        <td>{e.workers}</td>
+                        <td>100</td>
                         <td>${subtotal + tax - paid - discount + expensesCost}USD</td>
                         <td>
                         <UncontrolledDropdown>

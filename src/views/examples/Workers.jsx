@@ -28,7 +28,7 @@ class Workers extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com/getusers`)
+      .get(`http://localhost:3000/getusers`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {

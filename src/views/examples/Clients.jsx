@@ -21,7 +21,7 @@ class Clients extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com/checkclients`)
+      .get(`http://localhost:3000/checkclients`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
