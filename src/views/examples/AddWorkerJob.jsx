@@ -56,7 +56,7 @@ class AddWorkerJob extends React.Component {
   handleSubmit = (e, props) => {
     e.preventDefault()
         axios
-          .patch(`http://localhost:3000/addworkers/${this.props.match.params.id}`,{id2: this.state._id})
+          .patch(`https://greenacorn.herokuapp.com/addworkers/${this.props.match.params.id}`,{id2: this.state._id})
           .then(response => {
             //aquí deberia ir una notificacion o un swal o un toastr
             this.props.history.push(`/admin/jobs`)

@@ -39,13 +39,13 @@ class AddExpense extends React.Component {
 
     const {
       data: { img }
-    } = await axios.post('http://localhost:3000/upload', file)
+    } = await axios.post('https://greenacorn.herokuapp.com//upload', file)
     this.setState(prevState => ({ ...prevState, img }))
   }
 
   handleSubmit = async (e, props) => {
     e.preventDefault()
-        await axios.patch(`http://localhost:3000/addexpense/${this.props.match.params.id}`,this.state)
+        await axios.patch(`https://greenacorn.herokuapp.com//addexpense/${this.props.match.params.id}`,this.state)
         this.props.history.push('/admin/jobs')
   }
 

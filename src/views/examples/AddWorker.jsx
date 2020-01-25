@@ -40,7 +40,7 @@ class AddWorker extends React.Component {
 
     const {
       data: { img }
-    } = await axios.post('http://localhost:3000http://localhost:3000/upload', file)
+    } = await axios.post('https://greenacorn.herokuapp.com/upload', file)
     this.setState(prevState => ({ ...prevState, img }))
   }
 

@@ -29,7 +29,7 @@ class Time extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`http://localhost:3000/checkjobs`)
+      .get(`https://greenacorn.herokuapp.com//checkjobs`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {

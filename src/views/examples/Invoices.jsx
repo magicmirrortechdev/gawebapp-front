@@ -31,7 +31,7 @@ class Invoices extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`http://localhost:3000/checkinvoices`)
+      .get(`https://greenacorn.herokuapp.com//checkinvoices`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
