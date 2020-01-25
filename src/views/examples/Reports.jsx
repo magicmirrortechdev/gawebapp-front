@@ -18,7 +18,7 @@ import Header from "components/Headers/Header.jsx";
 
 class Reports extends React.Component {
     state = {
-        reports: []
+        jobs: []
     };
 
     handleSubmit() {
@@ -26,6 +26,19 @@ class Reports extends React.Component {
     }
 
     componentDidMount() {
+        axios.get(`http://localhost:3000/checkjobs`)
+            .then(({data}) => {
+                console.log(data);
+                this.setState(prevState => {
+                    return {
+                        ...prevState,
+                        ...data
+                    }
+                })
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }
 
     render() {
@@ -122,33 +135,37 @@ class Reports extends React.Component {
                                     </thead>
 
 
-                                    {this.state.reports.length === 0 ? <tbody>
+                                    {this.state.jobs.length === 0 ? <tbody>
                                         <tr>
-                                            <td>No Reports register</td>
+                                            <td>No Jobs register</td>
                                         </tr>
                                         </tbody> :
-                                        this.state.reports.map((e, i) => {
+                                        this.state.jobs.map((e, i) => {
                                             return (
                                                 <tbody key={i}>
                                                 <tr>
                                                     <td>{e.jobName}</td>
-                                                    <td>{e.projectName}</td>
+                                                    <td>{e.projectManager}</td>
                                                     <td>{e.status}</td>
                                                     <td>$200,000 USD</td>
                                                     <td>$100,000 USD</td>
                                                     <td>$100,000 USD</td>
-                                                    <td><UncontrolledDropdown>
-                                                        <DropdownToggle>
-                                                            ...
-                                                        </DropdownToggle>
-                                                        <DropdownMenu>
-                                                            <DropdownItem>Details</DropdownItem>
-                                                            <DropdownItem>Export to Excel</DropdownItem>
-                                                            <DropdownItem>Edit</DropdownItem>
-                                                            <DropdownItem><span
-                                                                className="text-danger">Delete</span></DropdownItem>
-                                                        </DropdownMenu>
-                                                    </UncontrolledDropdown></td>
+                                                    <td>
+                                                        <div className="dropdownButtons">
+                                                            <UncontrolledDropdown>
+                                                                <DropdownToggle>
+                                                                    ...
+                                                                </DropdownToggle>
+                                                                <DropdownMenu>
+                                                                    <DropdownItem>Details</DropdownItem>
+                                                                    <DropdownItem>Export to Excel</DropdownItem>
+                                                                    <DropdownItem>Edit</DropdownItem>
+                                                                    <DropdownItem><span
+                                                                        className="text-danger">Delete</span></DropdownItem>
+                                                                </DropdownMenu>
+                                                            </UncontrolledDropdown>
+                                                        </div>
+                                                    </td>
                                                 </tr>
 
 

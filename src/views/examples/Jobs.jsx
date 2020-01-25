@@ -76,12 +76,17 @@ class Jobs extends React.Component {
                       <th scope="col">Options</th>
                     </tr>
                   </thead>
-                  
-                    
 
-                     {this.state.jobs.length === 0 ?  <tbody><tr><td>No jobs register</td></tr></tbody>:
+
+
+                  {this.state.jobs.length === 0 ? <tbody>
+                      <tr>
+                        <td>No Jobs register</td>
+                      </tr>
+                      </tbody> :
                      this.state.jobs.map((e,i)=>{
-                      let subtotal = e.items.reduce((acc, current, i) => acc + current.subtotal, 0)
+
+                      let subtotal = e.items ? (e.items.reduce((acc, current, i) => acc + current.subtotal, 0)) : 0 ;
                       let tax = parseInt(e.tax) * subtotal / 100
                       let discount = e.discount
                       let paid = e.paid
@@ -98,25 +103,8 @@ class Jobs extends React.Component {
                            <DropdownToggle>
                               ...
                           </DropdownToggle>
-                          <DropdownMenu
-                            modifiers={{
-                                    setMaxHeight: {
-                                      enabled: true,
-                                      order: 890,
-                                      fn: (data) => {
-                                        return {
-                                          ...data,
-                                          styles: {
-                                            ...data.styles,
-                                            overflow: 'auto',
-                                            maxHeight: 100,
-                                          },
-                                        };
-                                      },
-                                    },
-                                  }}
-                                                        >
-                                                        <DropdownItem onClick={()=>{
+                          <DropdownMenu>
+                            <DropdownItem onClick={()=>{
                             authService
                               .convertInvoice(e._id)
                               .then(response => {
@@ -172,7 +160,8 @@ class Jobs extends React.Component {
                     
                       </tbody>
                      )  
-                    })}
+                    })
+                  }
                       
                       
                 </Table>
