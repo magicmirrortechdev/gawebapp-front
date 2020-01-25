@@ -219,7 +219,7 @@ class AddEstimate extends React.Component {
                                 >
                 
                                 <i className="nc-icon nc-simple-remove" />
-                                  &nbsp; Delete
+                                  Delete
                
                                   </Button>
                                 </td>
