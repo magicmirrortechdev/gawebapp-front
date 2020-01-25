@@ -42,3 +42,12 @@
 @import "custom/vendors";
 // React differences
 @import "react/react-differences";
+
+//custom
+.dropdownButtons {
+  position: absolute;
+}
+
+.dropdownButtons > .dropdown{
+  bottom: 22px;
+}
