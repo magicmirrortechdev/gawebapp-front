@@ -46,6 +46,16 @@ class Admin extends React.Component {
           />
         );
       }
+      else if (prop.layout === "/admin/time") {
+        return (
+          <Route
+            path={prop.layout + prop.path}
+            component={prop.component}
+            key={key}
+            exact
+          />
+        );
+      }
       
       else {
         return null;

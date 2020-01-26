@@ -46,7 +46,7 @@ class UpdateEstimate extends React.Component {
   }
   componentDidMount() {
     axios
-      .get(`http://localhost:3000/estimatedetail/${this.props.match.params.id}`)
+      .get(`http://localhost:3000estimatedetail/${this.props.match.params.id}`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {

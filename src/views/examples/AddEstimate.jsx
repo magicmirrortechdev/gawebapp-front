@@ -68,7 +68,7 @@ class AddEstimate extends React.Component {
 
     const {
       data: { img }
-    } = await axios.post('https://greenacorn.herokuapp.com//upload', file)
+    } = await axios.post('https://greenacorn.herokuapp.com/upload', file)
     this.setState(prevState => ({ ...prevState, img }))
   }
 

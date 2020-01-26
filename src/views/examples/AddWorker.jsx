@@ -97,6 +97,24 @@ class AddWorker extends React.Component {
                               onChange={this.handleInput}
                             />
                           </FormGroup>
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-role"
+                            >
+                              Type
+                            </label>
+                            <Input
+                              name="role"
+                              className="form-control-alternative"
+                              type="select"
+                              onChange={this.handleInput}
+                            >
+                            <option>Choose One</option>
+                            <option>WORKER</option>
+                            <option>PROJECT MANAGER</option>
+                            </Input>
+                          </FormGroup>
                         
                           <FormGroup>
                             <label

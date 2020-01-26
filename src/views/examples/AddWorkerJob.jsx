@@ -37,7 +37,7 @@ class AddWorkerJob extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`http://localhost:3000/getusers`)
+      .get(`https://greenacorn.herokuapp.com/workers`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -65,7 +65,6 @@ class AddWorkerJob extends React.Component {
           .catch(err => {
             //aquí deberia ir una notificacion o un swal o un toastr
             console.log(err.response)
-            alert(err.response.data.msg || err.response.data.err.message)
           })
   }
 

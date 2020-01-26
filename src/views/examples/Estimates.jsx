@@ -29,7 +29,7 @@ class Icons extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com//checkestimates`)
+      .get(`https://greenacorn.herokuapp.com/checkestimates`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -114,7 +114,24 @@ class Icons extends React.Component {
                               <DropdownToggle>
                                 ...
                               </DropdownToggle>
-                              <DropdownMenu>
+                              <DropdownMenu
+                              modifiers={{
+                                    setMaxHeight: {
+                                      enabled: true,
+                                      order: 890,
+                                      fn: (data) => {
+                                        return {
+                                          ...data,
+                                          styles: {
+                                            ...data.styles,
+                                            overflow: 'auto',
+                                            maxHeight: 100,
+                                          },
+                                        };
+                                      },
+                                    },
+                                  }}
+                              >
                                 <DropdownItem onClick={()=>{
                                   authService
                                       .convertInvoice(e._id)

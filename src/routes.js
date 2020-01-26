@@ -15,9 +15,12 @@ import Jobs from "views/examples/Jobs.jsx";
 import AddJob from "views/examples/AddJob.jsx";
 import AddWorker from "views/examples/AddWorker.jsx";
 import AddWorkerJob from "views/examples/AddWorkerJob.jsx";
+import AddTime from "views/examples/AddTime.jsx";
+import AddPM from "views/examples/AddProjectManager.jsx";
 import AddEstimate from "views/examples/AddEstimate.jsx";
 import Reports from "./views/examples/Reports";
 import AddReport from "./views/examples/AddReport";
+import AddProjectManager from "./views/examples/AddProjectManager";
 
 
 
@@ -62,9 +65,17 @@ var routes = [
   },
   {
     path: "/addworker/:id",
-    name: "Edit Job",
+    name: "Add Worker Job",
     icon: "ni ni-ruler-pencil text-blue",
     component: AddWorkerJob,
+    layout: "/admin/jobs",
+    invisible:true
+  },
+  {
+    path: "/addpm/:id",
+    name: "Add PM",
+    icon: "ni ni-ruler-pencil text-blue",
+    component: AddPM,
     layout: "/admin/jobs",
     invisible:true
   },
@@ -81,6 +92,14 @@ var routes = [
     icon: "ni ni-watch-time text-blue",
     component: Time,
     layout: "/admin"
+  },
+  {
+    path: "/addtime/:id",
+    name: "Add Time",
+    icon: "ni ni-ruler-pencil text-blue",
+    component: AddTime,
+    layout: "/admin/time",
+    invisible:true
   },
   {
     path: "/reports",

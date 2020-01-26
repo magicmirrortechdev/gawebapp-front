@@ -13,6 +13,7 @@ import AuthLayout from "layouts/Auth.jsx";
 ReactDOM.render(
   <BrowserRouter>
     <Switch>
+      <Route  path="/admin/time" render={props => <AdminLayout {...props} />} />
       <Route  path="/admin/jobs" render={props => <AdminLayout {...props} />} />
       <Route  path="/admin/estimate" render={props => <AdminLayout {...props} />} />
       <Route  path="/admin" render={props => <AdminLayout {...props} />} />

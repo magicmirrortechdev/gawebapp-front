@@ -21,7 +21,7 @@ import {
 import Header from "components/Headers/Header.jsx";
 
 
-class AddTime extends React.Component {
+class AddWorkerJob extends React.Component {
   state = {
     users:[]
   };
@@ -36,7 +36,7 @@ class AddTime extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com/workers`)
+      .get(`https://greenacorn.herokuapp.com/projectm`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -44,6 +44,8 @@ class AddTime extends React.Component {
             ...data
           }
         })
+
+        console.log('Aqui está el state', this.state.clients )
       })
       .catch(err => {
         console.log(err)
@@ -53,10 +55,10 @@ class AddTime extends React.Component {
   handleSubmit = (e, props) => {
     e.preventDefault()
         axios
-          .patch(`https://greenacorn.herokuapp.com/addtime/${this.props.match.params.id}`,this.state)
+          .patch(`https://greenacorn.herokuapp.com/addpm/${this.props.match.params.id}`,{id2: this.state._id})
           .then(response => {
             //aquí deberia ir una notificacion o un swal o un toastr
-            this.props.history.push(`/admin/time`)
+            this.props.history.push(`/admin/jobs`)
             console.log(response)
           })
           .catch(err => {
@@ -78,7 +80,7 @@ class AddTime extends React.Component {
                 <CardHeader className="border-0">
                   <Row className="align-items-center">
                     <div className="col">
-                      <h3 className="mb-0">Information Worker</h3>
+                      <h3 className="mb-0">Information Project Manager</h3>
                     </div>
                   </Row>
                 </CardHeader>
@@ -93,42 +95,21 @@ class AddTime extends React.Component {
                           <FormGroup>
                             
                             <Input
-                              name="id2"
+                              name="_id"
                               className="form-control-alternative"
                               type="select"
                               onChange={this.handleInput}
                               
                             >
-                            <option>Select Job to add Time</option>
-                            {this.state.users.map((e,i) => {
+                            <option>Select worker</option>
+                            {this.state.users.map((e,i)=>{
                               return(
-                              e.works.map((e,i)=>{
-                                console.log(e._id)
-                                return(
-                                <option key={i} value={`${e._id}`}>{e.workId.jobName}</option>
-                                )
-                              })
-                              )
+                                <option key={i} value={`${e._id}`}>{e.name}</option>)
                             })
                             }
                             
                             
                             </Input>
-                          </FormGroup>
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-hours"
-                            >
-                              Hours
-                            </label>
-                            <Input
-                              name="time"
-                              className="form-control-alternative"
-                              placeholder="0"
-                              type="number"
-                              onChange={this.handleInput}
-                            />
                           </FormGroup>
                           
                         </Col>
@@ -160,4 +141,4 @@ class AddTime extends React.Component {
   }
 }
 
-export default withRouter(AddTime);
+export default withRouter(AddWorkerJob);

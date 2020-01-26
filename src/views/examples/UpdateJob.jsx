@@ -50,7 +50,7 @@ class UpdateJob extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com//estimatedetail/${this.props.match.params.id}`)
+      .get(`https://greenacorn.herokuapp.com/estimatedetail/${this.props.match.params.id}`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {

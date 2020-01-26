@@ -29,7 +29,7 @@ class Jobs extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com//checkjobs`)
+      .get(`https://greenacorn.herokuapp.com/checkjobs`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -110,7 +110,23 @@ class Jobs extends React.Component {
                            <DropdownToggle>
                               ...
                           </DropdownToggle>
-                          <DropdownMenu>
+                          <DropdownMenu
+                          modifiers={{
+                          setMaxHeight: {
+                            enabled: true,
+                            order: 890,
+                            fn: (data) => {
+                              return {
+                                ...data,
+                                styles: {
+                                  ...data.styles,
+                                  overflow: 'auto',
+                                  maxHeight: 100,
+                                },
+                              };
+                            },
+                          },
+                        }}>
                             <DropdownItem onClick={()=>{
                             authService
                               .convertInvoice(e._id)
@@ -129,7 +145,7 @@ class Jobs extends React.Component {
                           <DropdownItem to={`/admin/jobs/${e._id}`} tag={Link}>Update</DropdownItem>
                           <DropdownItem to={`/admin/jobs/${e._id}/addexpense`} tag={Link}>Add Expense</DropdownItem>                          
                           <DropdownItem to={`/admin/jobs/addworker/${e._id}`} tag={Link}>Add Worker</DropdownItem>
-
+                          <DropdownItem to={`/admin/jobs/addpm/${e._id}`} tag={Link}>Add Project Manager</DropdownItem>
                           <DropdownItem onClick={()=>{
                             authService
                               .estimateDelete(e._id)

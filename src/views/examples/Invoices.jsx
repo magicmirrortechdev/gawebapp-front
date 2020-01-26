@@ -31,7 +31,7 @@ class Invoices extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com//checkinvoices`)
+      .get(`https://greenacorn.herokuapp.com/checkinvoices`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -59,17 +59,6 @@ class Invoices extends React.Component {
                   <Row className="align-items-center">
                     <div className="col">
                       <h3 className="mb-0">Information</h3>
-                    </div>
-                    <div className="col text-right">
-                    <Link to="addestimate">
-                      <p
-                        color="primary"
-                        size="sm" 
-                      >
-                        Add Estimate
-                      </p>
-                    </Link>
-                      
                     </div>
                   </Row>
                 </CardHeader>
@@ -102,7 +91,24 @@ class Invoices extends React.Component {
                                                         <DropdownToggle>
                                                             ...
                                                         </DropdownToggle>
-                                                        <DropdownMenu>
+                                                        <DropdownMenu
+                                                        modifiers={{
+                                                            setMaxHeight: {
+                                                              enabled: true,
+                                                              order: 890,
+                                                              fn: (data) => {
+                                                                return {
+                                                                  ...data,
+                                                                  styles: {
+                                                                    ...data.styles,
+                                                                    overflow: 'auto',
+                                                                    maxHeight: 100,
+                                                                  },
+                                                                };
+                                                              },
+                                                            },
+                                                          }}
+                                                        >
                                                             <DropdownItem onClick={()=>{
                                                               authService
                                                                 .paidInvoice(e._id)

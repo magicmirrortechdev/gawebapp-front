@@ -23,13 +23,13 @@ const authService = new AuthService()
 
 class Time extends React.Component {
   state = {
-    jobs:[]
+    users:[]
   };
 
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com//checkjobs`)
+      .get(`https://greenacorn.herokuapp.com/workers`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -38,7 +38,6 @@ class Time extends React.Component {
           }
         })
 
-        console.log('Aqui está el state', this.state.clients )
       })
       .catch(err => {
         console.log(err)
@@ -49,6 +48,8 @@ class Time extends React.Component {
   
 
   render() {
+    console.log('Aqui está el state', this.state)
+
     if (!this.state) return <p>Loading</p>
     return (
       <>
@@ -61,41 +62,69 @@ class Time extends React.Component {
                 <CardHeader className="border-0">
                   <Row className="align-items-center">
                     <div className="col">
-                      <h3 className="mb-0">Information</h3>
+                      <h3 className="mb-0">Employee Information</h3>
                     </div>
                   </Row>
                 </CardHeader>
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
-                      <th scope="col">Job Name</th>
-                      <th scope="col">Date Start</th>
-                      <th scope="col">Date End</th>
-                      <th scope="col">Worker(s)</th>
-                      <th scope="col">Total</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Total Hours</th>
+                      <th scope="col">Job</th>
+                      <th scope="col">Site Managers</th>                     
                       <th scope="col">Options</th>
                     </tr>
                   </thead>
                   
                     
 
-                     {this.state.jobs.length === 0 ?  <tbody><tr><td>No jobs register</td></tr></tbody>:
-                     this.state.jobs.map((e,i)=>{
-                      let subtotal = e.items.reduce((acc, current, i) => acc + current.subtotal, 0)
-                      let tax = parseInt(e.tax) * subtotal / 100
-                      let discount = e.discount
-                      let paid = e.paid
-                      let expensesCost = parseInt(e.expenses.reduce((acc, current, i) => acc + current.total, 0))
+                     {this.state.users.length === 0 ?  <tbody><tr><td>No workers register</td></tr></tbody>:
+                     this.state.users.map((e,i)=>{
+                      // let subtotal = e.items.reduce((acc, current, i) => acc + current.subtotal, 0)
+                      // let tax = parseInt(e.tax) * subtotal / 100
+                      // let discount = e.discount
+                      // let paid = e.paid
+                      // let expensesCost = parseInt(e.expenses.reduce((acc, current, i) => acc + current.total, 0))
                       return(
                         <tbody key={i}>
                         <tr >
-                        <th scope="row" >{e.jobName}</th>
-                        <td>{e.dateStart}</td>
-                        <td>{e.dateEnd}</td>
-                        <td>100</td>
-                        <td>${subtotal + tax - paid - discount + expensesCost}USD</td>
-                        <td>
-                        <UncontrolledDropdown>
+                        <th scope="row">{e.name}</th>
+                        <td style={{display:"flex", flexDirection:"column", alignItems:"center", alignContent:"center"}}>
+                        {e.works.map((e,i)=>{
+                          let time = e.time.reduce((acc, current, i) => acc + current, 0)
+                          return(
+                            <p style={{fontSize:"10px"}} key={i}>{time}</p>
+                            
+                          )
+                        })}</td>
+                        <td >
+                        {e.works.map((e,i)=>{
+                          
+                          return(
+                             !e.workId.jobName ? <p style={{fontSize:"10px"}}>Work Delete</p>:
+                              <p style={{fontSize:"10px"}} key={i}>{e.workId.jobName}</p>
+                            
+                            
+                            
+                          )
+                        })}
+                        </td>
+                        
+                        <td>{e.works.map((e,i)=>{
+                           
+                           return(
+                             e.workId.projectManager.map((e,i)=>{
+                               return(
+                                 <p style={{fontSize:"10px"}} key={i}>{e.projectId.name}</p>
+                               )
+                             })
+                             
+                           )
+                         })}</td>
+                        
+                        <td >
+                            <UncontrolledDropdown>
                            <DropdownToggle>
                               ...
                           </DropdownToggle>
@@ -117,44 +146,14 @@ class Time extends React.Component {
                                     },
                                   }}
                                                         >
-                                                        <DropdownItem onClick={()=>{
-                            authService
-                              .convertInvoice(e._id)
-                              .then(response => {
-                                //aquí deberia ir una notificacion o un swal o un toastr
-                                this.props.history.push(`invoices`)
-                                console.log(response)
-                                
-                              })
-                              .catch(err => {
-                                //aquí deberia ir una notificacion o un swal o un toastr
-                                console.log(err.response)
-                                alert(err.response.data.msg || err.response.data.err.message)
-                              })
-                          }}>Convert to Invoice</DropdownItem>
-                          <DropdownItem to={`/admin/jobs/${e._id}`} tag={Link}>Update</DropdownItem>
-                          <DropdownItem to={`/admin/jobs/${e._id}/addexpense`} tag={Link}>Add Expense</DropdownItem>                          
-                          <DropdownItem onClick={()=>{
-                            authService
-                              .convertJob(e._id)
-                              .then(response => {
-                                //aquí deberia ir una notificacion o un swal o un toastr
-                                this.props.history.push(`jobs`)
-                                console.log(response)
-                                
-                              })
-                              .catch(err => {
-                                //aquí deberia ir una notificacion o un swal o un toastr
-                                console.log(err.response)
-                                alert(err.response.data.msg || err.response.data.err.message)
-                              })
-                          }}>Add Worker</DropdownItem>
+                          
+                          <DropdownItem to={`/admin/time/addtime/${e._id}`} tag={Link}>Add Hours</DropdownItem>
 
                           <DropdownItem onClick={()=>{
                             authService
                               .estimateDelete(e._id)
                               .then(({data}) => {
-                                alert('Job Delete')
+                                
                                 window.location.reload()
                                 
                               })
@@ -167,6 +166,8 @@ class Time extends React.Component {
                                   className="text-danger">Delete</span></DropdownItem>
                           </DropdownMenu>
                           </UncontrolledDropdown>
+                         
+                        
                         </td>
                         </tr>
                        
