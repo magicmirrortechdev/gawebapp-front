@@ -23,13 +23,13 @@ const authService = new AuthService()
 
 class Time extends React.Component {
   state = {
-    users:[]
+    jobs:[]
   };
 
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com/workers`)
+      .get(`https://greenacorn.herokuapp.com/checkjobs`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -79,49 +79,28 @@ class Time extends React.Component {
                   
                     
 
-                     {this.state.users.length === 0 ?  <tbody><tr><td>No workers register</td></tr></tbody>:
-                     this.state.users.map((e,i)=>{
-                      // let subtotal = e.items.reduce((acc, current, i) => acc + current.subtotal, 0)
-                      // let tax = parseInt(e.tax) * subtotal / 100
-                      // let discount = e.discount
-                      // let paid = e.paid
-                      // let expensesCost = parseInt(e.expenses.reduce((acc, current, i) => acc + current.total, 0))
+                     {this.state.jobs.length === 0 ?  <tbody><tr><td>No workers register</td></tr></tbody>:
+                     this.state.jobs.map((e,i)=>{
+                       let id = e._id
+                       let jobName = <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
+                       let projectManager = e.projectManager.map((e,i)=> <p style={{fontSize:"10px"}} key={i}>{e.projectId.name}</p>)
+                       console.log(projectManager)
                       return(
+                        e.workers.map((e,i)=>{
+                        let time = <p style={{fontSize:"10px"}}>{e.time.reduce((acc, current, i) => acc + current, 0)}</p>
+
+                          return(
                         <tbody key={i}>
-                        <tr >
-                        <th scope="row">{e.name}</th>
-                        <td style={{display:"flex", flexDirection:"column", alignItems:"center", alignContent:"center"}}>
-                        {e.works.map((e,i)=>{
-                          let time = e.time.reduce((acc, current, i) => acc + current, 0)
-                          return(
-                            <p style={{fontSize:"10px"}} key={i}>{time}</p>
-                            
-                          )
-                        })}</td>
-                        <td >
-                        {e.works.map((e,i)=>{
-                          
-                          return(
-                             !e.workId.jobName ? <p style={{fontSize:"10px"}}>Work Delete</p>:
-                              <p style={{fontSize:"10px"}} key={i}>{e.workId.jobName}</p>
-                            
-                            
-                            
-                          )
-                        })}
+                        <tr>
+                        <th scope="row">{e.workerId.name}</th>
+                        <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px", display:"flex", flexDirection:"column", alignItems:"baseline", alignContent:"center"}}>
+                        {time}</td>
+                        <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px"}} >
+                             {jobName}
                         </td>
                         
-                        <td>{e.works.map((e,i)=>{
-                           
-                           return(
-                             e.workId.projectManager.map((e,i)=>{
-                               return(
-                                 <p style={{fontSize:"10px"}} key={i}>{e.projectId.name}</p>
-                               )
-                             })
-                             
-                           )
-                         })}</td>
+                        <td style={{paddingTop:"15px", display:"flex", flexDirection:"column", alignItems:"center", alignContent:"center"}}>
+                        {projectManager}</td>
                         
                         <td >
                             <UncontrolledDropdown>
@@ -173,6 +152,9 @@ class Time extends React.Component {
                        
                     
                       </tbody>
+                          )
+                        })
+                       
                      )  
                     })}
                       

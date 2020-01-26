@@ -23,7 +23,7 @@ import Header from "components/Headers/Header.jsx";
 
 class AddTime extends React.Component {
   state = {
-    users:[]
+    jobs:[]
   };
 
   handleInput = e => {
@@ -36,7 +36,7 @@ class AddTime extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com/workers`)
+      .get(`https://greenacorn.herokuapp.com/checkjobs`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -66,6 +66,7 @@ class AddTime extends React.Component {
   }
 
   render() {
+    let job
     console.log(this.state)
     return (
       <>
@@ -88,33 +89,6 @@ class AddTime extends React.Component {
                     <div className="pl-lg-4">
                       <Row>
                         <Col lg="6">
-                      
-                          
-                          <FormGroup>
-                            
-                            <Input
-                              name="id2"
-                              className="form-control-alternative"
-                              type="select"
-                              onChange={this.handleInput}
-                              
-                            >
-                            <option>Select Job to add Time</option>
-                            {this.state.users.map((e,i) => {
-                              return(
-                              e.works.map((e,i)=>{
-                                console.log(e._id)
-                                return(
-                                <option key={i} value={`${e._id}`}>{e.workId.jobName}</option>
-                                )
-                              })
-                              )
-                            })
-                            }
-                            
-                            
-                            </Input>
-                          </FormGroup>
                           <FormGroup>
                             <label
                               className="form-control-label"
