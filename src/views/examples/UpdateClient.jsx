@@ -20,7 +20,7 @@ import Header from "components/Headers/Header.jsx";
 const authService = new AuthService()
 
 
-class AddClient extends React.Component {
+class UpdateClient extends React.Component {
   state = {
     name:'',
     email:'',
@@ -34,6 +34,33 @@ class AddClient extends React.Component {
     notes:''
   };
 
+  componentDidMount() {
+    axios
+      .get(`https://greenacorn.herokuapp.com/oneclient/${this.props.match.params.id}`)
+      .then(({ data }) => {
+        const client = data.client
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            name: client.name,
+            email: client.email,
+            address: client.address,
+            contact: client.contactName,
+            phone: client.phone,
+            mobile: client.mobile,
+            website: client.website,
+            tax: client.tax,
+            customPayment: client.customPayment,
+            notes:client.note,
+            ...data.client,
+          }
+        })
+        console.log(this.state)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
 
   handleInput = e => {
     e.persist()
@@ -45,18 +72,17 @@ class AddClient extends React.Component {
 
   handleSubmit = (e, props) => {
     e.preventDefault()
-        authService
-          .addClient(this.state)
-          .then(response => {
-            //aquí deberia ir una notificacion o un swal o un toastr
-            this.props.history.push(`clients`)
-            console.log(response)
-          })
-          .catch(err => {
-            //aquí deberia ir una notificacion o un swal o un toastr
-            console.log(err.response)
-            alert(err.response.data.msg || err.response.data.err.message)
-          })
+    axios
+      .patch(
+        `https://greenacorn.herokuapp.com/updateclient/${this.props.match.params.id}`,
+        this.state
+      )
+      .then(response => {
+        this.props.history.push(`/admin/clients`)
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   render() {
@@ -306,4 +332,4 @@ class AddClient extends React.Component {
   }
 }
 
-export default AddClient;
+export default UpdateClient;

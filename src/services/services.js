@@ -44,6 +44,12 @@ class AuthService {
     estimateDelete(data) {
         return this.service.delete(`/estimatedelete/${data}`)
     }
+    workerDelete(data) {
+        return this.service.delete(`/deleteworker/${data}`)
+    }
+    clientDelete(data) {
+        return this.service.delete(`/deleteclient/${data}`)
+    }
 
 }
 

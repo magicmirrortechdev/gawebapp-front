@@ -29,7 +29,7 @@ class Jobs extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`http://localhost:3000/checkjobs`)
+      .get(`https://greenacorn.herokuapp.com/checkjobs`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -100,11 +100,12 @@ class Jobs extends React.Component {
                         <td>{e.dateEnd}</td>
                         <td>{e.workers.map((e,i)=>{
                           return(
+                            !e.workerId ? <p style={{fontSize:"10px"}} key={i}>Worker Delete</p> :
                             <p style={{fontSize:"10px"}} key={i}>{e.workerId.name}</p>
                           )
                           
                         })}</td>
-                        <td>${subtotal + tax - paid - discount + expensesCost}USD</td>
+                        <td>${subtotal + tax - paid - discount}USD</td>
                         <td>
                         <UncontrolledDropdown>
                            <DropdownToggle>

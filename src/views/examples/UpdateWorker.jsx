@@ -1,4 +1,5 @@
 import React from "react";
+import { withRouter } from 'react-router-dom'
 import AuthService from '../../services/services'
 import axios from 'axios'
 
@@ -10,6 +11,7 @@ import {
   Container,
   Row,
   Col,
+
   Button,
   FormGroup,
   Input,
@@ -17,23 +19,62 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-const authService = new AuthService()
 
-
-class AddClient extends React.Component {
+class UpdateWorker extends React.Component {
   state = {
     name:'',
+    role:'',
     email:'',
     address:'',
     contact:'',
     phone:'',
     mobile:'',
-    website:'',
-    tax:'',
-    customPayment:'',
-    notes:''
-  };
+    activity:'',
+    type:'',
+    payment:'',
+    effective:'',
 
+  };
+  workerOptions = () => {
+    return [
+       {value: "WORKER", label: "WORKER"},
+       {value: "PROJECT MANAGER", label: "PROJECT MANAGER"},
+    ]
+  }
+  typeOptions = () => {
+    return [
+       {value: "1099", label: "1099"},
+       {value: "Employee", label: "Employee"},
+    ]
+  }
+
+  componentDidMount() {
+    axios
+      .get(`https://greenacorn.herokuapp.com/workerdetail/${this.props.match.params.id}`)
+      .then(({ data }) => {
+        const user= data.user
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            name: user.name,
+            role: user.role,
+            email: user.email,
+            address:user.address,
+            contact:user.contact,
+            phone: user.phone,
+            mobile:user.mobile,
+            activity:user.activity,
+            type:user.type,
+            payment:user.payment,
+            effective:user.effective,
+          }
+        })
+
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
 
   handleInput = e => {
     e.persist()
@@ -43,24 +84,35 @@ class AddClient extends React.Component {
     }))
   }
 
+  uploadPhoto = async e => {
+    const file = new FormData()
+    file.append('photo', e.target.files[0])
+
+    const {
+      data: { img }
+    } = await axios.post('https://greenacorn.herokuapp.com/upload', file)
+    this.setState(prevState => ({ ...prevState, img }))
+  }
+
   handleSubmit = (e, props) => {
     e.preventDefault()
-        authService
-          .addClient(this.state)
-          .then(response => {
-            //aquí deberia ir una notificacion o un swal o un toastr
-            this.props.history.push(`clients`)
-            console.log(response)
-          })
-          .catch(err => {
-            //aquí deberia ir una notificacion o un swal o un toastr
-            console.log(err.response)
-            alert(err.response.data.msg || err.response.data.err.message)
-          })
+    axios
+      .patch(`https://greenacorn.herokuapp.com/updateworker/${this.props.match.params.id}`,this.state)
+      .then(response => {
+        this.props.history.push(`/admin/workers`)
+        console.log(response)
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   render() {
-    const client = this.state
+    const user = this.state
+    if (!this.state) return <p>Loading</p>
+    const selectedValue = user.role
+    const typeUser = user.type
+    console.log(user)
     return (
       <>
         <Header forms={true}/>
@@ -72,11 +124,12 @@ class AddClient extends React.Component {
                 <CardHeader className="border-0">
                   <Row className="align-items-center">
                     <div className="col">
-                      <h3 className="mb-0">Information Client</h3>
+                      <h3 className="mb-0">Information Worker</h3>
                     </div>
                   </Row>
                 </CardHeader>
                 <CardBody> 
+
                   <Form onSubmit={this.handleSubmit}>
                     <div className="pl-lg-4">
                       <Row>
@@ -84,203 +137,215 @@ class AddClient extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label d-inline-block"
-                              htmlFor="input-username"
+                              htmlFor="input-name"
                             >
-                              Client Name
+                              Worker Name
                             </label>
                             <Input
+                              defaultValue={user.name}
                               className="form-control-alternative"
-                              id="input-username"
-                              defaultValue={client.name}
-                              placeholder="Enter a name"
+                              placeholder="Enter the worker name"
                               name="name"
                               type="text"
                               onChange={this.handleInput}
                             />
                           </FormGroup>
-                        </Col>
-                        <Col lg="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-role"
+                            >
+                              Role
+                            </label>
+                            <Input
+                              name="role"
+                              className="form-control-alternative"
+                              type="select"
+                              defaultValue={this.workerOptions().find(op => {
+                                  return op.value === selectedValue
+                                })}
+                              onChange={this.handleInput}
+                            >
+                            <option>Choose One</option>
+                            <option>WORKER</option>
+                            <option>PROJECT MANAGER</option>
+                            </Input>
+                          </FormGroup>
+                        
                           <FormGroup>
                             <label
                               className="form-control-label"
                               htmlFor="input-email"
                             >
-                              Email address
+                              Email
                             </label>
                             <Input
                               name="email"
+                              defaultValue={user.email}
                               className="form-control-alternative"
-                              id="input-email"
-                              defaultValue={client.email}
-                              placeholder="Enter an email address"
+                              placeholder="Enter a email"
                               type="email"
                               onChange={this.handleInput}
                             />
                           </FormGroup>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col lg="6">
+
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-first-name"
+                              htmlFor="input-address"
                             >
-                              Billing Address
+                              Address
                             </label>
                             <Input
-                              defaultValue={client.address}
                               name="address"
                               className="form-control-alternative"
-                              placeholder="Enter the Billing Address"
+                              placeholder="Enter an address"
                               type="text"
+                              defaultValue={user.address}
                               onChange={this.handleInput}
                             />
                           </FormGroup>
-                        </Col>
-                        <Col lg="6">
+
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-last-name"
+                              htmlFor="input-contactName"
                             >
                               Contact Name
                             </label>
                             <Input
-                              defaultValue={client.contact}
                               name="contact"
+                              defaultValue={user.contact}
                               className="form-control-alternative"
-                              placeholder="Enter the Contact Name"
+                              placeholder="Enter a contact name"
                               type="text"
                               onChange={this.handleInput}
                             />
                           </FormGroup>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col lg="6">
+
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-first-name"
+                              htmlFor="input-phone"
                             >
                               Phone
                             </label>
                             <Input
-                              defaultValue={client.phone}
                               name="phone"
+                              defaultValue={user.phone}
                               className="form-control-alternative"
                               placeholder="Enter the phone number"
                               type="number"
                               onChange={this.handleInput}
                             />
                           </FormGroup>
-                        </Col>
-                        <Col lg="6">
+
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-last-name"
+                              htmlFor="input-mobile"
                             >
                               Mobile
                             </label>
                             <Input
-                            defaultValue={client.mobile}
                               name="mobile"
+                              defaultValue={user.mobile}                      
                               className="form-control-alternative"
                               placeholder="Enter the mobile number"
                               type="number"
-                              onChange={this.handleInput}
+                              onChange={this.handleInput }
                             />
                           </FormGroup>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col lg="6">
+
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-first-name"
+                              htmlFor="input-activity"
                             >
-                              Website
+                              Activity
                             </label>
                             <Input
-                            defaultValue={client.website}
-                              name="website"
+                              name="activity"
+                              defaultValue={user.activity}
                               className="form-control-alternative"
-                              placeholder="Enter your website"
+                              placeholder="Enter an activity (plumber, carpenter)"
                               type="text"
                               onChange={this.handleInput}
                             />
                           </FormGroup>
-                        </Col>
-                        <Col lg="6">
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-last-name"
+                              htmlFor="input-type"
                             >
-                              Tax Number
+                              Type
                             </label>
                             <Input
-                            defaultValue={client.tax}
-                              name="tax"
+                              name="type"
                               className="form-control-alternative"
-                              placeholder="Select a Tax Number"
-                              type="number"
-                              onChange={this.handleInput}
-                            />
-                          </FormGroup>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col lg="6">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-first-name"
-                            >
-                              Custom Payment Terms
-                            </label>
-                            <Input
-                              defaultValue={client.customPayment}
-                              name="customPayment"
-                              className="form-control-alternative"
-                              placeholder="Select one"
                               type="select"
+                              defaultValue={this.typeOptions().find(op => {
+                                  return op.value === typeUser
+                                })}
                               onChange={this.handleInput}
                             >
-                            <option>None</option>
-                            <option>7 days</option>
-                            <option>14 days</option>
-                            <option>21 days</option>
-                            <option>30 days</option>
-                            <option>45 days</option>
-                            <option>60 days</option>
-                            <option>90 days</option>
-                            <option>Custom</option>
+                            <option>Choose One</option>
+                            <option>1099</option>
+                            <option>Employee</option>
                             </Input>
                           </FormGroup>
-                        </Col>
-                        <Col lg="6">
                           <FormGroup>
                             <label
                               className="form-control-label"
                               htmlFor="input-last-name"
                             >
-                              Notes
+                              Add More Documents
                             </label>
                             <Input
-                            defaultValue={client.notes}
-                              name="notes"
+                              name="photo"
+                              id="photo"
                               className="form-control-alternative"
-                              placeholder="Enter your notes"
-                              type="text"
+                              type="file"
+                              onChange={this.uploadPhoto}
+                              multiple
+                            />
+                          </FormGroup>
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-first-name"
+                            >
+                              Payment Rate
+                            </label>
+                            <Input
+                              name="payment"
+                              defaultValue={user.payment}
+                              className="form-control-alternative"
+                              type="number"
+                              placeholder="$0.00 USD"
+                              onChange={this.handleInput}
+                            />
+                          </FormGroup>
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-first-name"
+                            >
+                              Effective Rate 
+                            </label>
+                            <Input
+                              defaultValue={user.effective}
+                              name="effective"
+                              className="form-control-alternative"
+                              type="number"
+                              placeholder="$0.00 USD"
                               onChange={this.handleInput}
                             />
                           </FormGroup>
                         </Col>
                       </Row>
+                      
+                      
                       <Row>
                         <Col lg="6">
                           <FormGroup>
@@ -306,4 +371,4 @@ class AddClient extends React.Component {
   }
 }
 
-export default AddClient;
+export default withRouter(UpdateWorker);

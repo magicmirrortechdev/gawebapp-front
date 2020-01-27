@@ -50,7 +50,7 @@ class UpdateJob extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`http://localhost:3000/estimatedetail/${this.props.match.params.id}`)
+      .get(`https://greenacorn.herokuapp.com/estimatedetail/${this.props.match.params.id}`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -86,7 +86,7 @@ class UpdateJob extends React.Component {
   handleSubmit = (e, props) => {
     e.preventDefault()
     axios
-      .patch(`http://localhost:3000/estimateupdate/${this.props.match.params.id}`, this.state)
+      .patch(`https://greenacorn.herokuapp.com/estimateupdate/${this.props.match.params.id}`, this.state)
       .then((response) => {
         this.props.history.push(`/admin/jobs`)
       })
@@ -136,26 +136,6 @@ class UpdateJob extends React.Component {
                               onChange={this.handleInput}
                             />
                       </FormGroup>
-                    
-                      <FormGroup>
-                        <label
-                          className="form-control-label"
-                          htmlFor="input-manager"
-                        >
-                          Project Manager
-                        </label>
-                        <Input
-                          
-                          name="projectManager"
-                          className="form-control-alternative"
-                          placeholder="Enter a name"
-                          type="text"
-                          onChange={this.handleInput}
-                        />
-                      </FormGroup>
-
-                      
-
                       <FormGroup>
                         <label
                           className="form-control-label"
@@ -193,7 +173,7 @@ class UpdateJob extends React.Component {
                               className="form-control-alternative"
                               color="info"
 
-                            >Register</Button>
+                            >Update Job</Button>
                           </FormGroup>
                         </Col>
                       </Row>

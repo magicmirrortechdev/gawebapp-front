@@ -29,7 +29,7 @@ class Time extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`http://localhost:3000/checkjobs`)
+      .get(`https://greenacorn.herokuapp.com/checkjobs`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -83,12 +83,13 @@ class Time extends React.Component {
                      this.state.jobs.map((e,i)=>{
                        let id = e._id
                        let jobName = <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
-                       let projectManager = e.projectManager.map((e,i)=> <p style={{fontSize:"10px"}} key={i}>{e.projectId.name}</p>)
+                       let projectManager = e.projectManager.map((e,i)=>!projectManager ? <p style={{fontSize:"10px"}}>Project Manager Delete</p> : <p style={{fontSize:"10px"}} key={i}>{e.projectId.name}</p>)
                        console.log(projectManager)
+                       
                       return(
                         e.workers.map((e,i)=>{
                         let time = <p style={{fontSize:"10px"}}>{e.time.reduce((acc, current, i) => acc + current, 0)}</p>
-
+                          if(!e.workerId)return <th scope="row">Worker Delete</th>
                           return(
                         <tbody key={i}>
                         <tr>
@@ -145,12 +146,8 @@ class Time extends React.Component {
                                   className="text-danger">Delete</span></DropdownItem>
                           </DropdownMenu>
                           </UncontrolledDropdown>
-                         
-                        
                         </td>
                         </tr>
-                       
-                    
                       </tbody>
                           )
                         })

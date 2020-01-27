@@ -46,7 +46,7 @@ class UpdateEstimate extends React.Component {
   }
   componentDidMount() {
     axios
-      .get(`http://localhost:3000estimatedetail/${this.props.match.params.id}`)
+      .get(`https://greenacorn.herokuapp.com/estimatedetail/${this.props.match.params.id}`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -89,7 +89,7 @@ class UpdateEstimate extends React.Component {
 
     const {
       data: { img },
-    } = await axios.post('http://localhost:3000/upload', file)
+    } = await axios.post('https://greenacorn.herokuapp.com/upload', file)
     this.setState(prevState => ({ ...prevState, img }))
   }
 
@@ -97,7 +97,7 @@ class UpdateEstimate extends React.Component {
     e.preventDefault()
     axios
       .patch(
-        `http://localhost:3000/estimateupdate/${this.props.match.params.id}`,
+        `https://greenacorn.herokuapp.com/estimateupdate/${this.props.match.params.id}`,
         this.state
       )
       .then(response => {
@@ -132,7 +132,7 @@ class UpdateEstimate extends React.Component {
       <>
         <Header /> {/* Page content */}{' '}
         <Container className="mt--7" fluid>
-          <Row class="mt-5">
+          <Row className="mt-5">
             <Col className="mb-5 mb-xl-0" xl="12">
               <Card className="shadow">
                 <CardHeader className="border-0">

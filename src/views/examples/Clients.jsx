@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+import AuthService from '../../services/services'
 
 import {
   Card,
@@ -9,9 +10,15 @@ import {
   Row,
   Col,
   Table,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+  UncontrolledDropdown
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
+
+const authService = new AuthService()
 
 class Clients extends React.Component {
   state = {
@@ -21,7 +28,7 @@ class Clients extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`http://localhost:3000/checkclients`)
+      .get(`https://greenacorn.herokuapp.com/checkclients`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -80,7 +87,7 @@ class Clients extends React.Component {
                   
                     
 
-                     {this.state.clients.length === 0 ?  <tbody><tr><td>Aún no tienes gastos registrados</td></tr></tbody>:
+                     {this.state.clients.length === 0 ?  <tbody><tr><td>No clients register</td></tr></tbody>:
                      this.state.clients.map((e,i)=>{
                       return(
                         <tbody key={i}>
@@ -89,7 +96,50 @@ class Clients extends React.Component {
                         <td>{e.email}</td>
                         <td>{e.phone}</td>
                         <td>$0.00 USD</td>
-                        <td></td>
+                        <td>
+                        <UncontrolledDropdown>
+                           <DropdownToggle>
+                              ...
+                          </DropdownToggle>
+                          <DropdownMenu
+                            modifiers={{
+                                    setMaxHeight: {
+                                      enabled: true,
+                                      order: 890,
+                                      fn: (data) => {
+                                        return {
+                                          ...data,
+                                          styles: {
+                                            ...data.styles,
+                                            overflow: 'auto',
+                                            maxHeight: 100,
+                                          },
+                                        };
+                                      },
+                                    },
+                                  }}
+                                                        >
+                          
+                          <DropdownItem to={`/admin/clients/update/${e._id}`} tag={Link}>Update Client</DropdownItem>
+
+                          <DropdownItem onClick={()=>{
+                            authService
+                              .clientDelete(e._id)
+                              .then(({data}) => {
+                                alert('Client Delete')
+                                window.location.reload()
+                                
+                              })
+                              .catch(err => {
+                                //aquí deberia ir una notificacion o un swal o un toastr
+                                console.log(err.response)
+                                alert(err.response.data.msg || err.response.data.err.message)
+                              })
+                          }}><span
+                                  className="text-danger">Delete</span></DropdownItem>
+                          </DropdownMenu>
+                          </UncontrolledDropdown>
+                        </td>
                         </tr>
                        
                     

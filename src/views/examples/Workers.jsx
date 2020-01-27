@@ -28,7 +28,7 @@ class Workers extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`http://localhost:3000/getusers`)
+      .get(`https://greenacorn.herokuapp.com/getusers`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -103,27 +103,12 @@ class Workers extends React.Component {
                             ...
                         </DropdownToggle>
                         <DropdownMenu>
+                            <DropdownItem to={`/admin/workers/update/${e._id}`} tag={Link}>Update</DropdownItem>
                             <DropdownItem onClick={()=>{
                               authService
-                                .paidInvoice(e._id)
+                                .workerDelete(e._id)
                                 .then(({data}) => {
-                                  alert('The invoice is paid')
-                                  window.location.reload()
-                                  
-                                })
-                                .catch(err => {
-                                  console.log(err.response)
-                                  alert(err.response.data.msg || err.response.data.err.message)
-                                })
-                            }}
-                            
-                            >Accept Payment</DropdownItem>
-                            <DropdownItem>Send by email</DropdownItem>
-                            <DropdownItem onClick={()=>{
-                              authService
-                                .estimateDelete(e._id)
-                                .then(({data}) => {
-                                  alert('Invoice Delete')
+                                  alert('WorkerDelete')
                                   window.location.reload()
                                   
                                 })

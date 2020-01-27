@@ -26,7 +26,7 @@ class Reports extends React.Component {
     }
 
     componentDidMount() {
-        axios.get(`http://localhost:3000/checkjobs`)
+        axios.get(`https://greenacorn.herokuapp.com/checkjobs`)
             .then(({data}) => {
                 console.log(data);
                 this.setState(prevState => {

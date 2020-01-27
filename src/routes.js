@@ -20,7 +20,8 @@ import AddPM from "views/examples/AddProjectManager.jsx";
 import AddEstimate from "views/examples/AddEstimate.jsx";
 import Reports from "./views/examples/Reports";
 import AddReport from "./views/examples/AddReport";
-import AddProjectManager from "./views/examples/AddProjectManager";
+import UpdateWorker from "./views/examples/UpdateWorker.jsx";
+import UpdateClient from "./views/examples/UpdateClient.jsx"
 
 
 
@@ -114,7 +115,14 @@ var routes = [
     icon: "ni ni-single-02 text-yellow",
     component: Clients,
     layout: "/admin"
-    
+  },
+  {
+    path: "/update/:id",
+    name: "Update Client",
+    icon: "ni ni-circle-08 text-pink",
+    component: UpdateClient,
+    layout: "/admin/clients",
+    invisible: true
   },
   // {
   //   path: "/expenses",
@@ -129,6 +137,14 @@ var routes = [
     icon: "ni ni-circle-08 text-pink",
     component: Workers,
     layout: "/admin"
+  },
+  {
+    path: "/update/:id",
+    name: "Update Worker",
+    icon: "ni ni-circle-08 text-pink",
+    component: UpdateWorker,
+    layout: "/admin/workers",
+    invisible: true
   },
   { 
     path: "/addclient",
