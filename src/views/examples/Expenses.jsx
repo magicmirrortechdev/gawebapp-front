@@ -21,7 +21,7 @@ class Expenses extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com/checkexpenses`)
+      .get(`http://localhost:3000/checkexpenses`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {

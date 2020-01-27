@@ -50,7 +50,7 @@ class UpdateJob extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com/estimatedetail/${this.props.match.params.id}`)
+      .get(`http://localhost:3000/estimatedetail/${this.props.match.params.id}`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -86,7 +86,7 @@ class UpdateJob extends React.Component {
   handleSubmit = (e, props) => {
     e.preventDefault()
     axios
-      .patch(`https://greenacorn.herokuapp.com/estimateupdate/${this.props.match.params.id}`, this.state)
+      .patch(`http://localhost:3000/estimateupdate/${this.props.match.params.id}`, this.state)
       .then((response) => {
         this.props.history.push(`/admin/jobs`)
       })

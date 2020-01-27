@@ -36,7 +36,7 @@ class AddTime extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com/checkjobs`)
+      .get(`http://localhost:3000/checkjobs`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -53,7 +53,7 @@ class AddTime extends React.Component {
   handleSubmit = (e, props) => {
     e.preventDefault()
         axios
-          .patch(`https://greenacorn.herokuapp.com/addtime/${this.props.match.params.id}`,this.state)
+          .patch(`http://localhost:3000/addtime/${this.props.match.params.id}`,this.state)
           .then(response => {
             //aquí deberia ir una notificacion o un swal o un toastr
             this.props.history.push(`/admin/time`)
@@ -117,7 +117,7 @@ class AddTime extends React.Component {
                               className="form-control-alternative"
                               color="info"
 
-                            >Add Worker</Button>
+                            >Add Time</Button>
                           </FormGroup>
                         </Col>
                       </Row>
