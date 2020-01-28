@@ -39,7 +39,7 @@ class Jobs extends React.Component {
           }
         })
 
-        
+
       })
       .catch(err => {
         console.log(err)
@@ -47,7 +47,7 @@ class Jobs extends React.Component {
   }
 
 
-  
+
 
   render() {
     console.log('Aqui está el state', this.state )
@@ -104,81 +104,68 @@ class Jobs extends React.Component {
                             !e.workerId ? <p style={{fontSize:"10px"}} key={i}>Worker Delete</p> :
                             <p style={{fontSize:"10px"}} key={i}>{e.workerId.name}</p>
                           )
-                          
+
                         })}</td>
-                        <td>${subtotal + tax - paid - discount}USD</td>
+                        <td>${subtotal + tax - paid - discount} USD</td>
                         <td>
-                        <UncontrolledDropdown>
-                           <DropdownToggle>
-                              ...
-                          </DropdownToggle>
-                          <DropdownMenu
-                          modifiers={{
-                          setMaxHeight: {
-                            enabled: true,
-                            order: 890,
-                            fn: (data) => {
-                              return {
-                                ...data,
-                                styles: {
-                                  ...data.styles,
-                                  overflow: 'auto',
-                                  maxHeight: 100,
-                                },
-                              };
-                            },
-                          },
-                        }}>
-                            <DropdownItem onClick={()=>{
-                            authService
-                              .convertInvoice(e._id)
-                              .then(response => {
-                                //aquí deberia ir una notificacion o un swal o un toastr
-                                this.props.history.push(`invoices`)
-                                console.log(response)
-                                
-                              })
-                              .catch(err => {
-                                //aquí deberia ir una notificacion o un swal o un toastr
-                                console.log(err.response)
-                                alert(err.response.data.msg || err.response.data.err.message)
-                              })
-                          }}>Convert to Invoice</DropdownItem>
-                          <DropdownItem to={`/admin/jobs/${e._id}`} tag={Link}>Update</DropdownItem>
-                          <DropdownItem to={`/admin/jobs/${e._id}/addexpense`} tag={Link}>Add Expense</DropdownItem>                          
-                          <DropdownItem to={`/admin/jobs/addworker/${e._id}`} tag={Link}>Add Worker</DropdownItem>
-                          <DropdownItem to={`/admin/jobs/addpm/${e._id}`} tag={Link}>Add Project Manager</DropdownItem>
-                          <DropdownItem onClick={()=>{
-                            authService
-                              .estimateDelete(e._id)
-                              .then(({data}) => {
-                                alert('Job Delete')
-                                window.location.reload()
-                                
-                              })
-                              .catch(err => {
-                                //aquí deberia ir una notificacion o un swal o un toastr
-                                console.log(err.response)
-                                alert(err.response.data.msg || err.response.data.err.message)
-                              })
-                          }}><span
-                                  className="text-danger">Delete</span></DropdownItem>
-                          </DropdownMenu>
-                          </UncontrolledDropdown>
+                          <div className="dropdownButtons">
+                            <UncontrolledDropdown>
+                              <DropdownToggle>
+                                ...
+                              </DropdownToggle>
+                              <DropdownMenu>
+                                <DropdownItem onClick={()=>{
+                                  authService
+                                      .convertInvoice(e._id)
+                                      .then(response => {
+                                        //aquí deberia ir una notificacion o un swal o un toastr
+                                        this.props.history.push(`invoices`)
+                                        console.log(response)
+
+                                      })
+                                      .catch(err => {
+                                        //aquí deberia ir una notificacion o un swal o un toastr
+                                        console.log(err.response)
+                                        alert(err.response.data.msg || err.response.data.err.message)
+                                      })
+                                }}>Convert to Invoice</DropdownItem>
+                                <DropdownItem to={`/admin/jobs/${e._id}`} tag={Link}>Update</DropdownItem>
+                                <DropdownItem to={`/admin/jobs/${e._id}/addexpense`} tag={Link}>Add Expense</DropdownItem>
+                                <DropdownItem to={`/admin/jobs/addworker/${e._id}`} tag={Link}>Add Worker</DropdownItem>
+                                <DropdownItem to={`/admin/jobs/addpm/${e._id}`} tag={Link}>Add Project Manager</DropdownItem>
+                                <DropdownItem onClick={()=>{
+                                  authService
+                                      .estimateDelete(e._id)
+                                      .then(({data}) => {
+                                        alert('Job Delete')
+                                        window.location.reload()
+
+                                      })
+                                      .catch(err => {
+                                        //aquí deberia ir una notificacion o un swal o un toastr
+                                        console.log(err.response)
+                                        alert(err.response.data.msg || err.response.data.err.message)
+                                      })
+                                }}><span
+                                    className="text-danger">Delete</span></DropdownItem>
+                              </DropdownMenu>
+                            </UncontrolledDropdown>
+                          </div>
+
                         </td>
                         </tr>
-                       
-                    
+
+
                       </tbody>
-                     )  
+                     )
                     })
                   }
-                      
-                      
+
+
                 </Table>
               </Card>
             </Col>
-            
+
           </Row>
         </Container>
       </>

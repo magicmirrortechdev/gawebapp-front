@@ -146,27 +146,12 @@ class Reports extends React.Component {
                                                 <tbody key={i}>
                                                 <tr>
                                                     <td>{e.jobName}</td>
-                                                    <td>{e.projectManager}</td>
-                                                    <td>{e.status}</td>
+                                                    <td></td>
+                                                    <td></td>
                                                     <td>$200,000 USD</td>
                                                     <td>$100,000 USD</td>
                                                     <td>$100,000 USD</td>
-                                                    <td>
-                                                        <div className="dropdownButtons">
-                                                            <UncontrolledDropdown>
-                                                                <DropdownToggle>
-                                                                    ...
-                                                                </DropdownToggle>
-                                                                <DropdownMenu>
-                                                                    <DropdownItem>Details</DropdownItem>
-                                                                    <DropdownItem>Export to Excel</DropdownItem>
-                                                                    <DropdownItem>Edit</DropdownItem>
-                                                                    <DropdownItem><span
-                                                                        className="text-danger">Delete</span></DropdownItem>
-                                                                </DropdownMenu>
-                                                            </UncontrolledDropdown>
-                                                        </div>
-                                                    </td>
+
                                                 </tr>
 
 

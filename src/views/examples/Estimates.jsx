@@ -108,7 +108,7 @@ class Icons extends React.Component {
                         <th scope="row" >{e.clientId.name}</th>
                         <td>{e.dateCreate}</td>
                         <td>{e.status}</td>
-                        <td>${subtotal + tax - paid - discount}USD</td>
+                        <td>${subtotal + tax - paid - discount} USD</td>
                         <td>
                           <div className="dropdownButtons">
                             <UncontrolledDropdown>
