@@ -144,6 +144,7 @@ class Reports extends React.Component {
                                         </tr>
                                         </tbody> :
                                         this.state.jobs.map((e, i) => {
+
                                             let totalInvoices = e.expenses ? (e.expenses.reduce((acc, current, i) => acc + current.total, 0)) : 0 ;
                                             let totalLabor = e.expenses ? (e.expenses.reduce((acc, current, i) => acc + current.total, 0)) : 0 ;
                                             let totalExpenses = e.expenses ? (e.expenses.reduce((acc, current, i) => acc + current.total, 0)) : 0 ;
@@ -156,9 +157,9 @@ class Reports extends React.Component {
                                                         </td>
                                                         <td>{e.jobName}</td>
                                                         <td>{e.paid} USD</td>
-                                                        <td>{totalAR} ISD</td>
-                                                        <td>{totalInvoices } USD</td>
-                                                        <td>{totalLabor} USD</td>
+                                                        <td>${totalAR} ISD</td>
+                                                        <td>${totalInvoices } USD</td>
+                                                        <td>${totalLabor} USD</td>
                                                         <td>${totalExpenses} USD</td>
 
                                                     </tr>
@@ -190,10 +191,28 @@ class Reports extends React.Component {
                                                                                 <th scope="col">Hours</th>
                                                                             </tr>
                                                                             </thead>
+                                                                            <tbody>
+                                                                            {e.workers.map((wx, i) => {
+                                                                                let time = wx.time ? (wx.time.reduce((acc, current, i) => acc + current, 0)) : 0 ;
+                                                                                let effective = wx.workerId.effective? wx.workerId.effective : 0;
+                                                                                let payment = wx.workerId.payment? wx.workerId.payment : 0;
+                                                                                let date = new Date(wx.workerId.updatedAt).toISOString().split('T')[0];
+                                                                                return (
+                                                                                    <tr>
+                                                                                        <td>{date}</td>
+                                                                                        <td>{wx.workerId.name}</td>
+                                                                                        <td align="right">$ {payment * time} USD</td>
+                                                                                        <td align="right">$ {effective * time} USD</td>
+                                                                                        <td>{time}</td>
+                                                                                    </tr>
+                                                                                    )
+                                                                                }
+                                                                            )}
+                                                                            </tbody>
                                                                         </Table>
 
                                                                         <h3>- Expenses</h3>
-                                                                        <Table className="align-items-center table-flush col-md-6 col-xs-12" responsive>
+                                                                        <Table className="align-items-center table-flush col-md-8 col-xs-12" responsive>
                                                                             <thead className="thead-light">
                                                                             <tr>
                                                                                 <th scope="col">Date</th>
@@ -211,7 +230,7 @@ class Reports extends React.Component {
                                                                                             <td>{ex.date}</td>
                                                                                             <td></td>
                                                                                             <td>{ex.category}</td>
-                                                                                            <td>$ {ex.total} USD</td>
+                                                                                            <td align="right">$ {ex.total} USD</td>
                                                                                             <td></td>
                                                                                             <td>{ex.description}</td>
                                                                                         </tr>
