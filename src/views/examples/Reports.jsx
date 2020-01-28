@@ -11,11 +11,14 @@ import {
     Table,
     Input,
     Form,
-    UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, FormGroup
+    Button,
+    FormGroup,
+    UncontrolledCollapse
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
+import CardBody from "reactstrap/es/CardBody";
 
 class Reports extends React.Component {
     state = {
@@ -125,13 +128,12 @@ class Reports extends React.Component {
                                     <thead className="thead-light">
                                     <tr>
                                         <th scope="col">Job Name</th>
-                                        <th scope="col">Project Manager</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Total Estimated</th>
-                                        <th scope="col">Total Invoiced</th>
-                                        <th scope="col">Total Expended</th>
-                                        <th scope="col">
-                                        </th>
+                                        <th scope="col">Total Paid</th>
+                                        <th scope="col">Total A/R</th>
+                                        <th scope="col">Total Invoices</th>
+                                        <th scope="col">Labor</th>
+                                        <th scope="col">Expenses</th>
+                                        <th scope="col">Profit</th>
                                     </tr>
                                     </thead>
 
@@ -142,18 +144,87 @@ class Reports extends React.Component {
                                         </tr>
                                         </tbody> :
                                         this.state.jobs.map((e, i) => {
+                                            let totalInvoices = e.expenses ? (e.expenses.reduce((acc, current, i) => acc + current.total, 0)) : 0 ;
+                                            let totalLabor = e.expenses ? (e.expenses.reduce((acc, current, i) => acc + current.total, 0)) : 0 ;
+                                            let totalExpenses = e.expenses ? (e.expenses.reduce((acc, current, i) => acc + current.total, 0)) : 0 ;
+                                            let totalAR = e.paid - totalExpenses + totalInvoices - e.total;
                                             return (
                                                 <tbody key={i}>
-                                                <tr>
-                                                    <td>{e.jobName}</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td>$200,000 USD</td>
-                                                    <td>$100,000 USD</td>
-                                                    <td>$100,000 USD</td>
+                                                    <tr>
+                                                        <td>
+                                                            <Button id={"toggle"+i} color="primary"><i className="ni ni-bold-down"></i></Button>
+                                                        </td>
+                                                        <td>{e.jobName}</td>
+                                                        <td>{e.paid} USD</td>
+                                                        <td>{totalAR} ISD</td>
+                                                        <td>{totalInvoices } USD</td>
+                                                        <td>{totalLabor} USD</td>
+                                                        <td>${totalExpenses} USD</td>
 
-                                                </tr>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colSpan={7}>
+                                                            <UncontrolledCollapse toggler={"#toggle"+i}>
+                                                                <Card>
+                                                                    <CardBody>
+                                                                        <h3>- Invoices</h3>
+                                                                        <Table className="align-items-center table-flush col-md-6 col-xs-12" responsive>
+                                                                            <thead className="thead-light">
+                                                                            <tr>
+                                                                                <th scope="col">Date</th>
+                                                                                <th scope="col">Sent by</th>
+                                                                                <th scope="col">Total</th>
+                                                                                <th scope="col">Paid</th>
+                                                                            </tr>
+                                                                            </thead>
+                                                                        </Table>
 
+                                                                        <h3>- Labor</h3>
+                                                                        <Table className="align-items-center table-flush col-md-6 col-xs-12" responsive>
+                                                                            <thead className="thead-light">
+                                                                            <tr>
+                                                                                <th scope="col">Date</th>
+                                                                                <th scope="col">Worker</th>
+                                                                                <th scope="col">Payroll Expense</th>
+                                                                                <th scope="col">Labor Expense (Efective Rate)</th>
+                                                                                <th scope="col">Hours</th>
+                                                                            </tr>
+                                                                            </thead>
+                                                                        </Table>
+
+                                                                        <h3>- Expenses</h3>
+                                                                        <Table className="align-items-center table-flush col-md-6 col-xs-12" responsive>
+                                                                            <thead className="thead-light">
+                                                                            <tr>
+                                                                                <th scope="col">Date</th>
+                                                                                <th scope="col">Worker</th>
+                                                                                <th scope="col">Expense Type</th>
+                                                                                <th scope="col">Amount</th>
+                                                                                <th scope="col">Vendor</th>
+                                                                                <th scope="col">Description</th>
+                                                                            </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                            {e.expenses.map((ex, ix) => {
+                                                                                    return (
+                                                                                        <tr>
+                                                                                            <td>{ex.date}</td>
+                                                                                            <td></td>
+                                                                                            <td>{ex.category}</td>
+                                                                                            <td>$ {ex.total} USD</td>
+                                                                                            <td></td>
+                                                                                            <td>{ex.description}</td>
+                                                                                        </tr>
+                                                                                    )
+                                                                                }
+                                                                            )}
+                                                                            </tbody>
+                                                                        </Table>
+                                                                    </CardBody>
+                                                                </Card>
+                                                            </UncontrolledCollapse>
+                                                        </td>
+                                                    </tr>
 
                                                 </tbody>
                                             )
