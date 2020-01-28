@@ -29,7 +29,7 @@ class Icons extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com/checkestimates`)
+      .get(`http://localhost:3000/checkestimates`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {

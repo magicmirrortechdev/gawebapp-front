@@ -36,7 +36,7 @@ class UpdateClient extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com/oneclient/${this.props.match.params.id}`)
+      .get(`http://localhost:3000/oneclient/${this.props.match.params.id}`)
       .then(({ data }) => {
         const client = data.client
         this.setState(prevState => {
@@ -74,7 +74,7 @@ class UpdateClient extends React.Component {
     e.preventDefault()
     axios
       .patch(
-        `https://greenacorn.herokuapp.com/updateclient/${this.props.match.params.id}`,
+        `http://localhost:3000/updateclient/${this.props.match.params.id}`,
         this.state
       )
       .then(response => {

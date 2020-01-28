@@ -46,7 +46,7 @@ class AddEstimateByUser extends React.Component {
   }
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com/oneclient/${this.props.match.params.id}`)
+      .get(`http://localhost:3000/oneclient/${this.props.match.params.id}`)
       .then(({ data }) => {
         console.log(data)
         this.setState(prevState => {
@@ -86,7 +86,7 @@ class AddEstimateByUser extends React.Component {
 
     const {
       data: { img },
-    } = await axios.post('https://greenacorn.herokuapp.com/upload', file)
+    } = await axios.post('http://localhost:3000/upload', file)
     this.setState(prevState => ({ ...prevState, img }))
   }
 
@@ -94,7 +94,7 @@ class AddEstimateByUser extends React.Component {
     e.preventDefault()
     axios
       .post(
-        `https://greenacorn.herokuapp.com/addestimate`,
+        `http://localhost:3000/addestimate`,
         this.state
       )
       .then(response => {

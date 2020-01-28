@@ -50,7 +50,7 @@ class UpdateWorker extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com/workerdetail/${this.props.match.params.id}`)
+      .get(`http://localhost:3000/workerdetail/${this.props.match.params.id}`)
       .then(({ data }) => {
         const user= data.user
         this.setState(prevState => {
@@ -90,14 +90,14 @@ class UpdateWorker extends React.Component {
 
     const {
       data: { img }
-    } = await axios.post('https://greenacorn.herokuapp.com/upload', file)
+    } = await axios.post('http://localhost:3000/upload', file)
     this.setState(prevState => ({ ...prevState, img }))
   }
 
   handleSubmit = (e, props) => {
     e.preventDefault()
     axios
-      .patch(`https://greenacorn.herokuapp.com/updateworker/${this.props.match.params.id}`,this.state)
+      .patch(`http://localhost:3000/updateworker/${this.props.match.params.id}`,this.state)
       .then(response => {
         this.props.history.push(`/admin/workers`)
         console.log(response)

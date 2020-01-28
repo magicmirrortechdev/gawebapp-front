@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseURL = 'https://greenacorn.herokuapp.com/'
+const baseURL = 'http://localhost:3000/'
 
 class AuthService {
     constructor() {
