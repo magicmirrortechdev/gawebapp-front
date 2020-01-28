@@ -22,6 +22,7 @@ import Reports from "./views/examples/Reports";
 import AddReport from "./views/examples/AddReport";
 import UpdateWorker from "./views/examples/UpdateWorker.jsx";
 import UpdateClient from "./views/examples/UpdateClient.jsx"
+import AddEstimateByUser from './views/examples/AddEstimateByUser.jsx'
 
 
 
@@ -121,6 +122,14 @@ var routes = [
     name: "Update Client",
     icon: "ni ni-circle-08 text-pink",
     component: UpdateClient,
+    layout: "/admin/clients",
+    invisible: true
+  },
+  {
+    path: "/estimatecreate/:id",
+    name: "Create Estimate by User",
+    icon: "ni ni-circle-08 text-pink",
+    component: AddEstimateByUser,
     layout: "/admin/clients",
     invisible: true
   },
