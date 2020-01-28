@@ -1,6 +1,7 @@
 import React from "react";
 import {Link} from 'react-router-dom'
 import axios from 'axios'
+import classnames from 'classnames';
 
 import {
     Card,
@@ -8,22 +9,36 @@ import {
     Container,
     Row,
     Col,
-    Table,
     Input,
     Form,
-    Button,
     FormGroup,
-    UncontrolledCollapse
+    TabContent,
+    TabPane,
+    Nav,
+    NavItem,
+    NavLink
 } from "reactstrap";
 // core components
-import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
-import CardBody from "reactstrap/es/CardBody";
+
+import Header from "components/Headers/Header.jsx";
+import ReportJobs from "./reports/ReportJobs";
+import ReportWorkers from "./reports/ReportWorkers";
 
 class Reports extends React.Component {
     state = {
-        jobs: []
+        jobs: [],
+        workers: [],
+        activeTab: '1'
     };
+
+    toggleTab(tab) {
+        if (this.state.activeTab !== tab) {
+            this.setState({
+                activeTab: tab
+            });
+        }
+    }
 
     handleSubmit() {
 
@@ -63,8 +78,8 @@ class Reports extends React.Component {
                                         </div>
                                         <div className="col text-right">
                                             <Link to="addreport">
-                                                <p  color="primary"
-                                                    size="sm">
+                                                <p color="primary"
+                                                   size="sm">
                                                     Create a Report
                                                 </p>
                                             </Link>
@@ -76,7 +91,7 @@ class Reports extends React.Component {
                                 <Form className="card-header">
                                     <Row form>
                                         <Col md={2}>
-                                            <FormGroup >
+                                            <FormGroup>
                                                 <label
                                                     className="form-control-label"
                                                     htmlFor="input-dateStart">
@@ -91,7 +106,7 @@ class Reports extends React.Component {
                                             </FormGroup>
                                         </Col>
                                         <Col md={2}>
-                                            <FormGroup >
+                                            <FormGroup>
                                                 <label
                                                     className="form-control-label"
                                                     htmlFor="input-dateStart">
@@ -105,8 +120,8 @@ class Reports extends React.Component {
                                                 />
                                             </FormGroup>
                                         </Col>
-                                        <Col md={{size:3, offset:5}} >
-                                            <FormGroup >
+                                        <Col md={{size: 3, offset: 5}}>
+                                            <FormGroup>
                                                 <label
                                                     className="form-control-label"
                                                     htmlFor="input-dateStart">
@@ -124,133 +139,36 @@ class Reports extends React.Component {
                                     </Row>
                                 </Form>
 
-                                <Table className="align-items-center table-flush" responsive>
-                                    <thead className="thead-light">
-                                    <tr>
-                                        <th scope="col">Job Name</th>
-                                        <th scope="col">Total Paid</th>
-                                        <th scope="col">Total A/R</th>
-                                        <th scope="col">Total Invoices</th>
-                                        <th scope="col">Labor</th>
-                                        <th scope="col">Expenses</th>
-                                        <th scope="col">Profit</th>
-                                    </tr>
-                                    </thead>
+                                <Nav tabs>
+                                    <NavItem>
+                                        <NavLink
+                                            className={classnames({active: this.state.activeTab === '1'})}
+                                            onClick={() => {
+                                                this.toggleTab('1');
+                                            }}>
+                                            P&L
+                                        </NavLink>
+                                    </NavItem>
+                                    <NavItem>
+                                        <NavLink
+                                            className={classnames({active: this.state.activeTab === '2'})}
+                                            onClick={() => {
+                                                this.toggleTab('2');
+                                            }}>
+                                            Workers
+                                        </NavLink>
+                                    </NavItem>
+                                </Nav>
 
+                                <TabContent activeTab={this.state.activeTab}>
+                                    <TabPane tabId="1">
+                                        <ReportJobs jobs={this.state.jobs} />
+                                    </TabPane>
+                                    <TabPane tabId="2">
+                                        <ReportWorkers workers={this.state.workers} />
+                                    </TabPane>
+                                </TabContent>
 
-                                    {this.state.jobs.length === 0 ? <tbody>
-                                        <tr>
-                                            <td>No Jobs register</td>
-                                        </tr>
-                                        </tbody> :
-                                        this.state.jobs.map((e, i) => {
-
-                                            let totalInvoices = e.expenses ? (e.expenses.reduce((acc, current, i) => acc + current.total, 0)) : 0 ;
-                                            let totalLabor = e.expenses ? (e.expenses.reduce((acc, current, i) => acc + current.total, 0)) : 0 ;
-                                            let totalExpenses = e.expenses ? (e.expenses.reduce((acc, current, i) => acc + current.total, 0)) : 0 ;
-                                            let totalAR = e.paid - totalExpenses + totalInvoices - e.total;
-                                            return (
-                                                <tbody key={i}>
-                                                    <tr>
-                                                        <td>
-                                                            <Button id={"toggle"+i} color="primary"><i className="ni ni-bold-down"></i></Button>
-                                                        </td>
-                                                        <td>{e.jobName}</td>
-                                                        <td>{e.paid} USD</td>
-                                                        <td>${totalAR} ISD</td>
-                                                        <td>${totalInvoices } USD</td>
-                                                        <td>${totalLabor} USD</td>
-                                                        <td>${totalExpenses} USD</td>
-
-                                                    </tr>
-                                                    <tr>
-                                                        <td colSpan={7}>
-                                                            <UncontrolledCollapse toggler={"#toggle"+i}>
-                                                                <Card>
-                                                                    <CardBody>
-                                                                        <h3>- Invoices</h3>
-                                                                        <Table className="align-items-center table-flush col-md-6 col-xs-12" responsive>
-                                                                            <thead className="thead-light">
-                                                                            <tr>
-                                                                                <th scope="col">Date</th>
-                                                                                <th scope="col">Sent by</th>
-                                                                                <th scope="col">Total</th>
-                                                                                <th scope="col">Paid</th>
-                                                                            </tr>
-                                                                            </thead>
-                                                                        </Table>
-
-                                                                        <h3>- Labor</h3>
-                                                                        <Table className="align-items-center table-flush col-md-6 col-xs-12" responsive>
-                                                                            <thead className="thead-light">
-                                                                            <tr>
-                                                                                <th scope="col">Date</th>
-                                                                                <th scope="col">Worker</th>
-                                                                                <th scope="col">Payroll Expense</th>
-                                                                                <th scope="col">Labor Expense (Efective Rate)</th>
-                                                                                <th scope="col">Hours</th>
-                                                                            </tr>
-                                                                            </thead>
-                                                                            <tbody>
-                                                                            {e.workers.map((wx, i) => {
-                                                                                let time = wx.time ? (wx.time.reduce((acc, current, i) => acc + current, 0)) : 0 ;
-                                                                                let effective = wx.workerId.effective? wx.workerId.effective : 0;
-                                                                                let payment = wx.workerId.payment? wx.workerId.payment : 0;
-                                                                                let date = new Date(wx.workerId.updatedAt).toISOString().split('T')[0];
-                                                                                return (
-                                                                                    <tr>
-                                                                                        <td>{date}</td>
-                                                                                        <td>{wx.workerId.name}</td>
-                                                                                        <td align="right">$ {payment * time} USD</td>
-                                                                                        <td align="right">$ {effective * time} USD</td>
-                                                                                        <td>{time}</td>
-                                                                                    </tr>
-                                                                                    )
-                                                                                }
-                                                                            )}
-                                                                            </tbody>
-                                                                        </Table>
-
-                                                                        <h3>- Expenses</h3>
-                                                                        <Table className="align-items-center table-flush col-md-8 col-xs-12" responsive>
-                                                                            <thead className="thead-light">
-                                                                            <tr>
-                                                                                <th scope="col">Date</th>
-                                                                                <th scope="col">Worker</th>
-                                                                                <th scope="col">Expense Type</th>
-                                                                                <th scope="col">Amount</th>
-                                                                                <th scope="col">Vendor</th>
-                                                                                <th scope="col">Description</th>
-                                                                            </tr>
-                                                                            </thead>
-                                                                            <tbody>
-                                                                            {e.expenses.map((ex, ix) => {
-                                                                                    return (
-                                                                                        <tr>
-                                                                                            <td>{ex.date}</td>
-                                                                                            <td></td>
-                                                                                            <td>{ex.category}</td>
-                                                                                            <td align="right">$ {ex.total} USD</td>
-                                                                                            <td></td>
-                                                                                            <td>{ex.description}</td>
-                                                                                        </tr>
-                                                                                    )
-                                                                                }
-                                                                            )}
-                                                                            </tbody>
-                                                                        </Table>
-                                                                    </CardBody>
-                                                                </Card>
-                                                            </UncontrolledCollapse>
-                                                        </td>
-                                                    </tr>
-
-                                                </tbody>
-                                            )
-                                        })}
-
-
-                                </Table>
                             </Card>
                         </Col>
 
