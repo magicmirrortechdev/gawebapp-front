@@ -18,6 +18,7 @@ import {
 } from 'reactstrap'
 // core components
 import Header from 'components/Headers/Header.jsx'
+import Global from "../../global";
 const authService = new AuthService()
 
 let date = new Date()
@@ -46,7 +47,7 @@ class UpdateEstimate extends React.Component {
   }
   componentDidMount() {
     axios
-      .get(`http://localhost:3000/estimatedetail/${this.props.match.params.id}`)
+      .get(Global.url + `estimatedetail/${this.props.match.params.id}`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -89,7 +90,7 @@ class UpdateEstimate extends React.Component {
 
     const {
       data: { img },
-    } = await axios.post('http://localhost:3000/upload', file)
+    } = await axios.post(Global.url + 'upload', file)
     this.setState(prevState => ({ ...prevState, img }))
   }
 
@@ -97,7 +98,7 @@ class UpdateEstimate extends React.Component {
     e.preventDefault()
     axios
       .patch(
-        `http://localhost:3000/estimateupdate/${this.props.match.params.id}`,
+        Global.url + `estimateupdate/${this.props.match.params.id}`,
         this.state
       )
       .then(response => {

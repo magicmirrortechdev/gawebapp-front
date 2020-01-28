@@ -1,5 +1,7 @@
 import axios from 'axios'
-const baseURL = 'http://localhost:3000/'
+import Global from "../global";
+
+const baseURL = Global.url;
 
 class AuthService {
     constructor() {

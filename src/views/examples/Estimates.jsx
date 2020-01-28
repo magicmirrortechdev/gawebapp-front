@@ -17,6 +17,7 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
+import Global from "../../global";
 
 const authService = new AuthService()
 
@@ -29,7 +30,7 @@ class Icons extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`http://localhost:3000/checkestimates`)
+      .get(Global.url + `checkestimates`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -107,31 +108,14 @@ class Icons extends React.Component {
                         <th scope="row" >{e.clientId.name}</th>
                         <td>{e.dateCreate}</td>
                         <td>{e.status}</td>
-                        <td>${subtotal + tax - paid - discount}USD</td>
+                        <td>${subtotal + tax - paid - discount} USD</td>
                         <td>
                           <div className="dropdownButtons">
                             <UncontrolledDropdown>
                               <DropdownToggle>
                                 ...
                               </DropdownToggle>
-                              <DropdownMenu
-                              modifiers={{
-                                    setMaxHeight: {
-                                      enabled: true,
-                                      order: 890,
-                                      fn: (data) => {
-                                        return {
-                                          ...data,
-                                          styles: {
-                                            ...data.styles,
-                                            overflow: 'auto',
-                                            maxHeight: 100,
-                                          },
-                                        };
-                                      },
-                                    },
-                                  }}
-                              >
+                              <DropdownMenu>
                                 <DropdownItem onClick={()=>{
                                   authService
                                       .convertInvoice(e._id)

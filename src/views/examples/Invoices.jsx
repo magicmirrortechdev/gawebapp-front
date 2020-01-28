@@ -19,6 +19,7 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
+import Global from "../../global";
 
 const authService = new AuthService()
 
@@ -31,7 +32,7 @@ class Invoices extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`http://localhost:3000/checkinvoices`)
+      .get(Global.url + `checkinvoices`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -87,60 +88,45 @@ class Invoices extends React.Component {
                         <td>{e.status}</td>
                         <td>${subtotal + tax - paid - discount + expensesCost}USD</td>                       
                         <td>
-                        <UncontrolledDropdown>
-                                                        <DropdownToggle>
-                                                            ...
-                                                        </DropdownToggle>
-                                                        <DropdownMenu
-                                                        modifiers={{
-                                                            setMaxHeight: {
-                                                              enabled: true,
-                                                              order: 890,
-                                                              fn: (data) => {
-                                                                return {
-                                                                  ...data,
-                                                                  styles: {
-                                                                    ...data.styles,
-                                                                    overflow: 'auto',
-                                                                    maxHeight: 100,
-                                                                  },
-                                                                };
-                                                              },
-                                                            },
-                                                          }}
-                                                        >
-                                                            <DropdownItem onClick={()=>{
-                                                              authService
-                                                                .paidInvoice(e._id)
-                                                                .then(({data}) => {
-                                                                  alert('The invoice is paid')
-                                                                  window.location.reload()
-                                                                  
-                                                                })
-                                                                .catch(err => {
-                                                                  console.log(err.response)
-                                                                  alert(err.response.data.msg || err.response.data.err.message)
-                                                                })
-                                                            }}
-                                                            
-                                                            >Accept Payment</DropdownItem>
-                                                            <DropdownItem>Send by email</DropdownItem>
-                                                            <DropdownItem onClick={()=>{
-                                                              authService
-                                                                .estimateDelete(e._id)
-                                                                .then(({data}) => {
-                                                                  alert('Invoice Delete')
-                                                                  window.location.reload()
-                                                                  
-                                                                })
-                                                                .catch(err => {
-                                                                  console.log(err.response)
-                                                                  alert(err.response.data.msg || err.response.data.err.message)
-                                                                })
-                                                            }}><span
-                                                                    className="text-danger">Delete</span></DropdownItem>
-                                                        </DropdownMenu>
-                                                    </UncontrolledDropdown>
+                          <div className="dropdownButtons">
+                            <UncontrolledDropdown>
+                              <DropdownToggle>
+                                ...
+                              </DropdownToggle>
+                              <DropdownMenu>
+                                <DropdownItem onClick={()=>{
+                                  authService
+                                      .paidInvoice(e._id)
+                                      .then(({data}) => {
+                                        alert('The invoice is paid')
+                                        window.location.reload()
+
+                                      })
+                                      .catch(err => {
+                                        console.log(err.response)
+                                        alert(err.response.data.msg || err.response.data.err.message)
+                                      })
+                                }}
+
+                                >Accept Payment</DropdownItem>
+                                <DropdownItem>Send by email</DropdownItem>
+                                <DropdownItem onClick={()=>{
+                                  authService
+                                      .estimateDelete(e._id)
+                                      .then(({data}) => {
+                                        alert('Invoice Delete')
+                                        window.location.reload()
+
+                                      })
+                                      .catch(err => {
+                                        console.log(err.response)
+                                        alert(err.response.data.msg || err.response.data.err.message)
+                                      })
+                                }}><span
+                                    className="text-danger">Delete</span></DropdownItem>
+                              </DropdownMenu>
+                            </UncontrolledDropdown>
+                          </div>
                         </td>
                         
                         </tr>

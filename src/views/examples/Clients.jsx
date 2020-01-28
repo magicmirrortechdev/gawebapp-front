@@ -17,6 +17,7 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
+import Global from "../../global";
 
 const authService = new AuthService()
 
@@ -28,7 +29,7 @@ class Clients extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`http://localhost:3000/checkclients`)
+      .get(Global.url + `checkclients`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {

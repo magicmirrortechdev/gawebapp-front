@@ -18,6 +18,7 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
+import Global from "../../global";
 const authService = new AuthService()
 
 
@@ -39,13 +40,13 @@ class AddExpense extends React.Component {
 
     const {
       data: { img }
-    } = await axios.post('http://localhost:3000/upload', file)
+    } = await axios.post(Global.url + 'upload', file)
     this.setState(prevState => ({ ...prevState, img }))
   }
 
   handleSubmit = async (e, props) => {
     e.preventDefault()
-        await axios.patch(`http://localhost:3000/addexpense/${this.props.match.params.id}`,this.state)
+        await axios.patch(Global.url + `addexpense/${this.props.match.params.id}`,this.state)
         this.props.history.push('/admin/jobs')
   }
 

@@ -12,6 +12,7 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
+import Global from "../../global";
 
 class Expenses extends React.Component {
   state = {
@@ -21,7 +22,7 @@ class Expenses extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`http://localhost:3000/checkexpenses`)
+      .get(Global.url + 'checkexpenses')
       .then(({ data }) => {
         this.setState(prevState => {
           return {

@@ -17,6 +17,7 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
+import Global from "../../global";
 
 const authService = new AuthService()
 
@@ -29,7 +30,11 @@ class Time extends React.Component {
 
   componentDidMount() {
     axios
+<<<<<<< HEAD
       .get(`http://localhost:3000/checkjobs`)
+=======
+      .get(Global.url + `checkjobs`)
+>>>>>>> bed0f16b1a57ff12edf0e25b83b36ffcd00dc09b
       .then(({ data }) => {
         this.setState(prevState => {
           return {
