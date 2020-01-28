@@ -17,6 +17,7 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
+import Global from "../../global";
 const authService = new AuthService()
 
 
@@ -36,7 +37,7 @@ class UpdateClient extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com/oneclient/${this.props.match.params.id}`)
+      .get(Global.url + `oneclient/${this.props.match.params.id}`)
       .then(({ data }) => {
         const client = data.client
         this.setState(prevState => {
@@ -74,7 +75,7 @@ class UpdateClient extends React.Component {
     e.preventDefault()
     axios
       .patch(
-        `https://greenacorn.herokuapp.com/updateclient/${this.props.match.params.id}`,
+        Global.url + `updateclient/${this.props.match.params.id}`,
         this.state
       )
       .then(response => {

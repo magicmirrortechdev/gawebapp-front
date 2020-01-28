@@ -19,6 +19,7 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
+import Global from "../../global";
 
 const authService = new AuthService()
 
@@ -31,7 +32,7 @@ class Invoices extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com/checkinvoices`)
+      .get(Global.url + `checkinvoices`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {

@@ -17,6 +17,7 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
+import Global from "../../global";
 
 const authService = new AuthService()
 
@@ -28,7 +29,7 @@ class Workers extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com/getusers`)
+      .get(Global.url + `getusers`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {

@@ -19,6 +19,7 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
+import Global from "../../global";
 const authService = new AuthService()
 
 
@@ -37,7 +38,7 @@ class AddWorkerJob extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com/workers`)
+      .get(Global.url + `workers`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -56,7 +57,7 @@ class AddWorkerJob extends React.Component {
   handleSubmit = (e, props) => {
     e.preventDefault()
         axios
-          .patch(`https://greenacorn.herokuapp.com/addworkers/${this.props.match.params.id}`,{id2: this.state._id})
+          .patch(Global.url + `addworkers/${this.props.match.params.id}`,{id2: this.state._id})
           .then(response => {
             //aquí deberia ir una notificacion o un swal o un toastr
             this.props.history.push(`/admin/jobs`)

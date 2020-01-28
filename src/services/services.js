@@ -1,5 +1,7 @@
 import axios from 'axios'
-const baseURL = 'https://greenacorn.herokuapp.com/'
+import Global from "../global";
+
+const baseURL = Global.url;
 
 class AuthService {
     constructor() {

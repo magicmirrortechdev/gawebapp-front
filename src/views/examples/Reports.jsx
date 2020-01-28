@@ -15,6 +15,7 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
+import Global from "../../global";
 
 class Reports extends React.Component {
     state = {
@@ -26,7 +27,7 @@ class Reports extends React.Component {
     }
 
     componentDidMount() {
-        axios.get(`https://greenacorn.herokuapp.com/checkjobs`)
+        axios.get(Global.url + `checkjobs`)
             .then(({data}) => {
                 console.log(data);
                 this.setState(prevState => {

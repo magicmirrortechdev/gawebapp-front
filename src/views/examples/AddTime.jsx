@@ -19,6 +19,7 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
+import Global from "../../global";
 
 
 class AddTime extends React.Component {
@@ -36,7 +37,7 @@ class AddTime extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com/checkjobs`)
+      .get(Global.url + `checkjobs`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -53,7 +54,7 @@ class AddTime extends React.Component {
   handleSubmit = (e, props) => {
     e.preventDefault()
         axios
-          .patch(`https://greenacorn.herokuapp.com/addtime/${this.props.match.params.id}`,this.state)
+          .patch(Global.url + `addtime/${this.props.match.params.id}`,this.state)
           .then(response => {
             //aquí deberia ir una notificacion o un swal o un toastr
             this.props.history.push(`/admin/time`)

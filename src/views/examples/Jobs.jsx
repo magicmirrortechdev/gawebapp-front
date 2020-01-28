@@ -17,6 +17,7 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
+import Global from "../../global";
 
 const authService = new AuthService()
 
@@ -29,7 +30,7 @@ class Jobs extends React.Component {
 
   componentDidMount() {
     axios
-      .get(`https://greenacorn.herokuapp.com/checkjobs`)
+      .get(Global.url + `checkjobs`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {

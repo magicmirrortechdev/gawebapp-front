@@ -19,6 +19,7 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
+import Global from "../../global";
 const authService = new AuthService()
 
 let date = new Date()
@@ -68,7 +69,7 @@ class AddEstimate extends React.Component {
 
     const {
       data: { img }
-    } = await axios.post('https://greenacorn.herokuapp.com/upload', file)
+    } = await axios.post(Global.url + 'upload', file)
     this.setState(prevState => ({ ...prevState, img }))
   }
 
