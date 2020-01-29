@@ -51,3 +51,7 @@
 .dropdownButtons > .dropdown{
   bottom: 22px;
 }
+
+a.nav-link.active, a.nav-link{
+  cursor:pointer;
+}
