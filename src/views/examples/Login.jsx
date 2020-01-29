@@ -15,9 +15,45 @@ import {
   Row,
   Col
 } from "reactstrap";
+import AuthService from '../../services/services'
+const authService = new AuthService()
 
 class Login extends React.Component {
+  componentDidMount(props) {
+    const loggedUser = localStorage.getItem('loggedUser')
+    if (loggedUser) return this.props.history.push('/admin/index')
+  }
+
+  handleSubmit = (e, props) => {
+    e.preventDefault()
+    
+        authService
+          .login(this.state)
+          .then(response => {
+            localStorage.setItem('loggedUser', JSON.stringify(response.data.user))
+            if (response.data.user.role === 'ADMIN') {
+              this.props.history.push(`/admin/index`)
+            }
+            if (response.data.user.role === 'WORKER') {
+              this.props.history.push(`/admin/index`)
+            }
+          })
+          .catch(err => {
+            alert('Username or Password Incorrect')
+          })
+      
+    }
+  
+  handleInput = e => {
+    e.persist()
+    this.setState(prevState => ({
+      ...prevState,
+      [e.target.name]: e.target.value
+    }))
+  }
   render() {
+    const loggedUser = JSON.parse(localStorage.getItem('loggedUser'))
+    console.log(this.state)
     return (
       <>
         <Col lg="5" md="7">
@@ -27,7 +63,7 @@ class Login extends React.Component {
               <div className="text-center text-muted mb-4">
                 <small>Sign in with credentials</small>
               </div>
-              <Form role="form">
+              <Form role="form" onSubmit={this.handleSubmit}>
                 <FormGroup className="mb-3">
                   <InputGroup className="input-group-alternative">
                     <InputGroupAddon addonType="prepend">
@@ -35,7 +71,7 @@ class Login extends React.Component {
                         <i className="ni ni-email-83" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Email" type="email" />
+                    <Input placeholder="Email" type="email" name="email" onChange={this.handleInput} />
                   </InputGroup>
                 </FormGroup>
                 <FormGroup>
@@ -45,7 +81,7 @@ class Login extends React.Component {
                         <i className="ni ni-lock-circle-open" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Password" type="password" />
+                    <Input placeholder="Password" type="password" name="password" onChange={this.handleInput}/>
                   </InputGroup>
                 </FormGroup>
                 <div className="custom-control custom-control-alternative custom-checkbox">
@@ -62,24 +98,13 @@ class Login extends React.Component {
                   </label>
                 </div>
                 <div className="text-center">
-                  <Button className="my-4" color="primary" type="button">
+                  <Button className="my-4" color="primary" type="button" onClick={this.handleSubmit}>
                     Sign in
                   </Button>
                 </div>
               </Form>
             </CardBody>
           </Card>
-          <Row className="mt-3">
-            <Col xs="6">
-              <a
-                className="text-light"
-                href="#pablo"
-                onClick={e => e.preventDefault()}
-              >
-                <small>Forgot password?</small>
-              </a>
-            </Col>
-          </Row>
         </Col>
       </>
     );

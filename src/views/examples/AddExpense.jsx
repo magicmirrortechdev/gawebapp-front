@@ -20,10 +20,11 @@ import {
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 const authService = new AuthService()
-
+const loggedUser = JSON.parse(localStorage.getItem('loggedUser'))
 
 class AddExpense extends React.Component {
   state = {
+    workerId: loggedUser._id
   };
 
   handleInput = e => {
@@ -51,6 +52,8 @@ class AddExpense extends React.Component {
   }
 
   render() {
+    const loggedUser = JSON.parse(localStorage.getItem('loggedUser'))
+    console.log(this.state)
     return (
       <>
         <Header forms={true}/>
@@ -99,6 +102,21 @@ class AddExpense extends React.Component {
                               name="merchant"
                               className="form-control-alternative"
                               placeholder="Enter a merchant (optional)"
+                              type="text"
+                              onChange={this.handleInput}
+                            />
+                          </FormGroup>
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-merchant"
+                            >
+                              Vendor
+                            </label>
+                            <Input
+                              name="vendor"
+                              className="form-control-alternative"
+                              placeholder="Enter name of vendor"
                               type="text"
                               onChange={this.handleInput}
                             />

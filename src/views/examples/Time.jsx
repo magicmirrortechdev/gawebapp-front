@@ -30,11 +30,7 @@ class Time extends React.Component {
 
   componentDidMount() {
     axios
-<<<<<<< HEAD
-      .get(`http://localhost:3000/checkjobs`)
-=======
       .get(Global.url + `checkjobs`)
->>>>>>> bed0f16b1a57ff12edf0e25b83b36ffcd00dc09b
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -48,9 +44,6 @@ class Time extends React.Component {
         console.log(err)
       })
   }
-
-
-  
 
   render() {
     console.log('Aqui está el state', this.state)

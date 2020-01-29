@@ -30,11 +30,7 @@ class Reports extends React.Component {
     }
 
     componentDidMount() {
-<<<<<<< HEAD
-        axios.get(`http://localhost:3000/checkjobs`)
-=======
         axios.get(Global.url + `checkjobs`)
->>>>>>> bed0f16b1a57ff12edf0e25b83b36ffcd00dc09b
             .then(({data}) => {
                 console.log(data);
                 this.setState(prevState => {

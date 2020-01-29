@@ -91,11 +91,8 @@ class AddWorkerJob extends React.Component {
                   <Form onSubmit={this.handleSubmit}>
                     <div className="pl-lg-4">
                       <Row>
-                        <Col lg="6">
-                      
-                          
+                        <Col lg="6"> 
                           <FormGroup>
-                            
                             <Input
                               name="_id"
                               className="form-control-alternative"

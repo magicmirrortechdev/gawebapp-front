@@ -98,28 +98,12 @@ class Clients extends React.Component {
                         <td>{e.phone}</td>
                         <td>$0.00 USD</td>
                         <td>
+                        <div className="dropdownButtons">
                         <UncontrolledDropdown>
                            <DropdownToggle>
                               ...
                           </DropdownToggle>
-                          <DropdownMenu
-                            modifiers={{
-                                    setMaxHeight: {
-                                      enabled: true,
-                                      order: 890,
-                                      fn: (data) => {
-                                        return {
-                                          ...data,
-                                          styles: {
-                                            ...data.styles,
-                                            overflow: 'auto',
-                                            maxHeight: 100,
-                                          },
-                                        };
-                                      },
-                                    },
-                                  }}
-                                                        >
+                          <DropdownMenu>
                           <DropdownItem to={`/admin/clients/estimatecreate/${e._id}`} tag={Link}>Create Estimate</DropdownItem>
                           <DropdownItem to={`/admin/clients/update/${e._id}`} tag={Link}>Update Client</DropdownItem>
 
@@ -140,6 +124,7 @@ class Clients extends React.Component {
                                   className="text-danger">Delete</span></DropdownItem>
                           </DropdownMenu>
                           </UncontrolledDropdown>
+                          </div>
                         </td>
                         </tr>
                        
