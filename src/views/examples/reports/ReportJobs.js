@@ -10,9 +10,9 @@ class ReportJobs extends React.Component{
                 <tr>
                     <th></th>
                     <th scope="col">Job Name</th>
+                    <th scope="col">Total Invoices</th>
                     <th scope="col">Total Paid</th>
                     <th scope="col">Total A/R</th>
-                    <th scope="col">Total Invoices</th>
                     <th scope="col">Labor</th>
                     <th scope="col">Expenses</th>
                     <th scope="col">Profit</th>
@@ -35,7 +35,8 @@ class ReportJobs extends React.Component{
                             totalLabor += (time * effective);
                         });
 
-                        let totalAR = e.paid - totalExpenses + totalInvoices - e.total;
+                        let totalAR = e.paid - e.total;
+                        let totalProfit = totalInvoices - totalExpenses;
                         return (
                             <tbody key={i}>
                             <tr>
@@ -44,12 +45,12 @@ class ReportJobs extends React.Component{
                                         className="ni ni-bold-down"></i></Button>
                                 </td>
                                 <td>{e.jobName}</td>
-                                <td>{e.paid} USD</td>
-                                <td>${totalAR} ISD</td>
                                 <td>${totalInvoices} USD</td>
+                                <td>{e.paid} USD</td>
+                                <td>${totalAR} USD</td>
                                 <td>${totalLabor} USD</td>
                                 <td>${totalExpenses} USD</td>
-                                <td>${totalExpenses} USD</td>
+                                <td>${totalProfit} USD</td>
                             </tr>
                             <tr>
                                 <td colSpan={7}>
@@ -132,10 +133,10 @@ class ReportJobs extends React.Component{
                                                             return (
                                                                 <tr>
                                                                     <td>{ex.date}</td>
-                                                                    <td></td>
+                                                                    <td>{ex.workerId.name}</td>
                                                                     <td>{ex.category}</td>
                                                                     <td align="right">$ {ex.total} USD</td>
-                                                                    <td></td>
+                                                                    <td>{ex.vendor}</td>
                                                                     <td>{ex.description}</td>
                                                                 </tr>
                                                             )

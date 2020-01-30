@@ -29,7 +29,7 @@ class Reports extends React.Component {
     state = {
         jobs: [],
         workers: [],
-        activeTab: '2'
+        activeTab: '1'
     };
 
     toggleTab(tab) {
