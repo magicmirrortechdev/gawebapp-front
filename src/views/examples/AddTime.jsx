@@ -54,7 +54,7 @@ class AddTime extends React.Component {
   handleSubmit = (e, props) => {
     e.preventDefault()
         axios
-          .patch(Global.url + `addtime/${this.props.match.params.id}`,this.state)
+          .patch(Global.url + `addtime/${this.props.match.params.id}/${this.props.match.params.workerId}`,this.state)
           .then(response => {
             //aquí deberia ir una notificacion o un swal o un toastr
             this.props.history.push(`/admin/time`)

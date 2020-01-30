@@ -29,7 +29,7 @@ class Reports extends React.Component {
     state = {
         jobs: [],
         workers: [],
-        activeTab: '1'
+        activeTab: '2'
     };
 
     toggleTab(tab) {
@@ -57,7 +57,22 @@ class Reports extends React.Component {
             })
             .catch(err => {
                 console.log(err)
+            });
+
+        axios.get(Global.url + `workers`)
+            .then(({data}) => {
+                console.log(data);
+                this.setState(prevState => {
+                    return {
+                        ...prevState,
+                        workers: data.users
+                    }
+                })
             })
+            .catch(err => {
+                console.log(err)
+            });
+
     }
 
     render() {

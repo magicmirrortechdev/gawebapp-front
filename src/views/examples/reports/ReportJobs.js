@@ -25,7 +25,7 @@ class ReportJobs extends React.Component{
                     </tr>
                     </tbody> :
                     this.props.jobs.map((e, i) => {
-                        let totalInvoices = e.expenses ? (e.expenses.reduce((acc, current, i) => acc + current.total, 0)) : 0;
+                        let totalInvoices = e.total ? e.total: 0;
                         let totalLabor = 0;
                         let totalExpenses = e.expenses ? (e.expenses.reduce((acc, current, i) => acc + current.total, 0)) : 0;
 
@@ -68,6 +68,14 @@ class ReportJobs extends React.Component{
                                                         <th scope="col">Paid</th>
                                                     </tr>
                                                     </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td scope="col">{e.dateCreate}</td>
+                                                            <td scope="col">{e.clientId.name}</td>
+                                                            <td scope="col" align="right">$ {e.total} USD</td>
+                                                            <td scope="col" align="right">$ {e.paid} USD</td>
+                                                        </tr>
+                                                    </tbody>
                                                 </Table>
 
                                                 <h3>- Labor</h3>

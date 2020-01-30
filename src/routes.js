@@ -96,7 +96,7 @@ var routes = [
     layout: "/admin"
   },
   {
-    path: "/addtime/:id",
+    path: "/addtime/:id/:workerId",
     name: "Add Time",
     icon: "ni ni-ruler-pencil text-blue",
     component: AddTime,

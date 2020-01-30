@@ -125,7 +125,7 @@ class Time extends React.Component {
                                   }}
                                                         >
                           
-                          <DropdownItem to={`/admin/time/addtime/${e._id}`} tag={Link}>Add Hours</DropdownItem>
+                          <DropdownItem to={`/admin/time/addtime/${e._id}/${e.workerId._id}`} tag={Link}>Add Hours</DropdownItem>
 
                           <DropdownItem onClick={()=>{
                             authService

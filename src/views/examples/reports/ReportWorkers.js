@@ -24,17 +24,18 @@ class ReportWorkers extends React.Component{
                     </tr>
                     </tbody> :
                     this.props.workers.map((e, i) => {
-                        let totalInvoices = e.expenses ? (e.expenses.reduce((acc, current, i) => acc + current.total, 0)) : 0;
+                        let hours = e.works ? (e.works.reduce((acc, current, i) => acc + current.time, 0 )) : 0;
+                        let totalPay = e.works ? (e.works.reduce((acc, current, i) => acc + current.total, 0)) : 0;
                         let totalLabor = 0;
                         let totalExpenses = e.expenses ? (e.expenses.reduce((acc, current, i) => acc + current.total, 0)) : 0;
-
+/*
                         e.workers.map((wx, i) => {
                             let time = wx.time ? (wx.time.reduce((acc, current, i) => acc + current, 0)) : 0;
                             let effective = wx.workerId.effective ? wx.workerId.effective : 0;
                             totalLabor += (time * effective);
                         });
-
-                        let totalAR = e.paid - totalExpenses + totalInvoices - e.total;
+*/
+                        let totalAR =0;
                         return (
                             <tbody key={i}>
                             <tr>
@@ -42,13 +43,12 @@ class ReportWorkers extends React.Component{
                                     <Button id={"toggle" + i} color="primary"><i
                                         className="ni ni-bold-down"></i></Button>
                                 </td>
-                                <td>{e.jobName}</td>
+                                <td>{e.name}</td>
                                 <td>{e.paid} USD</td>
-                                <td>${totalAR} ISD</td>
-                                <td>${totalInvoices} USD</td>
-                                <td>${totalLabor} USD</td>
-                                <td>${totalExpenses} USD</td>
-                                <td>${totalExpenses} USD</td>
+                                <td>$ {totalAR} ISD</td>
+                                <td>$ {totalPay} USD</td>
+                                <td> {hours} </td>
+                                <td>$ {totalExpenses} USD</td>
                             </tr>
                             <tr>
                                 <td colSpan={7}>
@@ -85,22 +85,7 @@ class ReportWorkers extends React.Component{
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    {e.workers.map((wx, i) => {
-                                                            let time = wx.time ? (wx.time.reduce((acc, current, i) => acc + current, 0)) : 0;
-                                                            let effective = wx.workerId.effective ? wx.workerId.effective : 0;
-                                                            let payment = wx.workerId.payment ? wx.workerId.payment : 0;
-                                                            let date = new Date(wx.workerId.updatedAt).toISOString().split('T')[0];
-                                                            return (
-                                                                <tr>
-                                                                    <td>{date}</td>
-                                                                    <td>{wx.workerId.name}</td>
-                                                                    <td align="right">$ {payment * time} USD</td>
-                                                                    <td align="right">$ {effective * time} USD</td>
-                                                                    <td>{time}</td>
-                                                                </tr>
-                                                            )
-                                                        }
-                                                    )}
+
                                                     </tbody>
                                                 </Table>
 
@@ -119,19 +104,7 @@ class ReportWorkers extends React.Component{
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    {e.expenses.map((ex, ix) => {
-                                                            return (
-                                                                <tr>
-                                                                    <td>{ex.date}</td>
-                                                                    <td></td>
-                                                                    <td>{ex.category}</td>
-                                                                    <td align="right">$ {ex.total} USD</td>
-                                                                    <td></td>
-                                                                    <td>{ex.description}</td>
-                                                                </tr>
-                                                            )
-                                                        }
-                                                    )}
+
                                                     </tbody>
                                                 </Table>
                                             </CardBody>
