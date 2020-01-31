@@ -75,6 +75,7 @@ class Sidebar extends React.Component {
   };
   render() {
     const {  routes, logo,  } = this.props;
+    // eslint-disable-next-line no-unused-vars
     let navbarBrandProps;
     if (logo && logo.innerLink) {
       navbarBrandProps = {

@@ -79,7 +79,6 @@ class Time extends React.Component {
 
                      {this.state.jobs.length === 0 ?  <tbody><tr><td>No workers register</td></tr></tbody>:
                      this.state.jobs.map((e,i)=>{
-                       let id = e._id
                        let jobName = <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
                        let projectManager = e.projectManager.map((e,i)=>!projectManager ? <p style={{fontSize:"10px"}}>Project Manager Delete</p> : <p style={{fontSize:"10px"}} key={i}>{e.projectId.name}</p>)
                        console.log(projectManager)

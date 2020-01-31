@@ -42,16 +42,16 @@
 @import "custom/vendors";
 // React differences
 @import "react/react-differences";
-
 //custom
 .dropdownButtons {
-  position: absolute;
+    position: absolute;
 }
 
-.dropdownButtons > .dropdown{
-  bottom: 22px;
+.dropdownButtons>.dropdown {
+    bottom: 22px;
 }
 
-a.nav-link.active, a.nav-link{
-  cursor:pointer;
+a.nav-link.active,
+a.nav-link {
+    cursor: pointer;
 }

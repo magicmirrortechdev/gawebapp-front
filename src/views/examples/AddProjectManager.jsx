@@ -1,9 +1,6 @@
 import React from "react";
 import { withRouter } from 'react-router-dom'
-import AuthService from '../../services/services'
 import axios from 'axios'
-
-
 import {
   Card,
   CardHeader,

@@ -12,7 +12,6 @@ import {
   InputGroupAddon,
   InputGroupText,
   InputGroup,
-  Row,
   Col
 } from "reactstrap";
 import AuthService from '../../services/services'
@@ -52,8 +51,6 @@ class Login extends React.Component {
     }))
   }
   render() {
-    const loggedUser = JSON.parse(localStorage.getItem('loggedUser'))
-    console.log(this.state)
     return (
       <>
         <Col lg="5" md="7">

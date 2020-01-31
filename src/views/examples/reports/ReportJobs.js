@@ -71,10 +71,10 @@ class ReportJobs extends React.Component{
                                                     </thead>
                                                     <tbody>
                                                         <tr>
-                                                            <td scope="col">{e.dateCreate}</td>
-                                                            <td scope="col">{e.clientId.name}</td>
-                                                            <td scope="col" align="right">$ {e.total} USD</td>
-                                                            <td scope="col" align="right">$ {e.paid} USD</td>
+                                                            <td>{e.dateCreate}</td>
+                                                            <td>{e.clientId.name}</td>
+                                                            <td align="right">$ {e.total} USD</td>
+                                                            <td align="right">$ {e.paid} USD</td>
                                                         </tr>
                                                     </tbody>
                                                 </Table>
@@ -102,7 +102,7 @@ class ReportJobs extends React.Component{
                                                             let date = new Date(wx.workerId.updatedAt).toISOString().split('T')[0];
                                                             return (
                                                                 <tr>
-                                                                    <td>{date}</td>
+                                                                    <td key={i}>{date}</td>
                                                                     <td>{wx.workerId.name}</td>
                                                                     <td align="right">$ {payment * time} USD</td>
                                                                     <td align="right">$ {effective * time} USD</td>

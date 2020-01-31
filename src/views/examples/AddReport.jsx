@@ -1,8 +1,5 @@
 import React from "react";
 import {  withRouter } from 'react-router-dom'
-import AuthService from '../../services/services'
-import axios from 'axios'
-
 
 import {
   Card,
@@ -21,8 +18,6 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-
-const authService = new AuthService()
 
 let date = new Date()
 let day = date.getDate()

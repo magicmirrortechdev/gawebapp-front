@@ -1,7 +1,5 @@
 import React from "react";
 import AuthService from '../../services/services'
-import axios from 'axios'
-
 
 import {
   Card,

@@ -1,6 +1,5 @@
 import React from "react";
 import { withRouter } from 'react-router-dom'
-import AuthService from '../../services/services'
 import axios from 'axios'
 
 
@@ -67,7 +66,6 @@ class AddTime extends React.Component {
   }
 
   render() {
-    let job
     console.log(this.state)
     return (
       <>

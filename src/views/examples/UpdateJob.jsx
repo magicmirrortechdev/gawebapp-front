@@ -1,6 +1,5 @@
 import React from "react";
 import {  withRouter } from 'react-router-dom'
-import AuthService from '../../services/services'
 import axios from 'axios'
 
 
@@ -15,17 +14,10 @@ import {
   FormGroup,
   Input,
   Form,
-  Table
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
-const authService = new AuthService()
-
-let date = new Date()
-let day = date.getDate()
-let month = date.getMonth() + 1
-let year = date.getFullYear()
 
 class UpdateJob extends React.Component {
   

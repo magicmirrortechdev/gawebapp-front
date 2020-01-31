@@ -1,6 +1,5 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
-import AuthService from '../../services/services'
 import axios from 'axios'
 
 import {
@@ -19,7 +18,6 @@ import {
 // core components
 import Header from 'components/Headers/Header.jsx'
 import Global from "../../global";
-const authService = new AuthService()
 
 let date = new Date()
 let day = date.getDate()

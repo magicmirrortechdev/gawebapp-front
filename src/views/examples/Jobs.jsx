@@ -92,7 +92,6 @@ class Jobs extends React.Component {
                       let tax = parseInt(e.tax) * subtotal / 100
                       let discount = e.discount
                       let paid = e.paid
-                      let expensesCost = parseInt(e.expenses.reduce((acc, current, i) => acc + current.total, 0))
                       return(
                         <tbody key={i}>
                         <tr >
@@ -108,12 +107,29 @@ class Jobs extends React.Component {
                         })}</td>
                         <td>${subtotal + tax - paid - discount} USD</td>
                         <td>
-                          <div className="dropdownButtons">
+                          
                             <UncontrolledDropdown>
                               <DropdownToggle>
                                 ...
                               </DropdownToggle>
-                              <DropdownMenu>
+                              <DropdownMenu 
+                              modifiers={{
+                                setMaxHeight: {
+                                  enabled: true,
+                                  order: 890,
+                                  fn: (data) => {
+                                    return {
+                                      ...data,
+                                      styles: {
+                                        ...data.styles,
+                                        overflow: 'auto',
+                                        maxHeight: '100px',
+                                      },
+                                    };
+                                  },
+                                },
+                              }}
+                              >
                                 <DropdownItem onClick={()=>{
                                   authService
                                       .convertInvoice(e._id)
@@ -150,7 +166,6 @@ class Jobs extends React.Component {
                                     className="text-danger">Delete</span></DropdownItem>
                               </DropdownMenu>
                             </UncontrolledDropdown>
-                          </div>
 
                         </td>
                         </tr>

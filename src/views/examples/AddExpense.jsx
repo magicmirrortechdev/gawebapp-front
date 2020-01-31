@@ -1,6 +1,5 @@
 import React from "react";
 import {  withRouter } from 'react-router-dom'
-import AuthService from '../../services/services'
 import axios from 'axios'
 
 
@@ -19,7 +18,6 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
-const authService = new AuthService()
 const loggedUser = JSON.parse(localStorage.getItem('loggedUser'))
 
 class AddExpense extends React.Component {
@@ -52,8 +50,6 @@ class AddExpense extends React.Component {
   }
 
   render() {
-    const loggedUser = JSON.parse(localStorage.getItem('loggedUser'))
-    console.log(this.state)
     return (
       <>
         <Header forms={true}/>
