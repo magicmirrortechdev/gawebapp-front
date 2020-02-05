@@ -1,5 +1,5 @@
 let Global = {
-//    url : "https://greenacorn.herokuapp.com/"
+    //url: "https://greenacorn.herokuapp.com/"
     url: "http://localhost:3000/"
 };
 

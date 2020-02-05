@@ -4,6 +4,7 @@ import Index from "views/Index.jsx";
 import Login from "views/examples/Login.jsx";
 import Time from "views/examples/Time.jsx";
 import Estimates from "views/examples/Estimates.jsx";
+import Expenses from "views/examples/Expenses.jsx";
 import UpdateEstimate from "views/examples/UpdateEstimate.jsx";
 import UpdateJob from "views/examples/UpdateJob.jsx";
 import Invoices from "views/examples/Invoices.jsx";
@@ -27,13 +28,13 @@ import AddEstimateByUser from './views/examples/AddEstimateByUser.jsx'
 
 
 var routes = [
-  {
-    path: "/index",
-    name: "Home",
-    icon: "ni ni-tv-2 text-primary",
-    component: Index,
-    layout: "/admin"
-  },
+  // {
+  //   path: "/index",
+  //   name: "Home",
+  //   icon: "ni ni-tv-2 text-primary",
+  //   component: Index,
+  //   layout: "/admin"
+  // },
   {
     path: "/estimates",
     name: "Estimates",
@@ -133,13 +134,13 @@ var routes = [
     layout: "/admin/clients",
     invisible: true
   },
-  // {
-  //   path: "/expenses",
-  //   name: "Expenses",
-  //   icon: "ni ni-money-coins text-info",
-  //   component: Expenses,
-  //   layout: "/admin"
-  // },
+  {
+    path: "/expenses",
+    name: "Expenses",
+    icon: "ni ni-money-coins text-info",
+    component: Expenses,
+    layout: "/admin"
+  },
   {
     path: "/workers",
     name: "Workers",

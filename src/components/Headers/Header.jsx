@@ -2,17 +2,17 @@
 import React from "react";
 
 // reactstrap components
-import { Card, CardBody, CardTitle, Container, Row, Col } from "reactstrap";
+import {  Container } from "reactstrap";
 
 class Header extends React.Component {
   render() {
     return (
       <>
-        <div className={"header bg-gradient-info pb-8 pt-5 " + (!this.props.forms ? "pt-md-8": "")} >
+        <div className={"header bg-gradient-info pb-5 pt-5 " + (!this.props.forms ? "pt-md-8": "")} >
             {!this.props.forms && (
                 <Container fluid >
                   <div className="header-body">
-                  {/* Card stats */}
+                  {/* Card stats 
                   <Row>
                     <Col lg="6" xl="3">
                       <Card className="card-stats mb-4 mb-xl-0">
@@ -96,6 +96,7 @@ class Header extends React.Component {
                       </Card>
                     </Col>
                   </Row>
+                  */}
                 </div>
                 </Container>
             )}
