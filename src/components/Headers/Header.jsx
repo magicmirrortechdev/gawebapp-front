@@ -2,13 +2,13 @@
 import React from "react";
 
 // reactstrap components
-import {  Container } from "reactstrap";
+import {  Container} from "reactstrap";
 
 class Header extends React.Component {
   render() {
     return (
       <>
-        <div className={"header bg-gradient-info pb-5 pt-5 " + (!this.props.forms ? "pt-md-8": "")} >
+        <div className={"header bg-gradient-info pb-7 pt-5 " + (!this.props.forms ? "pt-md-8": "")} >
             {!this.props.forms && (
                 <Container fluid >
                   <div className="header-body">

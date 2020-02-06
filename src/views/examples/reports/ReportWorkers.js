@@ -2,6 +2,7 @@ import React from 'react';
 import {Button, Card, Table, UncontrolledCollapse} from "reactstrap";
 import CardBody from "reactstrap/es/CardBody";
 
+
 class ReportWorkers extends React.Component{
     render() {
         return (

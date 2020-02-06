@@ -18,8 +18,20 @@ import {
   Media,
   Button
 } from "reactstrap";
+import AuthService from '../../services/services'
+
+const authService = new AuthService()
 
 class AdminNavbar extends React.Component {
+  handleLogout = () => {
+    authService
+      .logout()
+      .then(() => {
+        localStorage.removeItem('loggedUser')
+        this.props.history.push('/')
+      })
+      .catch(err => console.log(err))
+  }
 
   render() {
     const loggedUser = JSON.parse(localStorage.getItem('loggedUser'))
@@ -64,7 +76,7 @@ class AdminNavbar extends React.Component {
                     <h6 className="text-overflow m-0">Welcome!</h6>
                   </DropdownItem>
                   <DropdownItem divider />
-                  <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>
+                  <DropdownItem  onClick={this.handleLogout}>
                     <i className="ni ni-user-run" />
                     <span>Logout</span>
                   </DropdownItem>
