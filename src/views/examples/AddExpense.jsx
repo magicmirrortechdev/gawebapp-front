@@ -16,12 +16,27 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
-const loggedUser = JSON.parse(localStorage.getItem('loggedUser'))
 
+let loggedUser;
 class AddExpense extends React.Component {
   state = {
-    workerId: loggedUser._id
+    workerId: ""
   };
+
+  constructor(props) {
+    super(props);
+    console.log("constructor!!!")
+    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+    console.log("jsonParse", loggedUser);
+  }
+
+  componentDidMount() {
+    console.log(loggedUser);
+    this.setState({
+      workerId: loggedUser._id
+    })
+    console.log("montando componente, " );
+  }
 
   handleInput = e => {
     e.persist()
