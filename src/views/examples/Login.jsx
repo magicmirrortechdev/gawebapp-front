@@ -29,13 +29,20 @@ class Login extends React.Component {
         authService
           .login(this.state)
           .then(response => {
-            localStorage.setItem('loggedUser', JSON.stringify(response.data.user))
-            if (response.data.user.role === 'ADMIN') {
-              this.props.history.push(`/admin/jobs`)
-            }
-            if (response.data.user.role === 'WORKER') {
-              this.props.history.push(`/admin/jobs`)
-            }
+            let promise = new Promise((resolve, reject) => {
+              localStorage.setItem('loggedUser', JSON.stringify(response.data.user))
+              resolve();
+            })
+
+            promise.then(() => {
+              if (response.data.user.role === 'ADMIN') {
+                this.props.history.push(`/admin/jobs`)
+              }
+              if (response.data.user.role === 'WORKER') {
+                this.props.history.push(`/admin/jobs`)
+              }
+            })
+
           })
           .catch(err => {
             alert('Username or Password Incorrect')
