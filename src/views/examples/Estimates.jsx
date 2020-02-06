@@ -47,12 +47,10 @@ class Icons extends React.Component {
     authService
     .convertInvoice(_id)
     .then(response => {
-            //aquí deberia ir una notificacion o un swal o un toastr
             this.props.history.push(`estimates`)
             console.log(response)
           })
           .catch(err => {
-            //aquí deberia ir una notificacion o un swal o un toastr
             console.log(err.response)
             alert(err.response.data.msg || err.response.data.err.message)
           })

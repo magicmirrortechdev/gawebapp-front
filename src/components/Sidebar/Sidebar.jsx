@@ -12,6 +12,7 @@ import {
   DropdownItem,
   UncontrolledDropdown,
   DropdownToggle,
+  Media,
 
   Form,
   Input,
@@ -27,10 +28,20 @@ import {
   Row,
   Col
 } from "reactstrap";
+import AuthService from '../../services/services'
 
-;
+const authService = new AuthService()
 
 class Sidebar extends React.Component {
+  handleLogout = () => {
+    authService
+      .logout()
+      .then(() => {
+        localStorage.removeItem('loggedUser')
+        this.props.history.push('/')
+      })
+      .catch(err => console.log(err))
+  }
   state = {
     collapseOpen: false
   };
@@ -74,6 +85,8 @@ class Sidebar extends React.Component {
     });
   };
   render() {
+    const loggedUser = JSON.parse(localStorage.getItem('loggedUser'))
+
     const {  routes, logo,  } = this.props;
     // eslint-disable-next-line no-unused-vars
     let navbarBrandProps;
@@ -120,28 +133,21 @@ class Sidebar extends React.Component {
           {/* User */}
           <Nav className="align-items-center d-md-none">
             <UncontrolledDropdown nav>
+            <DropdownToggle className="pr-0" nav>
+                  <Media className="align-items-center">
+                    <Media className="ml-2 d-none d-lg-block">
+                      <span className="mb-0 text-sm font-weight-bold">
+                        {loggedUser.name}
+                      </span>
+                    </Media>
+                  </Media>
+                </DropdownToggle>
               <DropdownMenu className="dropdown-menu-arrow" right>
                 <DropdownItem className="noti-title" header tag="div">
                   <h6 className="text-overflow m-0">Welcome!</h6>
                 </DropdownItem>
-                <DropdownItem to="/admin/user-profile" tag={Link}>
-                  <i className="ni ni-single-02" />
-                  <span>My profile</span>
-                </DropdownItem>
-                <DropdownItem to="/admin/user-profile" tag={Link}>
-                  <i className="ni ni-settings-gear-65" />
-                  <span>Settings</span>
-                </DropdownItem>
-                <DropdownItem to="/admin/user-profile" tag={Link}>
-                  <i className="ni ni-calendar-grid-58" />
-                  <span>Activity</span>
-                </DropdownItem>
-                <DropdownItem to="/admin/user-profile" tag={Link}>
-                  <i className="ni ni-support-16" />
-                  <span>Support</span>
-                </DropdownItem>
                 <DropdownItem divider />
-                <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>
+                <DropdownItem href="#pablo" onClick={this.handleLogout}>
                   <i className="ni ni-user-run" />
                   <span>Logout</span>
                 </DropdownItem>
@@ -156,11 +162,11 @@ class Sidebar extends React.Component {
                 {logo ? (
                   <Col className="collapse-brand" xs="6">
                     {logo.innerLink ? (
-                      <Link to={logo.innerLink}>
+                      <Link to='/'>
                         <img alt={logo.imgAlt} src={logo.imgSrc} />
                       </Link>
                     ) : (
-                      <a href={logo.outterLink}>
+                      <a href='/'>
                         <img alt={logo.imgAlt} src={logo.imgSrc} />
                       </a>
                     )}

@@ -20,9 +20,13 @@ const loggedUser = JSON.parse(localStorage.getItem('loggedUser'))
 
 class AddExpense extends React.Component {
   state = {
-    workerId: loggedUser._id
+    workerId: ''
   };
-
+  componentDidMount(){
+    this.setState(prevState=>{
+      return {workerId: loggedUser._id}
+    })
+  }
   handleInput = e => {
     e.persist()
     this.setState(prevState => ({
@@ -50,7 +54,7 @@ class AddExpense extends React.Component {
   render() {
 
     console.log(this.state)
-    if(!this.state.workerId||this.state.workerId===null||this.state.workerId==='') return <p>Loading</p>
+    if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
     return (
       <>
         <Header forms={true}/>
