@@ -1,5 +1,7 @@
 
 import React from "react";
+import { withRouter } from 'react-router-dom'
+
 
 // reactstrap components
 import {
@@ -12,13 +14,26 @@ import {
   InputGroupAddon,
   InputGroupText,
   InputGroup,
-  Col
+  Col,
+  Modal, ModalHeader, ModalBody
 } from "reactstrap";
 import AuthService from '../../services/services'
-import ModalStValentin from "./ModalStValentin";
+import image from './sanv.jpg'
 const authService = new AuthService()
 
 class Login extends React.Component {
+  
+  state={
+      modalStValentin: true
+    }
+  
+  
+
+    
+  toggleSnValentin = () => this.setState(prevState=> { return{
+    modalStValentin: !this.state.modalStValentin
+  }  });
+
   componentDidMount(props) {
     const loggedUser = localStorage.getItem('loggedUser')
     if (loggedUser) return this.props.history.push('/admin/jobs')
@@ -62,8 +77,22 @@ class Login extends React.Component {
     }))
   }
   render() {
+    const { className } = this.props;
+    const closeModalSnValentinBtn = <button className="close" onClick={this.toggleSnValentin}>&times;</button>;
+
     return (
       <>
+      <Modal style={{paddingTop: '110px', display: "flex", alignContent: "center", alignItems: "center"}}
+      isOpen={this.state.modalStValentin} toggle={this.toggleSnValentin} className={className}>
+       <ModalHeader style={{paddingLeft: "100px", paddingTop: "40px", paddingBottom: "10px"}}
+                toggle={this.toggleSnValentin} close={closeModalSnValentinBtn}>
+         <p style={{fontSize: "20px"}}>On behalf of Magic Mirror's team</p>
+        </ModalHeader>
+      <ModalBody>
+       <img height="100%" width="100%" src={image} alt="San Valentin"/>
+      </ModalBody>
+      </Modal>
+
         <Col lg="5" md="7">
           <Card className="bg-secondary shadow border-0">
             
@@ -114,11 +143,9 @@ class Login extends React.Component {
             </CardBody>
           </Card>
         </Col>
-
-        <ModalStValentin/>
       </>
     );
   }
 }
 
-export default Login;
+export default withRouter(Login);
