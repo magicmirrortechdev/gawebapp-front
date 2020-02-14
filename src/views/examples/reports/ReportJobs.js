@@ -10,8 +10,8 @@ class ReportJobs extends React.Component{
                 <tr>
                     <th></th>
                     <th scope="col">Job Name</th>
+                    <th scope="col">Job Total</th>
                     <th scope="col">Total Invoices</th>
-                    <th scope="col">Total Paid</th>
                     <th scope="col">Total A/R</th>
                     <th scope="col">Labor</th>
                     <th scope="col">Expenses</th>

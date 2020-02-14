@@ -16,13 +16,13 @@ import Global from "../../global";
 
 class Expenses extends React.Component {
   state = {
-    expenses:[]
+    jobs:[]
   };
 
 
   componentDidMount() {
     axios
-      .get(Global.url + 'checkexpenses')
+      .get(Global.url + 'checkjobs')
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -82,22 +82,25 @@ class Expenses extends React.Component {
                   
                     
 
-                     {this.state.expenses.length === 0 ?  <tbody><tr><td>No expenses register</td></tr></tbody>:
-                     this.state.expenses.map((e,i)=>{
-                      return(
-                        <tbody key={i}>
-                        <tr >
-                        <th scope="row" >{e.merchant}</th>
-                        <td>{e.description}</td>
-                        <td>{e.category}</td>
-                        <td>{e.date}</td>
-                        <td>{e.total}</td>
-                        </tr>
-                       
-                    
-                      </tbody>
-                     )  
-                    })}
+                     {this.state.jobs.length === 0 ?  <tbody><tr><td>No expenses register</td></tr></tbody>:
+                     this.state.jobs.map((e,i)=>{
+                       return(
+                       e.expenses.map((e,i)=>{
+                        return(
+                          <tbody key={i}>
+                          <tr >
+                          <th scope="row" >{e.merchant}</th>
+                          <td>{e.description}</td>
+                          <td>{e.category}</td>
+                          <td>{e.date}</td>
+                          <td>{e.total}</td>
+                          <td>...</td>
+                          </tr>                                               
+                        </tbody>
+                       )
+                       })
+                      
+                      ) })}
                       
                       
                 </Table>

@@ -109,7 +109,7 @@ class Invoices extends React.Component {
                                 <DropdownItem>Send by email</DropdownItem>
                                 <DropdownItem onClick={()=>{
                                   authService
-                                      .estimateDelete(e._id)
+                                      .invoiceDelete(e._id)
                                       .then(({data}) => {
                                         alert('Invoice Delete')
                                         window.location.reload()

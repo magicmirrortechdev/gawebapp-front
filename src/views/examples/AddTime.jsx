@@ -23,7 +23,8 @@ import Global from "../../global";
 
 class AddTime extends React.Component {
   state = {
-    jobs:[]
+    jobName: '',
+    nameWorker:''
   };
 
   handleInput = e => {
@@ -36,11 +37,26 @@ class AddTime extends React.Component {
 
   componentDidMount() {
     axios
-      .get(Global.url + `checkjobs`)
+      .get(Global.url + `estimatedetail/${this.props.match.params.estimateId}`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
             ...prevState,
+            jobName: data.estimate.jobName,
+            ...data
+          }
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+      axios
+      .get(Global.url + `workerdetail/${this.props.match.params.workerId}`)
+      .then(({ data }) => {
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            nameWorker: data.user.name,
             ...data
           }
         })
@@ -55,18 +71,18 @@ class AddTime extends React.Component {
         axios
           .patch(Global.url + `addtime/${this.props.match.params.id}/${this.props.match.params.workerId}`,this.state)
           .then(response => {
-            //aquí deberia ir una notificacion o un swal o un toastr
             this.props.history.push(`/admin/time`)
             console.log(response)
           })
           .catch(err => {
-            //aquí deberia ir una notificacion o un swal o un toastr
             console.log(err.response)
           })
   }
 
   render() {
     console.log(this.state)
+    const jobName = this.state.jobName
+    const workerName = this.state.nameWorker
     return (
       <>
         <Header />
@@ -78,16 +94,48 @@ class AddTime extends React.Component {
                 <CardHeader className="border-0">
                   <Row className="align-items-center">
                     <div className="col">
-                      <h3 className="mb-0">Information Worker</h3>
+                      <h3 className="mb-0">Information</h3>
                     </div>
                   </Row>
                 </CardHeader>
-                <CardBody> 
-
+                <CardBody>
+                  
                   <Form onSubmit={this.handleSubmit}>
                     <div className="pl-lg-4">
                       <Row>
-                        <Col lg="6">
+                        <Col lg="8">
+                        <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-hours"
+                            >
+                              Job Name
+                            </label>
+                            <Input
+                              value={jobName}
+                              name="jobName"
+                              className="form-control-alternative lg"
+                              type="text"
+                              onChange={this.handleInput}
+                              disabled
+                            />
+                          </FormGroup>
+                        <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-hours"
+                            >
+                              Worker Name
+                            </label>
+                            <Input
+                              value={workerName}
+                              name="workerName"
+                              className="form-control-alternative"
+                              type="text"
+                              onChange={this.handleInput}
+                              disabled
+                            />
+                          </FormGroup>
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -116,7 +164,7 @@ class AddTime extends React.Component {
                               className="form-control-alternative"
                               color="info"
 
-                            >Add Time</Button>
+                            >Add Hours</Button>
                           </FormGroup>
                         </Col>
                       </Row>

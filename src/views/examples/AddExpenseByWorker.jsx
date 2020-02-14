@@ -33,9 +33,24 @@ class AddExpense extends React.Component {
   componentDidMount() {
     console.log(loggedUser);
     this.setState({
-      workerId: loggedUser._id
+      workerId: loggedUser._id,
+      jobs:[]
     })
     console.log("montando componente, " );
+    axios
+      .get(Global.url + `checkjobs`)
+      .then(({ data }) => {
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            ...data
+          }
+        })
+        console.log('aquiiii', this.state.jobs)
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
   handleInput = e => {
@@ -44,6 +59,15 @@ class AddExpense extends React.Component {
       ...prevState,
       [e.target.name]: e.target.value
     }))
+  }
+
+  handleDate = e => {
+    let n =  new Date();
+    let y = n.getFullYear();
+    let m = n.getMonth() + 1;
+    let d = n.getDate();
+
+    document.getElementById("date").innerHTML = d + "/" + m + "/" + y;
   }
 
   uploadPhoto = async e => {
@@ -58,8 +82,8 @@ class AddExpense extends React.Component {
 
   handleSubmit = async (e, props) => {
     e.preventDefault()
-        await axios.patch(Global.url + `addexpense/${this.props.match.params.id}`,this.state)
-        this.props.history.push('/admin/jobs')
+        await axios.patch(Global.url + `addexpense/${this.state._id}`,this.state)
+        this.props.history.push('/admin/expenses')
   }
 
   render() {
@@ -74,7 +98,7 @@ class AddExpense extends React.Component {
         mes='0'+mes //agrega cero si es menor de 10
       document.getElementById('date').value=ano+"-"+mes+"-"+dia;
     }
-
+    
     console.log(this.state)
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
     return (
@@ -99,6 +123,24 @@ class AddExpense extends React.Component {
                       <Row>
                         <Col lg="6">
                           <FormGroup>
+                            <Input
+                              name="_id"
+                              className="form-control-alternative"
+                              type="select"
+                              onChange={this.handleInput}
+                              
+                            >
+                            <option>Select Job to Add Expense</option>
+                            {this.state.jobs.map((e,i)=>{
+                              return(
+                                <option key={i} value={`${e._id}`}>{e.jobName}</option>)
+                            })
+                            }
+                            
+                            
+                            </Input>
+                          </FormGroup>
+                          <FormGroup>
                             <label
                               className="form-control-label d-inline-block"
                               htmlFor="input-date"
@@ -106,9 +148,9 @@ class AddExpense extends React.Component {
                               Expense Date
                             </label>
                             <Input
-                              id="date"
                               className="form-control-alternative"
                               placeholder="Select a date"
+                              id="date"
                               name="date"
                               type="date"
                               onChange={this.handleInput}

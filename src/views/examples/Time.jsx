@@ -70,7 +70,6 @@ class Time extends React.Component {
                       <th scope="col">Name</th>
                       <th scope="col">Total Hours</th>
                       <th scope="col">Job</th>
-                      <th scope="col">Site Managers</th>                     
                       <th scope="col">Options</th>
                     </tr>
                   </thead>
@@ -81,6 +80,7 @@ class Time extends React.Component {
                      this.state.jobs.map((e,i)=>{
                        let jobName = <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
                        let projectManager = e.projectManager.map((e,i)=>!projectManager ? <p style={{fontSize:"10px"}}>Project Manager Delete</p> : <p style={{fontSize:"10px"}} key={i}>{e.projectId.name}</p>)
+                       let estimateId = e._id
                        console.log(projectManager)
                        
                       return(
@@ -95,13 +95,9 @@ class Time extends React.Component {
                         {time}</td>
                         <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px"}} >
                              {jobName}
-                        </td>
-                        
-                        <td style={{paddingTop:"15px", display:"flex", flexDirection:"column", alignItems:"center", alignContent:"center"}}>
-                        {projectManager}</td>
-                        
+                        </td>                        
                         <td >
-                            <UncontrolledDropdown>
+                          <UncontrolledDropdown>
                            <DropdownToggle>
                               ...
                           </DropdownToggle>
@@ -124,7 +120,7 @@ class Time extends React.Component {
                                   }}
                                                         >
                           
-                          <DropdownItem to={`/admin/time/addtime/${e._id}/${e.workerId._id}`} tag={Link}>Add Hours</DropdownItem>
+                          <DropdownItem to={`/admin/time/addtime/${estimateId}/${e._id}/${e.workerId._id}`} tag={Link}>Add Hours</DropdownItem>
 
                           <DropdownItem onClick={()=>{
                             authService

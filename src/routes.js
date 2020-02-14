@@ -12,6 +12,7 @@ import Clients from "views/examples/Clients.jsx";
 import AddClient from "views/examples/AddClient.jsx";
 import Workers from "views/examples/Workers.jsx";
 import AddExpense from "views/examples/AddExpense.jsx";
+import AddExpenseByWorker from "views/examples/AddExpenseByWorker.jsx";
 import Jobs from "views/examples/Jobs.jsx";
 import AddJob from "views/examples/AddJob.jsx";
 import AddWorker from "views/examples/AddWorker.jsx";
@@ -97,7 +98,15 @@ var routes = [
     layout: "/admin"
   },
   {
-    path: "/addtime/:id/:workerId",
+    path: "/addtime",
+    name: "Add Time General",
+    icon: "ni ni-ruler-pencil text-blue",
+    component: AddTime,
+    layout: "/admin",
+    invisible:true
+  },
+  {
+    path: "/addtime/:estimateId/:id/:workerId",
     name: "Add Time",
     icon: "ni ni-ruler-pencil text-blue",
     component: AddTime,
@@ -172,6 +181,12 @@ var routes = [
     path: "/:id/addexpense",
     component: AddExpense,
     layout: "/admin/jobs",
+    invisible: true
+  },
+  { 
+    path: "/addexpense",
+    component: AddExpenseByWorker,
+    layout: "/admin",
     invisible: true
   },
   { 

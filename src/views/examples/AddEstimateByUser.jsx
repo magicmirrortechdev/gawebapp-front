@@ -36,9 +36,9 @@ class AddEstimateByUser extends React.Component {
     quantity: parseInt(''),
     rate: parseInt(''),
     subtotal: 0,
-    tax: parseInt(''),
-    discount: parseInt(''),
-    paid: parseInt(''),
+    tax: 0,
+    discount: 0,
+    paid: 0,
     total: 0,
     dateCreate: month<10 ? (`${day}-0${month}-${year}`):(`${day}-${month}-${year}`),
     jobName: '',
@@ -350,7 +350,7 @@ class AddEstimateByUser extends React.Component {
                               Tax{' '}
                             </label>
                             <Input
-                              value={this.state.tax}
+                              placeholder="0"
                               name="tax"
                               className="form-control-alternative"
                               type="number"
@@ -366,7 +366,7 @@ class AddEstimateByUser extends React.Component {
                               Discount
                             </label>
                             <Input
-                              value={this.state.discount}
+                              placeholder="0"
                               name="discount"
                               className="form-control-alternative"
                               type="number"
@@ -383,7 +383,7 @@ class AddEstimateByUser extends React.Component {
                             </label>
                             <Input
                               name="paid"
-                              value={this.state.paid}
+                              placeholder="0"
                               className="form-control-alternative"
                               type="number"
                               onChange={this.handleInput}

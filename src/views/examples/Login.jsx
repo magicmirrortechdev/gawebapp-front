@@ -15,6 +15,7 @@ import {
   Col
 } from "reactstrap";
 import AuthService from '../../services/services'
+import ModalStValentin from "./ModalStValentin";
 const authService = new AuthService()
 
 class Login extends React.Component {
@@ -39,6 +40,9 @@ class Login extends React.Component {
                 this.props.history.push(`/admin/jobs`)
               }
               if (response.data.user.role === 'WORKER') {
+                this.props.history.push(`/admin/jobs`)
+              }
+              if (response.data.user.role === 'PROJECT MANAGER') {
                 this.props.history.push(`/admin/jobs`)
               }
             })
@@ -110,6 +114,8 @@ class Login extends React.Component {
             </CardBody>
           </Card>
         </Col>
+
+        <ModalStValentin/>
       </>
     );
   }
