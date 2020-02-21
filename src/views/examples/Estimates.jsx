@@ -40,7 +40,7 @@ class Icons extends React.Component {
         })
       })
       .catch(err => {
-        console.log(err)
+        console.log(err.response)
       })
   }
   convertInvoice = (_id)=>{
@@ -114,32 +114,16 @@ class Icons extends React.Component {
                                 ...
                               </DropdownToggle>
                               <DropdownMenu>
-                                <DropdownItem onClick={()=>{
-                                  authService
-                                      .convertInvoice(e._id)
-                                      .then(response => {
-                                        //aquí deberia ir una notificacion o un swal o un toastr
-                                        this.props.history.push(`invoices`)
-                                        console.log(response)
-
-                                      })
-                                      .catch(err => {
-                                        //aquí deberia ir una notificacion o un swal o un toastr
-                                        console.log(err.response)
-                                        alert(err.response.data.msg || err.response.data.err.message)
-                                      })
-                                }}>Convert to Invoice</DropdownItem>
+                                <DropdownItem to={`/admin/estimates/${e._id}/invoice`} tag={Link}>Convert to Invoice</DropdownItem>
                                 <DropdownItem onClick={()=>{
                                   authService
                                       .convertJob(e._id)
                                       .then(response => {
-                                        //aquí deberia ir una notificacion o un swal o un toastr
                                         this.props.history.push(`jobs`)
                                         console.log(response)
 
                                       })
                                       .catch(err => {
-                                        //aquí deberia ir una notificacion o un swal o un toastr
                                         console.log(err.response)
                                         alert(err.response.data.msg || err.response.data.err.message)
                                       })

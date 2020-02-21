@@ -1,6 +1,7 @@
 import React from "react";
 import axios from 'axios'
 import AuthService from '../../services/services'
+import { Link } from "react-router-dom";
 
 import {
   Card,
@@ -22,14 +23,14 @@ const authService = new AuthService()
 
 class Invoices extends React.Component {
   state = {
-    invoices:[],
+    estimates:[],
     id:'',
     btnDropup: false
   };
 
   componentDidMount() {
     axios
-      .get(Global.url + `checkinvoices`)
+      .get(Global.url + `checkestimates`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -58,6 +59,17 @@ class Invoices extends React.Component {
                     <div className="col">
                       <h3 className="mb-0">Information</h3>
                     </div>
+                    <div className="col text-right">
+                    <Link to="createinvoice">
+                      <p
+                        color="primary"
+                        size="sm" 
+                      >
+                        Create a Invoice
+                      </p>
+                    </Link>
+                      
+                    </div>
                   </Row>
                 </CardHeader>
                 <Table className="align-items-center table-flush" responsive>
@@ -70,20 +82,18 @@ class Invoices extends React.Component {
                       <th scope="col">Options</th>
                     </tr>
                   </thead>
-                  {this.state.invoices.length === 0 ?  <tbody><tr><td>No invoices register</td></tr></tbody>:
-                     this.state.invoices.map((e,i)=>{
-                      let subtotal = e.items.reduce((acc, current, i) => acc + current.subtotal, 0)
-                      let tax = parseInt(e.tax) * subtotal / 100
-                      let discount = e.discount
-                      let paid = e.paid
-                      let expensesCost = parseInt(e.expenses.reduce((acc, current, i) => acc + current.total, 0))
+                  {this.state.estimates.length === 0 ?  <tbody><tr><td>No invoices register</td></tr></tbody>:
+                     this.state.estimates.map((e,i)=>{
+                      const client = e.clientId.name
                       return(
-                        <tbody key={i}>
+                        e.invoices.map((e,i) =>{
+                          return(
+                            <tbody key={i}>
                         <tr >
-                        <th scope="row" >{e.clientId.name}</th>
-                        <td>{e.dateCreate}</td>
+                        <th scope="row" >{client}</th>
+                        <td>{e.date}</td>
                         <td>{e.status}</td>
-                        <td>${subtotal + tax - paid - discount + expensesCost}USD</td>                       
+                        <td>${e.total}USD</td>                       
                         <td>
                           <div className="dropdownButtons">
                             <UncontrolledDropdown>
@@ -128,6 +138,9 @@ class Invoices extends React.Component {
                         
                         </tr>
                       </tbody>
+                          )
+                        })
+                        
                      )  
                     })}
                 </Table>

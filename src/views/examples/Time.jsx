@@ -62,6 +62,17 @@ class Time extends React.Component {
                     <div className="col">
                       <h3 className="mb-0">Employee Information</h3>
                     </div>
+                    <div className="col text-right">
+                    <Link to="addtime">
+                      <p
+                        color="primary"
+                        size="sm" 
+                      >
+                        Add Time
+                      </p>
+                    </Link>
+                      
+                    </div>
                   </Row>
                 </CardHeader>
                 <Table className="align-items-center table-flush" responsive>

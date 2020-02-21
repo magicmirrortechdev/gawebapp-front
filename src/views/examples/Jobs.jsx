@@ -130,21 +130,7 @@ class Jobs extends React.Component {
                                 },
                               }}
                               >
-                                <DropdownItem onClick={()=>{
-                                  authService
-                                      .convertInvoice(e._id)
-                                      .then(response => {
-                                        //aquí deberia ir una notificacion o un swal o un toastr
-                                        this.props.history.push(`invoices`)
-                                        console.log(response)
-
-                                      })
-                                      .catch(err => {
-                                        //aquí deberia ir una notificacion o un swal o un toastr
-                                        console.log(err.response)
-                                        alert(err.response.data.msg || err.response.data.err.message)
-                                      })
-                                }}>Convert to Invoice</DropdownItem>
+                                <DropdownItem to={`/admin/estimates/${e._id}/invoice`} tag={Link}>Convert to Invoice</DropdownItem>                                
                                 <DropdownItem to={`/admin/jobs/${e._id}`} tag={Link}>Update</DropdownItem>
                                 <DropdownItem to={`/admin/jobs/${e._id}/addexpense`} tag={Link}>Add Expense</DropdownItem>
                                 <DropdownItem to={`/admin/jobs/addworker/${e._id}`} tag={Link}>Add Worker</DropdownItem>

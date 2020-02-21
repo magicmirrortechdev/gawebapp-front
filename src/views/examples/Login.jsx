@@ -15,24 +15,12 @@ import {
   InputGroupText,
   InputGroup,
   Col,
-  Modal, ModalHeader, ModalBody
 } from "reactstrap";
 import AuthService from '../../services/services'
-import image from './sanv.jpg'
 const authService = new AuthService()
 
 class Login extends React.Component {
   
-  state={
-      modalStValentin: true
-    }
-  
-  
-
-    
-  toggleSnValentin = () => this.setState(prevState=> { return{
-    modalStValentin: !this.state.modalStValentin
-  }  });
 
   componentDidMount(props) {
     const loggedUser = localStorage.getItem('loggedUser')
@@ -52,13 +40,13 @@ class Login extends React.Component {
 
             promise.then(() => {
               if (response.data.user.role === 'ADMIN') {
-                this.props.history.push(`/admin/jobs`)
+                this.props.history.push(`/admin/index`)
               }
               if (response.data.user.role === 'WORKER') {
-                this.props.history.push(`/admin/jobs`)
+                this.props.history.push(`/admin/index`)
               }
               if (response.data.user.role === 'PROJECT MANAGER') {
-                this.props.history.push(`/admin/jobs`)
+                this.props.history.push(`/admin/index`)
               }
             })
 
@@ -77,22 +65,8 @@ class Login extends React.Component {
     }))
   }
   render() {
-    const { className } = this.props;
-    const closeModalSnValentinBtn = <button className="close" onClick={this.toggleSnValentin}>&times;</button>;
-
     return (
       <>
-      <Modal style={{paddingTop: '110px', display: "flex", alignContent: "center", alignItems: "center"}}
-      isOpen={this.state.modalStValentin} toggle={this.toggleSnValentin} className={className}>
-       <ModalHeader style={{paddingLeft: "100px", paddingTop: "40px", paddingBottom: "10px"}}
-                toggle={this.toggleSnValentin} close={closeModalSnValentinBtn}>
-         <p style={{fontSize: "20px"}}>On behalf of Magic Mirror's team</p>
-        </ModalHeader>
-      <ModalBody>
-       <img height="100%" width="100%" src={image} alt="San Valentin"/>
-      </ModalBody>
-      </Modal>
-
         <Col lg="5" md="7">
           <Card className="bg-secondary shadow border-0">
             

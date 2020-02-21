@@ -1,13 +1,9 @@
 
 import React from "react";
 
-import Chart from "chart.js";
-// react plugin used to create charts
-// reactstrap components
 import {
   Card,
   CardHeader,
-
   Table,
   Container,
   Row,
@@ -19,8 +15,8 @@ import {
   chartOptions,
   parseOptions,
 } from "variables/charts.jsx";
-
 import Header from "components/Headers/Header.jsx";
+import { Link } from "react-router-dom";
 
 class Index extends React.Component {
   state = {
@@ -41,11 +37,6 @@ class Index extends React.Component {
     setTimeout(() => wow(), 1000);
     // this.chartReference.update();
   };
-  componentWillMount() {
-    if (window.Chart) {
-      parseOptions(Chart, chartOptions());
-    }
-  }
   render() {
     return (
       <>
@@ -53,12 +44,12 @@ class Index extends React.Component {
         {/* Page content */}
         <Container className="mt--7" fluid>
           <Row className="mt-5">
-            <Col className="mb-5 mb-xl-0" xl="8">
+            <Col className="mb-5 mb-xl-0" xl="12">
               <Card className="shadow">
                 <CardHeader className="border-0">
                   <Row className="align-items-center">
                     <div className="col">
-                      <h3 className="mb-0">Notifications</h3>
+                      <h3 className="mb-0">Actions</h3>
                     </div>
                     {/*
                     <div className="col text-right">
@@ -77,82 +68,24 @@ class Index extends React.Component {
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
-                      <th scope="col">Number</th>
-                      <th scope="col">Job</th>
-                      <th scope="col">Date</th>
-                      <th scope="col">Status</th>
-                      <th scope="col">Total</th>
-                      <th scope="col"></th>
+                      <th scope="col">Create Estimate</th>
+                      <th scope="col">Create Invoice</th>
+                      <th scope="col">Add Expense</th>
+                      <th scope="col">Add Time</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <th scope="row">1</th>
-                      <td>Kitchen Remove</td>
-                      <td>Dec 24, 2019</td>
-                      <td>50%</td>
-                      <td>$0.00 USD</td>
+                      <th scope="row"><Link to="/admin/addestimate">Click Here</Link></th>
+                      <td><Link to="/admin/createinvoice">Click Here</Link></td>
+                      <td><Link to="/admin/addexpense">Click Here</Link></td>
+                      <td><Link to="/admin/addtime">Click Here</Link></td>
                     </tr>
                   </tbody>
                 </Table>
               </Card>
             </Col>
-            <Col xl="4">
-              <Card className="shadow">
-                <CardHeader className="border-0">
-                  <Row className="align-items-center">
-                    <div className="col">
-                      <h3 className="mb-0">Recently Edited</h3>
-                    </div>
-                    {/*
-                    <div className="col text-right">
-                      <Button
-                        color="primary"
-                        href="#pablo"
-                        onClick={e => e.preventDefault()}
-                        size="sm"
-                      >
-                        See all
-                      </Button>
-                    </div>
-                    */}
-                  </Row>
-                  <Row>
-                  <div className="col">
-                      <h4 className="mb-0">No recently edited documents</h4>
-                  </div>
-                  </Row>
-                  <Row className="align-items-center">
-                    <div className="col">
-                      <h3 className="mb-0">Weekly Sales</h3>
-                    </div>
-                  </Row>
-                  <Row>
-                    <div className="col">
-                      <h2 className="mb-0">$0.00 USD</h2>
-                    </div>
-                  </Row>
-                  <Row>  
-                    <div className="col">
-                      <p className="mb-0" href="#">View More</p>
-                    </div>
-                    {/*
-                    <div className="col text-right">
-                      <Button
-                        color="primary"
-                        href="#pablo"
-                        onClick={e => e.preventDefault()}
-                        size="sm"
-                      >
-                        See all
-                      </Button>
-                    </div>
-                    */}
-                  </Row>
-                </CardHeader>
-                
-              </Card>
-            </Col>
+            
           </Row>
         </Container>
       </>

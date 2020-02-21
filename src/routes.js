@@ -25,23 +25,32 @@ import AddReport from "./views/examples/AddReport";
 import UpdateWorker from "./views/examples/UpdateWorker.jsx";
 import UpdateClient from "./views/examples/UpdateClient.jsx"
 import AddEstimateByUser from './views/examples/AddEstimateByUser.jsx'
-
-
+import AddInvoice from './views/examples/AddInvoice.jsx'
+import AddInvoiceByEstimate from './views/examples/AddInvoiceByEstimate.jsx'
+import AddTimeAllUsers from "views/examples/AddTimeAllUsers";
 
 var routes = [
-  // {
-  //   path: "/index",
-  //   name: "Home",
-  //   icon: "ni ni-tv-2 text-primary",
-  //   component: Index,
-  //   layout: "/admin"
-  // },
+  {
+    path: "/index",
+    name: "Home",
+    icon: "ni ni-tv-2 text-primary",
+    component: Index,
+    layout: "/admin"
+  },
   {
     path: "/estimates",
     name: "Estimates",
     icon: "ni ni-ruler-pencil text-blue",
     component: Estimates,
     layout: "/admin"
+  },
+  {
+    path: "/:id/invoice",
+    name: "Estimate Invoice",
+    icon: "ni ni-ruler-pencil text-blue",
+    component: AddInvoiceByEstimate,
+    layout: "/admin/estimates",
+    invisible:true
   },
   {
     path: "/:id",
@@ -91,6 +100,13 @@ var routes = [
     layout: "/admin"
   },
   {
+    path: "/expenses",
+    name: "Expenses",
+    icon: "ni ni-money-coins text-info",
+    component: Expenses,
+    layout: "/admin"
+  },
+  {
     path: "/time",
     name: "Time",
     icon: "ni ni-watch-time text-blue",
@@ -101,7 +117,7 @@ var routes = [
     path: "/addtime",
     name: "Add Time General",
     icon: "ni ni-ruler-pencil text-blue",
-    component: AddTime,
+    component: AddTimeAllUsers,
     layout: "/admin",
     invisible:true
   },
@@ -144,13 +160,6 @@ var routes = [
     invisible: true
   },
   {
-    path: "/expenses",
-    name: "Expenses",
-    icon: "ni ni-money-coins text-info",
-    component: Expenses,
-    layout: "/admin"
-  },
-  {
     path: "/workers",
     name: "Workers",
     icon: "ni ni-circle-08 text-pink",
@@ -186,6 +195,12 @@ var routes = [
   { 
     path: "/addexpense",
     component: AddExpenseByWorker,
+    layout: "/admin",
+    invisible: true
+  },
+  { 
+    path: "/createinvoice",
+    component: AddInvoice,
     layout: "/admin",
     invisible: true
   },
