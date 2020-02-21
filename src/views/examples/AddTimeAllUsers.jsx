@@ -26,7 +26,8 @@ class AddTime extends React.Component {
     jobs: [],
     nameWorker:'',
     workers:[],
-    value: false
+    value: false,
+    time: parseInt('')
   };
 
   handleInput = e => {
@@ -161,7 +162,6 @@ class AddTime extends React.Component {
                             <Input
                               name="time"
                               className="form-control-alternative"
-                              placeholder="0"
                               type="number"
                               onChange={this.handleInput}
                             />
