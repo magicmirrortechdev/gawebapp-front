@@ -56,6 +56,16 @@ class Admin extends React.Component {
           />
         );
       }
+      else if (prop.layout === "/admin/invoices") {
+        return (
+          <Route
+            path={prop.layout + prop.path}
+            component={prop.component}
+            key={key}
+            exact
+          />
+        );
+      }
       else if (prop.layout === "/admin/workers") {
         return (
           <Route

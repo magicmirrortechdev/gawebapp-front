@@ -28,6 +28,7 @@ import AddEstimateByUser from './views/examples/AddEstimateByUser.jsx'
 import AddInvoice from './views/examples/AddInvoice.jsx'
 import AddInvoiceByEstimate from './views/examples/AddInvoiceByEstimate.jsx'
 import AddTimeAllUsers from "views/examples/AddTimeAllUsers";
+import PayInvoice from "views/examples/PayInvoice";
 
 var routes = [
   {
@@ -98,6 +99,14 @@ var routes = [
     icon: "ni ni-credit-card text-orange",
     component: Invoices,
     layout: "/admin"
+  },
+  {
+    path: "/:id/:invoiceId",
+    name: "Pay Invoice",
+    icon: "ni ni-credit-card text-orange",
+    component: PayInvoice,
+    layout: "/admin/invoices",
+    invisble: true
   },
   {
     path: "/expenses",

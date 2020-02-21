@@ -13,7 +13,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   UncontrolledDropdown,
-  DropdownItem
+  DropdownItem,
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
@@ -25,7 +25,8 @@ class Invoices extends React.Component {
   state = {
     estimates:[],
     id:'',
-    btnDropup: false
+    btnDropup: false,
+    modal: false
   };
 
   componentDidMount() {
@@ -45,12 +46,14 @@ class Invoices extends React.Component {
   }
   render() {
     console.log(this.state.invoices)
+
     if (!this.state) return <p>Loading</p>
     return (
       <>
         <Header />
         {/* Page content */}
         <Container className="mt--7" fluid>
+                      
           <Row className="mt-5">
             <Col className="mb-5 mb-xl-0" xl="12">
               <Card className="shadow">
@@ -84,16 +87,23 @@ class Invoices extends React.Component {
                   </thead>
                   {this.state.estimates.length === 0 ?  <tbody><tr><td>No invoices register</td></tr></tbody>:
                      this.state.estimates.map((e,i)=>{
+                      
+    
+                      
+
                       const client = e.clientId.name
+                      const id = e._id
+                      
                       return(
                         e.invoices.map((e,i) =>{
+                          const paid = e.paid.reduce((acc, current, i) => acc + current, 0)
                           return(
                             <tbody key={i}>
                         <tr >
                         <th scope="row" >{client}</th>
                         <td>{e.date}</td>
                         <td>{e.status}</td>
-                        <td>${e.total}USD</td>                       
+                        <td>${e.total - paid}USD</td>                       
                         <td>
                           <div className="dropdownButtons">
                             <UncontrolledDropdown>
@@ -101,21 +111,7 @@ class Invoices extends React.Component {
                                 ...
                               </DropdownToggle>
                               <DropdownMenu>
-                                <DropdownItem onClick={()=>{
-                                  authService
-                                      .paidInvoice(e._id)
-                                      .then(({data}) => {
-                                        alert('The invoice is paid')
-                                        window.location.reload()
-
-                                      })
-                                      .catch(err => {
-                                        console.log(err.response)
-                                        alert(err.response.data.msg || err.response.data.err.message)
-                                      })
-                                }}
-
-                                >Accept Payment</DropdownItem>
+                                <DropdownItem total={e.total} to={`/admin/invoices/${id}/${e._id}`} tag={Link}>Accept Payment</DropdownItem>
                                 <DropdownItem>Send by email</DropdownItem>
                                 <DropdownItem onClick={()=>{
                                   authService
