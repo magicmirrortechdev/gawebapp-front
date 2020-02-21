@@ -80,9 +80,11 @@ class AddTime extends React.Component {
   }
 
   handleSubmit = (e, props) => {
+    const id = this.state.worker_id.split(".")[0]
+    const workerId = this.state.worker_id.split(".")[1]
     e.preventDefault()
         axios
-          .patch(Global.url + `addtime/${this.state._id}/${this.state.worker_id}`,this.state)
+          .patch(Global.url + `addtime/${id}/${workerId}`,this.state)
           .then(response => {
             this.props.history.push(`/admin/time`)
             console.log(response)
@@ -145,7 +147,7 @@ class AddTime extends React.Component {
                             <option>Select worker</option>
                             {this.state.workers.map((e,i)=>{
                               return(
-                                <option key={i} value={`${e.workerId._id}`}>{e.workerId.name}</option>)
+                                <option key={i} value={`${e._id}.${e.workerId._id}`}>{e.workerId.name}</option>)
                             })
                             }
                             

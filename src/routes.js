@@ -106,7 +106,7 @@ var routes = [
     icon: "ni ni-credit-card text-orange",
     component: PayInvoice,
     layout: "/admin/invoices",
-    invisble: true
+    invisible:true
   },
   {
     path: "/expenses",
