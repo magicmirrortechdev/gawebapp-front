@@ -18,9 +18,18 @@ import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 
 let loggedUser;
+var fecha = new Date(); 
+      var mes = fecha.getMonth()+1; 
+      var dia = fecha.getDate(); 
+      var ano = fecha.getFullYear(); 
+      if(dia<10)
+        dia='0'+dia; //agrega cero si es menor de 10
+      if(mes<10)
+        mes='0'+mes //agrega cero si es menor de 10
 class AddExpense extends React.Component {
   state = {
-    workerId: ""
+    workerId: "",
+    date: ano+"-"+mes+"-"+dia,
   };
 
   constructor(props) {
@@ -61,15 +70,6 @@ class AddExpense extends React.Component {
     }))
   }
 
-  handleDate = e => {
-    let n =  new Date();
-    let y = n.getFullYear();
-    let m = n.getMonth() + 1;
-    let d = n.getDate();
-
-    document.getElementById("date").innerHTML = d + "/" + m + "/" + y;
-  }
-
   uploadPhoto = async e => {
     const file = new FormData()
     file.append('photo', e.target.files[0])
@@ -87,17 +87,6 @@ class AddExpense extends React.Component {
   }
 
   render() {
-    window.onload = function(){
-      var fecha = new Date(); 
-      var mes = fecha.getMonth()+1; 
-      var dia = fecha.getDate(); 
-      var ano = fecha.getFullYear(); 
-      if(dia<10)
-        dia='0'+dia; //agrega cero si es menor de 10
-      if(mes<10)
-        mes='0'+mes //agrega cero si es menor de 10
-      document.getElementById('date').value=ano+"-"+mes+"-"+dia;
-    }
     
     console.log(this.state)
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
@@ -153,6 +142,7 @@ class AddExpense extends React.Component {
                               id="date"
                               name="date"
                               type="date"
+                              value={this.state.date}
                               onChange={this.handleInput}
                             />
                           </FormGroup>

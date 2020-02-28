@@ -29,8 +29,18 @@ import AddInvoice from './views/examples/AddInvoice.jsx'
 import AddInvoiceByEstimate from './views/examples/AddInvoiceByEstimate.jsx'
 import AddTimeAllUsers from "views/examples/AddTimeAllUsers";
 import PayInvoice from "views/examples/PayInvoice";
+import AddInvoiceByJob from "views/examples/AddInvoiceByJob";
+import Home from "views/examples/Home";
 
 var routes = [
+  {
+    path: "/sign",
+    name: "Sign",
+    icon: "ni ni-tv-2 text-primary",
+    component: Home,
+    layout: "/auth",
+    invisible:true
+  },
   {
     path: "/index",
     name: "Home",
@@ -51,6 +61,14 @@ var routes = [
     icon: "ni ni-ruler-pencil text-blue",
     component: AddInvoiceByEstimate,
     layout: "/admin/estimates",
+    invisible:true
+  },
+  {
+    path: "/:id/invoice",
+    name: "Job Invoice",
+    icon: "ni ni-ruler-pencil text-blue",
+    component: AddInvoiceByJob,
+    layout: "/admin/jobs",
     invisible:true
   },
   {

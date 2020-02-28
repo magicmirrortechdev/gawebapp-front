@@ -70,15 +70,6 @@ class AddInvoice extends React.Component {
     }))
   }
 
-  handleDate = e => {
-    let n =  new Date();
-    let y = n.getFullYear();
-    let m = n.getMonth() + 1;
-    let d = n.getDate();
-
-    document.getElementById("date").innerHTML = d + "/" + m + "/" + y;
-  }
-
   uploadPhoto = async e => {
     const file = new FormData()
     file.append('photo', e.target.files[0])
@@ -91,22 +82,17 @@ class AddInvoice extends React.Component {
 
   handleSubmit = async (e, props) => {
     e.preventDefault()
-        await axios.patch(Global.url + `addexpense/${this.state._id}`,this.state)
-        this.props.history.push('/admin/expenses')
+       axios.patch(Global.url + `convertinvoice/${this.state._id}`,this.state)
+       .then(response => {
+        this.props.history.push(`/admin/invoices`)
+        console.log(response)
+      })
+      .catch(err => {
+        console.log(err.response)
+      })
   }
 
   render() {
-    window.onload = function(){
-      var fecha = new Date(); 
-      var mes = fecha.getMonth()+1; 
-      var dia = fecha.getDate(); 
-      var ano = fecha.getFullYear(); 
-      if(dia<10)
-        dia='0'+dia; //agrega cero si es menor de 10
-      if(mes<10)
-        mes='0'+mes //agrega cero si es menor de 10
-      document.getElementById('date').value=ano+"-"+mes+"-"+dia;
-    }
     
     console.log(this.state)
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>

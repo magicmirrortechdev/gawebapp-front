@@ -25,11 +25,12 @@ class ReportJobs extends React.Component{
                     </tr>
                     </tbody> :
                     this.props.jobs.map((e, i) => {
-                        let totalInvoices = e.total ? e.total: 0;
+                        let totalInvoices = e.invoices.reduce((acc, cv, i)=> acc +cv.total,0) ? e.total: 0;
                         let totalLabor = 0;
                         let totalExpenses = e.expenses ? (e.expenses.reduce((acc, current, i) => acc + current.total, 0)) : 0;
-
+                        let clientName = e.clientId.name
                         e.workers.map((wx, i) => {
+                            
                             let time = wx.time ? (wx.time.reduce((acc, current, i) => acc + current, 0)) : 0;
                             let effective = wx.workerId.effective ? wx.workerId.effective : 0;
                             totalLabor += (time * effective);
@@ -66,16 +67,23 @@ class ReportJobs extends React.Component{
                                                         <th scope="col">Date</th>
                                                         <th scope="col">Sent by</th>
                                                         <th scope="col">Total</th>
-                                                        <th scope="col">Paid</th>
+                                                        <th scope="col">Balance</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr>
-                                                            <td>{e.dateCreate}</td>
-                                                            <td>{e.clientId.name}</td>
+                                                    {e.invoices.map((e, i)=>{
+                                                        const paid = e.payment.reduce((acc, current, i) => acc + current.paid, 0)
+                                                        return(
+                                                            <tr>
+                                                            <td>{e.date}</td>
+                                                            <td>{clientName}</td>
                                                             <td align="right">$ {e.total} USD</td>
-                                                            <td align="right">$ {e.paid} USD</td>
+                                                            <td align="right">$ {e.total - paid} USD</td>
                                                         </tr>
+                                                        )
+                                                    })
+                                                        
+                                                    }
                                                     </tbody>
                                                 </Table>
 

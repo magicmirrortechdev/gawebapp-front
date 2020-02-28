@@ -72,7 +72,7 @@ class AddInvoice extends React.Component {
             paid: data.estimate.paid,
             comments: data.estimate.comments,
             jobName: data.estimate.jobName,
-            items: data.estimate.items
+            ...data.estimate,
           }
         })
         let subtotal = this.state.items.reduce((acc, current, i) => acc + current.subtotal, 0)
@@ -98,8 +98,8 @@ class AddInvoice extends React.Component {
 
   handleSubmit = async (e, props) => {
     e.preventDefault()
-        axios.patch(Global.url + `convertinvoice/${this.props.match.params.id}`,this.state)
-        .then(response => {
+         axios.patch(Global.url + `convertinvoice/${this.props.match.params.id}`,this.state)
+         .then(response => {
           this.props.history.push(`/admin/invoices`)
           console.log(response)
         })
@@ -179,7 +179,7 @@ class AddInvoice extends React.Component {
                               className="form-control-alternative"
                               type="number"
                               onChange={this.handleInput}
-                              value={this.state.total}
+                              placeholder="0"
                             />
                           </FormGroup>
                           <FormGroup>
@@ -192,7 +192,7 @@ class AddInvoice extends React.Component {
                             <Input
                               name="description"
                               className="form-control-alternative"
-                              placeholder="This is an invoice generated with the items of an estimate"
+                              placeholder="This is an invoice generated in Jobs"
                               type="text"
                               onChange={this.handleInput}
                             />

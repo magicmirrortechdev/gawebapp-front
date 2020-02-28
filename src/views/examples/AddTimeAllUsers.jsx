@@ -20,6 +20,7 @@ import {
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 
+let loggedUser;
 
 class AddTime extends React.Component {
   state = {
@@ -29,6 +30,12 @@ class AddTime extends React.Component {
     value: false,
     time: parseInt('')
   };
+  constructor(props) {
+    super(props);
+    console.log("constructor!!!")
+    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+    console.log("jsonParse", loggedUser);
+  }
 
   handleInput = e => {
     e.persist()
@@ -147,7 +154,8 @@ class AddTime extends React.Component {
                             <option>Select worker</option>
                             {this.state.workers.map((e,i)=>{
                               return(
-                                <option key={i} value={`${e._id}.${e.workerId._id}`}>{e.workerId.name}</option>)
+                                loggedUser.name === e.workerId.name ? <option selected  key={i} value={`${e._id}.${e.workerId._id}`}>{loggedUser.name}</option> :
+                                <option  key={i} value={`${e._id}.${e.workerId._id}`}>{e.workerId.name}</option>)
                             })
                             }
                             

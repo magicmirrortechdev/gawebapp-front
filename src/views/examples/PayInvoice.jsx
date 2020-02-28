@@ -20,11 +20,20 @@ import {
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 
-
+var fecha = new Date(); 
+      var mes = fecha.getMonth()+1; 
+      var dia = fecha.getDate(); 
+      var ano = fecha.getFullYear(); 
+      if(dia<10)
+        dia='0'+dia; //agrega cero si es menor de 10
+      if(mes<10)
+        mes='0'+mes //agrega cero si es menor de 10
 class PayInvoice extends React.Component {
   state = {
     clientName: '',
-    nameWorker:''
+    nameWorker:'',
+    jobName: '',
+    date: ano+"-"+mes+"-"+dia,
   };
 
   handleInput = e => {
@@ -37,12 +46,13 @@ class PayInvoice extends React.Component {
 
   componentDidMount() {
     axios
-      .get(Global.url + `estimatedetail/${this.props.match.params.id}`)
+      .get(Global.url + `estimatedetail/${this.props.match.params.invoiceId}`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
             ...prevState,
             clientName: data.estimate.clientId.name,
+            jobName: data.estimate.jobName,
             ...data
           }
         })
@@ -69,6 +79,7 @@ class PayInvoice extends React.Component {
     
     console.log(this.state)
     const clientName = this.state.clientName
+    const jobName = this.state.jobName
     return (
       <>
         <Header />
@@ -89,7 +100,7 @@ class PayInvoice extends React.Component {
                   <Form onSubmit={this.handleSubmit}>
                     <div className="pl-lg-4">
                       <Row>
-                        <Col lg="8">
+                        <Col lg="10">
                         <FormGroup>
                             <label
                               className="form-control-label"
@@ -111,7 +122,40 @@ class PayInvoice extends React.Component {
                               className="form-control-label"
                               htmlFor="input-hours"
                             >
-                              Paid
+                              Job Name
+                            </label>
+                            <Input
+                              value={jobName}
+                              name="jobName"
+                              className="form-control-alternative lg"
+                              type="text"
+                              onChange={this.handleInput}
+                              disabled
+                            />
+                          </FormGroup>
+                          <FormGroup>
+                            <label
+                              className="form-control-label d-inline-block"
+                              htmlFor="input-date"
+                            >
+                              Pay Date
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              placeholder="Select a date"
+                              id="date"
+                              value={this.state.date}
+                              name="date"
+                              type="date"
+                              onChange={this.handleInput}
+                            />
+                          </FormGroup>
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-hours"
+                            >
+                            Amount paid
                             </label>
                             <Input
                               name="paid"
@@ -134,7 +178,7 @@ class PayInvoice extends React.Component {
                               className="form-control-alternative"
                               color="info"
 
-                            >Add Hours</Button>
+                            >Pay</Button>
                           </FormGroup>
                         </Col>
                       </Row>

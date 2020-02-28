@@ -125,22 +125,18 @@ class Icons extends React.Component {
                                       })
                                       .catch(err => {
                                         console.log(err.response)
-                                        alert(err.response.data.msg || err.response.data.err.message)
                                       })
                                 }}>Approve</DropdownItem>
                                 <DropdownItem onClick={()=>{
                                   authService
                                       .decline(e._id)
                                       .then(response => {
-                                        //aquí deberia ir una notificacion o un swal o un toastr
                                         window.location.reload()
                                         console.log(response)
 
                                       })
                                       .catch(err => {
-                                        //aquí deberia ir una notificacion o un swal o un toastr
                                         console.log(err.response)
-                                        alert(err.response.data.msg || err.response.data.err.message)
                                       })
                                 }}>Decline</DropdownItem>
                                 <DropdownItem>Sent Email</DropdownItem>
@@ -154,9 +150,7 @@ class Icons extends React.Component {
 
                                       })
                                       .catch(err => {
-                                        //aquí deberia ir una notificacion o un swal o un toastr
                                         console.log(err.response)
-                                        alert(err.response.data.msg || err.response.data.err.message)
                                       })
                                 }}><span
                                     className="text-danger">Delete</span></DropdownItem>

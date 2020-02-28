@@ -130,7 +130,7 @@ class Jobs extends React.Component {
                                 },
                               }}
                               >
-                                <DropdownItem to={`/admin/estimates/${e._id}/invoice`} tag={Link}>Convert to Invoice</DropdownItem>                                
+                                <DropdownItem to={`/admin/jobs/${e._id}/invoice`} tag={Link}>Convert to Invoice</DropdownItem>                                
                                 <DropdownItem to={`/admin/jobs/${e._id}`} tag={Link}>Update</DropdownItem>
                                 <DropdownItem to={`/admin/jobs/${e._id}/addexpense`} tag={Link}>Add Expense</DropdownItem>
                                 <DropdownItem to={`/admin/jobs/addworker/${e._id}`} tag={Link}>Add Worker</DropdownItem>

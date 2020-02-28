@@ -18,9 +18,18 @@ import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 
 let loggedUser;
+var fecha = new Date(); 
+      var mes = fecha.getMonth()+1; 
+      var dia = fecha.getDate(); 
+      var ano = fecha.getFullYear(); 
+      if(dia<10)
+        dia='0'+dia; //agrega cero si es menor de 10
+      if(mes<10)
+        mes='0'+mes //agrega cero si es menor de 10
 class AddExpense extends React.Component {
   state = {
-    workerId: ""
+    workerId: "",
+    date: ano+"-"+mes+"-"+dia,
   };
 
   constructor(props) {
@@ -63,17 +72,6 @@ class AddExpense extends React.Component {
   }
 
   render() {
-    window.onload = function(){
-      var fecha = new Date(); 
-      var mes = fecha.getMonth()+1; 
-      var dia = fecha.getDate(); 
-      var ano = fecha.getFullYear(); 
-      if(dia<10)
-        dia='0'+dia; //agrega cero si es menor de 10
-      if(mes<10)
-        mes='0'+mes //agrega cero si es menor de 10
-      document.getElementById('date').value=ano+"-"+mes+"-"+dia;
-    }
 
     console.log(this.state)
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
@@ -110,6 +108,7 @@ class AddExpense extends React.Component {
                               className="form-control-alternative"
                               placeholder="Select a date"
                               name="date"
+                              value={this.state.date}
                               type="date"
                               onChange={this.handleInput}
                             />

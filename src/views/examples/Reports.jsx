@@ -165,7 +165,7 @@ class Reports extends React.Component {
                                         </NavLink>
                                     </NavItem>
                                     <NavItem>
-                                        <NavLink
+                                       <NavLink
                                             className={classnames({active: this.state.activeTab === '2'})}
                                             onClick={() => {
                                                 this.toggleTab('2');
