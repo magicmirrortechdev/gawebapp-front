@@ -71,7 +71,7 @@ class ReportJobs extends React.Component{
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    {e.invoices.length === 0 ? <tbody><tr><td>No payments register</td></tr></tbody>:e.invoices.map((e, i)=>{
+                                                    {e.invoices.length === 0 ? <tbody><tr><td>No invoices register</td></tr></tbody>:e.invoices.map((e, i)=>{
                                                         const paid = e.payment.reduce((acc, current, i) => acc + current.paid, 0)
                                                         return(
                                                             <tr>
