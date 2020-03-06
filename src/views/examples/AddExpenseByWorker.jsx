@@ -30,6 +30,7 @@ class AddExpense extends React.Component {
   state = {
     workerId: "",
     date: ano+"-"+mes+"-"+dia,
+    colorError: false
   };
 
   constructor(props) {
@@ -37,13 +38,16 @@ class AddExpense extends React.Component {
     console.log("constructor!!!")
     loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
     console.log("jsonParse", loggedUser);
+    this.selectRef = React.createRef();
   }
 
   componentDidMount() {
-    console.log(loggedUser);
     this.setState({
       workerId: loggedUser._id,
-      jobs:[]
+      jobs:[],
+      _id: '',
+      category: '',
+
     })
     console.log("montando componente, " );
     axios
@@ -55,7 +59,6 @@ class AddExpense extends React.Component {
             ...data
           }
         })
-        console.log('aquiiii', this.state.jobs)
       })
       .catch(err => {
         console.log(err)
@@ -82,12 +85,23 @@ class AddExpense extends React.Component {
 
   handleSubmit = async (e, props) => {
     e.preventDefault()
-        await axios.patch(Global.url + `addexpense/${this.state._id}`,this.state)
-        this.props.history.push('/admin/expenses')
+    if (this.state._id==='') {
+      alert('Select a Job to continue');
+    }
+    else if (this.state.category==='') {
+      alert('Select a category to continue');
+    }
+    
+    else {
+      this.setState({ colorError: false });
+       await axios.patch(Global.url + `addexpense/${this.state._id}`,this.state)
+      this.props.history.push('/admin/expenses')
+    }
+       
   }
 
   render() {
-    
+    const { colorError } = this.state;
     console.log(this.state)
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
     return (
@@ -113,10 +127,21 @@ class AddExpense extends React.Component {
                         <Col lg="6">
                           <FormGroup>
                             <Input
+                              ref={this.selectRef}
                               name="_id"
                               className="form-control-alternative"
                               type="select"
                               onChange={this.handleInput}
+                              styles={{
+                                control: (provided, state) =>
+                                  colorError
+                                    ? {
+                                        ...provided,
+                                        boxShadow: "0 0 0 1px red !important",
+                                        borderColor: "red !important"
+                                      }
+                                    : provided
+                              }}
                               
                             >
                             <option selected disabled>Select Job to Add Expense</option>

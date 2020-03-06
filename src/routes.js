@@ -34,6 +34,7 @@ import Home from "views/examples/Home";
 import SendEstimate from "views/examples/SendEstimate";
 import UpdateExpense from "views/examples/UpdateExpense";
 import updateInvoice from "views/examples/UpdateInvoice";
+import SendInvoice from "views/examples/SendInvoice";
 
 var routes = [
   {
@@ -128,6 +129,14 @@ var routes = [
     icon: "ni ni-credit-card text-orange",
     component: Invoices,
     layout: "/admin"
+  },
+  {
+    path: "/:id/:invoiceId/email",
+    name: "Send Invoice",
+    icon: "ni ni-ruler-pencil text-blue",
+    component: SendInvoice,
+    layout: "/admin/invoices",
+    invisible:true
   },
   {
     path: "/:id/:invoiceId",

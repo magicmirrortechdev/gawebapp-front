@@ -99,7 +99,7 @@ class Expenses extends React.Component {
                           <th scope="row" >{e.description}</th>
                           <td>{e.category}</td>
                           <td>{e.date}</td>
-                          <td>{e.total}</td>
+                          <td>$ {e.total} USD</td>
                           <td>
                             <div className="dropdownButtons">
                             <UncontrolledDropdown>

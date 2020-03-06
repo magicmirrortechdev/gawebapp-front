@@ -146,7 +146,7 @@ class Invoices extends React.Component {
                                 <DropdownItem to={`/admin/invoices/${e._id}/${id}`} tag={Link}>Accept Payment</DropdownItem>
                               }
                                 <DropdownItem to={`/admin/invoices/${estimateId}/${e._id}/update`} tag={Link}>Update</DropdownItem>
-                                <DropdownItem>Send by email</DropdownItem>
+                                <DropdownItem to={`/admin/invoices/${estimateId}/${e._id}/email`} tag={Link}>Send by email</DropdownItem>
                                 <DropdownItem onClick={()=>{
                                   axios.patch(Global.url + `invoicedelete/${id}/${e._id}`)
                                   .then(({data})=>{

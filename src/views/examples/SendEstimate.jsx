@@ -18,46 +18,31 @@ import {
 // core components
 import Header from 'components/Headers/Header.jsx'
 import Global from "../../global";
-import TagsInput from './SetTags'
 
 class SendEstimate extends React.Component {
   state = {
     name: '',
     email: '',
-    address: '',
     items: [],
-    tags: [],
-    itemName: '',
-    description: '',
     comments: '',
-    quantity: parseInt(''),
-    rate: parseInt(''),
-    subtotal: 0,
-    tax: parseInt(''),
-    discount: parseInt(''),
-    paid: parseInt(''),
-    total: 0,
-    dateCreate: '',
-    jobName: '',
+    total: parseInt(''),
   }
   componentDidMount() {
     axios
       .get(Global.url + `estimatedetail/${this.props.match.params.id}`)
       .then(({ data }) => {
         this.setState(prevState => {
+          let total 
+          total = data.estimate.items.reduce((acc, current, i) => acc + current.subtotal, 0)
+          console.log('el sb', total)
           return {
             ...prevState,
             name: data.estimate.clientId.name,
             email: data.estimate.clientId.email,
-            address: data.estimate.clientId.address,
-            tax: data.estimate.tax,
-            discount: data.estimate.discount,
-            paid: data.estimate.paid,
-            comments: data.estimate.comments,
-            ...data.estimate,
+            total: total,
+            items: data.estimate.items
           }
         })
-        console.log(this.state)
       })
       .catch(err => {
         console.log(err)
@@ -83,12 +68,13 @@ class SendEstimate extends React.Component {
   handleSubmit = (e, props) => {
     e.preventDefault()
     axios
-      .patch(
-        Global.url + `estimateupdate/${this.props.match.params.id}`,
+      .post(
+        Global.url + `sendestimate`,
         this.state
       )
       .then(response => {
         this.props.history.push(`/admin/estimates`)
+        console.log(response)
       })
       .catch(err => {
         console.log(err)
@@ -96,25 +82,6 @@ class SendEstimate extends React.Component {
   }
 
   render() {
-    let product = {
-      itemName: this.state.itemName,
-      description: this.state.description,
-      quantity: parseInt(this.state.quantity),
-      rate: parseInt(this.state.rate),
-      subtotal: parseInt(this.state.quantity * this.state.rate),
-    }
-    let subtotal = this.state.items.reduce((acc, current, i) => acc + current.subtotal, 0)
-    let tax = (parseInt(this.state.tax) * subtotal) / 100
-    let discount = parseInt(this.state.discount)
-    let paid = parseInt(this.state.paid)
-    let clientName = this.state.clientName
-    let address = this.state.address
-
-    let total = subtotal + tax - discount - paid
-    let jobName = address + clientName
-    const selectedTags = tags => {console.log(tags)};
-
-
     console.log('el stateee', this.state)
     if (!this.state) return <p> Loading </p>
     return (
@@ -133,8 +100,6 @@ class SendEstimate extends React.Component {
                   </Row>
                 </CardHeader>
                 <CardBody>
-                <TagsInput selectedTags={selectedTags} />
-
                   <Form onSubmit={this.handleSubmit}>
                     <div className="pl-lg-4">
                       <Row>
@@ -150,7 +115,7 @@ class SendEstimate extends React.Component {
                               defaultValue={`${this.state.name}`}
                               className="form-control-alternative"
                               placeholder="Enter the name client"
-                              name="clientName"
+                              name="name"
                               type="text"
                               onChange={this.handleInput}
                             />
@@ -171,35 +136,6 @@ class SendEstimate extends React.Component {
                               onChange={this.handleInput}
                             />
                           </FormGroup>
-
-                          <FormGroup>
-                            <label className="form-control-label" htmlFor="input-merchant">
-                              Items
-                            </label>
-
-                            <Table className="align-items-center table-flush" responsive>
-                              <thead className="thead-light">
-                                <tr>
-                                  <th scope="col"> Item Name </th>
-                                  <th scope="col"> Description </th>
-                                  <th scope="col"> Quantity </th>
-                                  <th scope="col"> Rate </th>
-                                  <th scope="col"> Total </th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {this.state.items.map((el, i) => (
-                                  <tr key={i}>
-                                    <td> {el.itemName} </td>
-                                    <td> {el.description} </td>
-                                    <td> {el.quantity} </td>
-                                    <td>$ {el.rate} </td>
-                                    <td>$ {el.subtotal} </td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </Table>
-                          </FormGroup>
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -209,10 +145,26 @@ class SendEstimate extends React.Component {
                               Total
                             </label>
                             <Input
-                              name="subtotal"
-                              value={parseInt(subtotal)}
+                              name="total"
                               className="form-control-alternative"
                               type="number"
+                              onChange={this.handleInput}
+                              value={this.state.total}
+                            />
+                          </FormGroup>
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-first-name"
+                            >
+                              Comments
+                            </label>
+                            <Input
+                              name="comments"
+                              className="form-control-alternative"
+                              placeholder="Enter a comments (optional)"
+                              type="textarea"
+                              rows="6"
                               onChange={this.handleInput}
                             />
                           </FormGroup>

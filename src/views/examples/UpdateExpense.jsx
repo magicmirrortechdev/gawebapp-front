@@ -28,7 +28,7 @@ class UpdateExpense extends React.Component {
     vendor:'',
     category: '',    
     description: '',
-    total: 0
+    total: parseInt('')
   };
 
   constructor(props) {
@@ -122,25 +122,6 @@ class UpdateExpense extends React.Component {
 
   render() {
     console.log(this.state)
-    let img = ''
-    let date = ''
-    let vendor = ''
-    let category = ''
-    let description = ''
-    let total
-
-    this.state.expenses.map((e,i)=>{
-      if(e._id === this.props.match.params.expenseId){
-      
-       img = e.img
-       date = e.date
-       vendor = e.vendor
-       category = e.category
-       description = e.description
-       total = e.total
-      }
-      return {img, date, vendor, description, category, total}
-    })
 
     const categories = [{category: 'Job Materials'}, {category: 'Gas'}, {category:'Suplies'}, {category:'Sub Contractors'}]
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
@@ -178,7 +159,7 @@ class UpdateExpense extends React.Component {
                               className="form-control-alternative"
                               placeholder="Select a date"
                               name="date"
-                              defaultValue={date}
+                              defaultValue={this.statedate}
                               type="date"
                               onChange={this.handleInput}
                             />
@@ -195,7 +176,7 @@ class UpdateExpense extends React.Component {
                               className="form-control-alternative"
                               placeholder="Enter name of vendor"
                               type="text"
-                              defaultValue={vendor}
+                              defaultValue={this.state.vendor}
                               onChange={this.handleInput}
                             />
                           </FormGroup>
@@ -217,7 +198,7 @@ class UpdateExpense extends React.Component {
                             >
                             {categories.map((e,i)=>{
                               return(
-                                category === e.category ? <option selected key={i}>{category}</option>: 
+                                this.state.category === e.category ? <option selected key={i}>{this.state.category}</option>: 
                                 <option key={i}>{e.category}</option>
                               )
                             })}
@@ -235,7 +216,7 @@ class UpdateExpense extends React.Component {
                               className="form-control-alternative"
                               placeholder="Enter a description (optional)"
                               type="text"
-                              defaultValue={description}
+                              defaultValue={this.state.description}
                               onChange={this.handleInput}
                             />
                           </FormGroup>
@@ -265,13 +246,11 @@ class UpdateExpense extends React.Component {
                               Total
                             </label>
                             <Input
-                              required
                               name="total"
                               className="form-control-alternative"
-                              placeholder="Enter the total"
                               type="number"
                               onChange={this.handleInput}
-                              defaultValue={total}
+                              value={this.state.total}
                             />
                           </FormGroup>
                         </Col>
@@ -282,7 +261,7 @@ class UpdateExpense extends React.Component {
                             >
                               Image Preview
                             </label>
-                          {!this.state.img  ? <img width="100%" height="100%" src={img} alt="photo_url" /> :
+                          {!this.state.img  ? <img width="100%" height="100%" src={this.state.img} alt="photo_url" /> :
                            <img width="100%" height="100%" src={this.state.img} alt="photo_url" />}
                         </Col>
                       </Row>

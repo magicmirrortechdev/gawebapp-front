@@ -18,20 +18,16 @@ import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 
 let loggedUser;
-var fecha = new Date(); 
-      var mes = fecha.getMonth()+1; 
-      var dia = fecha.getDate(); 
-      var ano = fecha.getFullYear(); 
-      if(dia<10)
-        dia='0'+dia; //agrega cero si es menor de 10
-      if(mes<10)
-        mes='0'+mes //agrega cero si es menor de 10
-class AddExpense extends React.Component {
+
+class SendInvoice extends React.Component {
   state = {
     workerId: "",
-    date: ano+"-"+mes+"-"+dia,
-    _id: '',
-    category: '',
+    date:'',
+    name: '',
+    email: '',
+    total: 0,
+    jobName: '',
+    description: ''
   };
 
   constructor(props) {
@@ -46,7 +42,36 @@ class AddExpense extends React.Component {
     this.setState({
       workerId: loggedUser._id
     })
-    console.log("montando componente, " );
+    axios
+      .get(Global.url + `estimatedetail/${this.props.match.params.id}`)
+      .then(({ data }) => {
+        this.setState(prevState => {
+          let date = ''
+          let description = ''
+          let total
+          const invoices = data.estimate.invoices
+              invoices.map((e,i)=>{
+                if(e._id === this.props.match.params.invoiceId){
+                  date = e.date
+                  description = e.description
+                  total = e.total
+                }
+                return {date,description,total}
+              })
+          return {
+            ...prevState,
+            name: data.estimate.clientId.name,
+            email: data.estimate.clientId.email,
+            jobName: data.estimate.jobName,
+            date,
+            description,
+            total
+          }
+        })
+      })
+      .catch(err => {
+        console.log(err.response)
+      })
   }
 
   handleInput = e => {
@@ -57,31 +82,24 @@ class AddExpense extends React.Component {
     }))
   }
 
-  uploadPhoto = async e => {
-    const file = new FormData()
-    file.append('photo', e.target.files[0])
-
-    const {
-      data: { img }
-    } = await axios.post(Global.url + 'upload', file)
-    this.setState(prevState => ({ ...prevState, img }))
-  }
 
   handleSubmit = async (e, props) => {
     e.preventDefault()
-    if(this.state.category===''){
-      alert('Select a category')
-    }else{
-      await axios.patch(Global.url + `addexpense/${this.props.match.params.id}`,this.state)
-        this.props.history.push('/admin/expenses')
-    }
-        
+        axios.post(Global.url + `sendinvoice`,this.state)
+        .then(response => {
+          this.props.history.push(`/admin/invoices`)
+          console.log(response)
+        })
+        .catch(err => {
+          console.log(err.response)
+        })
   }
 
-  render() {
-
+  render() {    
     console.log(this.state)
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
+    
+
     return (
       <>
         <Header forms={true}/>
@@ -93,7 +111,7 @@ class AddExpense extends React.Component {
                 <CardHeader className="border-0">
                   <Row className="align-items-center">
                     <div className="col">
-                      <h3 className="mb-0">Information Expense</h3>
+                      <h3 className="mb-0">Information Invoice</h3>
                     </div>
                   </Row>
                 </CardHeader>
@@ -103,61 +121,85 @@ class AddExpense extends React.Component {
                     <div className="pl-lg-4">
                       <Row>
                         <Col lg="6">
+                        <FormGroup>
+                        <label
+                          className="form-control-label d-inline-block"
+                          htmlFor="input-name"
+                        >
+                          Client Name
+                        </label>
+                        <Input
+                          defaultValue={`${this.state.name}`}
+                          className="form-control-alternative"
+                          placeholder="Enter the name client"
+                          name="name"
+                          type="text"
+                          onChange={this.handleInput}
+                        />
+                        </FormGroup>
+                        <FormGroup>
+                            <label
+                              className="form-control-label d-inline-block"
+                              htmlFor="input-name"
+                            >
+                              Emails
+                            </label>
+                            <Input
+                              defaultValue={`${this.state.email}`}
+                              className="form-control-alternative"
+                              placeholder="Enter the email client"
+                              name="email"
+                              type="email"
+                              onChange={this.handleInput}
+                            />
+                          </FormGroup>
+                          <FormGroup>
+                            <label
+                            className="form-control-label d-inline-block"
+                            htmlFor="input-jobName"
+                            >
+                            Job Name
+                            </label>
+                            <Input
+                              name="_id"
+                              className="form-control-alternative"
+                              type="text"
+                              onChange={this.handleInput}
+                              value={this.state.jobName}
+                            />
+                          </FormGroup>
                           <FormGroup>
                             <label
                               className="form-control-label d-inline-block"
                               htmlFor="input-date"
                             >
-                              Expense Date
+                              Invoice Date
                             </label>
                             <Input
-                              required
-                              id="date"
                               className="form-control-alternative"
                               placeholder="Select a date"
-                              name="date"
+                              id="date"
                               value={this.state.date}
+                              name="date"
                               type="date"
                               onChange={this.handleInput}
                             />
                           </FormGroup>
+                        
                           <FormGroup>
                             <label
                               className="form-control-label"
                               htmlFor="input-merchant"
                             >
-                              Vendor
+                              Total Invoice
                             </label>
                             <Input
-                              name="vendor"
+                              name="total"
                               className="form-control-alternative"
-                              placeholder="Enter name of vendor"
-                              type="text"
+                              type="number"
                               onChange={this.handleInput}
+                              value={this.state.total}
                             />
-                          </FormGroup>
-
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-category"
-                            >
-                              Category
-                            </label>
-                            <Input
-                              required
-                              name="category"
-                              className="form-control-alternative"
-                              placeholder="Enter a category"
-                              type="select"
-                              onChange={this.handleInput}
-                            >
-                            <option disabled selected >Choose One</option>
-                            <option>Job Materials</option>
-                            <option>Gas</option>
-                            <option>Suplies</option>
-                            <option>Sub Contractors</option>
-                            </Input>
                           </FormGroup>
                           <FormGroup>
                             <label
@@ -169,54 +211,12 @@ class AddExpense extends React.Component {
                             <Input
                               name="description"
                               className="form-control-alternative"
-                              placeholder="Enter a description (optional)"
+                              placeholder="This is an invoice generated with the items of an estimate"
                               type="text"
                               onChange={this.handleInput}
+                              value={this.state.description}
                             />
                           </FormGroup>
-
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-last-name"
-                            >
-                              Image
-                            </label>
-                            <Input
-                              name="photo"
-                              id="photo"
-                              className="form-control-alternative"
-                              placeholder="Select a photo"
-                              type="file"
-                              onChange={this.uploadPhoto}
-                            />
-                          </FormGroup>
-
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-first-name"
-                            >
-                              Total
-                            </label>
-                            <Input
-                              required
-                              name="total"
-                              className="form-control-alternative"
-                              placeholder="Enter the total"
-                              type="number"
-                              onChange={this.handleInput}
-                            />
-                          </FormGroup>
-                        </Col>
-                        <Col lg="6">
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-first-name"
-                            >
-                              Image Preview
-                            </label>
-                          {this.state.img && <img width="100%" height="100%" src={this.state.img} alt="photo_url" />}
                         </Col>
                       </Row>
                       
@@ -226,11 +226,10 @@ class AddExpense extends React.Component {
                           <FormGroup>
                         
                             <Button
-                              disabled={this.state.img ? false : true}
                               className="form-control-alternative"
                               color="info"
 
-                            >Save</Button>
+                            >Send</Button>
                           </FormGroup>
                         </Col>
                       </Row>
@@ -247,4 +246,4 @@ class AddExpense extends React.Component {
   }
 }
 
-export default withRouter(AddExpense);
+export default withRouter(SendInvoice);
