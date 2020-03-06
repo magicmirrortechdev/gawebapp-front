@@ -195,7 +195,7 @@ class AddInvoice extends React.Component {
                               className="form-control-alternative"
                               color="info"
 
-                            >Register</Button>
+                            >Save</Button>
                           </FormGroup>
                         </Col>
                       </Row>

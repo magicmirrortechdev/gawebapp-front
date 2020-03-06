@@ -263,14 +263,14 @@ class AddEstimate extends React.Component {
                               onChange={this.handleInput}
                             />
                             <br/>
-                            <button
+                            <Button
                               type="button"
+                              color="info"
                               onClick={(e) => this.addToCart(product)}
-                                className="btn btn-primary"
                             >
                               Add Item
-                            </button>
-                          </FormGroup>
+                            </Button>
+                            </FormGroup>
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -286,6 +286,15 @@ class AddEstimate extends React.Component {
                               type="file"
                               onChange={this.uploadPhoto}
                             />
+                            <br/>
+
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-first-name"
+                            >
+                              Image Preview
+                            </label>
+                          {this.state.img && <img width="100%" height="400px" src={this.state.img} alt="photo_url" />}
                           </FormGroup>
 
                           <FormGroup>
@@ -451,8 +460,8 @@ class AddEstimate extends React.Component {
                             <Button
                               className="form-control-alternative"
                               color="info"
-
-                            >Register</Button>
+                              disabled={this.state.img ? false : true}
+                            >Save</Button>
                           </FormGroup>
                         </Col>
                       </Row>

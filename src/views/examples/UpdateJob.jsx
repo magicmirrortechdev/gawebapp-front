@@ -166,7 +166,7 @@ class UpdateJob extends React.Component {
                               className="form-control-alternative"
                               color="info"
 
-                            >Update Job</Button>
+                            >Save</Button>
                           </FormGroup>
                         </Col>
                       </Row>

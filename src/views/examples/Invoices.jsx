@@ -22,7 +22,6 @@ import {
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 
-const authService = new AuthService()
 
 class Invoices extends React.Component {
   state = {
@@ -106,6 +105,7 @@ class Invoices extends React.Component {
                   </thead>
                   {this.state.estimates.length === 0 ?  <tbody><tr><td>No invoices register</td></tr></tbody>:
                      this.state.estimates.map((e,i)=>{
+                      const estimateId = e._id
                       const client = e.clientId.name
                       const id = e._id
                       const jobName = e.jobName
@@ -128,7 +128,7 @@ class Invoices extends React.Component {
                             <tbody key={i}>
                         <tr>
                         <td>
-                          <Button id={"toggle" + i} color="primary"><i className="ni ni-bold-down"></i></Button>
+                          <Button id={"toggle" + e._id} color="primary"><i className="ni ni-bold-down"></i></Button>
                         </td>
                         <th scope="row" >{client}</th>
                         <td>{e.date}</td>
@@ -145,11 +145,12 @@ class Invoices extends React.Component {
                                  e.total - paid === 0 ? <DropdownItem disabled to={`/admin/invoices/${id}/${e._id}`} tag={Link}>Accept Payment</DropdownItem> :
                                 <DropdownItem to={`/admin/invoices/${e._id}/${id}`} tag={Link}>Accept Payment</DropdownItem>
                               }
+                                <DropdownItem to={`/admin/invoices/${estimateId}/${e._id}/update`} tag={Link}>Update</DropdownItem>
                                 <DropdownItem>Send by email</DropdownItem>
                                 <DropdownItem onClick={()=>{
                                   axios.patch(Global.url + `invoicedelete/${id}/${e._id}`)
                                   .then(({data})=>{
-                                    alert('Estimate Delete')
+                                    alert('Invoice Delete')
                                         window.location.reload()
                                   })
                                   .catch(err => {
@@ -164,7 +165,7 @@ class Invoices extends React.Component {
                         </tr>
                         <tr>
                             <td colSpan={7}>
-                            <UncontrolledCollapse toggler={"#toggle" + i}>
+                            <UncontrolledCollapse toggler={"#toggle" + e._id}>
                                 <Card>
                                   <CardBody>
                                   <h3>Invoice # {invoiceIndex} from Job:  {jobName}</h3>

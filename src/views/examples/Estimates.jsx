@@ -139,7 +139,7 @@ class Icons extends React.Component {
                                         console.log(err.response)
                                       })
                                 }}>Decline</DropdownItem>
-                                <DropdownItem>Sent Email</DropdownItem>
+                                <DropdownItem to={`/admin/estimates/${e._id}/email`} tag={Link}>Send by email</DropdownItem>
                                 <DropdownItem to={`/admin/estimates/${e._id}`} tag={Link}>Update</DropdownItem>
                                 <DropdownItem onClick={()=>{
                                   authService

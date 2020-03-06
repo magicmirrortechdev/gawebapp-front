@@ -109,9 +109,10 @@ class UpdateWorker extends React.Component {
   render() {
     const user = this.state
     if (!this.state) return <p>Loading</p>
-    const selectedValue = user.role
     const typeUser = user.type
     console.log(user)
+    const roles = [{role: 'WORKER'}, {role: 'PROJECT MANAGER'}]
+    const types = [{type: '1099'}, {type: 'Employee'}]
     return (
       <>
         <Header forms={true}/>
@@ -160,14 +161,14 @@ class UpdateWorker extends React.Component {
                               name="role"
                               className="form-control-alternative"
                               type="select"
-                              defaultValue={this.workerOptions().find(op => {
-                                  return op.value === selectedValue
-                                })}
                               onChange={this.handleInput}
                             >
-                            <option>Choose One</option>
-                            <option>WORKER</option>
-                            <option>PROJECT MANAGER</option>
+                            {roles.map((e,i)=>{
+                              return(
+                                user.role === e.role ? <option selected key={i}>{user.role}</option>: 
+                                <option>{e.role}</option>
+                              )
+                            })}
                             </Input>
                           </FormGroup>
                         
@@ -288,9 +289,12 @@ class UpdateWorker extends React.Component {
                                 })}
                               onChange={this.handleInput}
                             >
-                            <option>Choose One</option>
-                            <option>1099</option>
-                            <option>Employee</option>
+                            {types.map((e,i)=>{
+                              return(
+                                user.type === e.type ? <option selected key={i}>{user.type}</option>: 
+                                <option>{e.type}</option>
+                              )
+                            })}
                             </Input>
                           </FormGroup>
                           <FormGroup>
@@ -353,7 +357,7 @@ class UpdateWorker extends React.Component {
                               className="form-control-alternative"
                               color="info"
 
-                            >Register</Button>
+                            >Save</Button>
                           </FormGroup>
                         </Col>
                       </Row>

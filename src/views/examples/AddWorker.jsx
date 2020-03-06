@@ -55,7 +55,6 @@ class AddWorker extends React.Component {
           })
           .catch(err => {
             console.log(err.response)
-            alert(err.response.data.msg || err.response.data.err.message)
           })
   }
 
@@ -86,9 +85,10 @@ class AddWorker extends React.Component {
                               className="form-control-label d-inline-block"
                               htmlFor="input-name"
                             >
-                              Worker Name
+                              Display Name
                             </label>
                             <Input
+                              required
                               className="form-control-alternative"
                               placeholder="Enter the worker name"
                               name="name"
@@ -104,12 +104,13 @@ class AddWorker extends React.Component {
                               Type
                             </label>
                             <Input
+                              required
                               name="role"
                               className="form-control-alternative"
                               type="select"
                               onChange={this.handleInput}
                             >
-                            <option>Choose One</option>
+                            <option selected disabled >Choose One</option>
                             <option>WORKER</option>
                             <option>PROJECT MANAGER</option>
                             </Input>
@@ -123,6 +124,7 @@ class AddWorker extends React.Component {
                               Email
                             </label>
                             <Input
+                              required
                               name="email"
                               className="form-control-alternative"
                               placeholder="Enter a email"
@@ -138,6 +140,7 @@ class AddWorker extends React.Component {
                               Password
                             </label>
                             <Input
+                              required
                               name="password"
                               className="form-control-alternative"
                               placeholder="Enter a password"
@@ -154,6 +157,7 @@ class AddWorker extends React.Component {
                               Address
                             </label>
                             <Input
+                              required
                               name="address"
                               className="form-control-alternative"
                               placeholder="Enter an address"
@@ -170,6 +174,7 @@ class AddWorker extends React.Component {
                               Contact Name
                             </label>
                             <Input
+                              required
                               name="contact"
                               className="form-control-alternative"
                               placeholder="Enter a contact name"
@@ -186,6 +191,7 @@ class AddWorker extends React.Component {
                               Phone
                             </label>
                             <Input
+                              required
                               name="phone"
                               className="form-control-alternative"
                               placeholder="Enter the phone number"
@@ -202,6 +208,7 @@ class AddWorker extends React.Component {
                               Mobile
                             </label>
                             <Input
+                              required
                               name="mobile"                          
                               className="form-control-alternative"
                               placeholder="Enter the mobile number"
@@ -218,6 +225,7 @@ class AddWorker extends React.Component {
                               Activity
                             </label>
                             <Input
+                              required
                               name="activity"
                               className="form-control-alternative"
                               placeholder="Enter an activity (plumber, carpenter)"
@@ -233,6 +241,7 @@ class AddWorker extends React.Component {
                               Type
                             </label>
                             <Input
+                              required
                               name="type"
                               className="form-control-alternative"
                               type="select"
@@ -250,6 +259,7 @@ class AddWorker extends React.Component {
                               Add Documents
                             </label>
                             <Input
+                              required
                               name="photo"
                               id="photo"
                               className="form-control-alternative"
@@ -266,6 +276,7 @@ class AddWorker extends React.Component {
                               Payment Rate
                             </label>
                             <Input
+                              required
                               name="payment"
                               className="form-control-alternative"
                               type="number"
@@ -281,6 +292,7 @@ class AddWorker extends React.Component {
                               Effective Rate 
                             </label>
                             <Input
+                              required
                               name="effective"
                               className="form-control-alternative"
                               type="number"
@@ -300,7 +312,7 @@ class AddWorker extends React.Component {
                               className="form-control-alternative"
                               color="info"
 
-                            >Register</Button>
+                            >Save</Button>
                           </FormGroup>
                         </Col>
                       </Row>

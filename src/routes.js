@@ -31,6 +31,9 @@ import AddTimeAllUsers from "views/examples/AddTimeAllUsers";
 import PayInvoice from "views/examples/PayInvoice";
 import AddInvoiceByJob from "views/examples/AddInvoiceByJob";
 import Home from "views/examples/Home";
+import SendEstimate from "views/examples/SendEstimate";
+import UpdateExpense from "views/examples/UpdateExpense";
+import updateInvoice from "views/examples/UpdateInvoice";
 
 var routes = [
   {
@@ -80,6 +83,14 @@ var routes = [
     invisible:true
   },
   {
+    path: "/:id/email",
+    name: "Send Estimate",
+    icon: "ni ni-ruler-pencil text-blue",
+    component: SendEstimate,
+    layout: "/admin/estimates",
+    invisible:true
+  },
+  {
     path: "/jobs",
     name: "Jobs",
     icon: "ni ni-settings text-gray",
@@ -124,6 +135,22 @@ var routes = [
     icon: "ni ni-credit-card text-orange",
     component: PayInvoice,
     layout: "/admin/invoices",
+    invisible:true
+  },
+  {
+    path: "/:estimateId/:invoiceId/update",
+    name: "Update Invoice",
+    icon: "ni ni-credit-card text-orange",
+    component: updateInvoice,
+    layout: "/admin/invoices",
+    invisible:true
+  },
+  {
+    path: "/:estimateId/:expenseId/update",
+    name: "Update Expense",
+    icon: "ni ni-credit-card text-orange",
+    component: UpdateExpense,
+    layout: "/admin/expenses",
     invisible:true
   },
   {

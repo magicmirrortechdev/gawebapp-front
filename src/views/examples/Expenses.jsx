@@ -9,10 +9,17 @@ import {
   Row,
   Col,
   Table,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+  UncontrolledDropdown
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
+import AuthService from '../../services/services'
+
+const authService = new AuthService()
 
 class Expenses extends React.Component {
   state = {
@@ -71,7 +78,6 @@ class Expenses extends React.Component {
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
-                      <th scope="col">Merchant</th>
                       <th scope="col">Description</th>
                       <th scope="col">Category</th>
                       <th scope="col">Date</th>
@@ -84,17 +90,39 @@ class Expenses extends React.Component {
 
                      {this.state.jobs.length === 0 ?  <tbody><tr><td>No expenses register</td></tr></tbody>:
                      this.state.jobs.map((e,i)=>{
+                       const estimateId = e._id
                        return(
                        e.expenses.map((e,i)=>{
                         return(
                           <tbody key={i}>
                           <tr >
-                          <th scope="row" >{e.merchant}</th>
-                          <td>{e.description}</td>
+                          <th scope="row" >{e.description}</th>
                           <td>{e.category}</td>
                           <td>{e.date}</td>
                           <td>{e.total}</td>
-                          <td>...</td>
+                          <td>
+                            <div className="dropdownButtons">
+                            <UncontrolledDropdown>
+                              <DropdownToggle>
+                                ...
+                              </DropdownToggle>
+                              <DropdownMenu>
+                                <DropdownItem to={`/admin/expenses/${estimateId}/${e._id}/update`} tag={Link}>Update</DropdownItem>
+                                <DropdownItem onClick={()=>{
+                                  axios.patch(Global.url + `expensedelete/${estimateId}/${e._id}`)
+                                  .then(({data})=>{
+                                    alert('Expense Delete')
+                                        window.location.reload()
+                                  })
+                                  .catch(err => {
+                                    console.log(err.response)
+                                  })
+                                }}><span
+                                    className="text-danger">Delete</span></DropdownItem>
+                              </DropdownMenu>
+                            </UncontrolledDropdown>
+                          </div>
+                          </td>
                           </tr>                                               
                         </tbody>
                        )

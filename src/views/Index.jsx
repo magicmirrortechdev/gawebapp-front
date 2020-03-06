@@ -4,10 +4,11 @@ import React from "react";
 import {
   Card,
   CardHeader,
-  Table,
+  CardBody,
   Container,
   Row,
-  Col
+  Col,
+  Button
 } from "reactstrap";
 
 // core components
@@ -50,6 +51,7 @@ class Index extends React.Component {
                   <Row className="align-items-center">
                     <div className="col">
                       <h3 className="mb-0">Actions</h3>
+                      
                     </div>
                     {/*
                     <div className="col text-right">
@@ -65,24 +67,52 @@ class Index extends React.Component {
                     */}
                   </Row>
                 </CardHeader>
-                <Table className="align-items-center table-flush" responsive>
-                  <thead className="thead-light">
-                    <tr>
-                      <th scope="col">Create Estimate</th>
-                      <th scope="col">Create Invoice</th>
-                      <th scope="col">Add Expense</th>
-                      <th scope="col">Add Time</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th scope="row"><Link to="/admin/addestimate">Click Here</Link></th>
-                      <td><Link to="/admin/createinvoice">Click Here</Link></td>
-                      <td><Link to="/admin/addexpense">Click Here</Link></td>
-                      <td><Link to="/admin/addtime">Click Here</Link></td>
-                    </tr>
-                  </tbody>
-                </Table>
+                <CardBody>
+                    <Row>
+                    <Col lg="6" className="mb-5">
+                    <Button
+                              style={{width:'50%'}}
+                              className="form-control-alternative"
+                              color="info"
+                              onClick={()=>{this.props.history.push(`/admin/addexpense`)}}
+                            >New Expense
+                    </Button>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <Button
+                              style={{width:'50%'}}
+                              className="form-control-alternative"
+                              color="info"
+                              onClick={()=>{this.props.history.push(`/admin/addtime`)}}
+                            >Add Time
+                    </Button>
+                    </Col>
+                    <br/>
+                    <br/>
+                    <Col lg="6">
+                    <Button
+                              style={{width:'50%'}}
+                              className="form-control-alternative"
+                              color="info"
+                              onClick={()=>{this.props.history.push(`/admin/addestimate`)}}
+                            >New Estimate
+                      </Button>
+                      <br/>
+                      <br/>
+                      <br/>
+                      <Button
+                              style={{width:'50%'}}
+                              className="form-control-alternative"
+                              color="info"
+                              onClick={()=>{this.props.history.push(`/admin/createinvoice`)}}
+                            >New Invoice
+                      </Button>
+                    </Col>
+                      
+                    </Row>
+                    
+                </CardBody>
               </Card>
             </Col>
             

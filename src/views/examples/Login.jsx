@@ -107,12 +107,22 @@ class Login extends React.Component {
                   >
                     <span className="text-muted">Remember me</span>
                   </label>
+                  
                 </div>
+                
                 <div className="text-center">
                   <Button className="my-4" color="primary" type="button" onClick={this.handleSubmit}>
                     Sign in
                   </Button>
+                  <br/>
+                  
                 </div>
+                <span>
+                          Forgot Password?
+                          <a href="/forgotpassword">
+                            &nbsp; Reset Here
+                          </a>
+                  </span>
               </Form>
             </CardBody>
           </Card>

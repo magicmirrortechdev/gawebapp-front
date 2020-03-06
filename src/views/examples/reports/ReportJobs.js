@@ -10,10 +10,7 @@ class ReportJobs extends React.Component{
                 <tr>
                     <th></th>
                     <th scope="col">Job Name</th>
-                    <th scope="col">Job Total</th>
-                    <th scope="col">Total Invoices</th>
-                    <th scope="col">Total A/R</th>
-                    <th scope="col">Labor</th>
+                    <th scope="col">Estimate Total</th>
                     <th scope="col">Expenses</th>
                     <th scope="col">Profit</th>
                 </tr>
@@ -25,19 +22,12 @@ class ReportJobs extends React.Component{
                     </tr>
                     </tbody> :
                     this.props.jobs.map((e, i) => {
-                        let totalInvoices = e.invoices.reduce((acc, cv, i)=> acc +cv.total,0) ? e.total: 0;
-                        let totalLabor = 0;
+                        let totalEstimate = e.items.reduce((acc, cv, i)=> acc +cv.subtotal,0)
                         let totalExpenses = e.expenses ? (e.expenses.reduce((acc, current, i) => acc + current.total, 0)) : 0;
                         let clientName = e.clientId.name
-                        e.workers.map((wx, i) => {
-                            
-                            let time = wx.time ? (wx.time.reduce((acc, current, i) => acc + current, 0)) : 0;
-                            let effective = wx.workerId.effective ? wx.workerId.effective : 0;
-                            totalLabor += (time * effective);
-                        });
+                        
 
-                        let totalAR = e.paid - e.total;
-                        let totalProfit = totalInvoices - totalExpenses;
+                        let totalProfit = totalEstimate - totalExpenses;
                         return (
                             <tbody key={i}>
                             <tr>
@@ -46,10 +36,7 @@ class ReportJobs extends React.Component{
                                         className="ni ni-bold-down"></i></Button>
                                 </td>
                                 <td>{e.jobName}</td>
-                                <td>${totalInvoices} USD</td>
-                                <td>{e.paid} USD</td>
-                                <td>${totalAR} USD</td>
-                                <td>${totalLabor} USD</td>
+                                <td>${totalEstimate} USD</td>
                                 <td>${totalExpenses} USD</td>
                                 <td>${totalProfit} USD</td>
                             </tr>
@@ -103,12 +90,14 @@ class ReportJobs extends React.Component{
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    {e.workers.map((wx, i) => {
+                                                    {e.workers.length === 0 ? <tr><td>No workers</td></tr>: e.workers.map((wx, i) => {
                                                             let time = wx.time ? (wx.time.reduce((acc, current, i) => acc + current, 0)) : 0;
                                                             let effective = wx.workerId.effective ? wx.workerId.effective : 0;
                                                             let payment = wx.workerId.payment ? wx.workerId.payment : 0;
                                                             let date = new Date(wx.workerId.updatedAt).toISOString().split('T')[0];
+                                                            console.log(wx.workerId.name)
                                                             return (
+                                                                
                                                                 <tr>
                                                                     <td key={i}>{date}</td>
                                                                     <td>{wx.workerId.name}</td>
@@ -129,7 +118,6 @@ class ReportJobs extends React.Component{
                                                     <thead className="thead-light">
                                                     <tr>
                                                         <th scope="col">Date</th>
-                                                        <th scope="col">Worker</th>
                                                         <th scope="col">Expense Type</th>
                                                         <th scope="col">Amount</th>
                                                         <th scope="col">Vendor</th>
@@ -141,7 +129,6 @@ class ReportJobs extends React.Component{
                                                             return (
                                                                 <tr>
                                                                     <td>{ex.date}</td>
-                                                                    <td>{ex.workerId.name}</td>
                                                                     <td>{ex.category}</td>
                                                                     <td align="right">$ {ex.total} USD</td>
                                                                     <td>{ex.vendor}</td>

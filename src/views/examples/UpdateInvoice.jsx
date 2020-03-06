@@ -18,32 +18,14 @@ import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 
 let loggedUser;
-var fecha = new Date(); 
-      var mes = fecha.getMonth()+1; 
-      var dia = fecha.getDate(); 
-      var ano = fecha.getFullYear(); 
-      if(dia<10)
-        dia='0'+dia; //agrega cero si es menor de 10
-      if(mes<10)
-        mes='0'+mes //agrega cero si es menor de 10
-class AddInvoice extends React.Component {
+
+class UpdateInvoice extends React.Component {
   state = {
     workerId: "",
-    date:ano+"-"+mes+"-"+dia,
-    name: '',
-      email: '',
-      address: '',
-      items: [],
-      itemName: '',
-      description: '',
-      comments: '',
-      subtotal: parseInt(''),
-      tax: parseInt(''),
-      discount: parseInt(''),
-      paid: parseInt(''),
-      total: 0,
-      dateCreate: '',
-      jobName: '',
+    date:'',
+    description: '',
+    total: parseInt(''),
+    jobName: '',
   };
 
   constructor(props) {
@@ -59,27 +41,29 @@ class AddInvoice extends React.Component {
       workerId: loggedUser._id
     })
     axios
-      .get(Global.url + `estimatedetail/${this.props.match.params.id}`)
+      .get(Global.url + `estimatedetail/${this.props.match.params.estimateId}`)
       .then(({ data }) => {
         this.setState(prevState => {
+          let date = ''
+          let description = ''
+          let total
+          const invoices = data.estimate.invoices
+              invoices.map((e,i)=>{
+                if(e._id === this.props.match.params.invoiceId){
+                  date = e.date
+                  description = e.description
+                  total = e.total
+                }
+                return {date,description,total}
+              })
           return {
             ...prevState,
-            name: data.estimate.clientId.name,
-            email: data.estimate.clientId.email,
-            address: data.estimate.clientId.address,
-            tax: data.estimate.tax,
-            discount: data.estimate.discount,
-            paid: data.estimate.paid,
-            comments: data.estimate.comments,
             jobName: data.estimate.jobName,
-            ...data.estimate,
+            date: date,
+            description: description,
+            total: total
           }
         })
-        let subtotal = this.state.items.reduce((acc, current, i) => acc + current.subtotal, 0)
-        let tax = (parseInt(this.state.tax) * subtotal) / 100
-        let discount = parseInt(this.state.discount)
-        let paid = parseInt(this.state.paid)
-        this.setState(prevState=>{return{total:  parseInt(subtotal + tax - discount - paid)}})
         console.log(this.state)
       })
       .catch(err => {
@@ -98,8 +82,8 @@ class AddInvoice extends React.Component {
 
   handleSubmit = async (e, props) => {
     e.preventDefault()
-         axios.patch(Global.url + `convertinvoice/${this.props.match.params.id}`,this.state)
-         .then(response => {
+        axios.patch(Global.url + `invoiceupdate/${this.props.match.params.estimateId}/${this.props.match.params.invoiceId}`,this.state)
+        .then(response => {
           this.props.history.push(`/admin/invoices`)
           console.log(response)
         })
@@ -142,6 +126,7 @@ class AddInvoice extends React.Component {
                             Job Name
                             </label>
                             <Input
+                              disabled
                               name="_id"
                               className="form-control-alternative"
                               type="text"
@@ -179,7 +164,7 @@ class AddInvoice extends React.Component {
                               className="form-control-alternative"
                               type="number"
                               onChange={this.handleInput}
-                              placeholder="0"
+                              value={this.state.total}
                             />
                           </FormGroup>
                           <FormGroup>
@@ -190,9 +175,10 @@ class AddInvoice extends React.Component {
                               Description
                             </label>
                             <Input
+                              defaultValue={this.state.description}
                               name="description"
                               className="form-control-alternative"
-                              placeholder="This is an invoice generated in Jobs"
+                              placeholder="This is an invoice generated with the items of an estimate"
                               type="text"
                               onChange={this.handleInput}
                             />
@@ -226,4 +212,4 @@ class AddInvoice extends React.Component {
   }
 }
 
-export default withRouter(AddInvoice);
+export default withRouter(UpdateInvoice);

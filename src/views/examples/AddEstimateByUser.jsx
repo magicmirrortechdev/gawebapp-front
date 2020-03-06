@@ -288,6 +288,15 @@ class AddEstimateByUser extends React.Component {
                               onChange={this.uploadPhoto}
                               multiple
                             />
+                            <br/>
+                            
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-first-name"
+                            >
+                              Image Preview
+                            </label>
+                          {this.state.img && <img width="100%" height="400px" src={this.state.img} alt="photo_url" />}
                           </FormGroup>
 
                           <FormGroup>
@@ -421,8 +430,12 @@ class AddEstimateByUser extends React.Component {
                           <Row>
                             <Col lg="6">
                               <FormGroup>
-                                <Button className="form-control-alternative" color="info">
-                                  Register{' '}
+                                <Button 
+                                  className="form-control-alternative" 
+                                  color="info"
+                                  disabled={this.state.img ? false : true}
+                                  >
+                                  Save{' '}
                                 </Button>{' '}
                               </FormGroup>{' '}
                             </Col>{' '}

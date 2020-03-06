@@ -104,28 +104,13 @@ class AddExpense extends React.Component {
                               Expense Date
                             </label>
                             <Input
+                              required
                               id="date"
                               className="form-control-alternative"
                               placeholder="Select a date"
                               name="date"
                               value={this.state.date}
                               type="date"
-                              onChange={this.handleInput}
-                            />
-                          </FormGroup>
-                        
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-merchant"
-                            >
-                              Merchant
-                            </label>
-                            <Input
-                              name="merchant"
-                              className="form-control-alternative"
-                              placeholder="Enter a merchant (optional)"
-                              type="text"
                               onChange={this.handleInput}
                             />
                           </FormGroup>
@@ -153,13 +138,14 @@ class AddExpense extends React.Component {
                               Category
                             </label>
                             <Input
+                              required
                               name="category"
                               className="form-control-alternative"
                               placeholder="Enter a category"
                               type="select"
                               onChange={this.handleInput}
                             >
-                            <option>Choose One</option>
+                            <option disabled selected >Choose One</option>
                             <option>Job Materials</option>
                             <option>Gas</option>
                             <option>Suplies</option>
@@ -207,6 +193,7 @@ class AddExpense extends React.Component {
                               Total
                             </label>
                             <Input
+                              required
                               name="total"
                               className="form-control-alternative"
                               placeholder="Enter the total"
@@ -232,10 +219,11 @@ class AddExpense extends React.Component {
                           <FormGroup>
                         
                             <Button
+                              disabled={this.state.img ? false : true}
                               className="form-control-alternative"
                               color="info"
 
-                            >Register</Button>
+                            >Save</Button>
                           </FormGroup>
                         </Col>
                       </Row>

@@ -417,7 +417,7 @@ class UpdateEstimate extends React.Component {
                             <Col lg="6">
                               <FormGroup>
                                 <Button className="form-control-alternative" color="info">
-                                  Register{' '}
+                                  Save{' '}
                                 </Button>{' '}
                               </FormGroup>{' '}
                             </Col>{' '}
