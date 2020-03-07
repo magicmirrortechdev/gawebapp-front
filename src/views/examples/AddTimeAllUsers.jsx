@@ -152,9 +152,10 @@ class AddTime extends React.Component {
                               
                             >
                             <option>Select worker</option>
-                            {this.state.workers.map((e,i)=>{
+                            { this.state.workers.map((e,i)=>{
+                              if(!e.workerId)return <option>Worker Delete</option>
                               return(
-                                loggedUser.name === e.workerId.name ? <option selected  key={i} value={`${e._id}.${e.workerId._id}`}>{loggedUser.name}</option> :
+                                loggedUser.name === e.workerId.name ? <option selected  key={i} value={`${e._id}.${e.workerId._id}`}>{e.workerId.name}</option> :
                                 <option  key={i} value={`${e._id}.${e.workerId._id}`}>{e.workerId.name}</option>)
                             })
                             }

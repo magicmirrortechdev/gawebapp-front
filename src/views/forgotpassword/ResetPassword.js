@@ -92,7 +92,7 @@ export default class ResetPassword extends Component {
         },
       );
       console.log(response.data);
-      if (response.data.message === 'password updated') {
+      if (response.data.message === 'password change successful') {
         this.setState({
           updated: true,
           error: false,
@@ -112,7 +112,6 @@ export default class ResetPassword extends Component {
     const {
  password, error, isLoading, updated 
 } = this.state;
-  console.log(this.state)
     if (error) {
       return (
         <div>
