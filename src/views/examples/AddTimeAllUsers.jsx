@@ -70,10 +70,16 @@ class AddTime extends React.Component {
       .get(Global.url + `estimatedetail/${this.state._id}`)
       .then(({ data }) => {
         this.setState(prevState => {
+          let workerId = ''
+          let id = ''
+          let workers = data.estimate.workers
+          workers.map((e,i)=>{
+            console.log('el id', e.workerId)
+          })
           return {
             ...prevState,
             workers: data.estimate.workers,
-            ...data
+            worker_id: `${id}.${workerId}`
           }
         })
         console.log('did Mount', this.state.workers)
@@ -102,7 +108,7 @@ class AddTime extends React.Component {
   }
 
   render() {
-    console.log(this.state)
+    console.log('state ',this.state)
     return (
       <>
         <Header />
@@ -155,7 +161,7 @@ class AddTime extends React.Component {
                             { this.state.workers.map((e,i)=>{
                               if(!e.workerId)return <option>Worker Delete</option>
                               return(
-                                loggedUser.name === e.workerId.name ? <option selected  key={i} value={`${e._id}.${e.workerId._id}`}>{e.workerId.name}</option> :
+                                e.workerId._id === loggedUser._id  ? <option selected  key={i} value={`${e._id}.${e.workerId._id}`}>{e.workerId.name}</option> :
                                 <option  key={i} value={`${e._id}.${e.workerId._id}`}>{e.workerId.name}</option>)
                             })
                             }
@@ -174,6 +180,7 @@ class AddTime extends React.Component {
                               name="time"
                               className="form-control-alternative"
                               type="number"
+                              defaultValue="0"
                               onChange={this.handleInput}
                             />
                           </FormGroup>
