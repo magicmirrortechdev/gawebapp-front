@@ -69,7 +69,7 @@ class AddExpense extends React.Component {
 
   handleSubmit = async (e, props) => {
     e.preventDefault()
-    if(this.state.category===''){
+     if(this.state.category===''){
       alert('Select a category')
     }else{
       await axios.patch(Global.url + `addexpense/${this.props.match.params.id}`,this.state)

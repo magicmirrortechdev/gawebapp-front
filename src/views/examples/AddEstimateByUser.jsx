@@ -33,8 +33,8 @@ class AddEstimateByUser extends React.Component {
     itemName: '',
     description: '',
     comments: '',
-    quantity: parseInt(''),
-    rate: parseInt(''),
+    quantity: '',
+    rate: '',
     subtotal: 0,
     tax: 0,
     discount: 0,
@@ -66,11 +66,23 @@ class AddEstimateByUser extends React.Component {
 
   addToCart = product => {
     var joined = this.state.items.concat(product)
-    this.setState({ items: joined })
-    document.getElementById('itemName').value = ''
-    document.getElementById('description').value = ''
-    document.getElementById('quantity').value = ''
-    document.getElementById('rate').value = ''
+    if (this.state.itemName === ''){
+      alert('The field Item Name is required to add item')
+    }
+    else if (this.state.quantity === ''){
+      alert('The field quantity is required to add item')
+    }
+    else if( this.state.rate === ''){
+      alert('The field rate is required to add item')
+    } 
+    else{
+      document.getElementById("itemName").value = "";
+      document.getElementById("description").value = "";
+      document.getElementById("quantity").value = "";
+      document.getElementById("rate").value = "";
+      this.setState({items: joined})
+
+    }
   }
   handleInput = e => {
     e.persist()
