@@ -17,9 +17,7 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
-import AuthService from '../../services/services'
 
-const authService = new AuthService()
 
 class Expenses extends React.Component {
   state = {

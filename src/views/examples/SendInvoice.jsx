@@ -16,8 +16,17 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
+import { WithContext as ReactTags } from 'react-tag-input';
+
 
 let loggedUser;
+
+const KeyCodes = {
+  comma: 188,
+  enter: 13,
+};
+
+const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
 class SendInvoice extends React.Component {
   state = {
@@ -27,18 +36,19 @@ class SendInvoice extends React.Component {
     email: '',
     total: 0,
     jobName: '',
+    tags : [],
     description: ''
   };
 
   constructor(props) {
     super(props);
-    console.log("constructor!!!")
     loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
-    console.log("jsonParse", loggedUser);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.handleAddition = this.handleAddition.bind(this);
+    this.handleDrag = this.handleDrag.bind(this);
   }
 
   componentDidMount() {
-    console.log(loggedUser);
     this.setState({
       workerId: loggedUser._id
     })
@@ -65,7 +75,8 @@ class SendInvoice extends React.Component {
             jobName: data.estimate.jobName,
             date,
             description,
-            total
+            total,
+            tags: [{id: data.estimate.clientId.email, text: data.estimate.clientId.email}]
           }
         })
       })
@@ -93,6 +104,28 @@ class SendInvoice extends React.Component {
         .catch(err => {
           console.log(err.response)
         })
+  }
+
+  handleDelete(i) {
+    const { tags } = this.state;
+    this.setState({
+      tags: tags.filter((tag, index) => index !== i),
+    });
+  }
+
+  handleAddition(tag) {
+    this.setState(state => ({ tags: [...state.tags, tag] }));
+  }
+
+  handleDrag(tag, currPos, newPos) {
+    const tags = [...this.state.tags];
+    const newTags = tags.slice();
+
+    newTags.splice(currPos, 1);
+    newTags.splice(newPos, 0, tag);
+
+    // re-render
+    this.setState({ tags: newTags });
   }
 
   render() {    
@@ -144,14 +177,15 @@ class SendInvoice extends React.Component {
                             >
                               Emails
                             </label>
-                            <Input
-                              defaultValue={`${this.state.email}`}
-                              className="form-control-alternative"
-                              placeholder="Enter the email client"
-                              name="email"
-                              type="email"
-                              onChange={this.handleInput}
-                            />
+                            <div>
+                                <ReactTags
+                                    placeholder="Add email"
+                                    tags={this.state.tags}
+                                    handleDelete={this.handleDelete}
+                                    handleAddition={this.handleAddition}
+                                    handleDrag={this.handleDrag}
+                                    delimiters={this.state.delimiters} />
+                              </div>
                           </FormGroup>
                           <FormGroup>
                             <label

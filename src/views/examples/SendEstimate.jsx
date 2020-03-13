@@ -13,7 +13,6 @@ import {
   FormGroup,
   Input,
   Form,
-  Table,
 } from 'reactstrap'
 import { WithContext as ReactTags } from 'react-tag-input';
 
@@ -96,7 +95,7 @@ class SendEstimate extends React.Component {
         console.log(response)
       })
       .catch(err => {
-        console.log(err)
+        console.log(err.response)
       })
   }
 
@@ -123,7 +122,6 @@ class SendEstimate extends React.Component {
   }
 
   render() {
-    console.log('el stateee', this.state)
     if (!this.state) return <p> Loading </p>
     return (
       <>
@@ -168,6 +166,7 @@ class SendEstimate extends React.Component {
                             >
                               Emails
                             </label>
+                            <br/>
                               <div>
                                 <ReactTags
                                     placeholder="Add email"
@@ -177,15 +176,6 @@ class SendEstimate extends React.Component {
                                     handleDrag={this.handleDrag}
                                     delimiters={this.state.delimiters} />
                               </div>
-
-                            <Input
-                              defaultValue={`${this.state.email}`}
-                              className="form-control-alternative"
-                              placeholder="Enter the email client"
-                              name="email"
-                              type="email"
-                              onChange={this.handleInput}
-                            />
                           </FormGroup>
                           <FormGroup>
                             <label

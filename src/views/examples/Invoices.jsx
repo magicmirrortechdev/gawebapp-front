@@ -1,6 +1,5 @@
 import React from "react";
 import axios from 'axios'
-import AuthService from '../../services/services'
 import { Link } from "react-router-dom";
 
 import {

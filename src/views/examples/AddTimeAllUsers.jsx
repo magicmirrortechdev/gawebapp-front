@@ -28,13 +28,12 @@ class AddTime extends React.Component {
     nameWorker:'',
     workers:[],
     value: false,
-    time: parseInt('')
+    time: parseInt(''),
+    worker_id: ''
   };
   constructor(props) {
     super(props);
-    console.log("constructor!!!")
     loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
-    console.log("jsonParse", loggedUser);
   }
 
   handleInput = e => {
@@ -56,7 +55,6 @@ class AddTime extends React.Component {
             ...data
           }
         })
-        console.log('aquiiii', this.state.jobs)
       })
       .catch(err => {
         console.log(err)
@@ -70,26 +68,17 @@ class AddTime extends React.Component {
       .get(Global.url + `estimatedetail/${this.state._id}`)
       .then(({ data }) => {
         this.setState(prevState => {
-          let workerId = ''
-          let id = ''
-          let workers = data.estimate.workers
-          workers.map((e,i)=>{
-            console.log('el id', e.workerId)
-          })
+          
           return {
             ...prevState,
             workers: data.estimate.workers,
-            worker_id: `${id}.${workerId}`
+            ...data
           }
-        })
-        console.log('did Mount', this.state.workers)
-      })
+        })      })
       .catch(err => {
         console.log(err)
       })
     }
-  }
-  toggle = () => {
   }
 
   handleSubmit = (e, props) => {
@@ -108,7 +97,7 @@ class AddTime extends React.Component {
   }
 
   render() {
-    console.log('state ',this.state)
+    console.log(this.state)
     return (
       <>
         <Header />
@@ -136,7 +125,6 @@ class AddTime extends React.Component {
                               className="form-control-alternative"
                               type="select"
                               onChange={this.handleInput}
-                              onClick={this.toggle}
                               
                             >
                             <option>Select Job to Add Time</option>
@@ -154,15 +142,15 @@ class AddTime extends React.Component {
                               name="worker_id"
                               className="form-control-alternative"
                               type="select"
-                              onChange={this.handleInput}
+                              onChangeCapture={this.handleInput}
                               
                             >
                             <option>Select worker</option>
                             { this.state.workers.map((e,i)=>{
                               if(!e.workerId)return <option>Worker Delete</option>
                               return(
-                                e.workerId._id === loggedUser._id  ? <option selected  key={i} value={`${e._id}.${e.workerId._id}`}>{e.workerId.name}</option> :
-                                <option  key={i} value={`${e._id}.${e.workerId._id}`}>{e.workerId.name}</option>)
+                                loggedUser.name === e.workerId.name ? <option key={i} value={`${e._id}.${e.workerId._id}`}>{e.workerId.name}</option> :
+                                 <option  key={i} value={`${e._id}.${e.workerId._id}`}>{e.workerId.name}</option>)
                             })
                             }
                             
@@ -180,7 +168,6 @@ class AddTime extends React.Component {
                               name="time"
                               className="form-control-alternative"
                               type="number"
-                              defaultValue="0"
                               onChange={this.handleInput}
                             />
                           </FormGroup>

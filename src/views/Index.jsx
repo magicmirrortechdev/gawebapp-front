@@ -12,12 +12,8 @@ import {
 } from "reactstrap";
 
 // core components
-import {
-  chartOptions,
-  parseOptions,
-} from "variables/charts.jsx";
+
 import Header from "components/Headers/Header.jsx";
-import { Link } from "react-router-dom";
 
 class Index extends React.Component {
   state = {
