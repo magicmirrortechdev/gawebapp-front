@@ -15,9 +15,18 @@ import {
   Form,
   Table,
 } from 'reactstrap'
+import { WithContext as ReactTags } from 'react-tag-input';
+
 // core components
 import Header from 'components/Headers/Header.jsx'
 import Global from "../../global";
+
+const KeyCodes = {
+  comma: 188,
+  enter: 13,
+};
+
+const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
 class SendEstimate extends React.Component {
   state = {
@@ -25,8 +34,17 @@ class SendEstimate extends React.Component {
     email: '',
     items: [],
     comments: '',
+    tags : [],
     total: parseInt(''),
   }
+
+  constructor(props) {
+    super(props);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.handleAddition = this.handleAddition.bind(this);
+    this.handleDrag = this.handleDrag.bind(this);
+  }
+
   componentDidMount() {
     axios
       .get(Global.url + `estimatedetail/${this.props.match.params.id}`)
@@ -40,7 +58,8 @@ class SendEstimate extends React.Component {
             name: data.estimate.clientId.name,
             email: data.estimate.clientId.email,
             total: total,
-            items: data.estimate.items
+            items: data.estimate.items,
+            tags: [{id: data.estimate.clientId.email, text: data.estimate.clientId.email}]
           }
         })
       })
@@ -79,6 +98,28 @@ class SendEstimate extends React.Component {
       .catch(err => {
         console.log(err)
       })
+  }
+
+  handleDelete(i) {
+    const { tags } = this.state;
+    this.setState({
+      tags: tags.filter((tag, index) => index !== i),
+    });
+  }
+
+  handleAddition(tag) {
+    this.setState(state => ({ tags: [...state.tags, tag] }));
+  }
+
+  handleDrag(tag, currPos, newPos) {
+    const tags = [...this.state.tags];
+    const newTags = tags.slice();
+
+    newTags.splice(currPos, 1);
+    newTags.splice(newPos, 0, tag);
+
+    // re-render
+    this.setState({ tags: newTags });
   }
 
   render() {
@@ -127,6 +168,16 @@ class SendEstimate extends React.Component {
                             >
                               Emails
                             </label>
+                              <div>
+                                <ReactTags
+                                    placeholder="Add email"
+                                    tags={this.state.tags}
+                                    handleDelete={this.handleDelete}
+                                    handleAddition={this.handleAddition}
+                                    handleDrag={this.handleDrag}
+                                    delimiters={this.state.delimiters} />
+                              </div>
+
                             <Input
                               defaultValue={`${this.state.email}`}
                               className="form-control-alternative"
