@@ -139,7 +139,7 @@ class UpdateWorker extends React.Component {
                               className="form-control-label d-inline-block"
                               htmlFor="input-name"
                             >
-                              Worker Name
+                              Worker Name *
                             </label>
                             <Input
                               defaultValue={user.name}
@@ -155,7 +155,7 @@ class UpdateWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-role"
                             >
-                              Role
+                              Role *
                             </label>
                             <Input
                               name="role"
@@ -177,7 +177,7 @@ class UpdateWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-email"
                             >
-                              Email
+                              Email *
                             </label>
                             <Input
                               name="email"
@@ -194,7 +194,7 @@ class UpdateWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-address"
                             >
-                              Address
+                              Address *
                             </label>
                             <Input
                               name="address"
@@ -211,7 +211,7 @@ class UpdateWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-contactName"
                             >
-                              Contact Name
+                              Contact Name *
                             </label>
                             <Input
                               name="contact"
@@ -228,7 +228,7 @@ class UpdateWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-phone"
                             >
-                              Phone
+                              Phone *
                             </label>
                             <Input
                               name="phone"
@@ -245,7 +245,7 @@ class UpdateWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-mobile"
                             >
-                              Mobile
+                              Mobile *
                             </label>
                             <Input
                               name="mobile"
@@ -262,7 +262,7 @@ class UpdateWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-activity"
                             >
-                              Activity
+                              Activity *
                             </label>
                             <Input
                               name="activity"
@@ -278,7 +278,7 @@ class UpdateWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-type"
                             >
-                              Type
+                              Type *
                             </label>
                             <Input
                               name="type"
@@ -302,7 +302,7 @@ class UpdateWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-last-name"
                             >
-                              Add More Documents
+                              Add More Documents *
                             </label>
                             <Input
                               name="photo"
@@ -318,7 +318,7 @@ class UpdateWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-first-name"
                             >
-                              Payment Rate
+                              Payment Rate *
                             </label>
                             <Input
                               name="payment"
@@ -334,7 +334,7 @@ class UpdateWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-first-name"
                             >
-                              Effective Rate 
+                              Effective Rate * 
                             </label>
                             <Input
                               defaultValue={user.effective}

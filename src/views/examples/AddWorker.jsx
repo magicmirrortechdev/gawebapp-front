@@ -85,7 +85,7 @@ class AddWorker extends React.Component {
                               className="form-control-label d-inline-block"
                               htmlFor="input-name"
                             >
-                              Display Name
+                              Display Name *
                             </label>
                             <Input
                               required
@@ -101,7 +101,7 @@ class AddWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-role"
                             >
-                              Type
+                              Type *
                             </label>
                             <Input
                               required
@@ -121,7 +121,7 @@ class AddWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-email"
                             >
-                              Email
+                              Email *
                             </label>
                             <Input
                               required
@@ -137,7 +137,7 @@ class AddWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-password"
                             >
-                              Password
+                              Password *
                             </label>
                             <Input
                               required
@@ -154,7 +154,7 @@ class AddWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-address"
                             >
-                              Address
+                              Address *
                             </label>
                             <Input
                               required
@@ -171,7 +171,7 @@ class AddWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-contactName"
                             >
-                              Contact Name
+                              Contact Name *
                             </label>
                             <Input
                               required
@@ -188,7 +188,7 @@ class AddWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-phone"
                             >
-                              Phone
+                              Phone *
                             </label>
                             <Input
                               required
@@ -205,7 +205,7 @@ class AddWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-mobile"
                             >
-                              Mobile
+                              Mobile *
                             </label>
                             <Input
                               required
@@ -222,7 +222,7 @@ class AddWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-activity"
                             >
-                              Activity
+                              Activity *
                             </label>
                             <Input
                               required
@@ -238,7 +238,7 @@ class AddWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-type"
                             >
-                              Type
+                              Type *
                             </label>
                             <Input
                               required
@@ -256,7 +256,7 @@ class AddWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-last-name"
                             >
-                              Add Documents
+                              Add Documents *
                             </label>
                             <Input
                               required
@@ -273,7 +273,7 @@ class AddWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-first-name"
                             >
-                              Payment Rate
+                              Payment Rate *
                             </label>
                             <Input
                               required
@@ -289,7 +289,7 @@ class AddWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-first-name"
                             >
-                              Effective Rate 
+                              Effective Rate *
                             </label>
                             <Input
                               required

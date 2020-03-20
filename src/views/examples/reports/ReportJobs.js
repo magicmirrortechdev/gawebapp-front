@@ -91,6 +91,7 @@ class ReportJobs extends React.Component{
                                                     </thead>
                                                     <tbody>
                                                     {e.workers.length === 0 ? <tr><td>No workers</td></tr>: e.workers.map((wx, i) => {
+                                                            if(!wx.workerId)return 'Worker Delete'
                                                             let time = wx.time ? (wx.time.reduce((acc, current, i) => acc + current, 0)) : 0;
                                                             let effective = wx.workerId.effective ? wx.workerId.effective : 0;
                                                             let payment = wx.workerId.payment ? wx.workerId.payment : 0;

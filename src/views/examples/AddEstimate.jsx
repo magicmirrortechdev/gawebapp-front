@@ -239,6 +239,7 @@ class AddEstimate extends React.Component {
                               </tbody>
                             </Table>
                             <br/>
+                            <label className="form-control-label" htmlFor="input-merchant">Item Name *</label>
                             <Input
                               name="itemName"
                               className="form-control-alternative"
@@ -248,6 +249,7 @@ class AddEstimate extends React.Component {
                               onChange={this.handleInput}
                             />
                             <br/>
+                            <label className="form-control-label" htmlFor="input-merchant">Description</label>
                             <Input
                               name="description"
                               className="form-control-alternative"
@@ -257,6 +259,7 @@ class AddEstimate extends React.Component {
                               onChange={this.handleInput}
                             />
                             <br/>
+                            <label className="form-control-label" htmlFor="input-merchant">Quantity *</label>
                             <Input
                               name="quantity"
                               className="form-control-alternative"
@@ -266,6 +269,7 @@ class AddEstimate extends React.Component {
                               onChange={this.handleInput}
                             />
                             <br/>
+                            <label className="form-control-label" htmlFor="input-merchant">Rate *</label>
                             <Input
                               name="rate"
                               className="form-control-alternative"
@@ -472,7 +476,6 @@ class AddEstimate extends React.Component {
                             <Button
                               className="form-control-alternative"
                               color="info"
-                              disabled={this.state.img ? false : true}
                             >Save</Button>
                           </FormGroup>
                         </Col>

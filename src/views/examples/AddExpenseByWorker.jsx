@@ -126,6 +126,12 @@ class AddExpense extends React.Component {
                       <Row>
                         <Col lg="6">
                           <FormGroup>
+                          <label
+                              className="form-control-label d-inline-block"
+                              htmlFor="input-date"
+                            >
+                              Job Name *
+                            </label>
                             <Input
                               ref={this.selectRef}
                               name="_id"
@@ -159,7 +165,7 @@ class AddExpense extends React.Component {
                               className="form-control-label d-inline-block"
                               htmlFor="input-date"
                             >
-                              Expense Date
+                              Expense Date *
                             </label>
                             <Input
                               required
@@ -193,7 +199,7 @@ class AddExpense extends React.Component {
                               className="form-control-label"
                               htmlFor="input-category"
                             >
-                              Category
+                              Category *
                             </label>
                             <Input
                               required
@@ -231,7 +237,7 @@ class AddExpense extends React.Component {
                               className="form-control-label"
                               htmlFor="input-last-name"
                             >
-                              Image
+                              Image *
                             </label>
                             <Input
                               name="photo"
@@ -248,7 +254,7 @@ class AddExpense extends React.Component {
                               className="form-control-label"
                               htmlFor="input-first-name"
                             >
-                              Total
+                              Total *
                             </label>
                             <Input
                               required
