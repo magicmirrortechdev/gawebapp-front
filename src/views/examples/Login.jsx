@@ -24,7 +24,7 @@ class Login extends React.Component {
 
   componentDidMount(props) {
     const loggedUser = localStorage.getItem('loggedUser')
-    if (loggedUser) return this.props.history.push('/admin/jobs')
+    if (loggedUser) return this.props.history.push('/admin/index')
   }
 
   handleSubmit = (e, props) => {
