@@ -47,7 +47,7 @@ class Home extends React.Component {
           <Card className="bg-secondary shadow border-0">
             <CardBody className="px-lg-5 py-lg-5">
               <div className="text-center text-muted mb-4">
-                <small>Or sign up with credentials</small>
+                <small>Sign up with credentials</small>
               </div>
               <Form role="form">
                 <FormGroup>
@@ -95,34 +95,6 @@ class Home extends React.Component {
                      />
                   </InputGroup>
                 </FormGroup>
-                <div className="text-muted font-italic">
-                  <small>
-                    password strength:{" "}
-                    <span className="text-success font-weight-700">strong</span>
-                  </small>
-                </div>
-                <Row className="my-4">
-                  <Col xs="12">
-                    <div className="custom-control custom-control-alternative custom-checkbox">
-                      <input
-                        className="custom-control-input"
-                        id="customCheckRegister"
-                        type="checkbox"
-                      />
-                      <label
-                        className="custom-control-label"
-                        htmlFor="customCheckRegister"
-                      >
-                        <span className="text-muted">
-                          I agree with the{" "}
-                          <a href="#pablo" onClick={e => e.preventDefault()}>
-                            Privacy Policy
-                          </a>
-                        </span>
-                      </label>
-                    </div>
-                  </Col>
-                </Row>
                 <div className="text-center">
                   <Button onClick={this.handleSubmit} className="mt-4" color="primary" type="button">
                     Create account

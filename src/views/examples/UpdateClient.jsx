@@ -253,6 +253,7 @@ class UpdateClient extends React.Component {
                               placeholder="Select a Tax Number"
                               type="number"
                               onChange={this.handleInput}
+                              step="any"
                             />
                           </FormGroup>
                         </Col>

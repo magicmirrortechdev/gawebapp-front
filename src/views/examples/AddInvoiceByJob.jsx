@@ -180,6 +180,7 @@ class AddInvoice extends React.Component {
                               type="number"
                               onChange={this.handleInput}
                               placeholder="0"
+                              step="any"
                             />
                           </FormGroup>
                           <FormGroup>

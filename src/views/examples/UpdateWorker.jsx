@@ -327,6 +327,7 @@ class UpdateWorker extends React.Component {
                               type="number"
                               placeholder="$0.00 USD"
                               onChange={this.handleInput}
+                              step="any"
                             />
                           </FormGroup>
                           <FormGroup>
@@ -343,6 +344,7 @@ class UpdateWorker extends React.Component {
                               type="number"
                               placeholder="$0.00 USD"
                               onChange={this.handleInput}
+                              step="any"
                             />
                           </FormGroup>
                         </Col>

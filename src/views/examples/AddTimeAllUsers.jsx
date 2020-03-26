@@ -169,6 +169,7 @@ class AddTime extends React.Component {
                               className="form-control-alternative"
                               type="number"
                               onChange={this.handleInput}
+                              step="any"
                             />
                           </FormGroup>
                           

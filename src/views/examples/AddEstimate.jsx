@@ -375,6 +375,7 @@ class AddEstimate extends React.Component {
                               type="number"
                               onChange={this.handleInput}
                               disabled
+                              step="any"
                             />
                             
                           </FormGroup>
@@ -451,6 +452,7 @@ class AddEstimate extends React.Component {
                               className="form-control-alternative"
                               type="number"
                               onChange={this.handleInput}
+                              step="any"
                             />
                             
                           </FormGroup>

@@ -10,8 +10,9 @@ class ReportJobs extends React.Component{
                 <tr>
                     <th></th>
                     <th scope="col">Job Name</th>
-                    <th scope="col">Estimate Total</th>
+                    <th scope="col">Invoices</th>
                     <th scope="col">Expenses</th>
+                    <th scope="col">Payroll Time</th>
                     <th scope="col">Profit</th>
                 </tr>
                 </thead>
@@ -25,9 +26,19 @@ class ReportJobs extends React.Component{
                         let totalEstimate = e.items.reduce((acc, cv, i)=> acc +cv.subtotal,0)
                         let totalExpenses = e.expenses ? (e.expenses.reduce((acc, current, i) => acc + current.total, 0)) : 0;
                         let clientName = e.clientId.name
-                        
+                        let totalInvoices = e.invoices.reduce((acc,cv,i)=> acc + cv.total,0)
+                        let time
+                        let payment
+                        e.workers.map((wx, i) => {
+                            if(!wx.workerId) return 'Worker Delete'
+                            time = wx.time ? (wx.time.reduce((acc, current, i) => acc + current, 0)) : 0;
+                            payment = wx.workerId.payment ? wx.workerId.payment : 0;
 
-                        let totalProfit = totalEstimate - totalExpenses;
+                            return {time, payment}
+                        }
+                        )
+                        let totalTime = time * payment
+                        let totalProfit = totalInvoices - totalExpenses - totalTime;
                         return (
                             <tbody key={i}>
                             <tr>
@@ -35,9 +46,10 @@ class ReportJobs extends React.Component{
                                     <Button id={"toggle" + i} color="primary"><i
                                         className="ni ni-bold-down"></i></Button>
                                 </td>
-                                <td>{e.jobName}</td>
-                                <td>${totalEstimate} USD</td>
+                                <td>{e.jobName}<br/> <b>Estimate total:</b> ${totalEstimate} USD</td>
+                                <td>${totalInvoices} USD</td>
                                 <td>${totalExpenses} USD</td>
+                                <td>${payment * time} USD</td>
                                 <td>${totalProfit} USD</td>
                             </tr>
                             <tr>

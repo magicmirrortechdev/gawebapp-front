@@ -263,6 +263,7 @@ class AddExpense extends React.Component {
                               placeholder="Enter the total"
                               type="number"
                               onChange={this.handleInput}
+                              step="any"
                             />
                           </FormGroup>
                         </Col>

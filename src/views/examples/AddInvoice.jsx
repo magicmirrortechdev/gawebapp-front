@@ -166,6 +166,7 @@ class AddInvoice extends React.Component {
                               placeholder="0"
                               type="number"
                               onChange={this.handleInput}
+                              step="any"
                             />
                           </FormGroup>
                           <FormGroup>

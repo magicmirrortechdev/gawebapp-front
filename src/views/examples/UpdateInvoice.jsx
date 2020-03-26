@@ -165,6 +165,7 @@ class UpdateInvoice extends React.Component {
                               type="number"
                               onChange={this.handleInput}
                               value={this.state.total}
+                              step="any"
                             />
                           </FormGroup>
                           <FormGroup>
