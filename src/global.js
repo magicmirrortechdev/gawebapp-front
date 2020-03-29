@@ -4,11 +4,11 @@ let Global = {
     //url: "https://greenacorn.herokuapp.com/"
 
     urlArgyle: "http://localhost:9000", //local
-    //urlArgyle: "" //staging
+    //urlArgyle: "https://argyle-api-dev.herokuapp.coms" //staging
     //urlArgyle: "" //production
     merchantId: "5ddbe4b14d581e0017f78c46" //local
     //merchantId: "5ddbe4b14d581e0017f78c46" // staging
-    //urlArgyle: "" //production
+    //merchantId: "" //production
 };
 
 export default Global;
