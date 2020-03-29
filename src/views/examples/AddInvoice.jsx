@@ -16,16 +16,20 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
+import ArgyleService from "../../services/argyleService";
+import moment from "moment";
 
+const argyleService = new ArgyleService()
 let loggedUser;
 var fecha = new Date(); 
-      var mes = fecha.getMonth()+1; 
-      var dia = fecha.getDate(); 
-      var ano = fecha.getFullYear(); 
-      if(dia<10)
-        dia='0'+dia; //agrega cero si es menor de 10
-      if(mes<10)
-        mes='0'+mes //agrega cero si es menor de 10
+var mes = fecha.getMonth()+1;
+var dia = fecha.getDate();
+var ano = fecha.getFullYear();
+if(dia < 10)
+  dia='0'+dia; //agrega cero si es menor de 10
+if(mes < 10)
+  mes='0'+mes //agrega cero si es menor de 10
+
 class AddInvoice extends React.Component {
   state = {
     workerId: "",
@@ -36,7 +40,7 @@ class AddInvoice extends React.Component {
     super(props);
     console.log("constructor!!!")
     loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
-    console.log("jsonParse", loggedUser);
+    argyleService.checkArgyleUser(loggedUser)
   }
 
   componentDidMount() {
@@ -82,12 +86,34 @@ class AddInvoice extends React.Component {
 
   handleSubmit = async (e, props) => {
     e.preventDefault()
-       axios.patch(Global.url + `convertinvoice/${this.state._id}`,this.state)
-       .then(response => {
-        this.props.history.push(`/admin/invoices`)
-        console.log(response)
-      })
+      axios.patch(Global.url + `convertinvoice/${this.state._id}`,this.state)
+        .then(response => {
+          let data = {
+            date: moment(this.state.date),
+            total: this.state.total,
+            description: this.state.description,
+            extraData: {
+              jobId: response.data.estimate._id,
+              workerId: this.state.workerId,
+              invoiceId: response.data.estimate.invoices[response.data.estimate.invoices.length -1]._id
+            }
+          };
+          argyleService.addCharge(data).then(responseArgyle => {
+            console.log("argyle, ", responseArgyle);
+            let dataUpdate = {
+              argyleChargeId: responseArgyle.data.data.charge.id
+            };
+            axios.patch(Global.url + `invoice/addArgyleCharge/${data.extraData.invoiceId}`, dataUpdate)
+              .then(response => {
+                this.props.history.push(`/admin/invoices`)
+              })
+              .catch(err => {
+                console.log(err.response)
+              })
+          })
+        })
       .catch(err => {
+        console.log(err)
         console.log(err.response)
       })
   }
