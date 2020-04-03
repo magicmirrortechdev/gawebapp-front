@@ -16,10 +16,7 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
-import ArgyleService from "../../services/argyleService";
-import moment from "moment";
 
-const argyleService = new ArgyleService()
 let loggedUser;
 var fecha = new Date(); 
 var mes = fecha.getMonth()+1;
@@ -40,7 +37,6 @@ class AddInvoice extends React.Component {
     super(props);
     console.log("constructor!!!")
     loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
-    argyleService.checkArgyleUser(loggedUser)
   }
 
   componentDidMount() {

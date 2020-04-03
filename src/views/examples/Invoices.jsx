@@ -21,7 +21,6 @@ import {
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 
-
 class Invoices extends React.Component {
   state = {
     estimates:[],
@@ -149,8 +148,8 @@ class Invoices extends React.Component {
                                 <DropdownItem onClick={()=>{
                                   axios.patch(Global.url + `invoicedelete/${id}/${e._id}`)
                                   .then(({data})=>{
-                                    alert('Invoice Delete')
-                                        window.location.reload()
+                                      alert('Invoice Delete ')
+                                      window.location.reload()
                                   })
                                   .catch(err => {
                                     console.log(err.response)

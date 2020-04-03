@@ -74,6 +74,20 @@ class argyleService {
             }
         })
     }
+
+    removeCharge(chargeId) {
+        console.log("eliminando charge ", chargeId);
+        let userArgyle = JSON.parse(localStorage.getItem('ArgyleUser'));
+        let dataArgyle = {
+            chargeId: chargeId,
+        };
+
+        return this.argyleservice.post('/v1/users/deletecharge', dataArgyle, {
+            headers: {
+                'Authorization' : 'JWT ' + this.argyleUser.token
+            }
+        })
+    }
 }
 
 export default argyleService;
