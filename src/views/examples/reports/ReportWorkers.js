@@ -33,15 +33,9 @@ class ReportWorkers extends React.Component{
                         
                         e.works.map((e,i)=>{
                             hoursTime += e.time.reduce((ac, cv)=> ac + cv,0)
-
-                            hoursPerJob.push(e.time.reduce((ac, cv)=> ac + cv,0))
-
-                            console.log("horas antes", hoursTime);
-                            console.log("horas, ", hoursTime)
-                            return {hoursTime, hoursPerJob}
-                            
+                            hoursPerJob.push({works: e._id,  time:e.time.reduce((ac, cv)=> ac + cv,0)})
                         })
-                        
+
                         e.works.map(works => {
                             if(works.workId && works.workId.expenses){
                                 works.workId.expenses.map(expense => {
@@ -56,12 +50,13 @@ class ReportWorkers extends React.Component{
                             if(works.workId && works.workId.workers){
                                 works.workId.workers.map(worker => {
                                     if(worker.workerId && worker.workerId._id === e._id){
-                                        var hourJob = 0
-                                        worker.workerId.works.map(wor =>{
-                                            hourJob = wor.time.reduce((acc, current) => acc + current, 0);
-                                            hours += hourJob
-                                            return {hours}
+                                        let hours = 0
+                                        hoursPerJob.map(hoursTime => {
+                                            if(hoursTime.works == works._id){
+                                                hours = hoursTime.time
+                                            }
                                         });
+
                                         jobs.push({
                                             jobName : works.workId.jobName,
                                             hours: hours,
@@ -116,7 +111,7 @@ class ReportWorkers extends React.Component{
                                                             <tr>
                                                                 <td align="right">$ {wx.payroll}  USD</td>
                                                                 <td align="right">$ {wx.effective} USD</td>
-                                                                <td>{hourSingle} </td>
+                                                                <td>{wx.hours} </td>
                                                                 <td>{wx.jobName}</td>
                                                             </tr>
                                                         )
