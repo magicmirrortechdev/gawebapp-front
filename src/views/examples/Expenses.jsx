@@ -97,7 +97,7 @@ class Expenses extends React.Component {
                           <th scope="row" >{e.description}</th>
                           <td>{e.category}</td>
                           <td>{e.date}</td>
-                          <td>$ {e.total} USD</td>
+                          <td>$ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)} USD</td>
                           <td>
                             <div className="dropdownButtons">
                             <UncontrolledDropdown>

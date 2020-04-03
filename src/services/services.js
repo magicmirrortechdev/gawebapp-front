@@ -55,6 +55,9 @@ class AuthService {
     clientDelete(data) {
         return this.service.delete(`/deleteclient/${data}`)
     }
+    closeJob(data) {
+        return this.service.patch(`/closejob/${data}`)
+    }
 
 }
 

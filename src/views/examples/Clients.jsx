@@ -81,7 +81,6 @@ class Clients extends React.Component {
                       <th scope="col">Name</th>
                       <th scope="col">Email</th>
                       <th scope="col">Phone Number</th>
-                      <th scope="col">Balance Due</th>
                       <th scope="col">Options</th>
                     </tr>
                   </thead>
@@ -96,7 +95,6 @@ class Clients extends React.Component {
                         <th scope="row" >{e.name}</th>
                         <td>{e.email}</td>
                         <td>{e.phone}</td>
-                        <td>$0.00 USD</td>
                         <td>
                         <div className="dropdownButtons">
                         <UncontrolledDropdown>

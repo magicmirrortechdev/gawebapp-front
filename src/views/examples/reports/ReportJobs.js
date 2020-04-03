@@ -38,7 +38,7 @@ class ReportJobs extends React.Component{
                         }
                         )
                         let totalTime = time * payment
-                        let totalProfit = totalInvoices - totalExpenses - totalTime;
+                        let totalProfit = !totalTime ? totalInvoices - totalExpenses : totalInvoices - totalExpenses - totalTime;
                         return (
                             <tbody key={i}>
                             <tr>
@@ -46,11 +46,11 @@ class ReportJobs extends React.Component{
                                     <Button id={"toggle" + i} color="primary"><i
                                         className="ni ni-bold-down"></i></Button>
                                 </td>
-                                <td>{e.jobName}<br/> <b>Estimate total:</b> ${totalEstimate} USD</td>
-                                <td>${totalInvoices} USD</td>
-                                <td>${totalExpenses} USD</td>
-                                <td>${payment * time} USD</td>
-                                <td>${totalProfit} USD</td>
+                                <td>{e.jobName}<br/> <b>Estimate total:</b> ${parseFloat(Math.round(totalEstimate * 100) / 100).toFixed(2)} USD</td>
+                                <td>${parseFloat(Math.round(totalInvoices * 100) / 100).toFixed(2)} USD</td>
+                                <td>${parseFloat(Math.round(totalExpenses * 100) / 100).toFixed(2)} USD</td>
+                                <td>${!payment || !time ? 0 :  parseFloat(Math.round(totalTime * 100) / 100).toFixed(2)} USD</td>
+                                <td>${parseFloat(Math.round(totalProfit * 100) / 100).toFixed(2)} USD</td>
                             </tr>
                             <tr>
                                 <td colSpan={7}>
