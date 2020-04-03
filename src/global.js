@@ -4,7 +4,7 @@ let Global = {
     //url: "https://greenacorn.herokuapp.com/",
 
     //urlArgyle: "http://localhost:9000", //local
-    urlArgyle: "https://argyle-api-dev.herokuapp.coms", //staging
+    urlArgyle: "https://argyle-api-dev.herokuapp.com", //staging
     //urlArgyle: "" //production
     merchantId: "5ddbe4b14d581e0017f78c46" //local
         //merchantId: "5ddbe4b14d581e0017f78c46" // staging
