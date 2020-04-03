@@ -33,10 +33,11 @@ class ReportWorkers extends React.Component{
                         
                         e.works.map((e,i)=>{
                             hoursTime += e.time.reduce((ac, cv)=> ac + cv,0)
-                            
+
                             hoursPerJob.push(e.time.reduce((ac, cv)=> ac + cv,0))
 
-                            console.log('Hours Per JOb',hoursPerJob)
+                            console.log("horas antes", hoursTime);
+                            console.log("horas, ", hoursTime)
                             return {hoursTime, hoursPerJob}
                             
                         })
@@ -109,17 +110,13 @@ class ReportWorkers extends React.Component{
                                                     </thead>
                                                     <tbody>
                                                     {jobs.map((wx, i) => {
-                                                        let hourSingle = ''
-                                                        hourSingle = hoursPerJob.map((e,i)=>{
-                                                            console.log('abajo', e)
-                                                            return e
-                                                        })
-                                                        console.log('hour single',hourSingle)
+                                                        let hourSingle = 0
+                                                        hourSingle = hoursPerJob.reduce((acc, current) => acc + current, 0);
                                                         return (
                                                             <tr>
                                                                 <td align="right">$ {wx.payroll}  USD</td>
                                                                 <td align="right">$ {wx.effective} USD</td>
-                                                                <td>{hourSingle}</td>
+                                                                <td>{hourSingle} </td>
                                                                 <td>{wx.jobName}</td>
                                                             </tr>
                                                         )

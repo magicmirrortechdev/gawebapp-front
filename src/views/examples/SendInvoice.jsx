@@ -17,7 +17,10 @@ import {
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 import { WithContext as ReactTags } from 'react-tag-input';
+import ArgyleService from "../../services/argyleService";
+import moment from "moment";
 
+const argyleService = new ArgyleService()
 
 let loggedUser;
 
@@ -37,7 +40,8 @@ class SendInvoice extends React.Component {
     total: 0,
     jobName: '',
     tags : [],
-    description: ''
+    description: '',
+    urlPay: ''
   };
 
   constructor(props) {
@@ -46,6 +50,7 @@ class SendInvoice extends React.Component {
     this.handleDelete = this.handleDelete.bind(this);
     this.handleAddition = this.handleAddition.bind(this);
     this.handleDrag = this.handleDrag.bind(this);
+    argyleService.checkArgyleUser(loggedUser)
   }
 
   componentDidMount() {
@@ -70,6 +75,8 @@ class SendInvoice extends React.Component {
               })
           return {
             ...prevState,
+            invoiceId: this.props.match.params.invoiceId,
+            jobId: data.estimate._id,
             name: data.estimate.clientId.name,
             email: data.estimate.clientId.email,
             jobName: data.estimate.jobName,
@@ -96,7 +103,30 @@ class SendInvoice extends React.Component {
 
   handleSubmit = async (e, props) => {
     e.preventDefault()
-        axios.post(Global.url + `sendinvoice`,this.state)
+
+    let data = {
+      date: moment(this.state.date),
+      total: this.state.total,
+      description: this.state.description,
+      extraData: {
+        description: this.state.description,
+        total: this.state.total,
+        date: this.state.date,
+        jobId: this.state.jobId,
+        invoiceId: this.state.invoiceId,
+        workerId: this.state.workerId
+      }
+    };
+    argyleService.addCharge(data).then(responseArgyle => {
+      console.log("argyle, ", responseArgyle);
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          urlPay: responseArgyle.data.data.url
+        }
+      })
+
+      axios.post(Global.url + `sendinvoice`,this.state)
         .then(response => {
           this.props.history.push(`/admin/invoices`)
           console.log(response)
@@ -104,6 +134,7 @@ class SendInvoice extends React.Component {
         .catch(err => {
           console.log(err.response)
         })
+    })
   }
 
   handleDelete(i) {
