@@ -84,29 +84,7 @@ class AddInvoice extends React.Component {
     e.preventDefault()
       axios.patch(Global.url + `convertinvoice/${this.state._id}`,this.state)
         .then(response => {
-          let data = {
-            date: moment(this.state.date),
-            total: this.state.total,
-            description: this.state.description,
-            extraData: {
-              jobId: response.data.estimate._id,
-              workerId: this.state.workerId,
-              invoiceId: response.data.estimate.invoices[response.data.estimate.invoices.length -1]._id
-            }
-          };
-          argyleService.addCharge(data).then(responseArgyle => {
-            console.log("argyle, ", responseArgyle);
-            let dataUpdate = {
-              argyleChargeId: responseArgyle.data.data.charge.id
-            };
-            axios.patch(Global.url + `invoice/addArgyleCharge/${data.extraData.invoiceId}`, dataUpdate)
-              .then(response => {
-                this.props.history.push(`/admin/invoices`)
-              })
-              .catch(err => {
-                console.log(err.response)
-              })
-          })
+          this.props.history.push(`/admin/invoices`)
         })
       .catch(err => {
         console.log(err)
