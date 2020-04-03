@@ -36,7 +36,7 @@ class ReportWorkers extends React.Component{
                             
                             hoursPerJob.push(e.time.reduce((ac, cv)=> ac + cv,0))
 
-                            console.log(hoursPerJob)
+                            console.log('Hours Per JOb',hoursPerJob)
                             return {hoursTime, hoursPerJob}
                             
                         })
@@ -114,6 +114,7 @@ class ReportWorkers extends React.Component{
                                                             console.log('abajo', e)
                                                             return e
                                                         })
+                                                        console.log('hour single',hourSingle)
                                                         return (
                                                             <tr>
                                                                 <td align="right">$ {wx.payroll}  USD</td>
