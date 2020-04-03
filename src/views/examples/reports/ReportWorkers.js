@@ -13,7 +13,6 @@ class ReportWorkers extends React.Component{
                     <th scope="col">Worker</th>
                     <th scope="col">Payroll Expenses</th>
                     <th scope="col">Labor Expense (Effective Rate)</th>
-                    <th scope="col">Expenses</th>
                     <th scope="col">Hours</th>
                     <th scope="col">Total</th>
                 </tr>
@@ -71,7 +70,6 @@ class ReportWorkers extends React.Component{
                                 <td>{e.name}</td>
                                 <td align="right">$ {e.payment * hours} USD</td>
                                 <td align="right">$ {e.effective * hours} USD</td>
-                                <td align="right">$ {totalExpenses} USD</td>
                                 <td> {hours} </td>
                                 <td align="right">$ {e.effective * hours} USD</td>
                             </tr>
@@ -112,7 +110,7 @@ class ReportWorkers extends React.Component{
                                                     </tbody>
                                                 </Table>
 
-                                                <h3>- Expenses</h3>
+                                                {/*<h3>- Expenses</h3>
                                                 <Table
                                                     className="align-items-center table-flush col-md-8 col-xs-12"
                                                     responsive>
@@ -142,6 +140,7 @@ class ReportWorkers extends React.Component{
                                                     )}
                                                     </tbody>
                                                 </Table>
+                                                */}
                                             </CardBody>
                                         </Card>
                                     </UncontrolledCollapse>

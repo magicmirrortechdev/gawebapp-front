@@ -92,6 +92,7 @@ class Jobs extends React.Component {
                       let tax = parseInt(e.tax) * subtotal / 100
                       let discount = e.discount
                       let paid = e.paid
+                      let total = subtotal + tax - paid - discount
                       return(
                         <tbody key={i}>
                         <tr >
@@ -105,7 +106,7 @@ class Jobs extends React.Component {
                           )
 
                         })}</td>
-                        <td>${subtotal + tax - paid - discount} USD</td>
+                        <td>${parseFloat(Math.round(total * 100) / 100).toFixed(2)} USD</td>
                         <td>
                           
                             <UncontrolledDropdown>

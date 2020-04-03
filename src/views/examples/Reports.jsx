@@ -135,6 +135,7 @@ class Reports extends React.Component {
                                                 />
                                             </FormGroup>
                                         </Col>
+                                        {/*
                                         <Col md={{size: 3, offset: 5}}>
                                             <FormGroup>
                                                 <label
@@ -151,6 +152,7 @@ class Reports extends React.Component {
                                                 </Input>
                                             </FormGroup>
                                         </Col>
+                                        */}
                                     </Row>
                                 </Form>
 

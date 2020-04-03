@@ -113,7 +113,9 @@ class Invoices extends React.Component {
                         e.invoices.map((e,i) =>{
                           const invoiceIndex = i + 1
                           const paid = e.payment.reduce((acc, current, i) => acc + current.paid, 0)
-                          const total = e.total
+                          const total = e.total - paid
+                          const total2 = e.total
+
                           const paidAcc = e.payment.map((e,i)=>{
                             let sum = 0
                               sum += e.paid||0
@@ -132,8 +134,8 @@ class Invoices extends React.Component {
                         <th scope="row" >{client}</th>
                         <td>{e.date}</td>
                         <td>{e.total-paid === 0 ? 'Paid' : e.status}</td>
-                        <td>${e.total}USD</td> 
-                        <td>${e.total - paid}USD</td>                       
+                        <td>${parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}USD</td> 
+                        <td>${parseFloat(Math.round(total * 100) / 100).toFixed(2)}USD</td>                       
                         <td>
                           <div className="dropdownButtons">
                             <UncontrolledDropdown>
@@ -188,8 +190,8 @@ class Invoices extends React.Component {
                                                         <tr key={i}>
                                                             <td>Payment # {paymentIndex}</td>
                                                             <td>{e.date}</td>
-                                                            <td align="right">$ {e.paid} USD</td>
-                                                            <td align="right">$ {total - paidOk[i]}USD</td>
+                                                            <td align="right">$ {parseFloat(Math.round(e.paid * 100) / 100).toFixed(2)} USD</td>
+                                                            <td align="right">$ {parseFloat(Math.round((total2 - paidOk[i]) * 100) / 100).toFixed(2)}USD</td>
                                                         </tr>
                                                         
                                                       )
