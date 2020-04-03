@@ -95,7 +95,8 @@ class Jobs extends React.Component {
                       let total = subtotal + tax - paid - discount
                       return(
                         <tbody key={i}>
-                        <tr >
+                        {e.status === "Closed" ? <tr><th scope="row">{e.jobName}</th> <td>Closed</td></tr> :
+                        <tr>
                         <th scope="row" >{e.jobName}</th>
                         <td>{e.dateStart}</td>
                         <td>{e.dateEnd}</td>
@@ -138,6 +139,19 @@ class Jobs extends React.Component {
                                 <DropdownItem to={`/admin/jobs/addpm/${e._id}`} tag={Link}>Add Project Manager</DropdownItem>
                                 <DropdownItem onClick={()=>{
                                   authService
+                                      .closeJob(e._id)
+                                      .then(({data}) => {
+                                        alert('Job Closed')
+                                        window.location.reload()
+                                      })
+                                      .catch(err => {
+                                        console.log(err.response)
+                                      })
+                                }}><span
+                                    >Close Job</span>
+                                </DropdownItem>
+                                <DropdownItem onClick={()=>{
+                                  authService
                                       .estimateDelete(e._id)
                                       .then(({data}) => {
                                         alert('Job Delete')
@@ -145,17 +159,17 @@ class Jobs extends React.Component {
 
                                       })
                                       .catch(err => {
-                                        //aquí deberia ir una notificacion o un swal o un toastr
                                         console.log(err.response)
-                                        alert(err.response.data.msg || err.response.data.err.message)
                                       })
                                 }}><span
-                                    className="text-danger">Delete</span></DropdownItem>
+                                    className="text-danger">Delete</span>
+                                </DropdownItem>
                               </DropdownMenu>
                             </UncontrolledDropdown>
 
                         </td>
                         </tr>
+                      }
 
 
                       </tbody>
