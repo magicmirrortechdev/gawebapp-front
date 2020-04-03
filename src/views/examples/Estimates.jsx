@@ -79,8 +79,7 @@ class Icons extends React.Component {
                       >
                         Add Estimate
                       </p>
-                    </Link>
-                      
+                    </Link>                      
                     </div>
                   </Row>
                 </CardHeader>

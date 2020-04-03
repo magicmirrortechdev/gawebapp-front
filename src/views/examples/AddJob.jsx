@@ -60,7 +60,7 @@ class AddJob extends React.Component {
                 <CardHeader className="border-0">
                   <Row className="align-items-center">
                     <div className="col">
-                      <h3 className="mb-0">Reports</h3>
+                      <h3 className="mb-0">New Job</h3>
                     </div>
                   </Row>
                 </CardHeader>
@@ -80,42 +80,40 @@ class AddJob extends React.Component {
                             <Input
                               className="form-control-alternative"
                               placeholder="Enter a billing name or search your clients list"
-                              name="nameClient"
+                              name="name"
                               type="text"
                               onChange={this.handleInput}
                             />
                           </FormGroup>
-                        
                           <FormGroup>
                             <label
-                              className="form-control-label"
-                              htmlFor="input-manager"
+                              className="form-control-label d-inline-block"
+                              htmlFor="input-nameClient"
                             >
-                              Project Manager
+                              Client Email
                             </label>
                             <Input
-                              name="projectManager"
                               className="form-control-alternative"
-                              placeholder="Enter a name"
-                              type="text"
+                              placeholder="Enter a billing name or search your clients list"
+                              name="email"
+                              type="email"
                               onChange={this.handleInput}
                             />
                           </FormGroup>
-
                           <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-job"
-                            >
-                              Job Name
-                            </label>
-                            <Input
-                              name="jobName"
-                              className="form-control-alternative"
-                              placeholder="Enter a name"
-                              type="text"
-                              onChange={this.handleInput}
-                            />
+                          <label
+                            className="form-control-label d-inline-block"
+                            htmlFor="input-nameClient"
+                          >
+                            Address Client
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            placeholder="Enter a billing name or search your clients list"
+                            name="address"
+                            type="text"
+                            onChange={this.handleInput}
+                          />
                           </FormGroup>
 
                           <FormGroup>
@@ -144,39 +142,6 @@ class AddJob extends React.Component {
                               name="dateEnd"
                               className="form-control-alternative"
                               type="date"
-                              onChange={this.handleInput}
-                            />
-                          </FormGroup>
-
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-type"
-                            >
-                              Type
-                            </label>
-                            <Input
-                              name="type"
-                          
-                              className="form-control-alternative"
-                              placeholder="Select a type Job"
-                              type="select"
-                              onChange={this.handleInput }
-                            />
-                          </FormGroup>
-
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-first-name"
-                            >
-                              Worker
-                            </label>
-                            <Input
-                              name="worker"
-                              className="form-control-alternative"
-                              placeholder="Enter or choose a worker name"
-                              type="text"
                               onChange={this.handleInput}
                             />
                           </FormGroup>

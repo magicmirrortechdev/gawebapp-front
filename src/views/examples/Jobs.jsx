@@ -65,6 +65,16 @@ class Jobs extends React.Component {
                     <div className="col">
                       <h3 className="mb-0">Information</h3>
                     </div>
+                    <div className="col text-right">
+                    <Link to="addjob">
+                      <p
+                        color="primary"
+                        size="sm" 
+                      >
+                        Create Job
+                      </p>
+                    </Link>                      
+                    </div>
                   </Row>
                 </CardHeader>
                 <Table className="align-items-center table-flush" responsive>
