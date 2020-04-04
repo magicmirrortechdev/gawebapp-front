@@ -70,7 +70,7 @@ class argyleService {
 
         return this.argyleservice.post('/v1/users/addcharge', dataArgyle, {
             headers: {
-                'Authorization' : 'JWT ' + this.argyleUser.token
+                'Authorization' : 'JWT ' + this.userArgyle.token
             }
         })
     }
