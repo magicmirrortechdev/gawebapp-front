@@ -203,9 +203,12 @@ class Sidebar extends React.Component {
             {/* Navigation */}
             <Nav navbar>{this.createLinks(routes)}</Nav>
             {/* Divider */}
+            <p>V 1.0.1</p>
           </Collapse>
         </Container>
+        
       </Navbar>
+      
     );
   }
 }

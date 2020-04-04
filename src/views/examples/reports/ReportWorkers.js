@@ -105,8 +105,6 @@ class ReportWorkers extends React.Component{
                                                     </thead>
                                                     <tbody>
                                                     {jobs.map((wx, i) => {
-                                                        let hourSingle = 0
-                                                        hourSingle = hoursPerJob.reduce((acc, current) => acc + current, 0);
                                                         return (
                                                             <tr>
                                                                 <td align="right">$ {wx.payroll}  USD</td>
