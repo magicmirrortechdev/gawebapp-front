@@ -70,7 +70,7 @@ class argyleService {
 
         return this.argyleservice.post('/v1/users/addcharge', dataArgyle, {
             headers: {
-                'Authorization' : 'JWT ' + this.userArgyle.token
+                'Authorization' : 'JWT ' + userArgyle.token
             }
         })
     }
@@ -84,7 +84,7 @@ class argyleService {
 
         return this.argyleservice.post('/v1/users/deletecharge', dataArgyle, {
             headers: {
-                'Authorization' : 'JWT ' + this.argyleUser.token
+                'Authorization' : 'JWT ' + userArgyle.token
             }
         })
     }
