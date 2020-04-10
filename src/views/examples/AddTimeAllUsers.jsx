@@ -22,6 +22,15 @@ import Global from "../../global";
 
 let loggedUser;
 
+
+var fecha = new Date(); 
+      var mes = fecha.getMonth()+1; 
+      var dia = fecha.getDate(); 
+      var ano = fecha.getFullYear(); 
+      if(dia<10)
+        dia='0'+dia; //agrega cero si es menor de 10
+      if(mes<10)
+        mes='0'+mes //agrega cero si es menor de 10
 class AddTime extends React.Component {
   state = {
     jobs: [],
@@ -29,7 +38,8 @@ class AddTime extends React.Component {
     workers:[],
     value: false,
     time: parseInt(''),
-    worker_id: ''
+    worker_id: '',
+    date: ano+"-"+mes+"-"+dia,
   };
   constructor(props) {
     super(props);
@@ -157,6 +167,24 @@ class AddTime extends React.Component {
                             
                             </Input>
                         </FormGroup>
+                        <FormGroup>
+                            <label
+                              className="form-control-label d-inline-block"
+                              htmlFor="input-date"
+                            >
+                             Date
+                            </label>
+                            <Input
+                              required
+                              id="date"
+                              className="form-control-alternative"
+                              placeholder="Select a date"
+                              name="date"
+                              value={this.state.date}
+                              type="date"
+                              onChange={this.handleInput}
+                            />
+                          </FormGroup>
                         <FormGroup>
                             <label
                               className="form-control-label"

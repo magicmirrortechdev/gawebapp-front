@@ -9,12 +9,15 @@ class ReportWorkers extends React.Component{
             <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">
                 <tr>
-                    <th></th>
+                    <th style={{width: "100px"}}></th>
                     <th scope="col">Worker</th>
+                    {/*
+                        
                     <th scope="col">Payroll Expenses</th>
                     <th scope="col">Labor Expense (Effective Rate)</th>
                     <th scope="col">Hours</th>
                     <th scope="col">Total</th>
+                    */}
                 </tr>
                 </thead>
 
@@ -69,6 +72,16 @@ class ReportWorkers extends React.Component{
                             }
 
                         });
+                        let totalPayroll = []
+                        let totalEffective = []
+                        let totalHours = []
+                        jobs.map((e,i)=>{
+                            totalPayroll.push(e.payroll)
+                            totalEffective.push(e.effective)
+                            totalHours.push(e.hours)
+
+                            return{totalPayroll, totalEffective, totalHours}
+                        })
 
                         return (
                             <tbody key={i}>
@@ -78,10 +91,12 @@ class ReportWorkers extends React.Component{
                                         className="ni ni-bold-down"></i></Button>
                                 </td>
                                 <td>{e.name}</td>
+                                {/*
                                 <td align="right">$ {e.payment * hoursTime} USD</td>
                                 <td align="right">$ {e.effective * hoursTime} USD</td>
                                 <td> {hoursTime} </td>
                                 <td align="right">$ {e.effective * hoursTime} USD</td>
+                                 */}
                             </tr>
                             <tr>
                                 <td colSpan={7}>
@@ -95,26 +110,35 @@ class ReportWorkers extends React.Component{
                                                     responsive>
                                                     <thead className="thead-light">
                                                     <tr>
+                                                        <th scope="col">Job</th>
                                                         <th scope="col">Payroll Expense</th>
                                                         <th scope="col">Labor Expense
                                                             (Efective Rate)
                                                         </th>
                                                         <th scope="col">Hours</th>
-                                                        <th scope="col">Job</th>
+                                                        
                                                     </tr>
                                                     </thead>
                                                     <tbody>
                                                     {jobs.map((wx, i) => {
                                                         return (
                                                             <tr>
-                                                                <td align="right">$ {wx.payroll}  USD</td>
-                                                                <td align="right">$ {wx.effective} USD</td>
-                                                                <td>{wx.hours} </td>
                                                                 <td>{wx.jobName}</td>
+                                                                <td align="right">$ {parseFloat(Math.round(wx.payroll * 100) / 100).toFixed(2)}  USD</td>
+                                                                <td align="right">$ {parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)} USD</td>
+                                                                <td>{parseFloat(Math.round(wx.hours * 100) / 100).toFixed(2)} </td>
+                                                                
                                                             </tr>
                                                         )
                                                         }
                                                     )}
+                                                    <tr>
+                                                    <td align="right">Total:</td>
+                                                    <td align="right">$ {totalPayroll ? parseFloat(Math.round(totalPayroll.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2) : 0}USD</td>
+                                                    <td align="right">$ {totalEffective ? parseFloat(Math.round(totalEffective.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2) : 0}USD</td>
+                                                    <td>{totalHours ? totalHours.reduce((ac,cv)=> ac+cv,0) : 0}</td>
+
+                                                    </tr>
                                                     </tbody>
                                                 </Table>
 

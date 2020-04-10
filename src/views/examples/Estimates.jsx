@@ -98,8 +98,7 @@ class Icons extends React.Component {
                       let subtotal = e.items.reduce((acc, current, i) => acc + current.subtotal, 0)
                       let tax = parseInt(e.tax) * subtotal / 100
                       let discount = e.discount
-                      let paid = e.paid
-                      let total = subtotal + tax - paid - discount
+                      let total = !subtotal ? 0 : subtotal + tax  - discount
                       return(
                         <tbody key={i}>
                         <tr >

@@ -13,6 +13,7 @@ import {
   FormGroup,
   Input,
   Form,
+  Table
 } from 'reactstrap'
 import { WithContext as ReactTags } from 'react-tag-input';
 
@@ -33,6 +34,7 @@ class SendEstimate extends React.Component {
     email: '',
     items: [],
     comments: '',
+    address: '',
     tags : [],
     total: parseInt(''),
   }
@@ -57,6 +59,7 @@ class SendEstimate extends React.Component {
             name: data.estimate.clientId.name,
             email: data.estimate.clientId.email,
             total: total,
+            address: data.estimate.clientId.address,
             items: data.estimate.items,
             tags: [{id: data.estimate.clientId.email, text: data.estimate.clientId.email}]
           }
@@ -158,6 +161,21 @@ class SendEstimate extends React.Component {
                               type="text"
                               onChange={this.handleInput}
                             />
+                            <br/>
+                            <label
+                              className="form-control-label d-inline-block"
+                              htmlFor="input-name"
+                            >
+                              Address
+                            </label>
+                            <Input
+                              defaultValue={`${this.state.address}`}
+                              className="form-control-alternative"
+                              placeholder="Enter the address client"
+                              name="address"
+                              type="text"
+                              onChange={this.handleInput}
+                            />
                             </FormGroup>
                             <FormGroup>
                             <label
@@ -177,6 +195,56 @@ class SendEstimate extends React.Component {
                                     delimiters={this.state.delimiters} />
                               </div>
                           </FormGroup>
+                          <FormGroup>
+                            <label className="form-control-label" htmlFor="input-merchant">
+                              Items
+                            </label>
+
+                            <Table className="align-items-center table-flush" responsive>
+                              <thead className="thead-light">
+                                <tr>
+                                  <th scope="col"> Item Name </th>
+                                  <th scope="col"> Description </th>
+                                  <th scope="col"> Quantity </th>
+                                  <th scope="col"> Rate </th>
+                                  <th scope="col"> Total </th>
+                                  <th scope="col"> Options </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {this.state.items.map((el, i) => (
+                                  <tr key={i}>
+                                    <td> {el.itemName} </td>
+                                    <td> {el.description} </td>
+                                    <td> {el.quantity} </td>
+                                    <td>$ {el.rate} </td>
+                                    <td>$ {el.subtotal} </td>
+                                    <td>
+                                      <Button
+                                        onClick={e =>
+                                          this.setState(prevState => {
+                                            var filter = this.state.items.filter(
+                                              e => e !== this.state.items[i]
+                                            )
+                                            this.setState({ items: filter })
+                                          })
+                                        }
+                                        style={{
+                                          width: '100px',
+                                          height: '20px',
+                                          fontSize: '10px',
+                                          paddingTop: '0',
+                                        }}
+                                        className="btn icon-btn btn-danger"
+                                      >
+                                        <i className="nc-icon nc-simple-remove" /> Delete
+                                      </Button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </Table>
+                            </FormGroup>
                           <FormGroup>
                             <label
                               className="form-control-label"

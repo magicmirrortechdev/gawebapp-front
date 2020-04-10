@@ -27,17 +27,31 @@ class ReportJobs extends React.Component{
                         let totalExpenses = e.expenses ? (e.expenses.reduce((acc, current, i) => acc + current.total, 0)) : 0;
                         let clientName = e.clientId.name
                         let totalInvoices = e.invoices.reduce((acc,cv,i)=> acc + cv.total,0)
-                        let time
-                        let payment
+                        let time = []
+                        let payment = []
+                        let effective = []
+                        let totalTime = 0
+                        let totalEffective = 0
                         e.workers.map((wx, i) => {
+                            let timeWx
+                            let paymentWx
+                            let effectiveWx
                             if(!wx.workerId) return 'Worker Delete'
-                            time = wx.time ? (wx.time.reduce((acc, current, i) => acc + current, 0)) : 0;
-                            payment = wx.workerId.payment ? wx.workerId.payment : 0;
+                            console.log('el wx', wx)
+                            timeWx = wx.time.reduce((acc, current, i) => acc + current, 0);
+                            paymentWx = wx.workerId.payment
+                            effectiveWx = wx.workerId.effective
+                            payment.push(paymentWx)
+                            effective.push(effectiveWx)
+                            time.push(timeWx)
 
-                            return {time, payment}
+                            return {time, payment, effective}
                         }
                         )
-                        let totalTime = time * payment
+                        totalTime = time.reduce((ac,cv)=> ac+cv,0) * (payment.reduce((ac,cv)=> ac+cv,0)/payment.length  )
+                        totalEffective = time.reduce((ac,cv)=> ac+cv,0) * (effective.reduce((ac,cv)=> ac+cv,0)/effective.length )
+
+                       
                         let totalProfit = !totalTime ? totalInvoices - totalExpenses : totalInvoices - totalExpenses - totalTime;
                         return (
                             <tbody key={i}>
@@ -49,7 +63,7 @@ class ReportJobs extends React.Component{
                                 <td>{e.jobName}<br/> <b>Estimate total:</b> ${parseFloat(Math.round(totalEstimate * 100) / 100).toFixed(2)} USD</td>
                                 <td>${parseFloat(Math.round(totalInvoices * 100) / 100).toFixed(2)} USD</td>
                                 <td>${parseFloat(Math.round(totalExpenses * 100) / 100).toFixed(2)} USD</td>
-                                <td>${!payment || !time ? 0 :  parseFloat(Math.round(totalTime * 100) / 100).toFixed(2)} USD</td>
+                                <td>${!totalTime ? 0 :  parseFloat(Math.round(totalTime * 100) / 100).toFixed(2)} USD</td>
                                 <td>${parseFloat(Math.round(totalProfit * 100) / 100).toFixed(2)} USD</td>
                             </tr>
                             <tr>
@@ -64,25 +78,32 @@ class ReportJobs extends React.Component{
                                                     <thead className="thead-light">
                                                     <tr>
                                                         <th scope="col">Date</th>
-                                                        <th scope="col">Sent by</th>
+                                                        <th scope="col">Client Name</th>
                                                         <th scope="col">Total</th>
-                                                        <th scope="col">Balance</th>
+                                                        <th scope="col">Status</th>
+
                                                     </tr>
                                                     </thead>
                                                     <tbody>
                                                     {e.invoices.length === 0 ? <tbody><tr><td>No invoices register</td></tr></tbody>:e.invoices.map((e, i)=>{
-                                                        const paid = e.payment.reduce((acc, current, i) => acc + current.paid, 0)
+                                                        
                                                         return(
-                                                            <tr>
+                                                        <tr>
                                                             <td>{e.date}</td>
                                                             <td>{clientName}</td>
-                                                            <td align="right">$ {e.total} USD</td>
-                                                            <td align="right">$ {e.total - paid} USD</td>
+                                                            <td align="right">$ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)} USD</td>
+                                                            <td>{e.status}</td>
                                                         </tr>
+                                                        
                                                         )
                                                     })
                                                         
                                                     }
+                                                        <tr>
+                                                            <td></td>
+                                                            <td>Total:</td>
+                                                            <td align="right">$ {parseFloat(Math.round(totalInvoices * 100) / 100).toFixed(2)} USD</td>
+                                                        </tr>
                                                     </tbody>
                                                 </Table>
 
@@ -103,24 +124,33 @@ class ReportJobs extends React.Component{
                                                     </thead>
                                                     <tbody>
                                                     {e.workers.length === 0 ? <tr><td>No workers</td></tr>: e.workers.map((wx, i) => {
-                                                            if(!wx.workerId)return 'Worker Delete'
+                                                            if(!wx.workerId)return <td>Worker Delete</td>
                                                             let time = wx.time ? (wx.time.reduce((acc, current, i) => acc + current, 0)) : 0;
+                                                            let time2 = []
+                                                            time2.push(time)
+                                                            time2.reduce((ac,cv)=> ac + cv, 0)
                                                             let effective = wx.workerId.effective ? wx.workerId.effective : 0;
                                                             let payment = wx.workerId.payment ? wx.workerId.payment : 0;
                                                             let date = new Date(wx.workerId.updatedAt).toISOString().split('T')[0];
-                                                            console.log(wx.workerId.name)
                                                             return (
                                                                 
                                                                 <tr>
                                                                     <td key={i}>{date}</td>
                                                                     <td>{wx.workerId.name}</td>
-                                                                    <td align="right">$ {payment * time} USD</td>
-                                                                    <td align="right">$ {effective * time} USD</td>
-                                                                    <td>{time}</td>
+                                                                    <td align="right">$ {parseFloat(Math.round((payment*time) * 100) / 100).toFixed(2)} USD</td>
+                                                                    <td align="right">$ {parseFloat(Math.round((effective*time) * 100) / 100).toFixed(2)} USD</td>
+                                                                    <td align="right">{time}</td>
                                                                 </tr>
                                                             )
                                                         }
                                                     )}
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td>Total:</td>
+                                                                    <td align="right">${!totalTime ? 0 :  parseFloat(Math.round(totalTime * 100) / 100).toFixed(2)} USD</td>
+                                                                    <td align="right">${!totalTime ? 0 :  parseFloat(Math.round(totalEffective * 100) / 100).toFixed(2)} USD</td>
+                                                                    <td align="right">{time ? time.reduce((ac,cv)=>ac+cv,0):0}</td>
+                                                                </tr>
                                                     </tbody>
                                                 </Table>
 
@@ -143,13 +173,18 @@ class ReportJobs extends React.Component{
                                                                 <tr>
                                                                     <td>{ex.date}</td>
                                                                     <td>{ex.category}</td>
-                                                                    <td align="right">$ {ex.total} USD</td>
+                                                                    <td align="right">$ {parseFloat(Math.round(ex.total * 100) / 100).toFixed(2)} USD</td>
                                                                     <td>{ex.vendor}</td>
                                                                     <td>{ex.description}</td>
                                                                 </tr>
                                                             )
                                                         }
                                                     )}
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td>Total:</td>
+                                                                    <td align="right">$ {!totalExpenses ? 0 :  parseFloat(Math.round(totalExpenses * 100) / 100).toFixed(2)} USD</td>
+                                                                </tr>
                                                     </tbody>
                                                 </Table>
                                             </CardBody>

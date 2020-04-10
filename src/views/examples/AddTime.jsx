@@ -21,10 +21,20 @@ import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 
 
+var fecha = new Date(); 
+      var mes = fecha.getMonth()+1; 
+      var dia = fecha.getDate(); 
+      var ano = fecha.getFullYear(); 
+      if(dia<10)
+        dia='0'+dia; //agrega cero si es menor de 10
+      if(mes<10)
+        mes='0'+mes //agrega cero si es menor de 10
 class AddTime extends React.Component {
   state = {
     jobName: '',
-    nameWorker:''
+    nameWorker:'',
+    date: ano+"-"+mes+"-"+dia,
+
   };
 
   handleInput = e => {
@@ -134,6 +144,24 @@ class AddTime extends React.Component {
                               type="text"
                               onChange={this.handleInput}
                               disabled
+                            />
+                          </FormGroup>
+                          <FormGroup>
+                            <label
+                              className="form-control-label d-inline-block"
+                              htmlFor="input-date"
+                            >
+                             Date
+                            </label>
+                            <Input
+                              required
+                              id="date"
+                              className="form-control-alternative"
+                              placeholder="Select a date"
+                              name="date"
+                              value={this.state.date}
+                              type="date"
+                              onChange={this.handleInput}
                             />
                           </FormGroup>
                           <FormGroup>

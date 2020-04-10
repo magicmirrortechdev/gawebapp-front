@@ -20,8 +20,14 @@ import Header from "components/Headers/Header.jsx";
 const authService = new AuthService()
 
 
+let date = new Date()
+let day = date.getDate()
+let month = date.getMonth() + 1
+let year = date.getFullYear()
+
 class AddJob extends React.Component {
   state = {
+    dateCreate: month<10 ? (`${day}-0${month}-${year}`):(`${day}-${month}-${year}`)
   };
 
   handleInput = e => {
