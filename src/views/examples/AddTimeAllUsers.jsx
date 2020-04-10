@@ -57,7 +57,7 @@ class AddTime extends React.Component {
 
   componentDidMount() {
     axios
-      .get(Global.url + `checkjobs`)
+      .get(Global.url + `openjobs`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {

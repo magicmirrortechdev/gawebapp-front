@@ -13,7 +13,10 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  UncontrolledDropdown
+  UncontrolledDropdown,
+  Form,
+  FormGroup,
+  Input
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
@@ -24,13 +27,14 @@ const authService = new AuthService()
 
 class Jobs extends React.Component {
   state = {
-    jobs:[]
+    jobs:[],
+    filter: ""
   };
 
 
   componentDidMount() {
     axios
-      .get(Global.url + `checkjobs`)
+      .get(Global.url + `openjobs`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -45,8 +49,62 @@ class Jobs extends React.Component {
         console.log(err)
       })
   }
+  handleInput = e => {
+    e.persist()
+    this.setState(prevState => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }))
+  }
+  handleSubmit(){
+    if(this.state.filter === "Open"){
+      axios
+      .get(Global.url + `openjobs`)
+      .then(({ data }) => {
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            ...data
+          }
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    }
+    else if (this.state.filter === "Closed"){
+      axios
+      .get(Global.url + `closejobs`)
+      .then(({ data }) => {
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            ...data
+          }
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    }
+    else if (this.state.filter === "All"){
+      axios
+      .get(Global.url + `checkjobs`)
+      .then(({ data }) => {
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            ...data
+          }
+        })
 
 
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    }
+  }
 
 
   render() {
@@ -77,6 +135,28 @@ class Jobs extends React.Component {
                     </div>
                   </Row>
                 </CardHeader>
+                <Form className="card-header">
+                  <Row form>
+                                        
+                    <Col md={{size: 3}}>
+                        <FormGroup>
+                            <label
+                            className="form-control-label"
+                            htmlFor="input-dateStart">
+                            Filter
+                             </label>
+                            <Input type="select" name="filter"
+                                onChange={this.handleInput}
+                                className="form-control-alternative">
+                                <option value="Open">Open</option>
+                                <option value="Close">Closed</option>
+                                <option value="All">All</option>
+                            </Input>
+                        </FormGroup>
+                    </Col>
+                                        
+                  </Row>
+                </Form>
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
