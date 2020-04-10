@@ -14,14 +14,15 @@ class argyleService {
     }
 
     checkArgyleUser(email, name) {
+        this.argyleUser = JSON.parse(localStorage.getItem("ArgyleUser"))
+        let _this = this;
         return new Promise(function(resolve, reject){
-            this.argyleUser = JSON.parse(localStorage.getItem("ArgyleUser"))
             if(!argyleUser){
                 let data = {
                     username: email,
                     password: 'secret123'
                 }
-                this.login(data)
+                _this.login(data)
                     .then(responseSignin => {
                         console.log("Argyle response: ", responseSignin)
                         localStorage.setItem("ArgyleUser", JSON.stringify(responseSignin.data.data))
@@ -37,7 +38,7 @@ class argyleService {
                                     firstName: name,
                                     lastName: " - Grean Acorn App",
                                 }
-                                this.signup(data).then(responseSignup => {
+                                _this.signup(data).then(responseSignup => {
                                     localStorage.setItem("ArgyleUser", JSON.stringify(responseSignup))
                                     resolve({ok:1});
                                 });

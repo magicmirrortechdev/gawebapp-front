@@ -118,7 +118,8 @@ class SendInvoice extends React.Component {
     };
 
     //mandarlo al primer correo con el primer nombre nada mas
-    argyleService.checkArgyleUser(this.state.tags.split(",")[0], this.state.name).then((result) =>{
+    console.log(this.state.tags[0]);
+    argyleService.checkArgyleUser(this.state.tags[0].text, this.state.name).then((result) =>{
       argyleService.addCharge(data).then(responseArgyle => {
         console.log("argyle, ", responseArgyle);
         this.setState(prevState => {
