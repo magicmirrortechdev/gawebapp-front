@@ -13,35 +13,39 @@ class argyleService {
         })
     }
 
-    checkArgyleUser(loggedUser) {
-        this.argyleUser = JSON.parse(localStorage.getItem("ArgyleUser"))
-        if(!argyleUser){
-            let data = {
-                username: loggedUser.email,
-                password: 'secret123'
-            }
-            this.login(data)
-                .then(responseSignin => {
-                    console.log("Argyle response: ", responseSignin)
-                    localStorage.setItem("ArgyleUser", JSON.stringify(responseSignin.data.data))
-                })
-                .catch(err => {
-                    if(err.response && err.response.data ){
-                        console.log("user not found:: ", err.response.data)
-                        if (err.response.data.code === "E_USER_NOT_FOUND"){
-                            let data = {
-                                username: loggedUser.email,
-                                email: loggedUser.email,
-                                firstName: loggedUser.name,
-                                lastName: "Grean Acorn App",
+    checkArgyleUser(email, name) {
+        return new Promise(function(resolve, reject){
+            this.argyleUser = JSON.parse(localStorage.getItem("ArgyleUser"))
+            if(!argyleUser){
+                let data = {
+                    username: email,
+                    password: 'secret123'
+                }
+                this.login(data)
+                    .then(responseSignin => {
+                        console.log("Argyle response: ", responseSignin)
+                        localStorage.setItem("ArgyleUser", JSON.stringify(responseSignin.data.data))
+                        resolve({ok:1});
+                    })
+                    .catch(err => {
+                        if(err.response && err.response.data ){
+                            console.log("user not found:: ", err.response.data)
+                            if (err.response.data.code === "E_USER_NOT_FOUND"){
+                                let data = {
+                                    username: email,
+                                    email: email,
+                                    firstName: name,
+                                    lastName: " - Grean Acorn App",
+                                }
+                                this.signup(data).then(responseSignup => {
+                                    localStorage.setItem("ArgyleUser", JSON.stringify(responseSignup))
+                                    resolve({ok:1});
+                                });
                             }
-                            this.signup(data).then(responseSignup => {
-                                localStorage.setItem("ArgyleUser", JSON.stringify(responseSignup))
-                            });
                         }
-                    }
-                })
-        }
+                    })
+            }
+        })
     }
 
     login(data) {

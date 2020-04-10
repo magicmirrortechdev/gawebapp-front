@@ -50,7 +50,6 @@ class SendInvoice extends React.Component {
     this.handleDelete = this.handleDelete.bind(this);
     this.handleAddition = this.handleAddition.bind(this);
     this.handleDrag = this.handleDrag.bind(this);
-    argyleService.checkArgyleUser(loggedUser)
   }
 
   componentDidMount() {
@@ -117,23 +116,27 @@ class SendInvoice extends React.Component {
         workerId: this.state.workerId
       }
     };
-    argyleService.addCharge(data).then(responseArgyle => {
-      console.log("argyle, ", responseArgyle);
-      this.setState(prevState => {
-        return {
-          ...prevState,
-          urlPay: responseArgyle.data.data.url
-        }
-      })
 
-      axios.post(Global.url + `sendinvoice`,this.state)
-        .then(response => {
-          this.props.history.push(`/admin/invoices`)
-          console.log(response)
+    //mandarlo al primer correo con el primer nombre nada mas
+    argyleService.checkArgyleUser(this.state.tags.split(",")[0], this.state.name).then((result) =>{
+      argyleService.addCharge(data).then(responseArgyle => {
+        console.log("argyle, ", responseArgyle);
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            urlPay: responseArgyle.data.data.url
+          }
         })
-        .catch(err => {
-          console.log(err.response)
-        })
+
+        axios.post(Global.url + `sendinvoice`,this.state)
+            .then(response => {
+              this.props.history.push(`/admin/invoices`)
+              console.log(response)
+            })
+            .catch(err => {
+              console.log(err.response)
+            })
+      })
     })
   }
 
