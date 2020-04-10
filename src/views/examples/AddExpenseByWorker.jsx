@@ -51,7 +51,7 @@ class AddExpense extends React.Component {
     })
     console.log("montando componente, " );
     axios
-      .get(Global.url + `checkjobs`)
+      .get(Global.url + `openjobs`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
