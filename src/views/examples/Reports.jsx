@@ -16,7 +16,8 @@ import {
     TabPane,
     Nav,
     NavItem,
-    NavLink
+    NavLink,
+    Button
 } from "reactstrap";
 // core components
 import Global from "../../global";
@@ -45,7 +46,7 @@ class Reports extends React.Component {
     }
 
     componentDidMount() {
-        axios.get(Global.url + `checkjobs`)
+        axios.get(Global.url + `openjobs`)
             .then(({data}) => {
                 console.log(data);
                 this.setState(prevState => {
@@ -74,6 +75,53 @@ class Reports extends React.Component {
             });
 
     }
+
+    getOpen =()=>{
+    axios
+      .get(Global.url + `openjobs`)
+      .then(({ data }) => {
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            ...data
+          }
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+  getClose =()=>{
+    axios
+      .get(Global.url + `closejobs`)
+      .then(({ data }) => {
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            ...data
+          }
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  getAll =()=>{
+    axios
+      .get(Global.url + `checkjobs`)
+      .then(({ data }) => {
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            ...data
+          }
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
 
     render() {
 
@@ -154,6 +202,38 @@ class Reports extends React.Component {
                                         </Col>
                                         */}
                                     </Row>
+                                    <Row form>
+                                     {this.state.activeTab === '1' ?  
+                                        <Col md={{size: 6}}>
+                                            <FormGroup>
+                                                <label
+                                                className="form-control-label"
+                                                htmlFor="input-dateStart">
+                                                Filter By Jobs
+                                                </label>
+                                                <br/>
+                                                <span>
+                                                <Button
+                                                className="form-control-alternative"
+                                                color="info"
+                                                onClick={this.getOpen}
+                                                >Open</Button>
+                                                <Button
+                                                className="form-control-alternative"
+                                                color="info"
+                                                onClick={this.getClose}
+                                                >Close</Button>
+                                                <Button
+                                                className="form-control-alternative"
+                                                color="info"
+                                                onClick={this.getAll}
+                                                >All</Button>
+                                                </span>
+                                            </FormGroup>
+                                        </Col>
+                                        : null
+                                     }
+                  </Row>
                                 </Form>
 
                                 <Nav tabs>

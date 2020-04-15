@@ -142,7 +142,7 @@ class ReportWorkers extends React.Component{
                                                     </tbody>
                                                 </Table>
 
-                                                {/*<h3>- Expenses</h3>
+                                                <h3>- Expenses</h3>
                                                 <Table
                                                     className="align-items-center table-flush col-md-8 col-xs-12"
                                                     responsive>
@@ -172,7 +172,7 @@ class ReportWorkers extends React.Component{
                                                     )}
                                                     </tbody>
                                                 </Table>
-                                                */}
+                                             
                                             </CardBody>
                                         </Card>
                                     </UncontrolledCollapse>

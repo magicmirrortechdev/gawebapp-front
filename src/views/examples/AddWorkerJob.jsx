@@ -44,8 +44,6 @@ class AddWorkerJob extends React.Component {
             ...data
           }
         })
-
-        console.log('Aqui está el state', this.state.clients )
       })
       .catch(err => {
         console.log(err)

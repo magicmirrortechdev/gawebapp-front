@@ -80,7 +80,6 @@ class AddExpense extends React.Component {
 
   render() {
 
-    console.log(this.state)
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
     return (
       <>

@@ -16,7 +16,7 @@ import {
   UncontrolledDropdown,
   Form,
   FormGroup,
-  Input
+  Button
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
@@ -56,9 +56,9 @@ class Jobs extends React.Component {
       [e.target.name]: e.target.value,
     }))
   }
-  handleSubmit(){
-    if(this.state.filter === "Open"){
-      axios
+
+  getOpen =()=>{
+    axios
       .get(Global.url + `openjobs`)
       .then(({ data }) => {
         this.setState(prevState => {
@@ -71,9 +71,9 @@ class Jobs extends React.Component {
       .catch(err => {
         console.log(err)
       })
-    }
-    else if (this.state.filter === "Closed"){
-      axios
+  }
+  getClose =()=>{
+    axios
       .get(Global.url + `closejobs`)
       .then(({ data }) => {
         this.setState(prevState => {
@@ -86,9 +86,10 @@ class Jobs extends React.Component {
       .catch(err => {
         console.log(err)
       })
-    }
-    else if (this.state.filter === "All"){
-      axios
+  }
+
+  getAll =()=>{
+    axios
       .get(Global.url + `checkjobs`)
       .then(({ data }) => {
         this.setState(prevState => {
@@ -97,13 +98,10 @@ class Jobs extends React.Component {
             ...data
           }
         })
-
-
       })
       .catch(err => {
         console.log(err)
       })
-    }
   }
 
 
@@ -138,20 +136,31 @@ class Jobs extends React.Component {
                 <Form className="card-header">
                   <Row form>
                                         
-                    <Col md={{size: 3}}>
+                    <Col md={{size: 6}}>
                         <FormGroup>
                             <label
                             className="form-control-label"
                             htmlFor="input-dateStart">
                             Filter
                              </label>
-                            <Input type="select" name="filter"
-                                onChange={this.handleInput}
-                                className="form-control-alternative">
-                                <option value="Open">Open</option>
-                                <option value="Close">Closed</option>
-                                <option value="All">All</option>
-                            </Input>
+                             <br/>
+                            <span>
+                            <Button
+                              className="form-control-alternative"
+                              color="info"
+                              onClick={this.getOpen}
+                            >Open</Button>
+                            <Button
+                              className="form-control-alternative"
+                              color="info"
+                              onClick={this.getClose}
+                            >Close</Button>
+                            <Button
+                              className="form-control-alternative"
+                              color="info"
+                              onClick={this.getAll}
+                            >All</Button>
+                            </span>
                         </FormGroup>
                     </Col>
                                         
