@@ -22,10 +22,14 @@ import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 const authService = new AuthService()
 
-let date = new Date()
-let day = date.getDate()
-let month = date.getMonth() + 1
-let year = date.getFullYear()
+var fecha = new Date(); 
+      var mes = fecha.getMonth()+1; 
+      var dia = fecha.getDate(); 
+      var ano = fecha.getFullYear(); 
+      if(dia<10)
+        dia='0'+dia; //agrega cero si es menor de 10
+      if(mes<10)
+        mes='0'+mes //agrega cero si es menor de 10
 
 class AddEstimate extends React.Component {
   
@@ -44,7 +48,7 @@ class AddEstimate extends React.Component {
     discount: 0,
     paid: 0,
     total: 0,
-    dateCreate: month<10 ? (`${day}-0${month}-${year}`):(`${day}-${month}-${year}`),
+    dateCreate: ano+"-"+mes+"-"+dia,
     jobName:''
   };
 

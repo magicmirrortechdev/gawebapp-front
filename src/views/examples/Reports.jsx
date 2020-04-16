@@ -44,6 +44,13 @@ class Reports extends React.Component {
     handleSubmit() {
 
     }
+    handleInput = e => {
+    e.persist()
+    this.setState(prevState => ({
+      ...prevState,
+      [e.target.name]: e.target.value
+    }))
+  }
 
     componentDidMount() {
         axios.get(Global.url + `openjobs`)
@@ -123,6 +130,28 @@ class Reports extends React.Component {
       })
   }
 
+  filterDate = () =>{
+    let dates = {"startDate":this.state.startDate, "endDate": this.state.endDate}
+    console.log('los params', dates)
+    axios
+      .post(Global.url + `filterdate`, this.state )
+      .then(({ data }) => {
+        
+        this.setState(prevState => {
+            return {
+            ...prevState,
+            ...data
+          }
+            
+          
+        })
+        console.log("State filtrado",this.state)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
     render() {
 
         if (!this.state) return <p>Loading</p>
@@ -151,7 +180,7 @@ class Reports extends React.Component {
                                     </Row>
                                 </CardHeader>
 
-                                <Form className="card-header">
+                                <Form className="card-header" >
                                     <Row form>
                                         <Col md={2}>
                                             <FormGroup>
@@ -161,10 +190,10 @@ class Reports extends React.Component {
                                                     From Date
                                                 </label>
                                                 <Input
-                                                    name="dateStart"
+                                                    name="startDate"
                                                     className="form-control-alternative"
                                                     type="date"
-                                                    onChange={this.handleSubmit}
+                                                    onChange={this.handleInput}
                                                 />
                                             </FormGroup>
                                         </Col>
@@ -176,11 +205,27 @@ class Reports extends React.Component {
                                                     Up to Date
                                                 </label>
                                                 <Input
-                                                    name="dateStart"
+                                                    name="endDate"
                                                     className="form-control-alternative"
                                                     type="date"
-                                                    onChange={this.handleSubmit}
+                                                    onChange={this.handleInput}
                                                 />
+                                                
+                                            </FormGroup>
+                                            
+                                        </Col>
+                                        <Col md={2}>
+                                            <FormGroup>
+                                            <label
+                                            className="form-control-label"
+                                            htmlFor="input-dateStart"
+                                            >Click</label> 
+                                            <br/>
+                                            <Button
+                                                className="form-control-alternative"
+                                                color="info"
+                                                onClick={this.filterDate}
+                                                >Search</Button>
                                             </FormGroup>
                                         </Col>
                                         {/*
@@ -202,7 +247,11 @@ class Reports extends React.Component {
                                         </Col>
                                         */}
                                     </Row>
-                                    <Row form>
+                                    
+                                </Form>
+                                <Form className="card-header">
+
+                                <Row form>
                                      {this.state.activeTab === '1' ?  
                                         <Col md={{size: 6}}>
                                             <FormGroup>
@@ -233,8 +282,8 @@ class Reports extends React.Component {
                                         </Col>
                                         : null
                                      }
-                  </Row>
-                                </Form>
+                                    </Row>
+                                    </Form>
 
                                 <Nav tabs>
                                     <NavItem>

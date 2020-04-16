@@ -2,6 +2,7 @@ import React from "react";
 import axios from 'axios'
 import AuthService from '../../services/services'
 import { Link } from "react-router-dom";
+import Moment from 'react-moment'
 
 import {
   Card,
@@ -103,7 +104,7 @@ class Icons extends React.Component {
                         <tbody key={i}>
                         <tr >
                         <th scope="row" >{e.clientId.name}</th>
-                        <td>{e.dateCreate}</td>
+                        <td><Moment format={"YYYY-MM-DD"}>{e.dateCreate}</Moment></td>
                         <td>{e.status}</td>
                         <td>${ parseFloat(Math.round(total * 100) / 100).toFixed(2)} USD</td>
                         <td>

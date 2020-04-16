@@ -1,6 +1,7 @@
 import React from 'react';
 import {Button, Card, Table, UncontrolledCollapse} from "reactstrap";
 import CardBody from "reactstrap/es/CardBody";
+import Moment from 'react-moment'
 
 class ReportJobs extends React.Component{
     render() {
@@ -43,7 +44,6 @@ class ReportJobs extends React.Component{
                             let paymentWxTotal
 
                             if(!wx.workerId) return 'Worker Delete'
-                            console.log('el wx', wx)
                             timeWx = wx.time.reduce((acc, current, i) => acc + current, 0);
                             paymentWx = wx.workerId.payment
                             effectiveWx = wx.workerId.effective
@@ -99,7 +99,7 @@ class ReportJobs extends React.Component{
                                                         
                                                         return(
                                                         <tr>
-                                                            <td>{e.date}</td>
+                                                            <td><Moment format={"YYYY-MM-DD"}>{e.date}</Moment></td>
                                                             <td>{clientName}</td>
                                                             <td align="right">$ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)} USD</td>
                                                             <td>{e.status}</td>
@@ -123,7 +123,6 @@ class ReportJobs extends React.Component{
                                                     responsive>
                                                     <thead className="thead-light">
                                                     <tr>
-                                                        <th scope="col">Date</th>
                                                         <th scope="col">Worker</th>
                                                         <th scope="col">Payroll Expense</th>
                                                         <th scope="col">Labor Expense
@@ -141,12 +140,10 @@ class ReportJobs extends React.Component{
                                                             time2.reduce((ac,cv)=> ac + cv, 0)
                                                             let effective = wx.workerId.effective ? wx.workerId.effective : 0;
                                                             let payment = wx.workerId.payment ? wx.workerId.payment : 0;
-                                                            let date = new Date(wx.workerId.updatedAt).toISOString().split('T')[0];
                                                         
                                                             return (
                                                                 
                                                                 <tr>
-                                                                    <td key={i}>{date}</td>
                                                                     <td>{wx.workerId.name}</td>
                                                                     <td align="right">$ {parseFloat(Math.round((payment*time) * 100) / 100).toFixed(2)} USD</td>
                                                                     <td align="right">$ {parseFloat(Math.round((effective*time) * 100) / 100).toFixed(2)} USD</td>
@@ -156,7 +153,6 @@ class ReportJobs extends React.Component{
                                                         }
                                                     )}
                                                                 <tr>
-                                                                    <td></td>
                                                                     <td>Total:</td>
                                                                     <td align="right">${!totalTime ? 0 :  parseFloat(Math.round(totalTime * 100) / 100).toFixed(2)} USD</td>
                                                                     <td align="right">${!totalEffective ? 0 :  parseFloat(Math.round(totalEffective * 100) / 100).toFixed(2)} USD</td>
@@ -179,10 +175,14 @@ class ReportJobs extends React.Component{
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    {e.expenses.map((ex, ix) => {
+                                                    {e.expenses.length === 0 ? <tbody><tr><td>No expenses register</td></tr></tbody>:e.expenses.map((ex, ix) => {
                                                             return (
                                                                 <tr>
-                                                                    <td>{ex.date}</td>
+                                                                    <td >
+                                                                    <Moment format={"YYYY-MM-DD"}>
+                                                                    {ex.date}
+                                                                    </Moment>
+                                                                    </td>
                                                                     <td>{ex.category}</td>
                                                                     <td align="right">$ {parseFloat(Math.round(ex.total * 100) / 100).toFixed(2)} USD</td>
                                                                     <td>{ex.vendor}</td>

@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+import Moment from 'react-moment'
 
 import {
   Card,
@@ -96,7 +97,11 @@ class Expenses extends React.Component {
                           <tr >
                           <th scope="row" >{e.description}</th>
                           <td>{e.category}</td>
-                          <td>{e.date}</td>
+                          <td>
+                          <Moment format={"YYYY-MM-DD"}>
+                          {e.date}
+                          </Moment>
+                          </td>
                           <td>$ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)} USD</td>
                           <td>
                             <div className="dropdownButtons">

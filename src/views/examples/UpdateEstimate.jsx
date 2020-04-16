@@ -1,6 +1,7 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import axios from 'axios'
+import Moment from 'react-moment'
 
 import {
   Card,
@@ -122,6 +123,8 @@ class UpdateEstimate extends React.Component {
 
     console.log('el stateee', this.state)
     if (!this.state) return <p> Loading </p>
+    let dateCreate = this.state.dateCreate
+
     return (
       <>
         <Header /> {/* Page content */}{' '}
@@ -310,7 +313,7 @@ class UpdateEstimate extends React.Component {
                               Date Create{' '}
                             </label>
                             <Input
-                              defaultValue={`${this.state.dateCreate}`}
+                              defaultValue={`${dateCreate}`}
                               name="dateCreate"
                               className="form-control-alternative"
                               type="text"
