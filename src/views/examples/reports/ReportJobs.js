@@ -27,7 +27,7 @@ class ReportJobs extends React.Component{
                         let totalEstimate = e.items.reduce((acc, cv, i)=> acc +cv.subtotal,0)
                         let totalExpenses = e.expenses ? (e.expenses.reduce((acc, current, i) => acc + current.total, 0)) : 0;
                         let clientName = e.clientId.name
-                        let totalInvoices = e.invoices.reduce((acc,cv,i)=> acc + cv.total,0)
+                        let totalInvoices = e.invoices ? e.invoices.reduce((acc,cv,i)=> acc + cv.total,0) : 0
                         let time = []
                         let payment = []
                         let effective = []
