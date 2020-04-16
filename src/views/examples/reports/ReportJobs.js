@@ -95,7 +95,8 @@ class ReportJobs extends React.Component{
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    {e.invoices.length === 0 ? <tbody><tr><td>No invoices register</td></tr></tbody>:e.invoices.map((e, i)=>{
+                                                    {   !e.invoices ? <tbody><tr><td>No invoices register</td></tr></tbody>:
+                                                        e.invoices.length === 0 ? <tbody><tr><td>No invoices register</td></tr></tbody>:e.invoices.map((e, i)=>{
                                                         
                                                         return(
                                                         <tr>
