@@ -44,7 +44,7 @@ class ReportJobs extends React.Component{
                             let paymentWxTotal
 
                             if(!wx.workerId) return 'Worker Delete'
-                            timeWx = wx.time.reduce((acc, current, i) => acc + current, 0);
+                            timeWx = wx.time.reduce((acc, current, i) => acc + current.hours, 0);
                             paymentWx = wx.workerId.payment
                             effectiveWx = wx.workerId.effective
 
@@ -63,6 +63,8 @@ class ReportJobs extends React.Component{
                         totalEffective = effectiveTotal.reduce((acc,cv) => acc+cv,0)
                         totalTime = timeTotal.reduce((acc,cv)=> acc+cv,0)
                         let totalProfit = !totalEffective ? totalInvoices - totalExpenses : totalInvoices - totalExpenses - totalEffective;
+                        let jobName = e.jobName
+                        let nameClient = jobName.split('-')[0]
                         return (
                             <tbody key={i}>
                             <tr>
@@ -101,7 +103,7 @@ class ReportJobs extends React.Component{
                                                         return(
                                                         <tr>
                                                             <td><Moment format={"YYYY-MM-DD"}>{e.date}</Moment></td>
-                                                            <td>{clientName}</td>
+                                                            <td>{clientName ? clientName : nameClient}</td>
                                                             <td align="right">$ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)} USD</td>
                                                             <td>{e.status}</td>
                                                         </tr>
@@ -135,7 +137,7 @@ class ReportJobs extends React.Component{
                                                     <tbody>
                                                     {e.workers.length === 0 ? <tr><td>No workers</td></tr>: e.workers.map((wx, i) => {
                                                             if(!wx.workerId)return <td>Worker Delete</td>
-                                                            let time = wx.time ? (wx.time.reduce((acc, current, i) => acc + current, 0)) : 0;
+                                                            let time = wx.time ? (wx.time.reduce((acc, current, i) => acc + current.hours, 0)) : 0;
                                                             let time2 = []
                                                             time2.push(time)
                                                             time2.reduce((ac,cv)=> ac + cv, 0)

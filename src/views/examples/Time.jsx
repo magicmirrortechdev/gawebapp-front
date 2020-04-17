@@ -96,7 +96,7 @@ class Time extends React.Component {
                        
                       return(
                         e.workers.map((e,i)=>{
-                        let time = <p style={{fontSize:"10px"}}>{e.time.reduce((acc, current, i) => acc + current, 0)}</p>
+                        let time = <p style={{fontSize:"10px"}}>{e.time.reduce((acc, current, i) => acc + current.hours, 0)}</p>
                           if(!e.workerId)return <th scope="row">Worker Delete</th>
                           return(
                         <tbody key={i}>

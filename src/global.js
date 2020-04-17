@@ -1,7 +1,7 @@
 let Global = {
-    //url: "http://localhost:3000/",
+    url: "http://localhost:3000/",
     //url: "https://green-acorn-production.herokuapp.com/",
-    url: "https://greenacorn.herokuapp.com/",
+    //url: "https://greenacorn.herokuapp.com/",
 
     //urlArgyle: "http://localhost:9000", //local
     urlArgyle: "https://argyle-api-dev.herokuapp.com", //staging
