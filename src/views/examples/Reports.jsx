@@ -137,6 +137,7 @@ class Reports extends React.Component {
       .post(Global.url + `filterdate`, this.state )
       .then(({ data }) => {
         
+        
         this.setState(prevState => {
             return {
             ...prevState,
