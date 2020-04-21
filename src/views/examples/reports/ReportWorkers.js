@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, Card, Table, UncontrolledCollapse} from "reactstrap";
 import CardBody from "reactstrap/es/CardBody";
-
+import Moment from "react-moment";
 
 class ReportWorkers extends React.Component{
     render() {
@@ -33,42 +33,77 @@ class ReportWorkers extends React.Component{
                         let jobs = [];
                         let hoursPerJob = []
                         let hoursTime = 0
-                        
-                        e.works.map((e,i)=>{
-                            hoursTime += e.time.reduce((ac, cv)=> ac + cv,0)
-                            hoursPerJob.push({works: e._id,  time:e.time.reduce((ac, cv)=> ac + cv,0)})
+
+                        e.works.map((e, i) => {
+                            e.time.map((time, i) => {
+                                hoursTime += time.hours;
+                                hoursPerJob.push({works: e._id,  time: time.hours})
+                            })
                         })
 
                         e.works.map(works => {
-                            if(works.workId && works.workId.expenses){
-                                works.workId.expenses.map(expense => {
-                                    if(expense.workerId && expense.workerId._id === e._id){
-                                        expense.jobName = works.workId.jobName;
-                                        expenses.push(expense);
-                                        totalExpenses += expense.total;
-                                    }
-                                });
-                            }
+                            if(works.workId instanceof Array ){ //search
+                                if(works.workId[0] && works.workId[0].expenses){
+                                    works.workId[0].expenses.map(expense => {
+                                        if(expense.workerId && expense.workerId === e._id){
+                                            expense.jobName = works.workId[0].jobName;
+                                            expenses.push(expense);
+                                            totalExpenses += expense.total;
+                                        }
+                                    });
+                                }
 
-                            if(works.workId && works.workId.workers){
-                                works.workId.workers.map(worker => {
-                                    if(worker.workerId && worker.workerId._id === e._id){
+                                works.workId.map(work => {
+                                    if(works.time.length > 0){
                                         let hours = 0
                                         hoursPerJob.map(hoursTime => {
-                                            if(hoursTime.works == works._id){
+                                            if(hoursTime.works == work._id){
                                                 hours = hoursTime.time
                                             }
                                         });
 
                                         jobs.push({
-                                            jobName : works.workId.jobName,
+                                            jobName : work.jobName,
                                             hours: hours,
-                                            date: works.workId.dateStart + " to " + works.workId.dateEnd,
+                                            date: work.dateStart + " to " + work.dateEnd,
                                             payroll: e.payment * hours,
                                             effective : e.effective * hours,
                                         });
                                     }
                                 });
+
+                            }else{
+
+                                if(works.workId && works.workId.expenses){
+                                    works.workId.expenses.map(expense => {
+                                        if(expense.workerId && expense.workerId._id === e._id){
+                                            expense.jobName = works.workId.jobName;
+                                            expenses.push(expense);
+                                            totalExpenses += expense.total;
+                                        }
+                                    });
+                                }
+
+                                if(works.workId && works.workId.workers){
+                                    works.workId.workers.map(worker => {
+                                        if(worker.workerId && worker.workerId._id === e._id ){
+                                            let hours = 0
+                                            hoursPerJob.map(hoursTime => {
+                                                if(hoursTime.works == works._id){
+                                                    hours = hoursTime.time
+                                                }
+                                            });
+
+                                            jobs.push({
+                                                jobName : works.workId.jobName,
+                                                hours: hours,
+                                                date: works.workId.dateStart + " to " + works.workId.dateEnd,
+                                                payroll: e.payment * hours,
+                                                effective : e.effective * hours,
+                                            });
+                                        }
+                                    });
+                                }
                             }
 
                         });
@@ -160,7 +195,11 @@ class ReportWorkers extends React.Component{
                                                     {expenses.map((ex, i) => {
                                                         return (
                                                             <tr>
-                                                                <td>{ex.date}</td>
+                                                                <td>
+                                                                    <Moment format={"YYYY-MM-DD"}>
+                                                                        {ex.date}
+                                                                    </Moment>
+                                                                </td>
                                                                 <td>{ex.category}</td>
                                                                 <td align="right">$ {ex.total} USD</td>
                                                                 <td>{ex.vendor}</td>
