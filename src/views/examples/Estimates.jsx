@@ -104,8 +104,8 @@ class Icons extends React.Component {
                         <tbody key={i}>
                         <tr >
                         <th scope="row" >{e.clientId.name}</th>
-                        <td><Moment format={"YYYY-MM-DD"}>{e.dateCreate}</Moment></td>
-                        <td>{e.status}</td>
+                        <td><Moment format={"MMM D, YY"}>{e.dateCreate}</Moment></td>
+                        <td>{e.status === "Approve" ? "Approved": e.status}</td>
                         <td>${ parseFloat(Math.round(total * 100) / 100).toFixed(2)} USD</td>
                         <td>
                           <div className="dropdownButtons">

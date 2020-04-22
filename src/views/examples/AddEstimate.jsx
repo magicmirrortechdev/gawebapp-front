@@ -176,7 +176,7 @@ class AddEstimate extends React.Component {
                             <br/>
                             <Input
                               className="form-control-alternative"
-                              placeholder="Enter the address client"
+                              placeholder="Enter the client Address"
                               name="address"
                               type="text"
                               onChange={this.handleInput}

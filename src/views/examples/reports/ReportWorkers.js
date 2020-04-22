@@ -1,6 +1,7 @@
 import React from 'react';
 import {Button, Card, Table, UncontrolledCollapse} from "reactstrap";
 import CardBody from "reactstrap/es/CardBody";
+import Moment from 'react-moment'
 
 
 class ReportWorkers extends React.Component{
@@ -36,7 +37,7 @@ class ReportWorkers extends React.Component{
                         
                         e.works.map((e,i)=>{
                             hoursTime += e.time.reduce((ac, cv)=> ac + cv,0)
-                            hoursPerJob.push({works: e._id,  time:e.time.reduce((ac, cv)=> ac + cv,0)})
+                            hoursPerJob.push({works: e._id,  time:e.time.reduce((ac, cv)=> ac + cv.hours,0)})
                         })
 
                         e.works.map(works => {
@@ -160,7 +161,7 @@ class ReportWorkers extends React.Component{
                                                     {expenses.map((ex, i) => {
                                                         return (
                                                             <tr>
-                                                                <td>{ex.date}</td>
+                                                                <td><Moment format={"MMM D, YY"}>{ex.date}</Moment></td>
                                                                 <td>{ex.category}</td>
                                                                 <td align="right">$ {ex.total} USD</td>
                                                                 <td>{ex.vendor}</td>

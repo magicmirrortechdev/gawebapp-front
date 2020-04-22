@@ -30,7 +30,8 @@ class Reports extends React.Component {
     state = {
         jobs: [],
         workers: [],
-        activeTab: '1'
+        activeTab: '1',
+        buttonActive: '1'
     };
 
     toggleTab(tab) {
@@ -90,6 +91,7 @@ class Reports extends React.Component {
         this.setState(prevState => {
           return {
             ...prevState,
+            buttonActive: "1",
             ...data
           }
         })
@@ -105,6 +107,7 @@ class Reports extends React.Component {
         this.setState(prevState => {
           return {
             ...prevState,
+            buttonActive: "2",
             ...data
           }
         })
@@ -121,6 +124,7 @@ class Reports extends React.Component {
         this.setState(prevState => {
           return {
             ...prevState,
+            buttonActive: "3",
             ...data
           }
         })
@@ -135,6 +139,29 @@ class Reports extends React.Component {
     console.log('los params', dates)
     axios
       .post(Global.url + `filterdate`, this.state )
+      .then(({ data }) => {
+        
+        
+        this.setState(prevState => {
+            return {
+            ...prevState,
+            ...data
+          }
+            
+          
+        })
+        console.log("State filtrado",this.state)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  filterDateWorkers= ()=>{
+    let dates = {"startDate":this.state.startDate, "endDate": this.state.endDate}
+    console.log('los params', dates)
+    axios
+      .post(Global.url + `workerdate`, this.state )
       .then(({ data }) => {
         
         
@@ -225,7 +252,7 @@ class Reports extends React.Component {
                                             <Button
                                                 className="form-control-alternative"
                                                 color="info"
-                                                onClick={this.filterDate}
+                                                onClick={this.state.activeTab === '1' ? this.filterDate : this.filterDateWorkers}
                                                 >Search</Button>
                                             </FormGroup>
                                         </Col>
@@ -265,17 +292,17 @@ class Reports extends React.Component {
                                                 <span>
                                                 <Button
                                                 className="form-control-alternative"
-                                                color="info"
+                                                color={this.state.buttonActive==="1"?"info": "secondary"}
                                                 onClick={this.getOpen}
                                                 >Open</Button>
                                                 <Button
                                                 className="form-control-alternative"
-                                                color="info"
+                                                color={this.state.buttonActive==="2"?"info": "secondary"}
                                                 onClick={this.getClose}
                                                 >Close</Button>
                                                 <Button
                                                 className="form-control-alternative"
-                                                color="info"
+                                                color={this.state.buttonActive==="3"?"info": "secondary"}
                                                 onClick={this.getAll}
                                                 >All</Button>
                                                 </span>
