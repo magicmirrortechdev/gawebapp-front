@@ -157,27 +157,36 @@ class Reports extends React.Component {
       })
   }
 
-  filterDateWorkers= ()=>{
-    let dates = {"startDate":this.state.startDate, "endDate": this.state.endDate}
-    console.log('los params', dates)
-    axios
-      .post(Global.url + `workerdate`, this.state )
-      .then(({ data }) => {
-        
-        
-        this.setState(prevState => {
-            return {
-            ...prevState,
-            ...data
-          }
-            
-          
-        })
-        console.log("State filtrado",this.state)
-      })
-      .catch(err => {
-        console.log(err)
-      })
+  clearFilter= ()=>{
+    axios.get(Global.url + `openjobs`)
+            .then(({data}) => {
+                console.log(data);
+                this.setState(prevState => {
+                    return {
+                        ...prevState,
+                        buttonActive: "1",
+                        activeTab: "1",
+                        ...data
+                    }
+                })
+            })
+            .catch(err => {
+                console.log(err)
+            });
+
+        axios.get(Global.url + `workers`)
+            .then(({data}) => {
+                console.log(data);
+                this.setState(prevState => {
+                    return {
+                        ...prevState,
+                        workers: data.users
+                    }
+                })
+            })
+            .catch(err => {
+                console.log(err)
+            });
   }
 
     render() {
@@ -247,13 +256,27 @@ class Reports extends React.Component {
                                             <label
                                             className="form-control-label"
                                             htmlFor="input-dateStart"
-                                            >Click</label> 
+                                            >Click to</label> 
                                             <br/>
                                             <Button
                                                 className="form-control-alternative"
                                                 color="info"
-                                                onClick={this.state.activeTab === '1' ? this.filterDate : this.filterDateWorkers}
+                                                onClick={ this.filterDate }
                                                 >Search</Button>
+                                            </FormGroup>
+                                        </Col>
+                                        <Col md={2}>
+                                            <FormGroup>
+                                            <label
+                                            className="form-control-label"
+                                            htmlFor="input-dateStart"
+                                            >Click to</label> 
+                                            <br/>
+                                            <Button
+                                                className="form-control-alternative"
+                                                color="info"
+                                                onClick={this.clearFilter}
+                                                >Clear</Button>
                                             </FormGroup>
                                         </Col>
                                         {/*

@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import AuthService from '../../services/services'
-
+import Moment from 'react-moment'
 import {
   Card,
   CardHeader,
@@ -28,7 +28,8 @@ const authService = new AuthService()
 class Jobs extends React.Component {
   state = {
     jobs:[],
-    filter: ""
+    filter: "",
+    buttonActive: '1'
   };
 
 
@@ -64,6 +65,7 @@ class Jobs extends React.Component {
         this.setState(prevState => {
           return {
             ...prevState,
+            buttonActive: "1",
             ...data
           }
         })
@@ -79,6 +81,7 @@ class Jobs extends React.Component {
         this.setState(prevState => {
           return {
             ...prevState,
+            buttonActive: "2",
             ...data
           }
         })
@@ -95,6 +98,7 @@ class Jobs extends React.Component {
         this.setState(prevState => {
           return {
             ...prevState,
+            buttonActive: "3",
             ...data
           }
         })
@@ -147,17 +151,17 @@ class Jobs extends React.Component {
                             <span>
                             <Button
                               className="form-control-alternative"
-                              color="info"
+                              color={this.state.buttonActive==="1"?"info": "secondary"}
                               onClick={this.getOpen}
                             >Open</Button>
                             <Button
                               className="form-control-alternative"
-                              color="info"
+                              color={this.state.buttonActive==="2"?"info": "secondary"}
                               onClick={this.getClose}
                             >Close</Button>
                             <Button
                               className="form-control-alternative"
-                              color="info"
+                              color={this.state.buttonActive==="3"?"info": "secondary"}
                               onClick={this.getAll}
                             >All</Button>
                             </span>
@@ -197,8 +201,8 @@ class Jobs extends React.Component {
                         {e.status === "Closed" ? <tr><th scope="row">{e.jobName}</th> <td>Closed</td></tr> :
                         <tr>
                         <th scope="row" >{e.jobName}</th>
-                        <td>{e.dateStart}</td>
-                        <td>{e.dateEnd}</td>
+                        <td><Moment format={"MMM D, YY"}>{e.dateStart}</Moment></td>
+                        <td><Moment format={"MMM D, YY"}>{e.dateEnd}</Moment></td>
                         <td>{e.workers.map((e,i)=>{
                           return(
                             !e.workerId ? <p style={{fontSize:"10px"}} key={i}>Worker Delete</p> :

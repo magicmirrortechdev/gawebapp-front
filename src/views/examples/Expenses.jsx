@@ -98,7 +98,7 @@ class Expenses extends React.Component {
                           <th scope="row" >{e.description}</th>
                           <td>{e.category}</td>
                           <td>
-                          <Moment format={"YYYY-MM-DD"}>
+                          <Moment format={"MMM D, YY"}>
                           {e.date}
                           </Moment>
                           </td>

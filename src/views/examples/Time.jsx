@@ -19,8 +19,6 @@ import {
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 
-const authService = new AuthService()
-
 
 class Time extends React.Component {
   state = {
@@ -91,13 +89,13 @@ class Time extends React.Component {
                      this.state.jobs.map((e,i)=>{
                        let jobName = <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
                        let projectManager = e.projectManager.map((e,i)=>!projectManager ? <p style={{fontSize:"10px"}}>Project Manager Delete</p> : <p style={{fontSize:"10px"}} key={i}>{e.projectId.name}</p>)
-                       let estimateId = e._id
-                       console.log(projectManager)
-                       
+                       let estimateId = e._id                       
                       return(
                         e.workers.map((e,i)=>{
                         let time = <p style={{fontSize:"10px"}}>{e.time.reduce((acc, current, i) => acc + current.hours, 0)}</p>
                           if(!e.workerId)return <th scope="row">Worker Delete</th>
+                          let worker = e.workerId._id
+
                           return(
                         <tbody key={i}>
                         <tr>
@@ -134,17 +132,14 @@ class Time extends React.Component {
                           <DropdownItem to={`/admin/time/addtime/${estimateId}/${e._id}/${e.workerId._id}`} tag={Link}>Add Hours</DropdownItem>
 
                           <DropdownItem onClick={()=>{
-                            authService
-                              .estimateDelete(e._id)
+                            axios.patch(Global.url + `workerdelete/${estimateId}/${e._id}`, {worker: worker})
                               .then(({data}) => {
                                 
                                 window.location.reload()
-                                
+                                alert('Worker Removed')                               
                               })
                               .catch(err => {
-                                //aquí deberia ir una notificacion o un swal o un toastr
                                 console.log(err.response)
-                                alert(err.response.data.msg || err.response.data.err.message)
                               })
                           }}><span
                                   className="text-danger">Delete</span></DropdownItem>

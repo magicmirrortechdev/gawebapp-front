@@ -102,7 +102,7 @@ class ReportJobs extends React.Component{
                                                         
                                                         return(
                                                         <tr>
-                                                            <td><Moment format={"YYYY-MM-DD"}>{e.date}</Moment></td>
+                                                            <td><Moment format={"MMM D, YY"}>{e.date}</Moment></td>
                                                             <td>{clientName ? clientName : nameClient}</td>
                                                             <td align="right">$ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)} USD</td>
                                                             <td>{e.status}</td>
@@ -182,7 +182,7 @@ class ReportJobs extends React.Component{
                                                             return (
                                                                 <tr>
                                                                     <td >
-                                                                    <Moment format={"YYYY-MM-DD"}>
+                                                                    <Moment format={"MMM D, YY"}>
                                                                     {ex.date}
                                                                     </Moment>
                                                                     </td>

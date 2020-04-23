@@ -58,6 +58,9 @@ class AuthService {
     closeJob(data) {
         return this.service.patch(`/closejob/${data}`)
     }
+    pullWorker(data) {
+        return this.service.patch(`/pullworker  /${data}`)
+    }
 
 }
 
