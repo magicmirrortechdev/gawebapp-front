@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from 'react-router-dom'
 import axios from 'axios'
-import AuthService from '../../services/services'
 
 import {
   Card,
@@ -92,10 +91,11 @@ class Time extends React.Component {
                        let estimateId = e._id                       
                       return(
                         e.workers.map((e,i)=>{
-                        let time = <p style={{fontSize:"10px"}}>{e.time.reduce((acc, current, i) => acc + current.hours, 0)}</p>
+                        let time = <p style={{fontSize:"10px"}}>{e.time.reduce((acc, current, i) => acc + current.hours, 0) ?e.time.reduce((acc, current, i) => acc + current.hours, 0) : e.time.reduce((acc, current, i) => acc + current, 0)}</p>
+
                           if(!e.workerId)return <th scope="row">Worker Delete</th>
                           let worker = e.workerId._id
-
+                          console.log(time)
                           return(
                         <tbody key={i}>
                         <tr>

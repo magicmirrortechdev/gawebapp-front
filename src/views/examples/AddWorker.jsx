@@ -54,7 +54,8 @@ class AddWorker extends React.Component {
             console.log(response)
           })
           .catch(err => {
-            console.log(err.response)
+            console.log(err.response.data.err.message)
+            alert(err.response.data.err.message)
           })
   }
 

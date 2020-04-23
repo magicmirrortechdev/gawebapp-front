@@ -51,7 +51,7 @@ class AddClient extends React.Component {
           })
           .catch(err => {
             console.log(err.response)
-            alert(err.response.data.msg || err.response.data.err.message)
+            alert(err.response.data.message)
           })
   }
 
