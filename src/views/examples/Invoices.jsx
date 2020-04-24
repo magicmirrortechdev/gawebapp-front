@@ -132,7 +132,7 @@ class Invoices extends React.Component {
                           <Button id={"toggle" + e._id} color="primary"><i className="ni ni-bold-down"></i></Button>
                         </td>
                         <th scope="row" >{client}</th>
-                        <td><Moment format={"YYYY-MM-DD"}>{e.date}</Moment></td>
+                        <td><Moment format={"MMM D, YY"}>{e.date}</Moment></td>
                         <td>{e.total-paid === 0 ? 'Paid' : e.status}</td>
                         <td>${parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}USD</td> 
                         <td>${parseFloat(Math.round(total * 100) / 100).toFixed(2)}USD</td>                       
