@@ -21,6 +21,7 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
+import Moment from "react-moment"
 
 class Invoices extends React.Component {
   state = {
@@ -189,7 +190,7 @@ class Invoices extends React.Component {
                                                         
                                                         <tr key={i}>
                                                             <td>Payment # {paymentIndex}</td>
-                                                            <td>{e.date}</td>
+                                                            <td><Moment format={"MMM D, YY"}>{e.date}</Moment></td>
                                                             <td align="right">$ {parseFloat(Math.round(e.paid * 100) / 100).toFixed(2)} USD</td>
                                                             <td align="right">$ {parseFloat(Math.round((total2 - paidOk[i]) * 100) / 100).toFixed(2)}USD</td>
                                                         </tr>
