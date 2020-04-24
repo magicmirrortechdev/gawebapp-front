@@ -21,7 +21,6 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
-import Moment from "react-moment"
 
 class Invoices extends React.Component {
   state = {
