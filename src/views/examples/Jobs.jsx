@@ -201,8 +201,8 @@ class Jobs extends React.Component {
                         {e.status === "Closed" ? <tr><th scope="row">{e.jobName}</th> <td>Closed</td></tr> :
                         <tr>
                         <th scope="row" >{e.jobName}</th>
-                        <td><Moment format={"MMM D, YY"}>{e.dateStart}</Moment></td>
-                        <td><Moment format={"MMM D, YY"}>{e.dateEnd}</Moment></td>
+                        <td>{e.dateStart === "Update this field" ? "Update this field" : <Moment format={"MMM D, YY"}>{e.dateStart}</Moment>}</td>
+                        <td>{e.dateEnd === "Update this field" ? "Update this field" : <Moment format={"MMM D, YY"}>{e.dateEnd}</Moment>}</td>
                         <td>{e.workers.map((e,i)=>{
                           return(
                             !e.workerId ? <p style={{fontSize:"10px"}} key={i}>Worker Delete</p> :
