@@ -158,7 +158,6 @@ class ReportWorkers extends React.Component{
                                                     {jobs.map((wx, i) => {
                                                         return (
                                                             <tr>
-                                                                <td>{wx.date}</td>
                                                                 <td>{wx.jobName}</td>
                                                                 <td align="right">$ {isNaN(parseFloat(Math.round(wx.payroll * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.payroll * 100) / 100).toFixed(2)}  USD</td>
                                                                 <td align="right">$ {isNaN(parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)} USD</td>
