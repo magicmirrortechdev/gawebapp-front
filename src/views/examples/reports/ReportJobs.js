@@ -148,9 +148,9 @@ class ReportJobs extends React.Component{
                                                                 
                                                                 <tr>
                                                                     <td>{wx.workerId.name}</td>
-                                                                    <td align="right">$ {parseFloat(Math.round((payment*time) * 100) / 100).toFixed(2)} USD</td>
-                                                                    <td align="right">$ {parseFloat(Math.round((effective*time) * 100) / 100).toFixed(2)} USD</td>
-                                                                    <td align="right">{time}</td>
+                                                                    <td align="right">$ {isNaN(parseFloat(Math.round((payment*time) * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round((payment*time) * 100) / 100).toFixed(2)} USD</td>
+                                                                    <td align="right">$ {isNaN(parseFloat(Math.round((effective*time) * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round((effective*time) * 100) / 100).toFixed(2)} USD</td>
+                                                                    <td align="right">{isNaN(time) ? 0 : time}</td>
                                                                 </tr>
                                                             )
                                                         }
@@ -159,7 +159,7 @@ class ReportJobs extends React.Component{
                                                                     <td>Total:</td>
                                                                     <td align="right">${!totalTime ? 0 :  parseFloat(Math.round(totalTime * 100) / 100).toFixed(2)} USD</td>
                                                                     <td align="right">${!totalEffective ? 0 :  parseFloat(Math.round(totalEffective * 100) / 100).toFixed(2)} USD</td>
-                                                                    <td align="right">{time ? time.reduce((ac,cv)=>ac+cv,0):0}</td>
+                                                                    <td align="right">{isNaN(time )? 0 :time.reduce((ac,cv)=>ac+cv,0)}</td>
                                                                 </tr>
                                                     </tbody>
                                                 </Table>

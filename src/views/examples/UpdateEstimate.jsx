@@ -29,13 +29,15 @@ class UpdateEstimate extends React.Component {
     itemName: '',
     description: '',
     comments: '',
+    nameEstimate: '',
     quantity: parseInt(''),
     rate: parseInt(''),
     subtotal: 0,
     tax: parseInt(''),
     discount: parseInt(''),
     paid: parseInt(''),
-    total: 0,
+    total: 0,    
+    addressEstimate: "",
     dateCreate: '',
     jobName: '',
   }
@@ -46,9 +48,11 @@ class UpdateEstimate extends React.Component {
         this.setState(prevState => {
           return {
             ...prevState,
-            name: data.estimate.clientId.name,
+            name: data.estimate.nameEstimate ? data.estimate.nameEstimate : data.estimate.clientId.name,
             email: data.estimate.clientId.email,
-            address: data.estimate.clientId.address,
+            address: data.estimate.addressEstimate ? data.estimate.addressEstimate : data.estimate.clientId.address,
+            nameEstimate: data.estimate.nameEstimate,
+            addressEstimate: data.estimate.addressEstimate,
             tax: data.estimate.tax,
             discount: data.estimate.discount,
             paid: data.estimate.paid,
@@ -152,14 +156,20 @@ class UpdateEstimate extends React.Component {
                               Client Name
                             </label>
                             <Input
-                              defaultValue={`${this.state.name}`}
+                              defaultValue={`${this.state.nameEstimate ? this.state.nameEstimate : this.state.name}`}
                               className="form-control-alternative"
                               placeholder="Enter the name client"
-                              name="clientName"
+                              name="name"
                               type="text"
                               onChange={this.handleInput}
                             />
                             <br />
+                            <label
+                              className="form-control-label d-inline-block"
+                              htmlFor="input-name"
+                            >
+                              Email Client*
+                            </label>
                             <Input
                               defaultValue={`${this.state.email}`}
                               className="form-control-alternative"
@@ -169,8 +179,14 @@ class UpdateEstimate extends React.Component {
                               onChange={this.handleInput}
                             />
                             <br />
+                            <label
+                              className="form-control-label d-inline-block"
+                              htmlFor="input-name"
+                            >
+                              Address Estimate*
+                            </label>
                             <Input
-                              defaultValue={`${this.state.address}`}
+                              defaultValue={`${this.state.addressEstimate ? this.state.addressEstimate : this.state.address}`}
                               className="form-control-alternative"
                               placeholder="Enter the address client"
                               name="address"

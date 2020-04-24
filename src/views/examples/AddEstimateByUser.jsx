@@ -160,18 +160,24 @@ class AddEstimateByUser extends React.Component {
                               className="form-control-label d-inline-block"
                               htmlFor="input-name"
                             >
-                              Client Name
+                              Estimate Client Name *
                             </label>
                             <Input
                               disabled
                               value={`${this.state.name}`}
                               className="form-control-alternative"
                               placeholder="Enter the name client"
-                              name="clientName"
+                              name="name"
                               type="text"
                               onChange={this.handleInput}
                             />
                             <br />
+                            <label
+                              className="form-control-label d-inline-block"
+                              htmlFor="input-name"
+                            >
+                              Email Client*
+                            </label>
                             <Input
                               disabled
                               value={`${this.state.email}`}
@@ -182,6 +188,12 @@ class AddEstimateByUser extends React.Component {
                               onChange={this.handleInput}
                             />
                             <br />
+                            <label
+                              className="form-control-label d-inline-block"
+                              htmlFor="input-name"
+                            >
+                              Address Estimate*
+                            </label>
                             <Input
                               disabled
                               value={`${this.state.address}`}

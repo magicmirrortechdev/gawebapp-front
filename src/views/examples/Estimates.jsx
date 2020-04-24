@@ -96,14 +96,16 @@ class Icons extends React.Component {
                   </thead>
                   {this.state.estimates.length === 0 ?  <tbody><tr><td>No estimates register</td></tr></tbody>:
                      this.state.estimates.map((e,i)=>{
+                      let nameEstimate = e.nameEstimate
                       let subtotal = e.items.reduce((acc, current, i) => acc + current.subtotal, 0)
                       let tax = parseInt(e.tax) * subtotal / 100
                       let discount = e.discount
                       let total = !subtotal ? 0 : subtotal + tax  - discount
+
                       return(
                         <tbody key={i}>
                         <tr >
-                        <th scope="row" >{e.clientId.name}</th>
+                        <th scope="row" >{nameEstimate ? nameEstimate : e.clientId.name}</th>
                         <td><Moment format={"MMM D, YY"}>{e.dateCreate}</Moment></td>
                         <td>{e.status === "Approve" ? "Approved": e.status}</td>
                         <td>${ parseFloat(Math.round(total * 100) / 100).toFixed(2)} USD</td>

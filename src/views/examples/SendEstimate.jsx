@@ -35,6 +35,7 @@ class SendEstimate extends React.Component {
     items: [],
     comments: '',
     address: '',
+    addressEstimate: "",
     tags : [],
     total: parseInt(''),
   }
@@ -56,10 +57,11 @@ class SendEstimate extends React.Component {
           console.log('el sb', total)
           return {
             ...prevState,
-            name: data.estimate.clientId.name,
+            name: data.estimate.nameEstimate ? data.estimate.nameEstimate : data.estimate.clientId.name,
             email: data.estimate.clientId.email,
+            addressEstimate: data.estimate.addressEstimate,
             total: total,
-            address: data.estimate.clientId.address,
+            address: data.estimate.addressEstimate ? data.estimate.addressEstimate : data.estimate.clientId.address,
             items: data.estimate.items,
             tags: [{id: data.estimate.clientId.email, text: data.estimate.clientId.email}]
           }
@@ -125,6 +127,8 @@ class SendEstimate extends React.Component {
   }
 
   render() {
+    let address = this.state.address
+    let addressEstimate = this.state.addressEstimate
     if (!this.state) return <p> Loading </p>
     return (
       <>
@@ -169,7 +173,7 @@ class SendEstimate extends React.Component {
                               Address
                             </label>
                             <Input
-                              defaultValue={`${this.state.address}`}
+                              defaultValue={`${addressEstimate ? addressEstimate : address}`}
                               className="form-control-alternative"
                               placeholder="Enter the address client"
                               name="address"

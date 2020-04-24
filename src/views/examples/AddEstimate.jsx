@@ -109,7 +109,7 @@ class AddEstimate extends React.Component {
     let month = date.getMonth() + 1
     let year = date.getFullYear()
 
-   let product={
+  let product={
     itemName: this.state.itemName,
     description: this.state.description,
     quantity: parseInt(this.state.quantity),
@@ -156,28 +156,43 @@ class AddEstimate extends React.Component {
                               className="form-control-label d-inline-block"
                               htmlFor="input-name"
                             >
-                              Client Name
+                              Client Name *
                             </label>
                             <Input
                               className="form-control-alternative"
                               placeholder="Enter the name client"
                               name="name"
+                              required
                               type="text"
                               onChange={this.handleInput}
                             />
                             <br/>
+                            <label
+                              className="form-control-label d-inline-block"
+                              htmlFor="input-name"
+                            >
+                              Email Client *
+                            </label>
                             <Input
                               className="form-control-alternative"
                               placeholder="Enter the email client"
                               name="email"
                               type="email"
+                              required
                               onChange={this.handleInput}
                             />
                             <br/>
+                            <label
+                              className="form-control-label d-inline-block"
+                              htmlFor="input-name"
+                            >
+                              Address Estimate *
+                            </label> 
                             <Input
                               className="form-control-alternative"
                               placeholder="Enter the client Address"
                               name="address"
+                              required
                               type="text"
                               onChange={this.handleInput}
                             />
