@@ -126,6 +126,7 @@ class ReportJobs extends React.Component{
                                                     responsive>
                                                     <thead className="thead-light">
                                                     <tr>
+                                                        <th></th>
                                                         <th scope="col">Worker</th>
                                                         <th scope="col">Payroll Expense</th>
                                                         <th scope="col">Labor Expense
@@ -139,19 +140,58 @@ class ReportJobs extends React.Component{
                                                             if(!wx.workerId)return <td>Worker Delete</td>
                                                             let time = wx.time ? (wx.time.reduce((acc, current, i) => acc + current.hours, 0)) : 0;
                                                             let time2 = []
+                                                            let hoursA 
                                                             time2.push(time)
                                                             time2.reduce((ac,cv)=> ac + cv, 0)
                                                             let effective = wx.workerId.effective ? wx.workerId.effective : 0;
                                                             let payment = wx.workerId.payment ? wx.workerId.payment : 0;
-                                                        
+                                                            let hoursWor = wx.time.map((e,i)=>{ return e.hours})
+                                                            hoursA = hoursWor.map(e=>e)
                                                             return (
-                                                                
+                                                                <>
                                                                 <tr>
+                                                                    <td>
+                                                                        <Button id={"toggle" + wx._id} color="primary"><i
+                                                                            className="ni ni-bold-down"></i></Button>
+                                                                    </td>
                                                                     <td>{wx.workerId.name}</td>
                                                                     <td align="right">$ {isNaN(parseFloat(Math.round((payment*time) * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round((payment*time) * 100) / 100).toFixed(2)} USD</td>
                                                                     <td align="right">$ {isNaN(parseFloat(Math.round((effective*time) * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round((effective*time) * 100) / 100).toFixed(2)} USD</td>
                                                                     <td align="right">{isNaN(time) ? 0 : time}</td>
                                                                 </tr>
+                                                                <tr>
+                                                                <td colSpan={7}>
+                                                                    <UncontrolledCollapse toggler={"#toggle" + wx._id}>
+                                                                        <Card>
+                                                                            <CardBody>
+                                                                            <Table
+                                                                                className="align-items-center table-flush col-md-6 col-xs-12"
+                                                                                responsive>
+                                                                                <thead className="thead-light">
+                                                                                <tr>
+                                                                                    <th scope="col">Date</th>
+                                                                                    <th scope="col">Hours</th>
+
+
+                                                                                </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    {wx.time.map((e)=>{
+                                                                                        return(
+                                                                                            <tr>
+                                                                                            <td><Moment format={"MMM D, YY"}>{e.date}</Moment></td>
+                                                                                            <td>{e.hours}</td>
+                                                                                            </tr>
+                                                                                             
+                                                                                        )})}
+                                                                                </tbody>
+                                                                            </Table>
+                                                                            </CardBody>
+                                                                        </Card>
+                                                                    </UncontrolledCollapse>
+                                                                </td>
+                                                                </tr>
+                                                                </>
                                                             )
                                                         }
                                                     )}

@@ -33,11 +33,15 @@ class ReportWorkers extends React.Component{
                         let jobs = [];
                         let hoursPerJob = []
                         let hoursTime = 0
+                        let dateTime = []
+                        let hoursFull = []
 
                         e.works.map((e, i) => {
                             e.time.map((time, i) => {
                                 hoursTime += time.hours;
-                                hoursPerJob.push({works: e._id,  time: time.hours})
+                                hoursFull.push({hoursT: time.hours, date: time.date})
+                                dateTime.push(time.date)
+                                hoursPerJob.push({works: e._id,  time: time.hours, date: dateTime, hours: hoursFull})
                             })
                         })
 
@@ -56,16 +60,20 @@ class ReportWorkers extends React.Component{
                                 works.workId.map(work => {
                                     if(works.time.length > 0){
                                         let hours = 0
+                                        let date
+                                        let hoursT
                                         hoursPerJob.map(hoursTime => {
                                             if(hoursTime.works == work._id){
-                                                hours = hoursTime.time
+                                                hours += hoursTime.time
+                                                date = hoursTime.date
+                                                hoursT = hoursTime.hours
                                             }
                                         });
 
                                         jobs.push({
                                             jobName : work.jobName,
                                             hours: hours,
-                                            date: work.dateStart + " to " + work.dateEnd,
+                                            hoursT: hoursT,
                                             payroll: e.payment * hours,
                                             effective : e.effective * hours,
                                         });
@@ -88,16 +96,20 @@ class ReportWorkers extends React.Component{
                                     works.workId.workers.map(worker => {
                                         if(worker.workerId && worker.workerId._id === e._id ){
                                             let hours = 0
+                                            let date
+                                            let hoursT
                                             hoursPerJob.map(hoursTime => {
                                                 if(hoursTime.works == works._id){
-                                                    hours = hoursTime.time
+                                                    hours += hoursTime.time
+                                                    date = hoursTime.date
+                                                    hoursT = hoursTime.hours
                                                 }
                                             });
 
                                             jobs.push({
                                                 jobName : works.workId.jobName,
                                                 hours: hours,
-                                                date: works.workId.dateStart + " to " + works.workId.dateEnd,
+                                                hoursT: hoursT,
                                                 payroll: e.payment * hours,
                                                 effective : e.effective * hours,
                                             });
@@ -117,7 +129,7 @@ class ReportWorkers extends React.Component{
 
                             return{totalPayroll, totalEffective, totalHours}
                         })
-
+                        console.log('jobs',jobs)
                         return (
                             <tbody key={i}>
                             <tr>
@@ -145,6 +157,7 @@ class ReportWorkers extends React.Component{
                                                     responsive>
                                                     <thead className="thead-light">
                                                     <tr>
+                                                        <th></th>
                                                         <th scope="col">Job</th>
                                                         <th scope="col">Payroll Expense</th>
                                                         <th scope="col">Labor Expense
@@ -157,13 +170,51 @@ class ReportWorkers extends React.Component{
                                                     <tbody>
                                                     {jobs.map((wx, i) => {
                                                         return (
+                                                            <>
                                                             <tr>
+                                                                <td>
+                                                                     <Button id={"toggle" + e._id} color="primary"><i
+                                                                        className="ni ni-bold-down"></i></Button>
+                                                                </td>
                                                                 <td>{wx.jobName}</td>
                                                                 <td align="right">$ {isNaN(parseFloat(Math.round(wx.payroll * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.payroll * 100) / 100).toFixed(2)}  USD</td>
                                                                 <td align="right">$ {isNaN(parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)} USD</td>
                                                                 <td>{isNaN(parseFloat(Math.round(wx.hours * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.hours * 100) / 100).toFixed(2)} </td>
                                                                 
                                                             </tr>
+                                                            <tr>
+                                                                <td colSpan={7}>
+                                                                    <UncontrolledCollapse toggler={"#toggle" + e._id}>
+                                                                        <Card>
+                                                                            <CardBody>
+                                                                            <Table
+                                                                                className="align-items-center table-flush col-md-6 col-xs-12"
+                                                                                responsive>
+                                                                                <thead className="thead-light">
+                                                                                <tr>
+                                                                                    <th scope="col">Date</th>
+                                                                                    <th scope="col">Hours</th>
+
+
+                                                                                </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    {wx.hoursT.map((e)=>{
+                                                                                        return(
+                                                                                            <tr>
+                                                                                            <td><Moment format={"MMM D, YY"}>{e.date === undefined || e.date === "Invalid Date" ? 'No available or delete' : e.date}</Moment></td>
+                                                                                            <td>{e.hoursT === undefined ? 'No available or delete' : e.hoursT}</td>
+                                                                                            </tr>
+                                                                                             
+                                                                                        )})}         
+                                                                                </tbody>
+                                                                            </Table>
+                                                                            </CardBody>
+                                                                        </Card>
+                                                                    </UncontrolledCollapse>
+                                                                </td>
+                                                            </tr>
+                                                            </>
                                                         )
                                                         }
                                                     )}
