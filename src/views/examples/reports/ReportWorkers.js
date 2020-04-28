@@ -199,7 +199,7 @@ class ReportWorkers extends React.Component{
                                                                                 </tr>
                                                                                 </thead>
                                                                                 <tbody>
-                                                                                    {wx.hoursT.map((e)=>{
+                                                                                    {!wx.hoursT? <td>No hours available</td>: wx.hoursT.map((e)=>{
                                                                                         return(
                                                                                             <tr>
                                                                                             <td><Moment format={"MMM D, YY"}>{e.date === undefined || e.date === "Invalid Date" ? 'No available or delete' : e.date}</Moment></td>
