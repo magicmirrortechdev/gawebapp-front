@@ -104,10 +104,12 @@ class Invoices extends React.Component {
                   </thead>
                   {this.state.estimates.length === 0 ?  <tbody><tr><td>No invoices register</td></tr></tbody>:
                      this.state.estimates.map((e,i)=>{
+                      if(!e.clientId) return <th>Client Delete</th>
                       const estimateId = e._id
-                      const client = !e.clientId.name  ? 'Client Delete' : e.clientId.name 
+                      const client = e.clientId.name 
                       const id = e._id
                       const jobName = e.jobName
+                      console.log(e.clientId.name)
                       
                       return(
                         e.invoices.map((e,i) =>{
@@ -131,7 +133,7 @@ class Invoices extends React.Component {
                         <td>
                           <Button id={"toggle" + e._id} color="primary"><i className="ni ni-bold-down"></i></Button>
                         </td>
-                        <th scope="row" >{!e.clientId.name  ? 'Client Delete' : e.clientId.name }</th>
+                        <th scope="row" >{!client ? 'Client Delete' : client }</th>
                         <td><Moment format={"MMM D, YY"}>{e.date}</Moment></td>
                         <td>{e.total-paid === 0 ? 'Paid' : e.status}</td>
                         <td>${parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}USD</td> 
