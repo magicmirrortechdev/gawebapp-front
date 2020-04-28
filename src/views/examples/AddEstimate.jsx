@@ -171,7 +171,7 @@ class AddEstimate extends React.Component {
                               className="form-control-label d-inline-block"
                               htmlFor="input-name"
                             >
-                              Email Client *
+                              Client Email *
                             </label>
                             <Input
                               className="form-control-alternative"
