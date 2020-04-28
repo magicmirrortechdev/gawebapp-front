@@ -24,6 +24,7 @@ class ReportJobs extends React.Component{
                     </tr>
                     </tbody> :
                     this.props.jobs.map((e, i) => {
+                        if(!e.clientId) return <th>Client Delete</th>
                         let totalEstimate = e.items.reduce((acc, cv, i)=> acc +cv.subtotal,0)
                         let totalExpenses = e.expenses ? (e.expenses.reduce((acc, current, i) => acc + current.total, 0)) : 0;
                         let clientName = e.clientId.name
