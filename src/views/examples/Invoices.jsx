@@ -105,7 +105,7 @@ class Invoices extends React.Component {
                   {this.state.estimates.length === 0 ?  <tbody><tr><td>No invoices register</td></tr></tbody>:
                      this.state.estimates.map((e,i)=>{
                       const estimateId = e._id
-                      const client = e.clientId.name ? e.clientId.name : 'Client Delete'
+                      const client = !e.clientId.name  ? 'Client Delete' : e.clientId.name 
                       const id = e._id
                       const jobName = e.jobName
                       
