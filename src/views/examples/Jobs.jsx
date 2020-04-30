@@ -210,7 +210,7 @@ class Jobs extends React.Component {
                           )
 
                         })}</td>
-                        <td>${parseFloat(Math.round(total * 100) / 100).toFixed(2)} USD</td>
+                        <td>${isNaN(parseFloat(Math.round(total * 100) / 100).toFixed(2))?'Check your quantities and figures in your estimate please':parseFloat(Math.round(total * 100) / 100).toFixed(2)} USD</td>
                         <td>
                           
                             <UncontrolledDropdown>

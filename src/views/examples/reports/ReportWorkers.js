@@ -5,6 +5,7 @@ import Moment from "react-moment";
 
 class ReportWorkers extends React.Component{
     render() {
+        if(!this.props.workers) return <p>Loading</p>
         return (
             <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">
@@ -27,6 +28,7 @@ class ReportWorkers extends React.Component{
                     </tr>
                     </tbody> :
                     this.props.workers.map((e, i) => {
+                        console.log("expenses solos", this.props.workers.expenses)
                         let totalExpenses = 0;
                         let hours = 0;
                         let expenses = [];
@@ -129,7 +131,7 @@ class ReportWorkers extends React.Component{
 
                             return{totalPayroll, totalEffective, totalHours}
                         })
-                        console.log('jobs',jobs)
+                        console.log(this.state)
                         return (
                             <tbody key={i}>
                             <tr>
@@ -243,7 +245,10 @@ class ReportWorkers extends React.Component{
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    {expenses.map((ex, i) => {
+                                                        {
+                                                        !e.expenses ? <p>Loading</p> :                
+                                                        e.expenses.map((ex, i) => {
+                                                        
                                                         return (
                                                             <tr>
                                                                 <td><Moment format={"MMM D, YY"}>{ex.date}</Moment></td>
