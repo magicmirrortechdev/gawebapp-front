@@ -77,11 +77,11 @@ class Expenses extends React.Component {
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
+                      <th scope="col"></th>
                       <th scope="col">Description</th>
                       <th scope="col">Category</th>
                       <th scope="col">Date</th>
                       <th scope="col">Total</th>
-                      <th scope="col">Options</th>
                     </tr>
                   </thead>
                   
@@ -95,14 +95,6 @@ class Expenses extends React.Component {
                         return(
                           <tbody key={i}>
                           <tr >
-                          <th scope="row" >{e.description}</th>
-                          <td>{e.category}</td>
-                          <td>
-                          <Moment format={"MMM D, YY"}>
-                          {e.date}
-                          </Moment>
-                          </td>
-                          <td>$ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)} USD</td>
                           <td>
                             <div className="dropdownButtons">
                             <UncontrolledDropdown>
@@ -126,6 +118,15 @@ class Expenses extends React.Component {
                             </UncontrolledDropdown>
                           </div>
                           </td>
+                          <th scope="row" >{e.description}</th>
+                          <td>{e.category}</td>
+                          <td>
+                          <Moment format={"MMM D, YY"}>
+                          {e.date}
+                          </Moment>
+                          </td>
+                          <td>$ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}</td>
+                          
                           </tr>                                               
                         </tbody>
                        )

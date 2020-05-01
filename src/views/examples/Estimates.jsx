@@ -87,11 +87,11 @@ class Icons extends React.Component {
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
+                      <th scope="col"></th>
                       <th scope="col">Client</th>
                       <th scope="col">Date</th>
                       <th scope="col">Status</th>
                       <th scope="col">Total</th>
-                      <th scope="col">Options</th>
                     </tr>
                   </thead>
                   {this.state.estimates.length === 0 ?  <tbody><tr><td>No estimates register</td></tr></tbody>:
@@ -105,10 +105,6 @@ class Icons extends React.Component {
                       return(
                         <tbody key={i}>
                         <tr >
-                        <th scope="row" >{nameEstimate ? nameEstimate : e.clientId.name}</th>
-                        <td><Moment format={"MMM D, YY"}>{e.dateCreate}</Moment></td>
-                        <td>{e.status === "Approve" ? "Approved": e.status}</td>
-                        <td>${ parseFloat(Math.round(total * 100) / 100).toFixed(2)} USD</td>
                         <td>
                           <div className="dropdownButtons">
                             <UncontrolledDropdown>
@@ -160,6 +156,11 @@ class Icons extends React.Component {
                             </UncontrolledDropdown>
                           </div>
                         </td>
+                        <th scope="row" >{nameEstimate ? nameEstimate : e.clientId.name}</th>
+                        <td><Moment format={"MMM D, YY"}>{e.dateCreate}</Moment></td>
+                        <td>{e.status === "Approve" ? "Approved": e.status}</td>
+                        <td>${ parseFloat(Math.round(total * 100) / 100).toFixed(2)}</td>
+                        
                         </tr>
                       </tbody>
                      )  

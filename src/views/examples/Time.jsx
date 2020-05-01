@@ -75,10 +75,11 @@ class Time extends React.Component {
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
+                      <th scope="col"></th>
+
                       <th scope="col">Name</th>
                       <th scope="col">Total Hours</th>
                       <th scope="col">Job</th>
-                      <th scope="col">Options</th>
                     </tr>
                   </thead>
                   
@@ -99,12 +100,6 @@ class Time extends React.Component {
                           return(
                         <tbody key={i}>
                         <tr>
-                        <th scope="row">{e.workerId.name}</th>
-                        <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px", display:"flex", flexDirection:"column", alignItems:"baseline", alignContent:"center"}}>
-                        {time}</td>
-                        <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px"}} >
-                             {jobName}
-                        </td>                        
                         <td >
                           <UncontrolledDropdown>
                            <DropdownToggle>
@@ -146,6 +141,13 @@ class Time extends React.Component {
                           </DropdownMenu>
                           </UncontrolledDropdown>
                         </td>
+                        <th scope="row">{e.workerId.name}</th>
+                        <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px", display:"flex", flexDirection:"column", alignItems:"baseline", alignContent:"center"}}>
+                        {time}</td>
+                        <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px"}} >
+                             {jobName}
+                        </td>                        
+                       
                         </tr>
                       </tbody>
                           )

@@ -94,12 +94,13 @@ class Invoices extends React.Component {
                   <thead className="thead-light">
                     <tr>
                       <th scope="col"></th>
+                      <th scope="col"></th>
+
                       <th scope="col">Client</th>
                       <th scope="col">Date</th>
                       <th scope="col">Status</th>
                       <th scope="col">Total</th>
                       <th scope="col">Balance</th>
-                      <th scope="col">Options</th>
                     </tr>
                   </thead>
                   {this.state.estimates.length === 0 ?  <tbody><tr><td>No invoices register</td></tr></tbody>:
@@ -130,15 +131,7 @@ class Invoices extends React.Component {
                           return(
                             <tbody key={i}>
                         <tr>
-                        <td>
-                          <Button id={"toggle" + e._id} color="primary"><i className="ni ni-bold-down"></i></Button>
-                        </td>
-                        <th scope="row" >{!client ? 'Client Delete' : client }</th>
-                        <td><Moment format={"MMM D, YY"}>{e.date}</Moment></td>
-                        <td>{e.total-paid === 0 ? 'Paid' : e.status}</td>
-                        <td>${parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}USD</td> 
-                        <td>${parseFloat(Math.round(total * 100) / 100).toFixed(2)}USD</td>                       
-                        <td>
+                        <td style={{width:"100px"}}>
                           <div className="dropdownButtons">
                             <UncontrolledDropdown>
                               <DropdownToggle>
@@ -165,6 +158,16 @@ class Invoices extends React.Component {
                             </UncontrolledDropdown>
                           </div>
                         </td>
+                        <td>
+                          <Button id={"toggle" + e._id} color="primary"><i className="ni ni-bold-down"></i></Button>
+                        </td>
+                        
+                        <th scope="row" >{!client ? 'Client Delete' : client }</th>
+                        <td><Moment format={"MMM D, YY"}>{e.date}</Moment></td>
+                        <td>{e.total-paid === 0 ? 'Paid' : e.status}</td>
+                        <td>${parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}</td> 
+                        <td>${parseFloat(Math.round(total * 100) / 100).toFixed(2)}</td>                       
+                        
                         </tr>
                         <tr>
                             <td colSpan={7}>
@@ -192,8 +195,8 @@ class Invoices extends React.Component {
                                                         <tr key={i}>
                                                             <td>Payment # {paymentIndex}</td>
                                                             <td><Moment format={"MMM D, YY"}>{e.date}</Moment></td>
-                                                            <td align="right">$ {parseFloat(Math.round(e.paid * 100) / 100).toFixed(2)} USD</td>
-                                                            <td align="right">$ {parseFloat(Math.round((total2 - paidOk[i]) * 100) / 100).toFixed(2)}USD</td>
+                                                            <td align="right">$ {parseFloat(Math.round(e.paid * 100) / 100).toFixed(2)}</td>
+                                                            <td align="right">$ {parseFloat(Math.round((total2 - paidOk[i]) * 100) / 100).toFixed(2)}</td>
                                                         </tr>
                                                         
                                                       )

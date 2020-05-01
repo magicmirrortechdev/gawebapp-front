@@ -38,6 +38,7 @@ class SendEstimate extends React.Component {
     addressEstimate: "",
     tags : [],
     total: parseInt(''),
+    estimateId: this.props.match.params.id
   }
 
   constructor(props) {
@@ -127,6 +128,7 @@ class SendEstimate extends React.Component {
   }
 
   render() {
+    console.log('state  email',this.state)
     let address = this.state.address
     let addressEstimate = this.state.addressEstimate
     if (!this.state) return <p> Loading </p>

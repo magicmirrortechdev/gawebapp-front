@@ -73,11 +73,11 @@ class ReportJobs extends React.Component{
                                     <Button id={"toggle" + i} color="primary"><i
                                         className="ni ni-bold-down"></i></Button>
                                 </td>
-                                <td>{e.jobName}<br/> <b>Estimate total:</b> ${parseFloat(Math.round(totalEstimate * 100) / 100).toFixed(2)} USD</td>
-                                <td>${parseFloat(Math.round(totalInvoices * 100) / 100).toFixed(2)} USD</td>
-                                <td>${parseFloat(Math.round(totalExpenses * 100) / 100).toFixed(2)} USD</td>
-                                <td>${!totalTime ? 0 :  parseFloat(Math.round(totalEffective * 100) / 100).toFixed(2)} USD</td>
-                                <td>${parseFloat(Math.round(totalProfit * 100) / 100).toFixed(2)} USD</td>
+                                <td>{e.jobName}<br/> <b>Estimate total:</b> ${parseFloat(Math.round(totalEstimate * 100) / 100).toFixed(2)}</td>
+                                <td>${parseFloat(Math.round(totalInvoices * 100) / 100).toFixed(2)}</td>
+                                <td>${parseFloat(Math.round(totalExpenses * 100) / 100).toFixed(2)}</td>
+                                <td>${!totalTime ? 0 :  parseFloat(Math.round(totalEffective * 100) / 100).toFixed(2)}</td>
+                                <td>${parseFloat(Math.round(totalProfit * 100) / 100).toFixed(2)}</td>
                             </tr>
                             <tr>
                                 <td colSpan={7}>
@@ -105,8 +105,8 @@ class ReportJobs extends React.Component{
                                                         <tr>
                                                             <td><Moment format={"MMM D, YY"}>{e.date}</Moment></td>
                                                             <td>{clientName ? clientName : nameClient}</td>
-                                                            <td align="right">$ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)} USD</td>
-                                                            <td>{e.status}</td>
+                                                            <td align="right">$ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}</td>
+                                                            <td>{e.status==="Approve" ? "Approved":e.status}</td>
                                                         </tr>
                                                         
                                                         )
@@ -116,7 +116,7 @@ class ReportJobs extends React.Component{
                                                         <tr>
                                                             <td></td>
                                                             <td>Total:</td>
-                                                            <td align="right">$ {parseFloat(Math.round(totalInvoices * 100) / 100).toFixed(2)} USD</td>
+                                                            <td align="right">$ {parseFloat(Math.round(totalInvoices * 100) / 100).toFixed(2)}</td>
                                                         </tr>
                                                     </tbody>
                                                 </Table>
@@ -156,8 +156,8 @@ class ReportJobs extends React.Component{
                                                                             className="ni ni-bold-down"></i></Button>
                                                                     </td>
                                                                     <td>{wx.workerId.name}</td>
-                                                                    <td align="right">$ {isNaN(parseFloat(Math.round((payment*time) * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round((payment*time) * 100) / 100).toFixed(2)} USD</td>
-                                                                    <td align="right">$ {isNaN(parseFloat(Math.round((effective*time) * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round((effective*time) * 100) / 100).toFixed(2)} USD</td>
+                                                                    <td align="right">$ {isNaN(parseFloat(Math.round((payment*time) * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round((payment*time) * 100) / 100).toFixed(2)} </td>
+                                                                    <td align="right">$ {isNaN(parseFloat(Math.round((effective*time) * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round((effective*time) * 100) / 100).toFixed(2)}</td>
                                                                     <td align="right">{isNaN(time) ? 0 : time}</td>
                                                                 </tr>
                                                                 <tr>
@@ -197,10 +197,11 @@ class ReportJobs extends React.Component{
                                                         }
                                                     )}
                                                                 <tr>
+                                                                    <td></td>
                                                                     <td>Total:</td>
-                                                                    <td align="right">${!totalTime ? 0 :  parseFloat(Math.round(totalTime * 100) / 100).toFixed(2)} USD</td>
-                                                                    <td align="right">${!totalEffective ? 0 :  parseFloat(Math.round(totalEffective * 100) / 100).toFixed(2)} USD</td>
-                                                                    <td align="right">{isNaN(time )? 0 :time.reduce((ac,cv)=>ac+cv,0)}</td>
+                                                                    <td align="right">${!totalTime ? 0 :  parseFloat(Math.round(totalTime * 100) / 100).toFixed(2)}</td>
+                                                                    <td align="right">${!totalEffective ? 0 :  parseFloat(Math.round(totalEffective * 100) / 100).toFixed(2)}</td>
+                                                                    <td align="right">{isNaN(time.reduce((ac,cv)=>ac+cv,0)) ? 0 :time.reduce((ac,cv)=>ac+cv,0)}</td>
                                                                 </tr>
                                                     </tbody>
                                                 </Table>
@@ -228,7 +229,7 @@ class ReportJobs extends React.Component{
                                                                     </Moment>
                                                                     </td>
                                                                     <td>{ex.category}</td>
-                                                                    <td align="right">$ {parseFloat(Math.round(ex.total * 100) / 100).toFixed(2)} USD</td>
+                                                                    <td align="right">$ {parseFloat(Math.round(ex.total * 100) / 100).toFixed(2)}</td>
                                                                     <td>{ex.vendor}</td>
                                                                     <td>{ex.description}</td>
                                                                 </tr>
@@ -236,9 +237,10 @@ class ReportJobs extends React.Component{
                                                         }
                                                     )}
                                                                 <tr>
+                                                                    
                                                                     <td></td>
                                                                     <td>Total:</td>
-                                                                    <td align="right">$ {!totalExpenses ? 0 :  parseFloat(Math.round(totalExpenses * 100) / 100).toFixed(2)} USD</td>
+                                                                    <td align="right">$ {!totalExpenses ? 0 :  parseFloat(Math.round(totalExpenses * 100) / 100).toFixed(2)}</td>
                                                                 </tr>
                                                     </tbody>
                                                 </Table>

@@ -131,7 +131,7 @@ class ReportWorkers extends React.Component{
 
                             return{totalPayroll, totalEffective, totalHours}
                         })
-                        console.log(this.state)
+                        console.log('el hours', totalHours)
                         return (
                             <tbody key={i}>
                             <tr>
@@ -141,10 +141,10 @@ class ReportWorkers extends React.Component{
                                 </td>
                                 <td>{e.name}</td>
                                 {/*
-                                <td align="right">$ {e.payment * hoursTime} USD</td>
-                                <td align="right">$ {e.effective * hoursTime} USD</td>
+                                <td align="right">$ {e.payment * hoursTime} </td>
+                                <td align="right">$ {e.effective * hoursTime} </td>
                                 <td> {hoursTime} </td>
-                                <td align="right">$ {e.effective * hoursTime} USD</td>
+                                <td align="right">$ {e.effective * hoursTime} </td>
                                  */}
                             </tr>
                             <tr>
@@ -179,8 +179,8 @@ class ReportWorkers extends React.Component{
                                                                         className="ni ni-bold-down"></i></Button>
                                                                 </td>
                                                                 <td>{wx.jobName}</td>
-                                                                <td align="right">$ {isNaN(parseFloat(Math.round(wx.payroll * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.payroll * 100) / 100).toFixed(2)}  USD</td>
-                                                                <td align="right">$ {isNaN(parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)} USD</td>
+                                                                <td align="right">$ {isNaN(parseFloat(Math.round(wx.payroll * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.payroll * 100) / 100).toFixed(2)}  </td>
+                                                                <td align="right">$ {isNaN(parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)} </td>
                                                                 <td>{isNaN(parseFloat(Math.round(wx.hours * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.hours * 100) / 100).toFixed(2)} </td>
                                                                 
                                                             </tr>
@@ -221,10 +221,11 @@ class ReportWorkers extends React.Component{
                                                         }
                                                     )}
                                                     <tr>
+                                                    <td></td>
                                                     <td align="right">Total:</td>
-                                                    <td align="right">$ {isNaN(totalPayroll) ? 0 : parseFloat(Math.round(totalPayroll.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)}USD</td>
-                                                    <td align="right">$ {isNaN(totalEffective) ? 0 : parseFloat(Math.round(totalEffective.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)}USD</td>
-                                                    <td>{isNaN(totalHours) ? 0 :totalHours.reduce((ac,cv)=> ac+cv,0)}</td>
+                                                    <td align="right">$ {isNaN(parseFloat(Math.round(totalPayroll.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(totalPayroll.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)}</td>
+                                                    <td align="right">$ {isNaN(parseFloat(Math.round(totalEffective.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(totalEffective.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)}</td>
+                                                    <td>{isNaN(totalHours.reduce((ac,cv)=> ac+cv,0)) ? 0 : totalHours.reduce((ac,cv)=> ac+cv,0)}</td>
 
                                                     </tr>
                                                     </tbody>
@@ -253,7 +254,7 @@ class ReportWorkers extends React.Component{
                                                             <tr>
                                                                 <td><Moment format={"MMM D, YY"}>{ex.date}</Moment></td>
                                                                 <td>{ex.category}</td>
-                                                                <td align="right">$ {ex.total} USD</td>
+                                                                <td align="right">$ {ex.total}</td>
                                                                 <td>{ex.vendor}</td>
                                                                 <td>{ex.jobName}</td>
                                                                 <td>{ex.description}</td>

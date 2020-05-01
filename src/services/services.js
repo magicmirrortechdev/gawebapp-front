@@ -35,7 +35,7 @@ class AuthService {
         return this.service.patch(`/convertinvoice/${data}`)
     }
     convertJob(data) {
-        return this.service.patch(`/convertjob/${data}`)
+        return this.service.get(`/convertjob/${data}`)
     }
     paidInvoice(data) {
         return this.service.patch(`/paidinvoice/${data}`)

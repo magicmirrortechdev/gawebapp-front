@@ -26,7 +26,7 @@ class Header extends React.Component {
                                 0 Overdue
                               </CardTitle>
                               <span className="h2 font-weight-bold mb-0">
-                            $ 0.00 USD
+                            $ 0.00
                           </span>
                             </div>
                             <Col className="col-auto">
@@ -54,7 +54,7 @@ class Header extends React.Component {
                                 0 unpaid
                               </CardTitle>
                               <span className="h2 font-weight-bold mb-0">
-                            $0.00 USD
+                            $0.00
                           </span>
                             </div>
                             <Col className="col-auto">
@@ -81,7 +81,7 @@ class Header extends React.Component {
                               >
                                 0 Unsent
                               </CardTitle>
-                              <span className="h2 font-weight-bold mb-0">$0.00 USD</span>
+                              <span className="h2 font-weight-bold mb-0">$0.00</span>
                             </div>
                             <Col className="col-auto">
                               <div className="icon icon-shape bg-yellow text-white rounded-circle shadow">

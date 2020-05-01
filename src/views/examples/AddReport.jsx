@@ -282,7 +282,7 @@ class AddReport extends React.Component {
                                   style={{display:"inline-flex", alignItems:"center", }}>
                                 Total estimated
                               </label>
-                              <div className="text-right"> $0.00 USD</div>
+                              <div className="text-right"> $0.00</div>
                             </FormGroup>
                             <FormGroup>
                               <label
@@ -291,7 +291,7 @@ class AddReport extends React.Component {
                                   style={{display:"inline-flex", alignItems:"center", }}>
                                 Total invoiced
                               </label>
-                              <div className="text-right"> $0.00 USD</div>
+                              <div className="text-right"> $0.00</div>
                             </FormGroup>
                             <FormGroup>
                               <label
@@ -300,7 +300,7 @@ class AddReport extends React.Component {
                                   style={{display:"inline-flex", alignItems:"center", }}>
                                 Total expenses
                               </label>
-                              <div className="text-right"> $0.00 USD</div>
+                              <div className="text-right"> $0.00</div>
                             </FormGroup>
                             <hr/>
                             <FormGroup>
@@ -310,7 +310,7 @@ class AddReport extends React.Component {
                                   style={{display:"inline-flex", alignItems:"center", }}>
                                 Balance
                               </label>
-                              <div className="text-right"> $0.00 USD</div>
+                              <div className="text-right"> $0.00 </div>
                             </FormGroup>
 
                           </Col>

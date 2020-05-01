@@ -30,11 +30,19 @@ const KeyCodes = {
 };
 
 const delimiters = [KeyCodes.comma, KeyCodes.enter];
+var fecha = new Date(); 
+      var mes = fecha.getMonth()+1; 
+      var dia = fecha.getDate(); 
+      var ano = fecha.getFullYear(); 
+      if(dia<10)
+        dia='0'+dia; //agrega cero si es menor de 10
+      if(mes<10)
+        mes='0'+mes //agrega cero si es menor de 10
 
 class SendInvoice extends React.Component {
   state = {
     workerId: "",
-    date:'',
+    date:ano+"-"+mes+"-"+dia,
     name: '',
     email: '',
     total: 0,
@@ -66,7 +74,6 @@ class SendInvoice extends React.Component {
           const invoices = data.estimate.invoices
               invoices.map((e,i)=>{
                 if(e._id === this.props.match.params.invoiceId){
-                  date = e.date
                   description = e.description
                   total = e.total
                 }
@@ -79,7 +86,6 @@ class SendInvoice extends React.Component {
             name: data.estimate.clientId.name,
             email: data.estimate.clientId.email,
             jobName: data.estimate.jobName,
-            date,
             description,
             total,
             tags: [{id: data.estimate.clientId.email, text: data.estimate.clientId.email}]

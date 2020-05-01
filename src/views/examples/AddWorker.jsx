@@ -281,7 +281,7 @@ class AddWorker extends React.Component {
                               name="payment"
                               className="form-control-alternative"
                               type="number"
-                              placeholder="$0.00 USD"
+                              placeholder="$0.00"
                               onChange={this.handleInput}
                               step="any"
                             />
@@ -298,7 +298,7 @@ class AddWorker extends React.Component {
                               name="effective"
                               className="form-control-alternative"
                               type="number"
-                              placeholder="$0.00 USD"
+                              placeholder="$0.00"
                               onChange={this.handleInput}
                               step="any"
                             />

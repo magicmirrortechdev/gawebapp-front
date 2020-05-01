@@ -78,10 +78,11 @@ class Clients extends React.Component {
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
+                      <th scope="col"></th>
                       <th scope="col">Name</th>
                       <th scope="col">Email</th>
                       <th scope="col">Phone Number</th>
-                      <th scope="col">Options</th>
+                      
                     </tr>
                   </thead>
                   
@@ -91,10 +92,7 @@ class Clients extends React.Component {
                      this.state.clients.map((e,i)=>{
                       return(
                         <tbody key={i}>
-                        <tr >
-                        <th scope="row" >{e.name}</th>
-                        <td>{e.email}</td>
-                        <td>{e.phone}</td>
+                        <tr>
                         <td>
                         <div className="dropdownButtons">
                         <UncontrolledDropdown>
@@ -124,6 +122,10 @@ class Clients extends React.Component {
                           </UncontrolledDropdown>
                           </div>
                         </td>
+                        <th scope="row" >{e.name}</th>
+                        <td>{e.email}</td>
+                        <td>{e.phone}</td>
+                        
                         </tr>
                        
                     

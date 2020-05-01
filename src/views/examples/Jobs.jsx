@@ -173,12 +173,12 @@ class Jobs extends React.Component {
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
+                      <th scope="col"></th>
                       <th scope="col">Job Name</th>
                       <th scope="col">Date Start</th>
                       <th scope="col">Date End</th>
                       <th scope="col">Worker(s)</th>
                       <th scope="col">Total</th>
-                      <th scope="col">Options</th>
                     </tr>
                   </thead>
 
@@ -200,17 +200,6 @@ class Jobs extends React.Component {
                         <tbody key={i}>
                         {e.status === "Closed" ? <tr><th scope="row">{e.jobName}</th> <td>Closed</td></tr> :
                         <tr>
-                        <th scope="row" >{e.jobName}</th>
-                        <td>{e.dateStart === "Update this field" ? "Update this field" : <Moment format={"MMM D, YY"}>{e.dateStart}</Moment>}</td>
-                        <td>{e.dateEnd === "Update this field" ? "Update this field" : <Moment format={"MMM D, YY"}>{e.dateEnd}</Moment>}</td>
-                        <td>{e.workers.map((e,i)=>{
-                          return(
-                            !e.workerId ? <p style={{fontSize:"10px"}} key={i}>Worker Delete</p> :
-                            <p style={{fontSize:"10px"}} key={i}>{e.workerId.name}</p>
-                          )
-
-                        })}</td>
-                        <td>${isNaN(parseFloat(Math.round(total * 100) / 100).toFixed(2))?'Check your quantities and figures in your estimate please':parseFloat(Math.round(total * 100) / 100).toFixed(2)} USD</td>
                         <td>
                           
                             <UncontrolledDropdown>
@@ -271,6 +260,18 @@ class Jobs extends React.Component {
                             </UncontrolledDropdown>
 
                         </td>
+                        <th scope="row" >{e.jobName}</th>
+                        <td>{e.dateStart === "Update this field" ? "Update this field" : <Moment format={"MMM D, YY"}>{e.dateStart}</Moment>}</td>
+                        <td>{e.dateEnd === "Update this field" ? "Update this field" : <Moment format={"MMM D, YY"}>{e.dateEnd}</Moment>}</td>
+                        <td>{e.workers.map((e,i)=>{
+                          return(
+                            !e.workerId ? <p style={{fontSize:"10px"}} key={i}>Worker Delete</p> :
+                            <p style={{fontSize:"10px"}} key={i}>{e.workerId.name}</p>
+                          )
+
+                        })}</td>
+                        <td>${isNaN(parseFloat(Math.round(total * 100) / 100).toFixed(2))?'Check your quantities and figures in your estimate please':parseFloat(Math.round(total * 100) / 100).toFixed(2)}</td>
+                        
                         </tr>
                       }
 

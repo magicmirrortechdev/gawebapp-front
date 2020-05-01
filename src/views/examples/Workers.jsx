@@ -79,11 +79,11 @@ class Workers extends React.Component {
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
+                      <th scope="col"></th>
                       <th scope="col">Name</th>
                       <th scope="col">Email</th>
                       <th scope="col">Pay Rate</th>
                       <th scope="col">Effective Rate</th>
-                      <th scope="col">Options</th>
                     </tr>
                   </thead>
                   
@@ -94,10 +94,6 @@ class Workers extends React.Component {
                       return(
                         <tbody key={i}>
                         <tr >
-                        <th scope="row" >{e.name}</th>
-                        <td>{e.email}</td>
-                        <td>{e.payment}</td>
-                        <td>{e.effective}</td>
                         <td>
                         <UncontrolledDropdown>
                         <DropdownToggle>
@@ -123,6 +119,11 @@ class Workers extends React.Component {
                     </UncontrolledDropdown>
                         
                         </td>
+                        <th scope="row" >{e.name}</th>
+                        <td>{e.email}</td>
+                        <td>{e.payment}</td>
+                        <td>{e.effective}</td>
+                        
                         
                         </tr>
                        
