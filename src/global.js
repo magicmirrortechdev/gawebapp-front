@@ -4,6 +4,12 @@ let Global = {
     url: "https://greenacorn.herokuapp.com/",
     //url: "https://green-acorn-app.herokuapp.com/",
 
+
+    //testing && production
+    urlEnvironment: "local",
+    //urlEnvironment: "staging",
+    //urlEnvironment: "production",
+
     //urlArgyle: "https://argyle-api-dev.herokuapp.com", //local
     urlArgyle: "https://argyle-api-dev.herokuapp.com", //staging
     //urlArgyle: "https://api.roverpayapp.com" //production
