@@ -61,7 +61,7 @@ class argyleService {
 
         let userArgyle = JSON.parse(localStorage.getItem('ArgyleUser'));
         let dataArgyle = {
-            environment: local, //--> NOTA: esto solo se pone cuando el ambiente es local
+            environment: "local", //--> NOTA: esto solo se pone cuando el ambiente es local
             active: true,
             chargedTo: userArgyle.user.id,
             venue: Global.merchantId,
