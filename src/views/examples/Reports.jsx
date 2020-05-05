@@ -53,7 +53,11 @@ class Reports extends React.Component {
     }))
   }
 
-    componentDidMount() {
+    componentDidMount(props) {
+        const loggedUser = localStorage.getItem('loggedUser')
+        if (loggedUser.role === "WORKER"|| loggedUser.role ==="PROJECT MANAGER") return this.props.history.push('/admin/index')
+
+
         axios.get(Global.url + `openjobs`)
             .then(({data}) => {
                 console.log(data);
@@ -99,7 +103,7 @@ class Reports extends React.Component {
       .catch(err => {
         console.log(err)
       })
-  }
+    }
   getClose =()=>{
     axios
       .get(Global.url + `closejobs`)
@@ -190,7 +194,6 @@ class Reports extends React.Component {
   }
 
     render() {
-
         if (!this.state) return <p>Loading</p>
         return (
             <>

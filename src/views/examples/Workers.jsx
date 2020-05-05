@@ -29,7 +29,7 @@ class Workers extends React.Component {
 
   componentDidMount() {
     axios
-      .get(Global.url + `getusers`)
+      .get(Global.url + `workers`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {

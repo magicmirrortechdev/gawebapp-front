@@ -35,8 +35,9 @@ class AddWorkerJob extends React.Component {
   }
 
   componentDidMount() {
+
     axios
-      .get(Global.url + `getusers`)
+      .get(Global.url + `workers`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -50,9 +51,19 @@ class AddWorkerJob extends React.Component {
       })
   }
 
-  handleSubmit = (e, props) => {
+  handleSubmit = async (e, props) => {
     e.preventDefault()
-        axios
+    const workerIn =[]
+    const estimate = await axios.get(Global.url+`estimatedetail/${this.props.match.params.id}`)
+    console.log('el estimate',estimate.data.estimate)
+    estimate.data.estimate.workers.map(e =>{
+      return workerIn.push(e.workerId._id) 
+    })
+    if(workerIn.includes(this.state._id)){
+      alert('This worker ya está en el work')
+    }
+    else {
+      axios
           .patch(Global.url + `addworkers/${this.props.match.params.id}`,{id2: this.state._id})
           .then(response => {
             //aquí deberia ir una notificacion o un swal o un toastr
@@ -63,6 +74,7 @@ class AddWorkerJob extends React.Component {
             //aquí deberia ir una notificacion o un swal o un toastr
             console.log(err.response)
           })
+    }
   }
 
   render() {

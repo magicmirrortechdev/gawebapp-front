@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Card, Table, UncontrolledCollapse} from "reactstrap";
+import {Button, Card, Table, UncontrolledCollapse, Badge} from "reactstrap";
 import CardBody from "reactstrap/es/CardBody";
 import Moment from "react-moment";
 
@@ -139,7 +139,7 @@ class ReportWorkers extends React.Component{
                                     <Button id={"toggle" + i} color="primary"><i
                                         className="ni ni-bold-down"></i></Button>
                                 </td>
-                                <td>{e.name}</td>
+                                <td>{e.name} &nbsp; &nbsp; <Badge style={{fontSize:"12px"}} color="info">{e.role}</Badge></td>
                                 {/*
                                 <td align="right">$ {e.payment * hoursTime} </td>
                                 <td align="right">$ {e.effective * hoursTime} </td>
