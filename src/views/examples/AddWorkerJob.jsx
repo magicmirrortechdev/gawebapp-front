@@ -60,7 +60,7 @@ class AddWorkerJob extends React.Component {
       return workerIn.push(e.workerId._id) 
     })
     if(workerIn.includes(this.state._id)){
-      alert('This worker ya está en el work')
+      alert('This worker already exists in this job')
     }
     else {
       axios

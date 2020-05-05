@@ -26,6 +26,8 @@ import Header from "components/Headers/Header.jsx";
 import ReportJobs from "./reports/ReportJobs";
 import ReportWorkers from "./reports/ReportWorkers";
 
+let loggedUser;
+
 class Reports extends React.Component {
     state = {
         jobs: [],
@@ -34,6 +36,11 @@ class Reports extends React.Component {
         buttonActive: '1'
     };
 
+    constructor(props) {
+        super(props);
+        loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+    }
+
     toggleTab(tab) {
         if (this.state.activeTab !== tab) {
             this.setState({
@@ -41,22 +48,17 @@ class Reports extends React.Component {
             });
         }
     }
-
-    handleSubmit() {
-
-    }
     handleInput = e => {
     e.persist()
     this.setState(prevState => ({
       ...prevState,
       [e.target.name]: e.target.value
     }))
-  }
+    }
 
     componentDidMount(props) {
-        const loggedUser = localStorage.getItem('loggedUser')
-        if (loggedUser.role === "WORKER"|| loggedUser.role ==="PROJECT MANAGER") return this.props.history.push('/admin/index')
-
+        if ((loggedUser.role === "WORKER") ) return this.props.history.push('/admin/index')
+        if ((loggedUser.role === "PROJECT MANAGER")) return this.props.history.push('/admin/index')
 
         axios.get(Global.url + `openjobs`)
             .then(({data}) => {

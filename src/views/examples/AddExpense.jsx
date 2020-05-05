@@ -36,17 +36,13 @@ class AddExpense extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log("constructor!!!")
     loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
-    console.log("jsonParse", loggedUser);
   }
 
   componentDidMount() {
-    console.log(loggedUser);
     this.setState({
       workerId: loggedUser._id
     })
-    console.log("montando componente, " );
   }
 
   handleInput = e => {
