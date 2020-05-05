@@ -61,6 +61,7 @@ class argyleService {
 
         let userArgyle = JSON.parse(localStorage.getItem('ArgyleUser'));
         let dataArgyle = {
+            environment: Global.urlEnvironment,
             active: true,
             chargedTo: userArgyle.user.id,
             venue: Global.merchantId,
