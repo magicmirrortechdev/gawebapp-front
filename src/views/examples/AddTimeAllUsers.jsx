@@ -38,7 +38,6 @@ class AddTime extends React.Component {
     workers:[],
     value: false,
     time: parseInt(''),
-    worker_id: '',
     date: ano+"-"+mes+"-"+dia,
   };
   constructor(props) {
@@ -48,6 +47,23 @@ class AddTime extends React.Component {
 
   handleInput = e => {
     e.persist()
+    
+    this.setState(prevState => ({
+      ...prevState,
+      [e.target.name]: e.target.value
+    }))
+    this.setState(({ value }) => ({ value: !value }))
+  }
+
+
+  handleInput2 = e => {
+    e.persist()
+    console.log('los values', loggedUser._id, e.target.value)
+    if(loggedUser._id === e.target.value){
+      console.log('Si es el mismo')
+      this.setState({diego: e.target.value})
+      
+    }
     this.setState(prevState => ({
       ...prevState,
       [e.target.name]: e.target.value
@@ -77,14 +93,31 @@ class AddTime extends React.Component {
     axios
       .get(Global.url + `estimatedetail/${this.state._id}`)
       .then(({ data }) => {
-        this.setState(prevState => {
-          
-          return {
-            ...prevState,
-            workers: data.estimate.workers,
-            ...data
+         
+        data.estimate.workers.map(e =>{
+          if(e.workerId._id === loggedUser._id){
+            this.setState(prevState=>{
+              return{
+                ...prevState,
+                workers: data.estimate.workers,
+                worker_id2:e._id+'.'+e.workerId._id,
+                ...data
+              }
+            })
           }
-        })      })
+          else{
+            this.setState(prevState => {
+              
+              return {
+                ...prevState,
+                workers: data.estimate.workers,
+                ...data
+              }
+            })
+            }
+        })
+        
+      })
       .catch(err => {
         console.log(err)
       })
@@ -92,22 +125,42 @@ class AddTime extends React.Component {
   }
 
   handleSubmit = (e, props) => {
-    const id = this.state.worker_id.split(".")[0]
-    const workerId = this.state.worker_id.split(".")[1]
     e.preventDefault()
-        axios
-          .patch(Global.url + `addtime/${id}/${workerId}`,this.state)
-          .then(response => {
-            this.props.history.push(`/admin/time`)
-            console.log(response)
-          })
-          .catch(err => {
-            console.log(err.response)
-          })
+
+    const id = this.state.worker_id ? this.state.worker_id.split(".")[0] : undefined
+    const workerId = this.state.worker_id ? this.state.worker_id.split(".")[1] : undefined
+    const id2 = this.state.worker_id2.split(".")[0]
+    const workerId2 = this.state.worker_id2.split(".")[1]
+    
+     if(this.state.worker_id === undefined){
+      axios
+      .patch(Global.url + `addtime/${id2}/${workerId2}`,this.state)
+      .then(response => {
+        this.props.history.push(`/admin/time`)
+      })
+      .catch(err => {
+        alert(err.response)
+      })
+     }
+     else if(this.state.worker_id !== undefined){
+      axios
+      .patch(Global.url + `addtime/${id}/${workerId}`,this.state)
+      .then(response => {
+        this.props.history.push(`/admin/time`)
+      })
+      .catch(err => {
+        alert(err.response)
+      })
+     }
+      
   }
+      
+      
+        
+  
 
   render() {
-    console.log(this.state)
+    console.log('state Diego', this.state.worker_id2)
     return (
       <>
         <Header />
@@ -152,14 +205,14 @@ class AddTime extends React.Component {
                               name="worker_id"
                               className="form-control-alternative"
                               type="select"
-                              onChangeCapture={this.handleInput}
+                              onChange={this.handleInput}
                               
                             >
                             <option>Select worker</option>
                             { this.state.workers.map((e,i)=>{
                               if(!e.workerId)return <option>Worker Delete</option>
                               return(
-                                loggedUser.name === e.workerId.name ? <option key={i} value={`${e._id}.${e.workerId._id}`}>{e.workerId.name}</option> :
+                                loggedUser._id === e.workerId._id ?  <option selected key={i} value={ `${e._id}.${e.workerId._id}`}>{e.workerId.name}</option> :
                                  <option  key={i} value={`${e._id}.${e.workerId._id}`}>{e.workerId.name}</option>)
                             })
                             }

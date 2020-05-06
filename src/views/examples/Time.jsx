@@ -43,7 +43,6 @@ class Time extends React.Component {
   }
 
   render() {
-    console.log('Aqui está el state', this.state)
 
     if (!this.state) return <p>Loading</p>
     return (
@@ -96,7 +95,6 @@ class Time extends React.Component {
 
                           if(!e.workerId)return <th scope="row">Worker Delete</th>
                           let worker = e.workerId._id
-                          console.log(time)
                           return(
                         <tbody key={i}>
                         <tr>

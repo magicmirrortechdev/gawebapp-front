@@ -110,7 +110,6 @@ class Invoices extends React.Component {
                       const client = e.clientId.name 
                       const id = e._id
                       const jobName = e.jobName
-                      console.log(e.clientId.name)
                       
                       return(
                         e.invoices.map((e,i) =>{
