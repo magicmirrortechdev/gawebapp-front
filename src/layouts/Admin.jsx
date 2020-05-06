@@ -8,15 +8,121 @@ import AdminNavbar from "components/Navbars/AdminNavbar.jsx";
 import Sidebar from "components/Sidebar/Sidebar.jsx";
 
 import routes from "routes.js";
+import routesWorker from 'routesWorker'
+
+let loggedUser
 
 class Admin extends React.Component {
+  constructor(props) {
+    super(props);
+    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+}
   componentDidUpdate(e) {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
     this.refs.mainContent.scrollTop = 0;
   }
+
   getRoutes = routes => {
     return routes.map((prop, key) => {
+      if (prop.layout === "/admin") {
+        return (
+          <Route
+            path={prop.layout + prop.path}
+            component={prop.component}
+            key={key}
+            exact
+          />
+        );
+      }else if (prop.layout === "/admin/estimates") {
+        return (
+          <Route
+            path={prop.layout + prop.path}
+            component={prop.component}
+            key={key}
+            exact
+          />
+        );
+      }
+      else if (prop.layout === "/admin/reports" ) {
+        return (
+          <Route
+            path={prop.layout + prop.path}
+            component={prop.component}
+            key={key}
+            exact
+          />
+        );
+      }
+      else if (prop.layout === "/admin/jobs") {
+        return (
+          <Route
+            path={prop.layout + prop.path}
+            component={prop.component}
+            key={key}
+            exact
+          />
+        );
+      }
+      else if (prop.layout === "/admin/time") {
+        return (
+          <Route
+            path={prop.layout + prop.path}
+            component={prop.component}
+            key={key}
+            exact
+          />
+        );
+      }
+      else if (prop.layout === "/admin/invoices") {
+        return (
+          <Route
+            path={prop.layout + prop.path}
+            component={prop.component}
+            key={key}
+            exact
+          />
+        );
+      }
+      else if (prop.layout === "/admin/workers") {
+        return (
+          <Route
+            path={prop.layout + prop.path}
+            component={prop.component}
+            key={key}
+            exact
+          />
+        );
+      }
+      else if (prop.layout === "/admin/expenses") {
+        return (
+          <Route
+            path={prop.layout + prop.path}
+            component={prop.component}
+            key={key}
+            exact
+          />
+        );
+      }
+      else if (prop.layout === "/admin/clients") {
+        return (
+          <Route
+            path={prop.layout + prop.path}
+            component={prop.component}
+            key={key}
+            exact
+          />
+        );
+      }
+      
+      else {
+        return null;
+      }
+    });
+  };
+
+  getRoutesW = routesWorker => {
+    return routesWorker.map((prop, key) => {
       if (prop.layout === "/admin") {
         return (
           <Route
@@ -102,6 +208,7 @@ class Admin extends React.Component {
       }
     });
   };
+
   getBrandText = path => {
     for (let i = 0; i < routes.length; i++) {
       if (
@@ -113,13 +220,28 @@ class Admin extends React.Component {
       }
     }
     return "Brand";
-  };
+  }
+
+  getBrandTextW = path => {
+    for (let i = 0; i < routesWorker.length; i++) {
+      if (
+        this.props.location.pathname.indexOf(
+          routesWorker[i].layout + routesWorker[i].path
+        ) !== -1
+      ) {
+        return routesWorker[i].name;
+      }
+    }
+    return "Brand";
+  }
+
+
   render() {
     return (
       <>
         <Sidebar
           {...this.props}
-          routes={routes}
+          routes={loggedUser.role === 'ADMIN' ? routes : routesWorker}
           logo={{
             innerLink: "/admin/index",
             imgSrc: require("assets/img/brand/transparent.png"),
@@ -129,9 +251,9 @@ class Admin extends React.Component {
         <div className="main-content" ref="mainContent">
           <AdminNavbar
             {...this.props}
-            brandText={this.getBrandText(this.props.location.pathname)}
+            brandText={loggedUser.role === 'ADMIN' ? this.getBrandText(this.props.location.pathname) : this.getBrandTextW(this.props.location.pathname)}
           />
-          <Switch>{this.getRoutes(routes)}</Switch>
+          <Switch>{loggedUser.role === 'ADMIN' ? this.getRoutes(routes) : this.getRoutesW(routesWorker)}</Switch>
           <Container className="position-relative  mr-4">
             
           </Container>

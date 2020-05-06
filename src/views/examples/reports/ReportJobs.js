@@ -100,13 +100,14 @@ class ReportJobs extends React.Component{
                                                     <tbody>
                                                     {   !e.invoices ? <tbody><tr><td>No invoices register</td></tr></tbody>:
                                                         e.invoices.length === 0 ? <tbody><tr><td>No invoices register</td></tr></tbody>:e.invoices.map((e, i)=>{
-                                                        
+                                                            const paid = e.payment.reduce((acc, current, i) => acc + current.paid, 0)
+
                                                         return(
                                                         <tr>
                                                             <td><Moment format={"MMM D, YY"}>{e.date}</Moment></td>
                                                             <td>{clientName ? clientName : nameClient}</td>
                                                             <td align="right">$ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}</td>
-                                                            <td>{e.status==="Approve" ? "Approved":e.status}</td>
+                                                            <td>{ e.total-paid === 0 ? 'Paid' : e.status}</td>
                                                         </tr>
                                                         
                                                         )

@@ -14,7 +14,8 @@ import ResetPassword from "views/forgotpassword/ResetPassword";
 
 ReactDOM.render(
   <BrowserRouter>
-    <Switch>
+    <Switch>      
+      <Route  path="/admin/reports" render={props => <AdminLayout {...props} />} />
       <Route  path="/admin/invoices" render={props => <AdminLayout {...props} />} />
       <Route  path="/admin/expenses" render={props => <AdminLayout {...props} />} />
       <Route  path="/admin/clients" render={props => <AdminLayout {...props} />} />

@@ -18,7 +18,6 @@ import AddWorkerJob from "views/examples/AddWorkerJob.jsx";
 import AddTime from "views/examples/AddTime.jsx";
 import AddPM from "views/examples/AddProjectManager.jsx";
 import AddEstimate from "views/examples/AddEstimate.jsx";
-import Reports from "./views/examples/Reports";
 import AddReport from "./views/examples/AddReport";
 import UpdateWorker from "./views/examples/UpdateWorker.jsx";
 import UpdateClient from "./views/examples/UpdateClient.jsx"
@@ -36,7 +35,7 @@ import SendInvoice from "views/examples/SendInvoice";
 
 
 
-var routes = [
+var routesWorker = [
   {
     path: "/sign",
     name: "Sign",
@@ -193,13 +192,6 @@ var routes = [
     invisible:true
   },
   {
-    path: "/reports",
-    name: "Reports",
-    icon: "ni ni-ruler-pencil text-red",
-    component: Reports,
-    layout: "/admin",
-  },
-  {
     path: "/clients",
     name: "Clients",
     icon: "ni ni-single-02 text-yellow",
@@ -293,4 +285,4 @@ var routes = [
   }
 
 ];
-export default routes;
+export default routesWorker;
