@@ -28,7 +28,6 @@ class ReportWorkers extends React.Component{
                     </tr>
                     </tbody> :
                     this.props.workers.map((e, i) => {
-                        console.log("expenses solos", this.props.workers.expenses)
                         let totalExpenses = 0;
                         let hours = 0;
                         let expenses = [];
@@ -131,7 +130,6 @@ class ReportWorkers extends React.Component{
 
                             return{totalPayroll, totalEffective, totalHours}
                         })
-                        console.log('el hours', totalHours)
                         return (
                             <tbody key={i}>
                             <tr>
@@ -159,7 +157,6 @@ class ReportWorkers extends React.Component{
                                                     responsive>
                                                     <thead className="thead-light">
                                                     <tr>
-                                                        <th></th>
                                                         <th scope="col">Job</th>
                                                         <th scope="col">Payroll Expense</th>
                                                         <th scope="col">Labor Expense
@@ -174,16 +171,19 @@ class ReportWorkers extends React.Component{
                                                         return (
                                                             <>
                                                             <tr>
-                                                                <td>
+                                                                {/*
+                                                                    <td>
                                                                      <Button id={"toggle" + e._id} color="primary"><i
                                                                         className="ni ni-bold-down"></i></Button>
-                                                                </td>
+                                                                    </td>
+                                                                */}
                                                                 <td>{wx.jobName}</td>
                                                                 <td align="right">$ {isNaN(parseFloat(Math.round(wx.payroll * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.payroll * 100) / 100).toFixed(2)}  </td>
                                                                 <td align="right">$ {isNaN(parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)} </td>
                                                                 <td>{isNaN(parseFloat(Math.round(wx.hours * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.hours * 100) / 100).toFixed(2)} </td>
                                                                 
                                                             </tr>
+                                                        {/*
                                                             <tr>
                                                                 <td colSpan={7}>
                                                                     <UncontrolledCollapse toggler={"#toggle" + e._id}>
@@ -216,12 +216,12 @@ class ReportWorkers extends React.Component{
                                                                     </UncontrolledCollapse>
                                                                 </td>
                                                             </tr>
+                                                        */}
                                                             </>
                                                         )
                                                         }
                                                     )}
                                                     <tr>
-                                                    <td></td>
                                                     <td align="right">Total:</td>
                                                     <td align="right">$ {isNaN(parseFloat(Math.round(totalPayroll.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(totalPayroll.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)}</td>
                                                     <td align="right">$ {isNaN(parseFloat(Math.round(totalEffective.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(totalEffective.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)}</td>
