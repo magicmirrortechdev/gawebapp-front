@@ -75,7 +75,7 @@ class AddExpense extends React.Component {
   }
 
   render() {
-
+    console.log(this.state)
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
     return (
       <>
@@ -202,6 +202,7 @@ class AddExpense extends React.Component {
                               type="number"
                               onChange={this.handleInput}
                               step="any"
+                              min="-1000000"
                             />
                           </FormGroup>
                         </Col>

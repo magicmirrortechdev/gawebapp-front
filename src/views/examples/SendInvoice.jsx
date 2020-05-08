@@ -49,7 +49,7 @@ class SendInvoice extends React.Component {
     jobName: '',
     tags : [],
     description: '',
-    urlPay: ''
+    urlPay: '',
   };
 
   constructor(props) {

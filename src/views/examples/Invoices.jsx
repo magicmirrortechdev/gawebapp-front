@@ -162,7 +162,7 @@ class Invoices extends React.Component {
                         </td>
                         
                         <th scope="row" >{!client ? 'Client Delete' : client }</th>
-                        <td><Moment format={"MMM D, YY"}>{e.date}</Moment></td>
+                        <td><Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment></td>
                         <td>{e.total-paid === 0 ? 'Paid' : e.status}</td>
                         <td>${parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}</td> 
                         <td>${parseFloat(Math.round(total * 100) / 100).toFixed(2)}</td>                       

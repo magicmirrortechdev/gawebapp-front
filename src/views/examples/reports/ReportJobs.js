@@ -104,7 +104,7 @@ class ReportJobs extends React.Component{
 
                                                         return(
                                                         <tr>
-                                                            <td><Moment format={"MMM D, YY"}>{e.date}</Moment></td>
+                                                            <td><Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment></td>
                                                             <td>{clientName ? clientName : nameClient}</td>
                                                             <td align="right">$ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}</td>
                                                             <td>{ e.total-paid === 0 ? 'Paid' : e.status}</td>
@@ -181,7 +181,7 @@ class ReportJobs extends React.Component{
                                                                                     {wx.time.map((e)=>{
                                                                                         return(
                                                                                             <tr>
-                                                                                            <td><Moment format={"MMM D, YY"}>{e.date}</Moment></td>
+                                                                                            <td><Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment></td>
                                                                                             <td>{e.hours}</td>
                                                                                             </tr>
                                                                                              
@@ -225,7 +225,7 @@ class ReportJobs extends React.Component{
                                                             return (
                                                                 <tr>
                                                                     <td >
-                                                                    <Moment format={"MMM D, YY"}>
+                                                                    <Moment add={{days: 1}} format={"MMM D, YY"}>
                                                                     {ex.date}
                                                                     </Moment>
                                                                     </td>

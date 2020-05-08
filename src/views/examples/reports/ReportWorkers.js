@@ -252,7 +252,7 @@ class ReportWorkers extends React.Component{
                                                         
                                                         return (
                                                             <tr>
-                                                                <td><Moment format={"MMM D, YY"}>{ex.date}</Moment></td>
+                                                                <td><Moment add={{days:1}} format={"MMM D, YY"}>{ex.date}</Moment></td>
                                                                 <td>{ex.category}</td>
                                                                 <td align="right">$ {ex.total}</td>
                                                                 <td>{ex.vendor}</td>

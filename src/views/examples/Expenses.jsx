@@ -47,6 +47,7 @@ class Expenses extends React.Component {
   
 
   render() {
+    console.log(this.state)
     if (!this.state) return <p>Loading</p>
     return (
       <>
@@ -121,9 +122,8 @@ class Expenses extends React.Component {
                           <th scope="row" >{e.description}</th>
                           <td>{e.category}</td>
                           <td>
-                          <Moment format={"MMM D, YY"}>
-                          {e.date}
-                          </Moment>
+                          <Moment add={{days: 1}} date={new Date(e.date)}  format={"MMM D, YY"} />
+                          
                           </td>
                           <td>$ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}</td>
                           
