@@ -123,7 +123,7 @@ class UpdateExpense extends React.Component {
   render() {
     console.log(this.state)
 
-    const categories = [{category: 'Job Materials'}, {category: 'Gas'}, {category:'Suplies'}, {category:'Sub Contractors'}]
+    const categories = [{category: 'Job Materials'}, {category: 'Gas'}, {category:'Supplies'}, {category:'Sub Contractors'}]
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
     return (
       <>

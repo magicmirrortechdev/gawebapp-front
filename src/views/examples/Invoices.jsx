@@ -114,7 +114,7 @@ class Invoices extends React.Component {
                       return(
                         e.invoices.map((e,i) =>{
                           const invoiceIndex = i + 1
-                          const paid = e.payment.reduce((acc, current, i) => acc + current.paid, 0)
+                          const paid = isNaN(e.payment.reduce((acc, current, i) => acc + current.paid, 0)) ? 0 : e.payment.reduce((acc, current, i) => acc + current.paid, 0)
                           const total = e.total - paid
                           const total2 = e.total
 
@@ -194,7 +194,7 @@ class Invoices extends React.Component {
                                                         <tr key={i}>
                                                             <td>Payment # {paymentIndex}</td>
                                                             <td><Moment format={"MMM D, YY"}>{e.date}</Moment></td>
-                                                            <td align="right">$ {parseFloat(Math.round(e.paid * 100) / 100).toFixed(2)}</td>
+                                                            <td align="right">$ {isNaN(parseFloat(Math.round(e.paid * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(e.paid * 100) / 100).toFixed(2) }</td>
                                                             <td align="right">$ {parseFloat(Math.round((total2 - paidOk[i]) * 100) / 100).toFixed(2)}</td>
                                                         </tr>
                                                         

@@ -212,7 +212,7 @@ class AddExpense extends React.Component {
                             <option selected disabled >Choose One</option>
                             <option>Job Materials</option>
                             <option>Gas</option>
-                            <option>Suplies</option>
+                            <option>Supplies</option>
                             <option>Sub Contractors</option>
                             </Input>
                           </FormGroup>

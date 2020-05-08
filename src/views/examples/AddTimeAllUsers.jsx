@@ -129,8 +129,8 @@ class AddTime extends React.Component {
 
     const id = this.state.worker_id ? this.state.worker_id.split(".")[0] : undefined
     const workerId = this.state.worker_id ? this.state.worker_id.split(".")[1] : undefined
-    const id2 = this.state.worker_id2.split(".")[0]
-    const workerId2 = this.state.worker_id2.split(".")[1]
+    const id2 = this.state.worker_id2 ? this.state.worker_id2.split(".")[0] : undefined
+    const workerId2 = this.state.worker_id2 ? this.state.worker_id2.split(".")[1] : undefined
     
      if(this.state.worker_id === undefined){
       axios
@@ -142,7 +142,7 @@ class AddTime extends React.Component {
         alert(err.response)
       })
      }
-     else if(this.state.worker_id !== undefined){
+     else if(this.state.worker_id){
       axios
       .patch(Global.url + `addtime/${id}/${workerId}`,this.state)
       .then(response => {
@@ -160,7 +160,7 @@ class AddTime extends React.Component {
   
 
   render() {
-    console.log('state Diego', this.state.worker_id2)
+    console.log('state Diego', this.state.worker_id)
     return (
       <>
         <Header />

@@ -69,7 +69,7 @@ class AddExpense extends React.Component {
       alert('Select a category')
     }else{
       await axios.patch(Global.url + `addexpense/${this.props.match.params.id}`,this.state)
-        this.props.history.push('/admin/expenses')
+        this.props.history.push('/admin/jobs')
     }
         
   }
@@ -150,7 +150,7 @@ class AddExpense extends React.Component {
                             <option disabled selected >Choose One</option>
                             <option>Job Materials</option>
                             <option>Gas</option>
-                            <option>Suplies</option>
+                            <option>Supplies</option>
                             <option>Sub Contractors</option>
                             </Input>
                           </FormGroup>

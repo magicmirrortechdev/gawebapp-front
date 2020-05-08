@@ -55,7 +55,6 @@ class AddWorkerJob extends React.Component {
     e.preventDefault()
     const workerIn =[]
     const estimate = await axios.get(Global.url+`estimatedetail/${this.props.match.params.id}`)
-    console.log('el estimate',estimate.data.estimate)
     estimate.data.estimate.workers.map(e =>{
       return workerIn.push(e.workerId._id) 
     })
