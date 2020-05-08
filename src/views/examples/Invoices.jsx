@@ -114,7 +114,7 @@ class Invoices extends React.Component {
                       return(
                         e.invoices.map((e,i) =>{
                           const invoiceIndex = i + 1
-                          const paid = isNaN(e.payment.reduce((acc, current, i) => acc + current.paid, 0)) ? 0 : e.payment.reduce((acc, current, i) => acc + current.paid, 0)
+                          const paid = e.payment.reduce((acc, current, i) => acc + isNaN(current.paid) ? 0 : current.paid, 0) 
                           const total = e.total - paid
                           const total2 = e.total
 
