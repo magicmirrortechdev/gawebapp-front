@@ -72,7 +72,7 @@ class Login extends React.Component {
             
             <CardBody className="px-lg-5 py-lg-5">
               <div className="text-center text-muted mb-4">
-                <small>Sign in with credentials</small>
+                <small>Sign in with credentials 🔑</small>
               </div>
               <Form role="form" onSubmit={this.handleSubmit}>
                 <FormGroup className="mb-3">

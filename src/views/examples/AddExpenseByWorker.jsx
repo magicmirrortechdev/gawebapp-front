@@ -35,9 +35,7 @@ class AddExpense extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log("constructor!!!")
     loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
-    console.log("jsonParse", loggedUser);
     this.selectRef = React.createRef();
   }
 
@@ -49,7 +47,6 @@ class AddExpense extends React.Component {
       category: '',
 
     })
-    console.log("montando componente, " );
     axios
       .get(Global.url + `openjobs`)
       .then(({ data }) => {
@@ -101,7 +98,6 @@ class AddExpense extends React.Component {
   }
 
   render() {
-    const { colorError } = this.state;
     console.log(this.state)
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
     return (
@@ -137,18 +133,7 @@ class AddExpense extends React.Component {
                               name="_id"
                               className="form-control-alternative"
                               type="select"
-                              onChange={this.handleInput}
-                              styles={{
-                                control: (provided, state) =>
-                                  colorError
-                                    ? {
-                                        ...provided,
-                                        boxShadow: "0 0 0 1px red !important",
-                                        borderColor: "red !important"
-                                      }
-                                    : provided
-                              }}
-                              
+                              onChange={this.handleInput}                              
                             >
                             <option selected disabled>Select Job to Add Expense</option>
                             {this.state.jobs.map((e,i)=>{
