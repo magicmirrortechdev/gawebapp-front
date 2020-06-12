@@ -30,8 +30,8 @@ class ReportWorkers extends React.Component{
                     this.props.workers.map((e, i) => {
                         let totalExpenses = 0;
                         let hours = 0;
-                        let expenses = [];
                         let jobs = [];
+                        let reports = [];
                         let hoursPerJob = []
                         let hoursTime = 0
                         let dateTime = []
@@ -47,16 +47,8 @@ class ReportWorkers extends React.Component{
                         })
 
                         e.works.map(works => {
+                            console.log(works.workId instanceof Array);
                             if(works.workId instanceof Array ){ //search
-                                if(works.workId[0] && works.workId[0].expenses){
-                                    works.workId[0].expenses.map(expense => {
-                                        if(expense.workerId && expense.workerId === e._id){
-                                            expense.jobName = works.workId[0].jobName;
-                                            expenses.push(expense);
-                                            totalExpenses += expense.total;
-                                        }
-                                    });
-                                }
 
                                 works.workId.map(work => {
                                     if(works.time.length > 0){
@@ -83,43 +75,76 @@ class ReportWorkers extends React.Component{
 
                             }else{
 
-                                if(works.workId && works.workId.expenses){
-                                    works.workId.expenses.map(expense => {
-                                        if(expense.workerId && expense.workerId._id === e._id){
-                                            expense.jobName = works.workId.jobName;
-                                            expenses.push(expense);
-                                            totalExpenses += expense.total;
-                                        }
-                                    });
-                                }
-
                                 if(works.workId && works.workId.workers){
                                     works.workId.workers.map(worker => {
-                                        if(worker.workerId && worker.workerId._id === e._id ){
+                                        if(worker.workerId && worker.workerId._id === e._id ) {
                                             let hours = 0
                                             let date
                                             let hoursT
                                             hoursPerJob.map(hoursTime => {
-                                                if(hoursTime.works == works._id){
+                                                if (hoursTime.works == works._id) {
                                                     hours += hoursTime.time
                                                     date = hoursTime.date
                                                     hoursT = hoursTime.hours
                                                 }
                                             });
 
-                                            jobs.push({
-                                                jobName : works.workId.jobName,
+                                            jobs[works.workId.jobName] = {
+                                                jobName: works.workId.jobName,
                                                 hours: hours,
                                                 hoursT: hoursT,
                                                 payroll: e.payment * hours,
-                                                effective : e.effective * hours,
-                                            });
+                                                effective: e.effective * hours,
+                                                checked: false
+                                            };
                                         }
                                     });
                                 }
                             }
-
                         });
+
+                        e.expenses.map(expenses =>{
+                            if (jobs[expenses.jobName] != null) {
+                                reports.push({
+                                    jobName: jobs[expenses.jobName].jobName,
+                                    hours: jobs[expenses.jobName].hours,
+                                    hoursT: jobs[expenses.jobName].hoursT,
+                                    payroll: jobs[expenses.jobName].payroll,
+                                    effective: jobs[expenses.jobName].effective,
+                                    date: expenses.date,
+                                    category: expenses.category,
+                                    total: expenses.total,
+                                    vendor: expenses.vendor,
+                                    description: expenses.description
+                                });
+                                jobs[expenses.jobName].checked = true;
+                            } else {
+                                reports.push({
+                                    jobName: expenses.jobName,
+                                    date: expenses.date,
+                                    category: expenses.category,
+                                    total: expenses.total,
+                                    vendor: expenses.vendor,
+                                    description: expenses.description
+                                });
+                            }
+                        });
+
+                        e.works.map(works => {
+                            if (works.workId != null &&
+                                jobs[works.workId.jobName] != null &&
+                                jobs[works.workId.jobName].checked === false){
+                                reports.push({
+                                    jobName: jobs[works.workId.jobName].jobName,
+                                    hours: jobs[works.workId.jobName].hours,
+                                    hoursT: jobs[works.workId.jobName].hoursT,
+                                    payroll: jobs[works.workId.jobName].payroll,
+                                    effective: jobs[works.workId.jobName].effective,
+                                    date: ''
+                                });
+                            }
+                        });
+
                         let totalPayroll = []
                         let totalEffective = []
                         let totalHours = []
@@ -138,133 +163,61 @@ class ReportWorkers extends React.Component{
                                         className="ni ni-bold-down"></i></Button>
                                 </td>
                                 <td>{e.name} &nbsp; &nbsp; <Badge style={{fontSize:"12px"}} color="info">{e.role}</Badge></td>
-                                {/*
-                                <td align="right">$ {e.payment * hoursTime} </td>
-                                <td align="right">$ {e.effective * hoursTime} </td>
-                                <td> {hoursTime} </td>
-                                <td align="right">$ {e.effective * hoursTime} </td>
-                                 */}
                             </tr>
                             <tr>
                                 <td colSpan={7}>
                                     <UncontrolledCollapse toggler={"#toggle" + i}>
                                         <Card>
                                             <CardBody>
+                                                <div className="div_reports">
+                                                    <h3>- Reports</h3>
+                                                    <Table
+                                                        className="align-items-center table-flush col-md-6 col-xs-12 table-reports"
+                                                        responsive>
+                                                        <thead className="thead-light">
+                                                        <tr>
+                                                            <th scope="col">Expense Date</th>
+                                                            <th scope="col">Expense Type</th>
+                                                            <th scope="col">Expense Amount</th>
+                                                            <th scope="col">Expense Vendor</th>
+                                                            <th scope="col">Expense Description</th>
+                                                            <th scope="col">Job</th>
+                                                            <th scope="col">Payroll Expense</th>
+                                                            <th scope="col">Labor Expense(Efective Rate)</th>
+                                                            <th scope="col">Hours</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        {reports.map((re, i) => {
+                                                            return(
+                                                                <>
+                                                                    <tr>
+                                                                        <td><Moment add={{days:1}} format={"MMM D, YY"}>{re.date}</Moment></td>
+                                                                        <td>{re.category}</td>
+                                                                        <td align="right">$ {re.total}</td>
+                                                                        <td>{re.vendor}</td>
+                                                                        <td>{re.description}</td>
+                                                                        <td>{re.jobName}</td>
+                                                                        <td align="right">$ {isNaN(parseFloat(Math.round(re.payroll * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(re.payroll * 100) / 100).toFixed(2)}  </td>
+                                                                        <td align="right">$ {isNaN(parseFloat(Math.round(re.effective * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(re.effective * 100) / 100).toFixed(2)} </td>
+                                                                        <td>{isNaN(parseFloat(Math.round(re.hours * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(re.hours * 100) / 100).toFixed(2)} </td>
+                                                                    </tr>
+                                                                </>
+                                                            )
+                                                        })}
 
-                                                <h3>- Labor</h3>
-                                                <Table
-                                                    className="align-items-center table-flush col-md-6 col-xs-12"
-                                                    responsive>
-                                                    <thead className="thead-light">
-                                                    <tr>
-                                                        <th scope="col">Job</th>
-                                                        <th scope="col">Payroll Expense</th>
-                                                        <th scope="col">Labor Expense
-                                                            (Efective Rate)
-                                                        </th>
-                                                        <th scope="col">Hours</th>
-                                                        
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    {jobs.map((wx, i) => {
-                                                        return (
-                                                            <>
-                                                            <tr>
-                                                                {/*
-                                                                    <td>
-                                                                     <Button id={"toggle" + e._id} color="primary"><i
-                                                                        className="ni ni-bold-down"></i></Button>
-                                                                    </td>
-                                                                */}
-                                                                <td>{wx.jobName}</td>
-                                                                <td align="right">$ {isNaN(parseFloat(Math.round(wx.payroll * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.payroll * 100) / 100).toFixed(2)}  </td>
-                                                                <td align="right">$ {isNaN(parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)} </td>
-                                                                <td>{isNaN(parseFloat(Math.round(wx.hours * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.hours * 100) / 100).toFixed(2)} </td>
-                                                                
-                                                            </tr>
-                                                        {/*
-                                                            <tr>
-                                                                <td colSpan={7}>
-                                                                    <UncontrolledCollapse toggler={"#toggle" + e._id}>
-                                                                        <Card>
-                                                                            <CardBody>
-                                                                            <Table
-                                                                                className="align-items-center table-flush col-md-6 col-xs-12"
-                                                                                responsive>
-                                                                                <thead className="thead-light">
-                                                                                <tr>
-                                                                                    <th scope="col">Date</th>
-                                                                                    <th scope="col">Hours</th>
+                                                        <tr>
+                                                            <td colSpan={5}></td>
+                                                            <td align="right">Total:</td>
+                                                            <td align="right">$ {isNaN(parseFloat(Math.round(totalPayroll.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(totalPayroll.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)}</td>
+                                                            <td align="right">$ {isNaN(parseFloat(Math.round(totalEffective.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(totalEffective.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)}</td>
+                                                            <td>{isNaN(totalHours.reduce((ac,cv)=> ac+cv,0)) ? 0 : totalHours.reduce((ac,cv)=> ac+cv,0)}</td>
 
+                                                        </tr>
+                                                        </tbody>
+                                                    </Table>
+                                                </div>
 
-                                                                                </tr>
-                                                                                </thead>
-                                                                                <tbody>
-                                                                                    {!wx.hoursT? <td>No hours available</td>: wx.hoursT.map((e)=>{
-                                                                                        return(
-                                                                                            <tr>
-                                                                                            <td><Moment format={"MMM D, YY"}>{e.date === undefined || e.date === "Invalid Date" ? 'No available or delete' : e.date}</Moment></td>
-                                                                                            <td>{e.hoursT === undefined ? 'No available or delete' : e.hoursT}</td>
-                                                                                            </tr>
-                                                                                             
-                                                                                        )})}         
-                                                                                </tbody>
-                                                                            </Table>
-                                                                            </CardBody>
-                                                                        </Card>
-                                                                    </UncontrolledCollapse>
-                                                                </td>
-                                                            </tr>
-                                                        */}
-                                                            </>
-                                                        )
-                                                        }
-                                                    )}
-                                                    <tr>
-                                                    <td align="right">Total:</td>
-                                                    <td align="right">$ {isNaN(parseFloat(Math.round(totalPayroll.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(totalPayroll.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)}</td>
-                                                    <td align="right">$ {isNaN(parseFloat(Math.round(totalEffective.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(totalEffective.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)}</td>
-                                                    <td>{isNaN(totalHours.reduce((ac,cv)=> ac+cv,0)) ? 0 : totalHours.reduce((ac,cv)=> ac+cv,0)}</td>
-
-                                                    </tr>
-                                                    </tbody>
-                                                </Table>
-
-                                                <h3>- Expenses</h3>
-                                                <Table
-                                                    className="align-items-center table-flush col-md-8 col-xs-12"
-                                                    responsive>
-                                                    <thead className="thead-light">
-                                                    <tr>
-                                                        <th scope="col">Date</th>
-                                                        <th scope="col">Expense Type</th>
-                                                        <th scope="col">Amount</th>
-                                                        <th scope="col">Vendor</th>
-                                                        <th scope="col">Job</th>
-                                                        <th scope="col">Description</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {
-                                                        !e.expenses ? <p>Loading</p> :                
-                                                        e.expenses.map((ex, i) => {
-                                                        
-                                                        return (
-                                                            <tr>
-                                                                <td><Moment add={{days:1}} format={"MMM D, YY"}>{ex.date}</Moment></td>
-                                                                <td>{ex.category}</td>
-                                                                <td align="right">$ {ex.total}</td>
-                                                                <td>{ex.vendor}</td>
-                                                                <td>{ex.jobName}</td>
-                                                                <td>{ex.description}</td>
-                                                            </tr>
-                                                        )
-                                                    }
-                                                    )}
-                                                    </tbody>
-                                                </Table>
-                                             
                                             </CardBody>
                                         </Card>
                                     </UncontrolledCollapse>
