@@ -102,7 +102,7 @@ class AddWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-role"
                             >
-                              Type *
+                             Role *
                             </label>
                             <Input
                               required
@@ -248,6 +248,7 @@ class AddWorker extends React.Component {
                               type="select"
                               onChange={this.handleInput}
                             >
+                            <option selected disabled >Choose One</option>
                             <option>1099</option>
                             <option>Employee</option>
                             </Input>
