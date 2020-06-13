@@ -48,7 +48,6 @@ class ReportWorkers extends React.Component{
                             })
 
                             e.works.map(works => {
-                                console.log(works.workId instanceof Array);
                                 if(works.workId instanceof Array ){ //search
 
                                     works.workId.map(work => {
