@@ -7,7 +7,7 @@ class ReportWorkers extends React.Component{
     render() {
         if(!this.props.workers) return <p>Loading</p>
         return (
-            <Table className="align-items-center table-flush" responsive>
+            <Table className="align-items-center table-flush">
                 <thead className="thead-light">
                 <tr>
                     <th style={{width: "100px"}}></th>
