@@ -95,3 +95,12 @@ div.ReactTags__selected a.ReactTags__remove {
     margin-left: 5px;
     cursor: pointer;
 }
+
+.div_reports > .table-responsive{
+    max-width: 80%;
+    overflow: auto;
+}
+
+.div_workers > .table-responsive{
+    overflow: hidden;
+}
