@@ -122,6 +122,7 @@ class ReportWorkers extends React.Component{
                                                 <Card>
                                                     <CardBody>
                                                         <div className="div_reports">
+                                                            <h3>- Labors</h3>
                                                             <Table
                                                                 className="align-items-center table-flush col-md-6 col-xs-12"
                                                                 responsive>
