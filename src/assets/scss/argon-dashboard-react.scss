@@ -97,10 +97,21 @@ div.ReactTags__selected a.ReactTags__remove {
 }
 
 .div_reports > .table-responsive{
-    max-width: 80%;
+    max-width: 99%;
     overflow: auto;
 }
 
 .div_workers > .table-responsive{
     overflow: hidden;
+}
+
+@media screen and (max-width: 400px) {
+    .card {
+        max-width: 99%;
+    }
+
+    .div_workers > .table-responsive {
+        overflow: auto;
+    }
+
 }
