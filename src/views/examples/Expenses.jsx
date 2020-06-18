@@ -18,17 +18,23 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
-
+let loggedUser
 
 class Expenses extends React.Component {
   state = {
     jobs:[]
   };
 
+  constructor(props) {
+    super(props);
+    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+  }
 
   componentDidMount() {
-    axios
-      .get(Global.url + 'checkjobs')
+    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+    if(loggedUser.level <=1){
+      axios
+      .get(Global.url + `checkjobs/${loggedUser._id}`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -36,11 +42,26 @@ class Expenses extends React.Component {
             ...data
           }
         })
-
       })
       .catch(err => {
-        console.log(err)
+        console.log(err.response)
       })
+    }
+    else if(loggedUser.level >=2){
+      axios
+      .get(Global.url + `checkjobs`)
+      .then(({ data }) => {
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            ...data
+          }
+        })
+      })
+      .catch(err => {
+        console.log(err.response)
+      })
+    }
   }
 
 
@@ -91,6 +112,8 @@ class Expenses extends React.Component {
                      {this.state.jobs.length === 0 ?  <tbody><tr><td>No expenses register</td></tr></tbody>:
                      this.state.jobs.map((e,i)=>{
                        const estimateId = e._id
+                       let userInEstimate = e.workers.filter(wx =>  wx.workerId._id === loggedUser._id).length > 0
+
                        return(
                        e.expenses.map((e,i)=>{
                         return(
@@ -103,8 +126,14 @@ class Expenses extends React.Component {
                                 ...
                               </DropdownToggle>
                               <DropdownMenu>
-                                <DropdownItem to={`/admin/expenses/${estimateId}/${e._id}/update`} tag={Link}>Update</DropdownItem>
-                                <DropdownItem onClick={()=>{
+                                 {
+                                   loggedUser.level >= 2 ? <DropdownItem to={`/admin/expenses/${estimateId}/${e._id}/update`} tag={Link}>Update</DropdownItem> : 
+                                   loggedUser.level === 1 && userInEstimate ? <DropdownItem to={`/admin/expenses/${estimateId}/${e._id}/update`} tag={Link}>Update</DropdownItem> :
+                                   <DropdownItem disabled to={`/admin/expenses/${estimateId}/${e._id}/update`} tag={Link}>Update</DropdownItem>
+                                 }
+                                {
+                                  loggedUser.level >= 4 ?
+                                  <DropdownItem onClick={()=>{
                                   axios.patch(Global.url + `expensedelete/${estimateId}/${e._id}`)
                                   .then(({data})=>{
                                     alert('Expense Delete')
@@ -114,7 +143,10 @@ class Expenses extends React.Component {
                                     console.log(err.response)
                                   })
                                 }}><span
-                                    className="text-danger">Delete</span></DropdownItem>
+                                    className="text-danger">Delete</span>
+                                </DropdownItem>
+                                :null
+                              }
                               </DropdownMenu>
                             </UncontrolledDropdown>
                           </div>

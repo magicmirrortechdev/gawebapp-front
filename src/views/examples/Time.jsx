@@ -17,16 +17,37 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
+let loggedUser
 
 
 class Time extends React.Component {
   state = {
     jobs:[]
   };
-
+  constructor(props) {
+    super(props);
+    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+  }
 
   componentDidMount() {
-    axios
+    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+    if(loggedUser.level <=1){
+      axios
+      .get(Global.url + `checkjobs/${loggedUser._id}`)
+      .then(({ data }) => {
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            ...data
+          }
+        })
+      })
+      .catch(err => {
+        console.log(err.response)
+      })
+    }
+    else if(loggedUser.level >=2){
+      axios
       .get(Global.url + `checkjobs`)
       .then(({ data }) => {
         this.setState(prevState => {
@@ -35,11 +56,11 @@ class Time extends React.Component {
             ...data
           }
         })
-
       })
       .catch(err => {
-        console.log(err)
+        console.log(err.response)
       })
+    }
   }
 
   render() {
@@ -58,6 +79,8 @@ class Time extends React.Component {
                     <div className="col">
                       <h3 className="mb-0">Employee Information</h3>
                     </div>
+                    {
+                    loggedUser.level >= 2 ?
                     <div className="col text-right">
                     <Link to="addtime">
                       <p
@@ -69,6 +92,8 @@ class Time extends React.Component {
                     </Link>
                       
                     </div>
+                    :null
+                    }
                   </Row>
                 </CardHeader>
                 <Table className="align-items-center table-flush" responsive>
@@ -88,9 +113,13 @@ class Time extends React.Component {
                      this.state.jobs.map((e,i)=>{
                        let jobName = <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
                        let projectManager = e.projectManager.map((e,i)=>!projectManager ? <p style={{fontSize:"10px"}}>Project Manager Delete</p> : <p style={{fontSize:"10px"}} key={i}>{e.projectId.name}</p>)
-                       let estimateId = e._id                       
+                       let estimateId = e._id    
+                       let newWorker = e.workers.filter(e => e.workerId._id === loggedUser._id)
+                   
                       return(
-                        e.workers.map((e,i)=>{
+
+                        
+                        loggedUser.level >= 2 ? e.workers.map((e,i)=>{
                         let time = <p style={{fontSize:"10px"}}>{e.time.reduce((acc, current, i) => acc + current.hours, 0) ? e.time.reduce((acc, current, i) => acc + current.hours, 0) : 0 }</p>
 
                           if(!e.workerId)return <th scope="row">Worker Delete</th>
@@ -124,18 +153,89 @@ class Time extends React.Component {
                           
                           <DropdownItem to={`/admin/time/addtime/${estimateId}/${e._id}/${e.workerId._id}`} tag={Link}>Add Hours</DropdownItem>
 
-                          <DropdownItem onClick={()=>{
-                            axios.patch(Global.url + `workerdelete/${estimateId}/${e._id}`, {worker: worker})
-                              .then(({data}) => {
-                                
-                                window.location.reload()
-                                alert('Worker Removed')                               
-                              })
-                              .catch(err => {
-                                console.log(err.response)
-                              })
-                          }}><span
-                                  className="text-danger">Delete</span></DropdownItem>
+                            { loggedUser.level >= 4 ?
+                              <DropdownItem onClick={()=>{
+                              axios.patch(Global.url + `workerdelete/${estimateId}/${e._id}`, {worker: worker})
+                                .then(({data}) => {
+                                  
+                                  window.location.reload()
+                                  alert('Worker Removed')                               
+                                })
+                                .catch(err => {
+                                  console.log(err.response)
+                                })
+                            }}><span
+                                    className="text-danger">Delete</span>
+                              </DropdownItem>
+                              : null
+                            }
+
+                          </DropdownMenu>
+                          </UncontrolledDropdown>
+                        </td>
+                        <th scope="row">{e.workerId.name}</th>
+                        <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px", display:"flex", flexDirection:"column", alignItems:"baseline", alignContent:"center"}}>
+                        {time}</td>
+                        <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px"}} >
+                             {jobName}
+                        </td>                        
+                       
+                        </tr>
+                      </tbody>
+                          )
+                        }) :
+                        loggedUser.level <= 1 ?
+                        newWorker.map((e,i)=>{
+                        let time = <p style={{fontSize:"10px"}}>{e.time.reduce((acc, current, i) => acc + current.hours, 0) ? e.time.reduce((acc, current, i) => acc + current.hours, 0) : 0 }</p>
+
+                          if(!e.workerId)return <th scope="row">Worker Delete</th>
+                          let worker = e.workerId._id
+                          return(
+                        <tbody key={i}>
+                        <tr>
+                        <td >
+                          <UncontrolledDropdown>
+                           <DropdownToggle>
+                              ...
+                          </DropdownToggle>
+                          <DropdownMenu
+                            modifiers={{
+                                    setMaxHeight: {
+                                      enabled: true,
+                                      order: 890,
+                                      fn: (data) => {
+                                        return {
+                                          ...data,
+                                          styles: {
+                                            ...data.styles,
+                                            overflow: 'auto',
+                                            maxHeight: 100,
+                                          },
+                                        };
+                                      },
+                                    },
+                                  }}
+                                                        >
+                          
+                          <DropdownItem to={`/admin/time/addtime/${estimateId}/${e._id}/${e.workerId._id}`} tag={Link}>Add Hours</DropdownItem>
+
+                            { loggedUser.level >= 4 ?
+                              <DropdownItem onClick={()=>{
+                              axios.patch(Global.url + `workerdelete/${estimateId}/${e._id}`, {worker: worker})
+                                .then(({data}) => {
+                                  
+                                  window.location.reload()
+                                  alert('Worker Removed')                               
+                                })
+                                .catch(err => {
+                                  console.log(err.response)
+                                })
+                            }}><span
+                                    className="text-danger">Delete</span>
+                              </DropdownItem>
+                              : null
+                            }
+
                           </DropdownMenu>
                           </UncontrolledDropdown>
                         </td>
@@ -150,6 +250,7 @@ class Time extends React.Component {
                       </tbody>
                           )
                         })
+                        :null
                        
                      )  
                     })}

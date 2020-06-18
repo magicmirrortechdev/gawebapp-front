@@ -241,7 +241,7 @@ class Admin extends React.Component {
       <>
         <Sidebar
           {...this.props}
-          routes={loggedUser.role === 'ADMIN' ? routes : routesWorker}
+          routes={loggedUser.level >= 2 ? routes : routesWorker}
           logo={{
             innerLink: "/admin/index",
             imgSrc: require("assets/img/brand/transparent.png"),
@@ -251,9 +251,9 @@ class Admin extends React.Component {
         <div className="main-content" ref="mainContent">
           <AdminNavbar
             {...this.props}
-            brandText={loggedUser.role === 'ADMIN' ? this.getBrandText(this.props.location.pathname) : this.getBrandTextW(this.props.location.pathname)}
+            brandText={loggedUser.level >= 2 ? this.getBrandText(this.props.location.pathname) : this.getBrandTextW(this.props.location.pathname)}
           />
-          <Switch>{loggedUser.role === 'ADMIN' ? this.getRoutes(routes) : this.getRoutesW(routesWorker)}</Switch>
+          <Switch>{loggedUser.level >= 2 ? this.getRoutes(routes) : this.getRoutesW(routesWorker)}</Switch>
           <Container className="position-relative  mr-4">
             
           </Container>

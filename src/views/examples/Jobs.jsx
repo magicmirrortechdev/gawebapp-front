@@ -23,7 +23,7 @@ import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 
 const authService = new AuthService()
-
+let loggedUser
 
 class Jobs extends React.Component {
   state = {
@@ -31,6 +31,11 @@ class Jobs extends React.Component {
     filter: "",
     buttonActive: '1'
   };
+
+  constructor(props) {
+    super(props);
+    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+  }
 
 
   componentDidMount() {
@@ -224,8 +229,12 @@ class Jobs extends React.Component {
                                 },
                               }}
                               >
-                                <DropdownItem to={`/admin/jobs/${e._id}/invoice`} tag={Link}>Convert to Invoice</DropdownItem>                                
-                                <DropdownItem to={`/admin/jobs/${e._id}`} tag={Link}>Update</DropdownItem>
+                                <DropdownItem to={`/admin/jobs/${e._id}/invoice`} tag={Link}>Convert to Invoice</DropdownItem>              
+                                {
+                                   loggedUser.level >= 3 ? <DropdownItem to={`/admin/jobs/${e._id}`} tag={Link}>Update</DropdownItem> : 
+                                   loggedUser.level === 2 && e.workers.filter(wx =>  wx.workerId._id === loggedUser._id).length > 0 ? <DropdownItem to={`/admin/jobs/${e._id}`} tag={Link}>Update</DropdownItem> :
+                                   <DropdownItem disabled to={`/admin/jobs/${e._id}`} tag={Link}>Update</DropdownItem>
+                                 }
                                 <DropdownItem to={`/admin/jobs/${e._id}/addexpense`} tag={Link}>Add Expense</DropdownItem>
                                 <DropdownItem to={`/admin/jobs/addworker/${e._id}`} tag={Link}>Add Worker</DropdownItem>
                                 <DropdownItem to={`/admin/jobs/addpm/${e._id}`} tag={Link}>Add Project Manager</DropdownItem>
@@ -242,11 +251,11 @@ class Jobs extends React.Component {
                                 }}><span
                                     >Close Job</span>
                                 </DropdownItem>
-                                <DropdownItem onClick={()=>{
+                                {loggedUser.level >= 4 ? <DropdownItem onClick={()=>{
                                   authService
                                       .estimateDelete(e._id)
                                       .then(({data}) => {
-                                        alert('Job Delete')
+                                        alert('Estimate Delete')
                                         window.location.reload()
 
                                       })
@@ -256,6 +265,8 @@ class Jobs extends React.Component {
                                 }}><span
                                     className="text-danger">Delete</span>
                                 </DropdownItem>
+                                :null
+                                }
                               </DropdownMenu>
                             </UncontrolledDropdown>
 

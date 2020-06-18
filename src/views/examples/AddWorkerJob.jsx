@@ -65,12 +65,10 @@ class AddWorkerJob extends React.Component {
       axios
           .patch(Global.url + `addworkers/${this.props.match.params.id}`,{id2: this.state._id})
           .then(response => {
-            //aquí deberia ir una notificacion o un swal o un toastr
             this.props.history.push(`/admin/jobs`)
             console.log(response)
           })
           .catch(err => {
-            //aquí deberia ir una notificacion o un swal o un toastr
             console.log(err.response)
           })
     }

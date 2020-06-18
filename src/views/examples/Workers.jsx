@@ -20,11 +20,16 @@ import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 
 const authService = new AuthService()
+let loggedUser
 
 class Workers extends React.Component {
   state = {
     users:[]
   };
+  constructor(props) {
+    super(props);
+    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+  }
 
 
   componentDidMount() {
@@ -63,23 +68,25 @@ class Workers extends React.Component {
                     <div className="col">
                       <h3 className="mb-0">Information</h3>
                     </div>
-                    <div className="col text-right">
-                    <Link to="addworker">
-                      <p
-                        color="primary"
-                        size="sm" 
-                      >
-                        Add a Worker
-                      </p>
-                    </Link>
-                      
-                    </div>
+                    {loggedUser.level >= 3 ?
+                      <div className="col text-right">
+                      <Link to="addworker">
+                        <p
+                          color="primary"
+                          size="sm" 
+                        >
+                          Add a Worker
+                        </p>
+                      </Link>
+                      </div>
+                      : null
+                    }
                   </Row>
                 </CardHeader>
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
-                      <th scope="col"></th>
+                      {loggedUser.level >= 3 ?<th scope="col"></th> : null}
                       <th scope="col">Name</th>
                       <th scope="col">Email</th>
                       <th scope="col">Pay Rate</th>
@@ -94,14 +101,18 @@ class Workers extends React.Component {
                       return(
                         <tbody key={i}>
                         <tr >
+                        {
+                        loggedUser.level >=3 ?
                         <td>
                         <UncontrolledDropdown>
                         <DropdownToggle>
                             ...
                         </DropdownToggle>
                         <DropdownMenu>
-                            <DropdownItem to={`/admin/workers/update/${e._id}`} tag={Link}>Update</DropdownItem>
-                            <DropdownItem onClick={()=>{
+                            {loggedUser.level >=3 ? <DropdownItem to={`/admin/workers/update/${e._id}`} tag={Link}>Update</DropdownItem> : null}
+                            { 
+                              loggedUser.level >=4 ?
+                              <DropdownItem onClick={()=>{
                               authService
                                 .workerDelete(e._id)
                                 .then(({data}) => {
@@ -114,11 +125,13 @@ class Workers extends React.Component {
                                   alert(err.response.data.msg || err.response.data.err.message)
                                 })
                             }}><span
-                                    className="text-danger">Delete</span></DropdownItem>
+                                    className="text-danger">Delete</span>
+                              </DropdownItem>
+                              :null
+                            }
                         </DropdownMenu>
-                    </UncontrolledDropdown>
-                        
-                        </td>
+                        </UncontrolledDropdown>
+                        </td>: null}
                         <th scope="row" >{e.name}</th>
                         <td>{e.email}</td>
                         <td>{e.payment}</td>

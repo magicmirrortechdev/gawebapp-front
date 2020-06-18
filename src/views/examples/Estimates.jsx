@@ -21,16 +21,40 @@ import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 
 const authService = new AuthService()
+let loggedUser
 
 class Icons extends React.Component {
   state = {
     estimates:[],
     id:'',
-    btnDropup: false
+    btnDropup: false,
+    userId: false
   };
 
+  constructor(props) {
+    super(props);
+    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+  }
+
   componentDidMount() {
-    axios
+    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+    if(loggedUser.level <=1){
+      axios
+      .get(Global.url + `checkestimates/${loggedUser._id}`)
+      .then(({ data }) => {
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            ...data
+          }
+        })
+      })
+      .catch(err => {
+        console.log(err.response)
+      })
+    }
+    else if(loggedUser.level >=2){
+      axios
       .get(Global.url + `checkestimates`)
       .then(({ data }) => {
         this.setState(prevState => {
@@ -43,7 +67,10 @@ class Icons extends React.Component {
       .catch(err => {
         console.log(err.response)
       })
+    }
+    
   }
+
   convertInvoice = (_id)=>{
     authService
     .convertInvoice(_id)
@@ -53,11 +80,12 @@ class Icons extends React.Component {
           })
           .catch(err => {
             console.log(err.response)
-            alert(err.response.data.msg || err.response.data.err.message)
           })
-
   }
+
   render() {
+    console.log(loggedUser)
+    console.log('el state',  this.state)
     if (!this.state) return <p>Loading</p>
     return (
       <>
@@ -72,16 +100,20 @@ class Icons extends React.Component {
                     <div className="col">
                       <h3 className="mb-0">Information</h3>
                     </div>
+                    {
+                      loggedUser.level >= 2 ?
                     <div className="col text-right">
-                    <Link to="addestimate">
+                      <Link to="addestimate">
                       <p
                         color="primary"
                         size="sm" 
                       >
                         Add Estimate
                       </p>
-                    </Link>                      
+                      </Link>                      
                     </div>
+                    : null
+                    }
                   </Row>
                 </CardHeader>
                 <Table className="align-items-center table-flush" responsive>
@@ -101,17 +133,32 @@ class Icons extends React.Component {
                       let tax = parseInt(e.tax) * subtotal / 100
                       let discount = e.discount
                       let total = !subtotal ? 0 : subtotal + tax  - discount
-
                       return(
                         <tbody key={i}>
                         <tr >
                         <td>
-                          <div className="dropdownButtons">
                             <UncontrolledDropdown>
                               <DropdownToggle>
                                 ...
                               </DropdownToggle>
-                              <DropdownMenu>
+                              <DropdownMenu
+                              modifiers={{
+                                setMaxHeight: {
+                                  enabled: true,
+                                  order: 890,
+                                  fn: (data) => {
+                                    return {
+                                      ...data,
+                                      styles: {
+                                        ...data.styles,
+                                        overflow: 'auto',
+                                        maxHeight: '100px',
+                                      },
+                                    };
+                                  },
+                                },
+                              }}
+                              >
                                 <DropdownItem to={`/admin/estimates/${e._id}/invoice`} tag={Link}>Convert to Invoice</DropdownItem>
                                 <DropdownItem onClick={()=>{
                                   authService
@@ -138,8 +185,13 @@ class Icons extends React.Component {
                                       })
                                 }}>Decline</DropdownItem>
                                 <DropdownItem to={`/admin/estimates/${e._id}/email`} tag={Link}>Send by email</DropdownItem>
-                                <DropdownItem to={`/admin/estimates/${e._id}`} tag={Link}>Update</DropdownItem>
-                                <DropdownItem onClick={()=>{
+                                {
+                                   
+                                  loggedUser.level >= 3 ? <DropdownItem to={`/admin/estimates/${e._id}`} tag={Link}>Update</DropdownItem> : 
+                                  loggedUser.level === 2 && e.workers.filter(wx =>  wx.workerId._id === loggedUser._id).length > 0 ? <DropdownItem to={`/admin/estimates/${e._id}`} tag={Link}>Update</DropdownItem> :
+                                  <DropdownItem disabled to={`/admin/estimates/${e._id}`} tag={Link}>Update</DropdownItem>
+                                }
+                                {loggedUser.level >= 4 ? <DropdownItem onClick={()=>{
                                   authService
                                       .estimateDelete(e._id)
                                       .then(({data}) => {
@@ -151,10 +203,12 @@ class Icons extends React.Component {
                                         console.log(err.response)
                                       })
                                 }}><span
-                                    className="text-danger">Delete</span></DropdownItem>
+                                    className="text-danger">Delete</span>
+                                </DropdownItem>
+                                :null
+                                }
                               </DropdownMenu>
                             </UncontrolledDropdown>
-                          </div>
                         </td>
                         <th scope="row" >{nameEstimate ? nameEstimate : e.clientId.name}</th>
                         <td><Moment format={"MMM D, YY"}>{e.dateCreate}</Moment></td>

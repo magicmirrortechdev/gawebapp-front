@@ -67,14 +67,6 @@ var routesWorker = [
     invisible:true
   },
   {
-    path: "/:id/invoice",
-    name: "Job Invoice",
-    icon: "ni ni-ruler-pencil text-blue",
-    component: AddInvoiceByJob,
-    layout: "/admin/jobs",
-    invisible:true
-  },
-  {
     path: "/:id",
     name: "Edit Estimate",
     icon: "ni ni-ruler-pencil text-blue",
@@ -89,70 +81,8 @@ var routesWorker = [
     component: SendEstimate,
     layout: "/admin/estimates",
     invisible:true
-  },
-  {
-    path: "/jobs",
-    name: "Jobs",
-    icon: "ni ni-settings text-gray",
-    component: Jobs,
-    layout: "/admin"
+  },  
 
-  },
-  {
-    path: "/:id",
-    name: "Edit Job",
-    icon: "ni ni-ruler-pencil text-blue",
-    component: UpdateJob,
-    layout: "/admin/jobs",
-    invisible:true
-  },
-  {
-    path: "/addworker/:id",
-    name: "Add Worker Job",
-    icon: "ni ni-ruler-pencil text-blue",
-    component: AddWorkerJob,
-    layout: "/admin/jobs",
-    invisible:true
-  },
-  {
-    path: "/addpm/:id",
-    name: "Add PM",
-    icon: "ni ni-ruler-pencil text-blue",
-    component: AddPM,
-    layout: "/admin/jobs",
-    invisible:true
-  },
-  {
-    path: "/invoices",
-    name: "Invoices",
-    icon: "ni ni-credit-card text-orange",
-    component: Invoices,
-    layout: "/admin"
-  },
-  {
-    path: "/:id/:invoiceId/email",
-    name: "Send Invoice",
-    icon: "ni ni-ruler-pencil text-blue",
-    component: SendInvoice,
-    layout: "/admin/invoices",
-    invisible:true
-  },
-  {
-    path: "/:id/:invoiceId",
-    name: "Pay Invoice",
-    icon: "ni ni-credit-card text-orange",
-    component: PayInvoice,
-    layout: "/admin/invoices",
-    invisible:true
-  },
-  {
-    path: "/:estimateId/:invoiceId/update",
-    name: "Update Invoice",
-    icon: "ni ni-credit-card text-orange",
-    component: updateInvoice,
-    layout: "/admin/invoices",
-    invisible:true
-  },
   {
     path: "/:estimateId/:expenseId/update",
     name: "Update Expense",
@@ -192,21 +122,6 @@ var routesWorker = [
     invisible:true
   },
   {
-    path: "/clients",
-    name: "Clients",
-    icon: "ni ni-single-02 text-yellow",
-    component: Clients,
-    layout: "/admin"
-  },
-  {
-    path: "/update/:id",
-    name: "Update Client",
-    icon: "ni ni-circle-08 text-pink",
-    component: UpdateClient,
-    layout: "/admin/clients",
-    invisible: true
-  },
-  {
     path: "/estimatecreate/:id",
     name: "Create Estimate by User",
     icon: "ni ni-circle-08 text-pink",
@@ -214,28 +129,7 @@ var routesWorker = [
     layout: "/admin/clients",
     invisible: true
   },
-  {
-    path: "/workers",
-    name: "Workers",
-    icon: "ni ni-circle-08 text-pink",
-    component: Workers,
-    layout: "/admin",
-    invisible: true
-  },
-  {
-    path: "/update/:id",
-    name: "Update Worker",
-    icon: "ni ni-circle-08 text-pink",
-    component: UpdateWorker,
-    layout: "/admin/workers",
-    invisible: true
-  },
-  { 
-    path: "/addclient",
-    component: AddClient,
-    layout: "/admin",
-    invisible:true
-  },
+
   { 
     path: "/addestimate",
     component: AddEstimate,
@@ -254,30 +148,7 @@ var routesWorker = [
     layout: "/admin",
     invisible: true
   },
-  { 
-    path: "/createinvoice",
-    component: AddInvoice,
-    layout: "/admin",
-    invisible: true
-  },
-  { 
-    path: "/addjob",
-    component: AddJob,
-    layout: "/admin",
-    invisible:true
-  },
-  { 
-    path: "/addworker",
-    component: AddWorker,
-    layout: "/admin",
-    invisible:true
-  },
-  {
-    path: "/addreport",
-    component: AddReport,
-    layout: "/admin",
-    invisible:true
-  },
+
   { 
     path: "/login",
     component: Login,

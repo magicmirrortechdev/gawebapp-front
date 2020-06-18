@@ -18,6 +18,7 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
+let loggedUser
 
 const authService = new AuthService()
 
@@ -25,6 +26,10 @@ class Clients extends React.Component {
   state = {
     clients:[]
   };
+  constructor(props) {
+    super(props);
+    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+  }
 
 
   componentDidMount() {
@@ -103,7 +108,8 @@ class Clients extends React.Component {
                           <DropdownItem to={`/admin/clients/estimatecreate/${e._id}`} tag={Link}>Create Estimate</DropdownItem>
                           <DropdownItem to={`/admin/clients/update/${e._id}`} tag={Link}>Update Client</DropdownItem>
 
-                          <DropdownItem onClick={()=>{
+                          { loggedUser.level >= 4 ?
+                            <DropdownItem onClick={()=>{
                             authService
                               .clientDelete(e._id)
                               .then(({data}) => {
@@ -114,12 +120,14 @@ class Clients extends React.Component {
                               .catch(err => {
                                 //aquí deberia ir una notificacion o un swal o un toastr
                                 console.log(err.response)
-                                alert(err.response.data.msg || err.response.data.err.message)
                               })
                           }}><span
-                                  className="text-danger">Delete</span></DropdownItem>
+                                  className="text-danger">Delete</span>
+                          </DropdownItem>
+                            :null
+                          }
                           </DropdownMenu>
-                          </UncontrolledDropdown>
+                        </UncontrolledDropdown>
                           </div>
                         </td>
                         <th scope="row" >{e.name}</th>

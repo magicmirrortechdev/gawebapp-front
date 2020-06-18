@@ -21,6 +21,7 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
+let loggedUser
 
 class Invoices extends React.Component {
   state = {
@@ -29,6 +30,10 @@ class Invoices extends React.Component {
     btnDropup: false,
     modal: false
   };
+  constructor(props) {
+    super(props);
+    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+  }
 
   componentDidMount() {
     axios
@@ -110,6 +115,7 @@ class Invoices extends React.Component {
                       const client = e.clientId.name 
                       const id = e._id
                       const jobName = e.jobName
+                      let userInEstimate = e.workers.filter(wx =>  wx.workerId._id === loggedUser._id).length > 0
                       
                       return(
                         e.invoices.map((e,i) =>{
@@ -139,20 +145,33 @@ class Invoices extends React.Component {
                               <DropdownMenu>{
                                  e.total - paid === 0 ? <DropdownItem disabled to={`/admin/invoices/${id}/${e._id}`} tag={Link}>Accept Payment</DropdownItem> :
                                 <DropdownItem to={`/admin/invoices/${e._id}/${id}`} tag={Link}>Accept Payment</DropdownItem>
-                              }
-                                <DropdownItem to={`/admin/invoices/${estimateId}/${e._id}/update`} tag={Link}>Update</DropdownItem>
+                              } 
+                                {
+                                   loggedUser.level >= 3 ? <DropdownItem to={`/admin/invoices/${estimateId}/${e._id}/update`} tag={Link}>Update</DropdownItem> : 
+                                   loggedUser.level === 2 && userInEstimate ? <DropdownItem to={`/admin/invoices/${estimateId}/${e._id}/update`} tag={Link}>Update</DropdownItem> :
+                                   <DropdownItem disabled to={`/admin/invoices/${estimateId}/${e._id}/update`} tag={Link}>Update</DropdownItem>
+                                 }
+
                                 <DropdownItem to={`/admin/invoices/${estimateId}/${e._id}/email`} tag={Link}>Send by email</DropdownItem>
-                                <DropdownItem onClick={()=>{
-                                  axios.patch(Global.url + `invoicedelete/${id}/${e._id}`)
-                                  .then(({data})=>{
-                                      alert('Invoice Delete ')
-                                      window.location.reload()
-                                  })
-                                  .catch(err => {
-                                    console.log(err.response)
-                                  })
-                                }}><span
-                                    className="text-danger">Delete</span></DropdownItem>
+                               
+                                {
+                                  loggedUser.level >= 4 ?
+                                  <DropdownItem onClick={()=>{
+                                    axios.patch(Global.url + `invoicedelete/${id}/${e._id}`)
+                                    .then(({data})=>{
+                                        alert('Invoice Delete ')
+                                        window.location.reload()
+                                    })
+                                    .catch(err => {
+                                      console.log(err.response)
+                                    })
+                                    }}>
+                                    <span
+                                      className="text-danger">Delete</span>
+                                  </DropdownItem>:
+                                  null
+
+                                }
                               </DropdownMenu>
                             </UncontrolledDropdown>
                           </div>

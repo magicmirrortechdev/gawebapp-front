@@ -227,8 +227,7 @@ var routes = [
     name: "Workers",
     icon: "ni ni-circle-08 text-pink",
     component: Workers,
-    layout: "/admin",
-    invisible: true
+    layout: "/admin"  
   },
   {
     path: "/update/:id",

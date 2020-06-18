@@ -26,6 +26,7 @@ var fecha = new Date();
         dia='0'+dia; //agrega cero si es menor de 10
       if(mes<10)
         mes='0'+mes //agrega cero si es menor de 10
+        
 class AddExpense extends React.Component {
   state = {
     workerId: "",
