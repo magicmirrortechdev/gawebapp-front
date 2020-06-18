@@ -97,7 +97,7 @@ class Expenses extends React.Component {
                           <tbody key={i}>
                           <tr >
                           <td>
-                            <div className="dropdownButtons">
+                            <span className="dropdownButtons">
                             <UncontrolledDropdown>
                               <DropdownToggle>
                                 ...
@@ -117,7 +117,7 @@ class Expenses extends React.Component {
                                     className="text-danger">Delete</span></DropdownItem>
                               </DropdownMenu>
                             </UncontrolledDropdown>
-                          </div>
+                          </span>
                           </td>
                           <th scope="row" >{e.description}</th>
                           <td>{e.category}</td>
