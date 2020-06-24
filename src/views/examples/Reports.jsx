@@ -57,8 +57,6 @@ class Reports extends React.Component {
     }
 
     componentDidMount(props) {
-        if ((loggedUser.role === "WORKER") ) return this.props.history.push('/admin/index')
-        if ((loggedUser.role === "PROJECT MANAGER")) return this.props.history.push('/admin/index')
 
         axios.get(Global.url + `openjobs`)
             .then(({data}) => {
@@ -193,6 +191,9 @@ class Reports extends React.Component {
             .catch(err => {
                 console.log(err)
             });
+            document.getElementById("startDate").value = "";
+            document.getElementById("endDate").value = "";
+
   }
 
     render() {
@@ -235,6 +236,7 @@ class Reports extends React.Component {
                                                     name="startDate"
                                                     className="form-control-alternative"
                                                     type="date"
+                                                    id="startDate"
                                                     onChange={this.handleInput}
                                                 />
                                             </FormGroup>
@@ -248,6 +250,7 @@ class Reports extends React.Component {
                                                 </label>
                                                 <Input
                                                     name="endDate"
+                                                    id="endDate"
                                                     className="form-control-alternative"
                                                     type="date"
                                                     onChange={this.handleInput}

@@ -22,6 +22,7 @@ import {
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 let loggedUser
+loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
 
 class Invoices extends React.Component {
   state = {
@@ -36,6 +37,7 @@ class Invoices extends React.Component {
   }
 
   componentDidMount() {
+    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
     axios
       .get(Global.url + `checkestimates`)
       .then(({ data }) => {
@@ -111,6 +113,7 @@ class Invoices extends React.Component {
                   {this.state.estimates.length === 0 ?  <tbody><tr><td>No invoices register</td></tr></tbody>:
                      this.state.estimates.map((e,i)=>{
                       if(!e.clientId) return <th>Client Delete</th>
+                      if(!e.workers)return <th scope="row">Worker Delete</th>
                       const estimateId = e._id
                       const client = e.clientId.name 
                       const id = e._id

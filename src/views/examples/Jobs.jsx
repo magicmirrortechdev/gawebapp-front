@@ -203,7 +203,68 @@ class Jobs extends React.Component {
                       let total = subtotal + tax - paid - discount
                       return(
                         <tbody key={i}>
-                        {e.status === "Closed" ? <tr><th scope="row">{e.jobName}</th> <td>Closed</td></tr> :
+                        {e.status === "Closed" ? 
+                        <tr>
+                        <td>
+                          
+                            <UncontrolledDropdown>
+                              <DropdownToggle>
+                                ...
+                              </DropdownToggle>
+                              <DropdownMenu 
+                              modifiers={{
+                                setMaxHeight: {
+                                  enabled: true,
+                                  order: 890,
+                                  fn: (data) => {
+                                    return {
+                                      ...data,
+                                      styles: {
+                                        ...data.styles,
+                                        overflow: 'auto',
+                                        maxHeight: '100px',
+                                      },
+                                    };
+                                  },
+                                },
+                              }}
+                              >
+                                <DropdownItem to={`/admin/jobs/${e._id}/invoice`} tag={Link}>Convert to Invoice</DropdownItem>              
+                                <DropdownItem onClick={()=>{
+                                  authService
+                                      .convertJob(e._id)
+                                      .then(response => {
+                                        alert('Job Open Again')
+                                        window.location.reload()
+                                      })
+                                      .catch(err => {
+                                        console.log(err.response)
+                                      })
+                                }}><span
+                                    >Open Job</span>
+                                </DropdownItem>
+                                {loggedUser.level >= 4 ? <DropdownItem onClick={()=>{
+                                  authService
+                                      .estimateDelete(e._id)
+                                      .then(({data}) => {
+                                        alert('Job Delete')
+                                        window.location.reload()
+
+                                      })
+                                      .catch(err => {
+                                        console.log(err.response)
+                                      })
+                                }}><span
+                                    className="text-danger">Delete</span>
+                                </DropdownItem>
+                                :null
+                                }
+                              </DropdownMenu>
+                            </UncontrolledDropdown>
+
+                        </td>
+                        <th scope="row">{e.jobName}</th> 
+                        <td>Closed</td></tr> :
                         <tr>
                         <td>
                           
@@ -255,7 +316,7 @@ class Jobs extends React.Component {
                                   authService
                                       .estimateDelete(e._id)
                                       .then(({data}) => {
-                                        alert('Estimate Delete')
+                                        alert('Job Delete')
                                         window.location.reload()
 
                                       })

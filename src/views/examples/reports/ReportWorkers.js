@@ -4,6 +4,29 @@ import CardBody from "reactstrap/es/CardBody";
 import Moment from "react-moment";
 
 class ReportWorkers extends React.Component{
+    compareValues(key, order = 'asc') {
+        return function innerSort(a, b) {
+          if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+            // property doesn't exist on either object
+            return 0;
+          }
+      
+          const varA = (typeof a[key] === 'string')
+            ? a[key].toUpperCase() : a[key];
+          const varB = (typeof b[key] === 'string')
+            ? b[key].toUpperCase() : b[key];
+      
+          let comparison = 0;
+          if (varA > varB) {
+            comparison = 1;
+          } else if (varA < varB) {
+            comparison = -1;
+          }
+          return (
+            (order === 'desc') ? (comparison * -1) : comparison
+          );
+        };
+    }
     render() {
         if(!this.props.workers) return <p>Loading</p>
         return (
@@ -30,18 +53,18 @@ class ReportWorkers extends React.Component{
                             let hoursTime = 0
                             let hoursFull = []
 
-                            e.works.map((e, i) => {
-                                e.time.map((time, i) => {
+                            e.works.sort(this.compareValues('date','desc')).map((e, i) => {
+                                e.time.sort(this.compareValues('date','desc')).map((time, i) => {
                                     hoursTime += time.hours;
                                     hoursFull.push({hoursT: time.hours, date: time.date})
                                     hoursPerJob.push({works: e._id,  time: time.hours, date: time.date, hours: hoursFull})
                                 })
                             })
 
-                            e.works.map(works => {
+                            e.works.sort(this.compareValues('date','desc')).map(works => {
                                 if(works.workId instanceof Array ){ //search
 
-                                    works.workId.map(work => {
+                                    works.workId.sort(this.compareValues('date','desc')).map(work => {
                                         if(works.time.length > 0){
                                             let hours = 0
                                             let date
@@ -69,7 +92,7 @@ class ReportWorkers extends React.Component{
                                 }else{
 
                                     if(works.workId && works.workId.workers){
-                                        works.workId.workers.map(worker => {
+                                        works.workId.workers.sort(this.compareValues('date','desc')).map(worker => {
                                             if(worker.workerId && worker.workerId._id === e._id ) {
                                                 let hours = 0
                                                 let date
@@ -139,7 +162,7 @@ class ReportWorkers extends React.Component{
                                                                 </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                {jobs.map((wx, i) => {
+                                                                {jobs.sort(this.compareValues('date','desc')).map((wx, i) => {
                                                                         return (
                                                                             <>
                                                                                 <tr>
@@ -180,7 +203,7 @@ class ReportWorkers extends React.Component{
                                                                 <tbody>
                                                                 {
                                                                     !e.expenses ? <p>Loading</p> :
-                                                                        e.expenses.map((ex, i) => {
+                                                                        e.expenses.sort(this.compareValues('date','desc')).map((ex, i) => {
 
                                                                                 return (
                                                                                     <tr>

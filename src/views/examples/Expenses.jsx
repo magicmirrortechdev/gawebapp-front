@@ -18,7 +18,7 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
-let loggedUser
+var loggedUser
 
 class Expenses extends React.Component {
   state = {
@@ -36,6 +36,7 @@ class Expenses extends React.Component {
       axios
       .get(Global.url + `checkjobs/${loggedUser._id}`)
       .then(({ data }) => {
+        console.log('si entraaa')
         this.setState(prevState => {
           return {
             ...prevState,
@@ -44,12 +45,11 @@ class Expenses extends React.Component {
         })
       })
       .catch(err => {
-        console.log(err.response)
+        console.log('err response usuario 1-',err)
       })
     }
-    else if(loggedUser.level >=2){
-      axios
-      .get(Global.url + `checkjobs`)
+    if(loggedUser.level >=2){
+      axios.get(Global.url + `checkjobs`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -59,17 +59,61 @@ class Expenses extends React.Component {
         })
       })
       .catch(err => {
-        console.log(err.response)
+        console.log('err response usuario 2+', err)
       })
     }
+  }
+
+  compareValues(key, order = 'asc') {
+    return function innerSort(a, b) {
+      if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+        // property doesn't exist on either object
+        return 0;
+      }
+  
+      const varA = (typeof a[key] === 'string')
+        ? a[key].toUpperCase() : a[key];
+      const varB = (typeof b[key] === 'string')
+        ? b[key].toUpperCase() : b[key];
+  
+      let comparison = 0;
+      if (varA > varB) {
+        comparison = 1;
+      } else if (varA < varB) {
+        comparison = -1;
+      }
+      return (
+        (order === 'desc') ? (comparison * -1) : comparison
+      );
+    };
   }
 
 
   
 
   render() {
-    console.log(this.state)
     if (!this.state) return <p>Loading</p>
+    let estimateId =""
+    let allExpenses=[]
+    let userInEstimate 
+    this.state.jobs.map((e,i)=>{
+      return e.expenses.map(ex =>{
+        allExpenses.push(ex)
+        return(allExpenses)
+      })
+    })
+    this.state.jobs.map((e,i)=>{
+      if(!e.workers)return <th scope="row">Worker Delete</th>
+      estimateId = e._id
+      console.log('workers',e.workers)
+
+      userInEstimate =e.workers.length > 0 && e.workers.filter(wx =>{ 
+        return wx.workerId._id  === loggedUser._id - 1
+      }).length > 0
+
+      return(estimateId, userInEstimate)
+       }) 
+    allExpenses.sort(this.compareValues('date', 'desc'))
     return (
       <>
         <Header />
@@ -107,18 +151,12 @@ class Expenses extends React.Component {
                     </tr>
                   </thead>
                   
-                    
-
-                     {this.state.jobs.length === 0 ?  <tbody><tr><td>No expenses register</td></tr></tbody>:
-                     this.state.jobs.map((e,i)=>{
-                       const estimateId = e._id
-                       let userInEstimate = e.workers.filter(wx =>  wx.workerId._id === loggedUser._id).length > 0
-
-                       return(
-                       e.expenses.map((e,i)=>{
+                       {allExpenses === 0 ?  <tbody><tr><td>No expenses register</td></tr></tbody>:
+                        allExpenses.map((e,i)=>{
                         return(
                           <tbody key={i}>
-                          <tr >
+                      
+                          <tr>
                           <td>
                             <span className="dropdownButtons">
                             <UncontrolledDropdown>
@@ -140,7 +178,7 @@ class Expenses extends React.Component {
                                         window.location.reload()
                                   })
                                   .catch(err => {
-                                    console.log(err.response)
+                                    console.log('err',err)
                                   })
                                 }}><span
                                     className="text-danger">Delete</span>
@@ -162,9 +200,9 @@ class Expenses extends React.Component {
                           </tr>                                               
                         </tbody>
                        )
-                       })
+                       })}
                       
-                      ) })}
+                      
                       
                       
                 </Table>

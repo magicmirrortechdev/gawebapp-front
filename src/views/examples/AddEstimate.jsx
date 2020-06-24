@@ -352,9 +352,7 @@ class AddEstimate extends React.Component {
                           
                         </Col>
                         <Col lg="4">
-                            <h4
-                              
-                            >
+                            <h4>
                               Estimate
                             </h4>
                             <FormGroup>

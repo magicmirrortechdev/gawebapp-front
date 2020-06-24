@@ -37,7 +37,7 @@ class AddWorkerJob extends React.Component {
   componentDidMount() {
 
     axios
-      .get(Global.url + `workers`)
+      .get(Global.url + `getusers`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -109,7 +109,9 @@ class AddWorkerJob extends React.Component {
                             {this.state.users.map((e,i)=>{
                               return(
                                 e.role === 'PROJECT MANAGER' ? <option key={i} value={`${e._id}`}>{e.name} (Project Manager)</option> :
-                                <option key={i} value={`${e._id}`}>{e.name}</option>)
+                                e.role === 'WORKER' ? <option key={i} value={`${e._id}`}>{e.name} (Worker)</option> :
+                                e.role === 'ADMIN' ? <option key={i} value={`${e._id}`}>{e.name} (Admin)</option> : null
+                                )
                             })
                             }
                             

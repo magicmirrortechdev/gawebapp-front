@@ -52,7 +52,7 @@ class Login extends React.Component {
 
           })
           .catch(err => {
-            alert('Username or Password Incorrect')
+            console.log(err.response)
           })
       
     }
@@ -74,7 +74,7 @@ class Login extends React.Component {
               <div className="text-center text-muted mb-4">
                 <small>Sign in with credentials 🔑</small>
               </div>
-              <Form role="form" onSubmit={this.handleSubmit}>
+              <Form role="form">
                 <FormGroup className="mb-3">
                   <InputGroup className="input-group-alternative">
                     <InputGroupAddon addonType="prepend">
@@ -111,13 +111,13 @@ class Login extends React.Component {
                 </div>
                 
                 <div className="text-center">
-                  <Button className="my-4" color="primary" type="button" onClick={this.handleSubmit}>
+                  <Button className="my-4" color="primary" type="button" onClick={this.handleSubmit} >
                     Sign in
                   </Button>
                   <br/>
                   
                 </div>
-                <span>
+                  <span>
                           Forgot Password?
                           <a href="/forgotpassword">
                             &nbsp; Reset Here

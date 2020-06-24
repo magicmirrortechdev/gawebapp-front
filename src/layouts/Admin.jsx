@@ -239,6 +239,7 @@ class Admin extends React.Component {
   render() {
     return (
       <>
+        
         <Sidebar
           {...this.props}
           routes={loggedUser.level >= 2 ? routes : routesWorker}
@@ -254,9 +255,7 @@ class Admin extends React.Component {
             brandText={loggedUser.level >= 2 ? this.getBrandText(this.props.location.pathname) : this.getBrandTextW(this.props.location.pathname)}
           />
           <Switch>{loggedUser.level >= 2 ? this.getRoutes(routes) : this.getRoutesW(routesWorker)}</Switch>
-          <Container className="position-relative  mr-4">
-            
-          </Container>
+         
         </div>
       </>
     );

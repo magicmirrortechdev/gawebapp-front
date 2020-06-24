@@ -4,6 +4,29 @@ import CardBody from "reactstrap/es/CardBody";
 import Moment from 'react-moment'
 
 class ReportJobs extends React.Component{
+    compareValues(key, order = 'asc') {
+    return function innerSort(a, b) {
+      if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+        // property doesn't exist on either object
+        return 0;
+      }
+  
+      const varA = (typeof a[key] === 'string')
+        ? a[key].toUpperCase() : a[key];
+      const varB = (typeof b[key] === 'string')
+        ? b[key].toUpperCase() : b[key];
+  
+      let comparison = 0;
+      if (varA > varB) {
+        comparison = 1;
+      } else if (varA < varB) {
+        comparison = -1;
+      }
+      return (
+        (order === 'desc') ? (comparison * -1) : comparison
+      );
+    };
+    }
     render() {
         return (
             <Table className="align-items-center table-flush" responsive>
@@ -66,6 +89,9 @@ class ReportJobs extends React.Component{
                         let totalProfit = !totalEffective ? totalInvoices - totalExpenses : totalInvoices - totalExpenses - totalEffective;
                         let jobName = e.jobName
                         let nameClient = jobName.split('-')[0]
+                        e.invoices.sort(this.compareValues('date','desc'))
+                        e.expenses.sort(this.compareValues('date','desc'))
+
                         return (
                             <tbody key={i}>
                             <tr>
@@ -138,7 +164,7 @@ class ReportJobs extends React.Component{
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    {e.workers.length === 0 ? <tr><td>No workers</td></tr>: e.workers.map((wx, i) => {
+                                                    {e.workers.length === 0 ? <tr><td>No workers</td></tr>: e.workers.sort(this.compareValues('date','asc')).map((wx, i) => {
                                                             if(!wx.workerId)return <td>Worker Delete</td>
                                                             let time = wx.time ? (wx.time.reduce((acc, current, i) => acc + current.hours, 0)) : 0;
                                                             let time2 = []
@@ -149,6 +175,7 @@ class ReportJobs extends React.Component{
                                                             let payment = wx.workerId.payment ? wx.workerId.payment : 0;
                                                             let hoursWor = wx.time.map((e,i)=>{ return e.hours})
                                                             hoursA = hoursWor.map(e=>e)
+                                                            console.log(wx.time)
                                                             return (
                                                                 <>
                                                                 <tr>
@@ -178,7 +205,8 @@ class ReportJobs extends React.Component{
                                                                                 </tr>
                                                                                 </thead>
                                                                                 <tbody>
-                                                                                    {wx.time.map((e)=>{
+                                                                                    {
+                                                                                    wx.time.sort(this.compareValues('date','desc')).map((e)=>{
                                                                                         return(
                                                                                             <tr>
                                                                                             <td><Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment></td>

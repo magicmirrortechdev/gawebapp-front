@@ -6,11 +6,14 @@ import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import "assets/vendor/nucleo/css/nucleo.css";
 import "assets/vendor/@fortawesome/fontawesome-free/css/all.min.css";
 import "assets/scss/argon-dashboard-react.scss";
+import * as Sentry from '@sentry/browser';
 
 import AdminLayout from "layouts/Admin.jsx";
 import AuthLayout from "layouts/Auth.jsx";
 import ForgotPassword from "views/forgotpassword/ForgotPassword";
 import ResetPassword from "views/forgotpassword/ResetPassword";
+
+Sentry.init({dsn: "https://93b92174eea24e52a0386666ca85a996@o411135.ingest.sentry.io/5285963"});
 
 ReactDOM.render(
   <BrowserRouter>

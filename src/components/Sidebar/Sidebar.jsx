@@ -13,13 +13,7 @@ import {
   UncontrolledDropdown,
   DropdownToggle,
   Media,
-
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-
+  Button,
   Navbar,
   NavItem,
   NavLink,
@@ -159,17 +153,9 @@ class Sidebar extends React.Component {
             {/* Collapse header */}
             <div className="navbar-collapse-header d-md-none">
               <Row>
-                {logo ? (
+                {loggedUser ? (
                   <Col className="collapse-brand" xs="6">
-                    {logo.innerLink ? (
-                      <Link to='/'>
-                        <img alt={logo.imgAlt} src={logo.imgSrc} />
-                      </Link>
-                    ) : (
-                      <a href='/'>
-                        <img alt={logo.imgAlt} src={logo.imgSrc} />
-                      </a>
-                    )}
+                    <h3>{loggedUser.name}</h3>
                   </Col>
                 ) : null}
                 <Col className="collapse-close" xs="6">
@@ -184,26 +170,20 @@ class Sidebar extends React.Component {
                 </Col>
               </Row>
             </div>
-            {/* Form */}
-            <Form className="mt-4 mb-3 d-md-none">
-              <InputGroup className="input-group-rounded input-group-merge">
-                <Input
-                  aria-label="Search"
-                  className="form-control-rounded form-control-prepended"
-                  placeholder="Search"
-                  type="search"
-                />
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <span className="fa fa-search" />
-                  </InputGroupText>
-                </InputGroupAddon>
-              </InputGroup>
-            </Form>
             {/* Navigation */}
             <Nav navbar>{this.createLinks(routes)}</Nav>
+            {this.state.collapseOpen ? 
+            <Button 
+            color="link" 
+            onClick={this.handleLogout}
+            style={{marginTop:"15px", marginLeft:"-15px"}}
+            >
+            <i className="ni ni-user-run" />
+
+            <span>Logout</span>
+            </Button> : null}
             {/* Divider */}
-            <p>V 1.1.1</p>
+            <h5 style={{marginTop:"15px"}}>V 1.1.1</h5>
           </Collapse>
         </Container>
         

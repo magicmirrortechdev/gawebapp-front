@@ -18,6 +18,7 @@ import {
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 let loggedUser
+loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
 
 
 class Time extends React.Component {
@@ -36,6 +37,7 @@ class Time extends React.Component {
       .get(Global.url + `checkjobs/${loggedUser._id}`)
       .then(({ data }) => {
         this.setState(prevState => {
+          console.log(data)
           return {
             ...prevState,
             ...data
@@ -50,6 +52,7 @@ class Time extends React.Component {
       axios
       .get(Global.url + `checkjobs`)
       .then(({ data }) => {
+        console.log(data)
         this.setState(prevState => {
           return {
             ...prevState,
@@ -111,10 +114,11 @@ class Time extends React.Component {
 
                      {this.state.jobs.length === 0 ?  <tbody><tr><td>No workers register</td></tr></tbody>:
                      this.state.jobs.map((e,i)=>{
+                      if(!e.workers)return <th scope="row">Worker Delete</th>
                        let jobName = <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
                        let projectManager = e.projectManager.map((e,i)=>!projectManager ? <p style={{fontSize:"10px"}}>Project Manager Delete</p> : <p style={{fontSize:"10px"}} key={i}>{e.projectId.name}</p>)
                        let estimateId = e._id    
-                       let newWorker = e.workers.filter(e => e.workerId._id === loggedUser._id)
+                       let newWorker =e.workers.filter(wx =>wx.workerId._id === loggedUser._id)
                    
                       return(
 
