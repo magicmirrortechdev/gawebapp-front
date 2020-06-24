@@ -105,15 +105,14 @@ class Expenses extends React.Component {
     this.state.jobs.map((e,i)=>{
       if(!e.workers)return <th scope="row">Worker Delete</th>
       estimateId = e._id
-      console.log('workers',e.workers)
-
       userInEstimate =e.workers.length > 0 && e.workers.filter(wx =>{ 
-        return wx.workerId._id  === loggedUser._id - 1
+        return (wx.workerId && wx.workerId._id  === loggedUser._id)
       }).length > 0
 
       return(estimateId, userInEstimate)
        }) 
     allExpenses.sort(this.compareValues('date', 'desc'))
+    console.log(allExpenses)
     return (
       <>
         <Header />
@@ -144,15 +143,18 @@ class Expenses extends React.Component {
                   <thead className="thead-light">
                     <tr>
                       <th scope="col"></th>
+                      <th scope="col">Date</th>
+                      <th scope="col">Employee</th>
                       <th scope="col">Description</th>
                       <th scope="col">Category</th>
-                      <th scope="col">Date</th>
+                      
                       <th scope="col">Total</th>
                     </tr>
                   </thead>
                   
-                       {allExpenses === 0 ?  <tbody><tr><td>No expenses register</td></tr></tbody>:
+                       {allExpenses.length === 0 ?  <tbody><tr><td>No expenses register</td></tr></tbody>:
                         allExpenses.map((e,i)=>{
+                          console.log(e.workerId)
                         return(
                           <tbody key={i}>
                       
@@ -189,12 +191,13 @@ class Expenses extends React.Component {
                             </UncontrolledDropdown>
                           </span>
                           </td>
-                          <th scope="row" >{e.description}</th>
-                          <td>{e.category}</td>
                           <td>
                           <Moment add={{days: 1}} date={new Date(e.date)}  format={"MMM D, YY"} />
-                          
                           </td>
+                          <td>{e.workerId && e.workerId.name}</td>
+                          <th scope="row" >{e.description}</th>
+                          <td>{e.category}</td>
+                          
                           <td>$ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}</td>
                           
                           </tr>                                               

@@ -70,6 +70,28 @@ class Invoices extends React.Component {
 
   render() {
     if (!this.state) return <p>Loading</p>
+    let allInvoices=[]
+    let userInEstimate 
+    let estimateId
+    let client
+    let id
+    let jobName
+    this.state.estimates.map((e,i)=>{
+      return e.invoices.map(ex =>{
+        allInvoices.push(ex)
+        return(allInvoices)
+      })
+    })
+    this.state.estimates.map((e,i)=>{
+      if(!e.clientId) return <th>Client Delete</th>
+      if(!e.workers)return <th scope="row">Worker Delete</th>
+      estimateId = e._id
+      client = e.clientId.name 
+      id = e._id
+      jobName = e.jobName
+      userInEstimate = e.workers.filter(wx => wx.workerId && wx.workerId._id === loggedUser._id).length > 0
+    })
+
     return (
       <>
         <Header />
@@ -110,18 +132,8 @@ class Invoices extends React.Component {
                       <th scope="col">Balance</th>
                     </tr>
                   </thead>
-                  {this.state.estimates.length === 0 ?  <tbody><tr><td>No invoices register</td></tr></tbody>:
-                     this.state.estimates.map((e,i)=>{
-                      if(!e.clientId) return <th>Client Delete</th>
-                      if(!e.workers)return <th scope="row">Worker Delete</th>
-                      const estimateId = e._id
-                      const client = e.clientId.name 
-                      const id = e._id
-                      const jobName = e.jobName
-                      let userInEstimate = e.workers.filter(wx =>  wx.workerId._id === loggedUser._id).length > 0
-                      
-                      return(
-                        e.invoices.map((e,i) =>{
+                  {
+                       allInvoices.length === 0 ?<tbody><tr><td>No invoices register</td></tr></tbody> : allInvoices.map((e,i) =>{
                           const invoiceIndex = i + 1
                           const paid = e.payment.reduce((acc, current, i) => acc + isNaN(current.paid) ? 0 : current.paid, 0) 
                           const total = e.total - paid
@@ -232,10 +244,8 @@ class Invoices extends React.Component {
                         </tr>
                       </tbody>
                           )
-                        })
-                        
-                     )  
-                    })}
+                        })                         
+                    }
                 </Table>
               </Card>
             </Col>

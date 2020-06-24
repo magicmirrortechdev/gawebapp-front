@@ -118,7 +118,7 @@ class Time extends React.Component {
                        let jobName = <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
                        let projectManager = e.projectManager.map((e,i)=>!projectManager ? <p style={{fontSize:"10px"}}>Project Manager Delete</p> : <p style={{fontSize:"10px"}} key={i}>{e.projectId.name}</p>)
                        let estimateId = e._id    
-                       let newWorker =e.workers.filter(wx =>wx.workerId._id === loggedUser._id)
+                       let newWorker =e.workers.filter(wx => wx.workerId && wx.workerId._id === loggedUser._id)
                    
                       return(
 

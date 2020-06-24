@@ -81,6 +81,8 @@ class AddExpense extends React.Component {
   }
 
   handleSubmit = async (e, props) => {
+    const total =  this.state.total
+
     e.preventDefault()
     if (this.state._id==='') {
       alert('Select a Job to continue');
@@ -88,7 +90,9 @@ class AddExpense extends React.Component {
     else if (this.state.category==='') {
       alert('Select a category to continue');
     }
-    
+    else if (!total.match(/^[-?0-9]*$/gm)){
+      alert('Total quantity not valid')
+    }
     else {
       this.setState({ colorError: false });
        await axios.patch(Global.url + `addexpense/${this.state._id}`,this.state)
@@ -246,9 +250,8 @@ class AddExpense extends React.Component {
                               name="total"
                               className="form-control-alternative"
                               placeholder="Enter the total"
-                              type="number"
+                              type="text"
                               onChange={this.handleInput}
-                              step="any"
                             />
                           </FormGroup>
                         </Col>
