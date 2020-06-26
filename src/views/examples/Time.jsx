@@ -96,11 +96,9 @@ class Time extends React.Component {
     if (!this.state) return <p>Loading</p>
     else {
       this.state.jobs.map((e,i) => {
-        console.log(e);
         let projectManager = e.projectManager.map((e,i)=> !projectManager ? <p style={{fontSize:"10px"}}>Project Manager Delete</p> : <p style={{fontSize:"10px"}} key={i}>{e.projectId.name}</p>)
         if(e.workers.length > 0){
           e.workers.map((worker, i ) => {
-            console.log("worker ", worker);
             worker.time.map((time, i) => {
               times.push({
                 date: time.date,
@@ -119,8 +117,6 @@ class Time extends React.Component {
       });
 
       times = times.sort(this.compareValues('date','desc'));
-
-      console.log(times);
     }
     return (
       <>
