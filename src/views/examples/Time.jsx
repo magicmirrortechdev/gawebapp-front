@@ -21,6 +21,7 @@ import Moment from "react-moment";
 let loggedUser
 loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
 let times = [];
+let newWorker = []
 
 class Time extends React.Component {
   compareValues(key, order = 'asc') {
@@ -117,6 +118,28 @@ class Time extends React.Component {
       });
 
       times = times.sort(this.compareValues('date','desc'));
+
+      let mapWorker = []
+      times.map((timeGeneral, i)=>{
+        let newWorkerFilter = timeGeneral.workers.filter(wx => wx.workerId && wx.workerId._id === loggedUser._id)
+        newWorkerFilter.map((worker, i) => {
+          worker.time.map((time, j) =>{
+            if(!mapWorker[timeGeneral.estimateId]){
+              mapWorker[timeGeneral.estimateId] = true;
+              newWorker.push({
+                id: timeGeneral.estimateId,
+                date: time.date,
+                time: time.hours,
+                jobName: timeGeneral.jobName,
+                worker: worker._id,
+                name: worker.workerId.name,
+                workerId: worker.workerId,
+              })
+            }
+          });
+        });
+      });
+      newWorker = newWorker.sort(this.compareValues('date','desc'));
     }
     return (
       <>
@@ -164,9 +187,8 @@ class Time extends React.Component {
                        let jobName = <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
                        let projectManager = e.projectManager
                        let estimateId = e.estimateId
-                       let newWorker =e.workers.filter(wx => wx.workerId && wx.workerId._id === loggedUser._id)
 
-                      return(
+                       return(
                         loggedUser.level >= 2 ?
                         <tbody key={i}>
                           <tr>
@@ -226,79 +248,87 @@ class Time extends React.Component {
 
                           </tr>
                         </tbody>
-                         :
-                        loggedUser.level <= 1 ?
-                        newWorker.map((e,i)=>{
-                        let time = <p style={{fontSize:"10px"}}>{e.time.reduce((acc, current, i) => acc + current.hours, 0) ? e.time.reduce((acc, current, i) => acc + current.hours, 0) : 0 }</p>
-
-                          if(!e.workerId)return <th scope="row">Worker Delete</th>
-                          let worker = e.workerId._id
-                          return(
-                        <tbody key={i}>
-                        <tr>
-                        <td >
-                          <UncontrolledDropdown>
-                           <DropdownToggle>
-                              ...
-                          </DropdownToggle>
-                          <DropdownMenu
-                            modifiers={{
-                                    setMaxHeight: {
-                                      enabled: true,
-                                      order: 890,
-                                      fn: (data) => {
-                                        return {
-                                          ...data,
-                                          styles: {
-                                            ...data.styles,
-                                            overflow: 'auto',
-                                            maxHeight: 100,
-                                          },
-                                        };
-                                      },
-                                    },
-                                  }}
-                                                        >
-                          
-                          <DropdownItem to={`/admin/time/addtime/${estimateId}/${e._id}/${e.workerId._id}`} tag={Link}>Add Hours</DropdownItem>
-
-                            { loggedUser.level >= 4 ?
-                              <DropdownItem onClick={()=>{
-                              axios.patch(Global.url + `workerdelete/${estimateId}/${e._id}`, {worker: worker})
-                                .then(({data}) => {
-                                  
-                                  window.location.reload()
-                                  alert('Worker Removed')                               
-                                })
-                                .catch(err => {
-                                  console.log(err.response)
-                                })
-                            }}><span
-                                    className="text-danger">Delete</span>
-                              </DropdownItem>
-                              : null
-                            }
-
-                          </DropdownMenu>
-                          </UncontrolledDropdown>
-                        </td>
-                        <th scope="row">{e.workerId.name}</th>
-                        <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px", display:"flex", flexDirection:"column", alignItems:"baseline", alignContent:"center"}}>
-                        {time}</td>
-                        <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px"}} >
-                             {jobName}
-                        </td>                        
-                       
-                        </tr>
-                      </tbody>
-                          )
-                        })
-                        :null
-                       
+                         : null
                      )  
                     })}
-                      
-                      
+                  {//nuevo bloque
+                    loggedUser.level <= 1 ?
+                        newWorker.map((e, i) => {
+                          if (!e.workerId) return <th scope="row">Worker Delete</th>
+                          let worker = e.workerId._id
+                          return (
+                            <tbody key={i}>
+                                  <tr>
+                                    <td>
+                                      <UncontrolledDropdown>
+                                        <DropdownToggle>
+                                          ...
+                                        </DropdownToggle>
+                                        <DropdownMenu
+                                            modifiers={{
+                                              setMaxHeight: {
+                                                enabled: true,
+                                                order: 890,
+                                                fn: (data) => {
+                                                  return {
+                                                    ...data,
+                                                    styles: {
+                                                      ...data.styles,
+                                                      overflow: 'auto',
+                                                      maxHeight: 100,
+                                                    },
+                                                  };
+                                                },
+                                              },
+                                            }}
+                                        >
+
+                                          <DropdownItem
+                                              to={`/admin/time/addtime/${e.id}/${e.worker}/${e.workerId._id}`}
+                                              tag={Link}>Add Hours</DropdownItem>
+
+                                          {loggedUser.level >= 4 ?
+                                              <DropdownItem onClick={() => {
+                                                axios.patch(Global.url + `workerdelete/${e.id}/${e.worker}`, {worker: worker})
+                                                    .then(({data}) => {
+
+                                                      window.location.reload()
+                                                      alert('Worker Removed')
+                                                    })
+                                                    .catch(err => {
+                                                      console.log(err.response)
+                                                    })
+                                              }}><span
+                                                  className="text-danger">Delete</span>
+                                              </DropdownItem>
+                                              : null
+                                          }
+
+                                        </DropdownMenu>
+                                      </UncontrolledDropdown>
+                                    </td>
+                                    <td scope="row"><Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment></td>
+                                    <td scope="row">{e.name}</td>
+                                    <td style={{
+                                      height: "100%",
+                                      paddingTop: "35px",
+                                      paddingLeft: "60px",
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      alignItems: "baseline",
+                                      alignContent: "center"
+                                    }}>
+                                      {e.time}</td>
+                                    <td style={{height: "100%", paddingTop: "35px", paddingLeft: "60px"}}>
+                                      {e.jobName}
+                                    </td>
+
+                                  </tr>
+                                  </tbody>
+                          )
+                        })
+                        : null
+                  }
                 </Table>
               </Card>
             </Col>
