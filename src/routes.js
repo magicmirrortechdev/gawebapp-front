@@ -16,6 +16,7 @@ import AddJob from "views/examples/AddJob.jsx";
 import AddWorker from "views/examples/AddWorker.jsx";
 import AddWorkerJob from "views/examples/AddWorkerJob.jsx";
 import AddTime from "views/examples/AddTime.jsx";
+import UpdateTime from "views/examples/UpdateTime.jsx";
 import AddPM from "views/examples/AddProjectManager.jsx";
 import AddEstimate from "views/examples/AddEstimate.jsx";
 import Reports from "./views/examples/Reports";
@@ -33,8 +34,6 @@ import SendEstimate from "views/examples/SendEstimate";
 import UpdateExpense from "views/examples/UpdateExpense";
 import updateInvoice from "views/examples/UpdateInvoice";
 import SendInvoice from "views/examples/SendInvoice";
-
-
 
 var routes = [
   {
@@ -189,6 +188,14 @@ var routes = [
     name: "Add Time",
     icon: "ni ni-ruler-pencil text-blue",
     component: AddTime,
+    layout: "/admin/time",
+    invisible:true
+  },
+  {
+    path: "/updatetime/:estimateId/:id/:workerId/:timeId",
+    name: "Update Time",
+    icon: "ni ni-ruler-pencil text-blue",
+    component: UpdateTime,
     layout: "/admin/time",
     invisible:true
   },
