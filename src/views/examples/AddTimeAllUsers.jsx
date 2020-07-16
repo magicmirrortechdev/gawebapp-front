@@ -181,6 +181,9 @@ class AddTime extends React.Component {
     console.log('state Diego', this.state.worker_id)
     return (
       <>
+        <div style={{display:"flex",backgroundColor:"rgba(183,183,183,0.5)", alignContent:"center", justifyContent:"center",height:"100%", width:"100%", alignItems:"center", visibility:this.state.spinner?"visible":'hidden', position:"absolute", zIndex:"1" }}>
+            <Spinner style={{ width: '3rem', height: '3rem' }} />
+        </div>
         <Header />
         {/* Page content */}
         <Container className="mt--7" fluid>
