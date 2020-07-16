@@ -82,6 +82,7 @@ class AddTime extends React.Component {
           .patch(Global.url + `addtime/${this.props.match.params.id}/${this.props.match.params.workerId}`,this.state)
           .then(response => {
             this.props.history.push(`/admin/time`)
+            window.location.reload()
             console.log(response)
           })
           .catch(err => {
