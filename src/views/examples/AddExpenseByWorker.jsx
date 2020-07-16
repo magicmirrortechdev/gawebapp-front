@@ -90,7 +90,7 @@ class AddExpense extends React.Component {
     else if (this.state.category==='') {
       alert('Select a category to continue');
     }
-    else if (!total.match(/^[-?0-9]*$/gm)){
+    else if (!total.match(/^0|-?[0-9]\d*(\.\d+)?$/gm)){
       alert('Total quantity not valid')
     }
     else {

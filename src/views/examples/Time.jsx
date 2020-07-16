@@ -215,9 +215,6 @@ class Time extends React.Component {
                                         },
                                       }}
                                                             >
-
-                              <DropdownItem to={`/admin/time/addtime/${estimateId}/${e.worker}/${e.workerId._id}`} tag={Link}>Add Hours</DropdownItem>
-
                                 { loggedUser.level >= 4 ?
                                   <DropdownItem onClick={()=>{
                                   axios.patch(Global.url + `workerdelete/${estimateId}/${e.worker}`, {worker: e.workerId._id})
@@ -232,7 +229,20 @@ class Time extends React.Component {
                                 }}><span
                                         className="text-danger">Delete</span>
                                   </DropdownItem>
-                                  : null
+                                  : 
+                                  <DropdownItem disabled onClick={()=>{
+                                    axios.patch(Global.url + `workerdelete/${estimateId}/${e.worker}`, {worker: e.workerId._id})
+                                      .then(({data}) => {
+  
+                                        window.location.reload()
+                                        alert('Worker Removed')
+                                      })
+                                      .catch(err => {
+                                        console.log(err.response)
+                                      })
+                                  }}><span
+                                          >Delete</span>
+                                    </DropdownItem>
                                 }
 
                               </DropdownMenu>

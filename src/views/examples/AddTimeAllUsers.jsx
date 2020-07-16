@@ -10,7 +10,7 @@ import {
   Container,
   Row,
   Col,
-
+  Spinner,
   Button,
   FormGroup,
   Input,
@@ -39,6 +39,7 @@ class AddTime extends React.Component {
     value: false,
     time: parseInt(''),
     date: ano+"-"+mes+"-"+dia,
+    spinner: false
   };
   constructor(props) {
     super(props);
@@ -93,7 +94,6 @@ class AddTime extends React.Component {
     axios
       .get(Global.url + `estimatedetail/${this.state._id}`)
       .then(({ data }) => {
-         
         data.estimate.workers.map(e =>{
           if(e.workerId._id === loggedUser._id){
             this.setState(prevState=>{
@@ -131,8 +131,20 @@ class AddTime extends React.Component {
     const workerId = this.state.worker_id ? this.state.worker_id.split(".")[1] : undefined
     const id2 = this.state.worker_id2 ? this.state.worker_id2.split(".")[0] : undefined
     const workerId2 = this.state.worker_id2 ? this.state.worker_id2.split(".")[1] : undefined
-    
+    this.setState(prevState =>{
+      return{
+        ...prevState,
+        spinner: true
+      }
+    })
+
      if(this.state.worker_id === undefined){
+      this.setState(prevState =>{
+        return{
+          ...prevState,
+          spinner: false
+        }
+      })      
       axios
       .patch(Global.url + `addtime/${id2}/${workerId2}`,this.state)
       .then(response => {
@@ -143,6 +155,12 @@ class AddTime extends React.Component {
       })
      }
      else if(this.state.worker_id){
+      this.setState(prevState =>{
+        return{
+          ...prevState,
+          spinner: false
+        }
+      })
       axios
       .patch(Global.url + `addtime/${id}/${workerId}`,this.state)
       .then(response => {

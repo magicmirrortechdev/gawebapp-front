@@ -98,7 +98,7 @@ class Expenses extends React.Component {
     let userInEstimate 
     this.state.jobs.map((e,i)=>{
       return e.expenses.map(ex =>{
-        allExpenses.push(ex)
+        allExpenses.push({estimateId: e._id, expense:ex, date:ex.date})
         return(allExpenses)
       })
     })
@@ -112,7 +112,7 @@ class Expenses extends React.Component {
       return(estimateId, userInEstimate)
        }) 
     allExpenses.sort(this.compareValues('date', 'desc'))
-    console.log(allExpenses)
+    console.log(loggedUser.level)
     return (
       <>
         <Header />
@@ -154,7 +154,6 @@ class Expenses extends React.Component {
                   
                        {allExpenses.length === 0 ?  <tbody><tr><td>No expenses register</td></tr></tbody>:
                         allExpenses.map((e,i)=>{
-                          console.log(e.workerId)
                         return(
                           <tbody key={i}>
                       
@@ -167,14 +166,14 @@ class Expenses extends React.Component {
                               </DropdownToggle>
                               <DropdownMenu>
                                  {
-                                   loggedUser.level >= 2 ? <DropdownItem to={`/admin/expenses/${estimateId}/${e._id}/update`} tag={Link}>Update</DropdownItem> : 
-                                   loggedUser.level === 1 && userInEstimate ? <DropdownItem to={`/admin/expenses/${estimateId}/${e._id}/update`} tag={Link}>Update</DropdownItem> :
-                                   <DropdownItem disabled to={`/admin/expenses/${estimateId}/${e._id}/update`} tag={Link}>Update</DropdownItem>
+                                   loggedUser.level >= 2 ? <DropdownItem to={`/admin/expenses/${e.estimateId}/${e.expense._id}/update`} tag={Link}>Update</DropdownItem> : 
+                                   loggedUser.level === 1 && userInEstimate ? <DropdownItem to={`/admin/expenses/${e.estimateId}/${e.expense._id}/update`} tag={Link}>Update</DropdownItem> :
+                                   <DropdownItem disabled to={`/admin/expenses/${e.estimateId}/${e.expense._id}/update`} tag={Link}>Update</DropdownItem>
                                  }
                                 {
                                   loggedUser.level >= 4 ?
                                   <DropdownItem onClick={()=>{
-                                  axios.patch(Global.url + `expensedelete/${estimateId}/${e._id}`)
+                                  axios.patch(Global.url + `expensedelete/${e.estimateId}/${e.expense._id}`)
                                   .then(({data})=>{
                                     alert('Expense Delete')
                                         window.location.reload()
@@ -192,13 +191,13 @@ class Expenses extends React.Component {
                           </span>
                           </td>
                           <td>
-                          <Moment add={{days: 1}} date={new Date(e.date)}  format={"MMM D, YY"} />
+                          <Moment add={{days: 1}} date={new Date(e.expense.date)}  format={"MMM D, YY"} />
                           </td>
-                          <td>{e.workerId && e.workerId.name}</td>
-                          <th scope="row" >{e.description}</th>
-                          <td>{e.category}</td>
+                          <td>{e.expense.workerId && e.expense.workerId.name}</td>
+                          <th scope="row" >{e.expense.description}</th>
+                          <td>{e.expense.category}</td>
                           
-                          <td>$ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}</td>
+                          <td>$ {parseFloat(Math.round(e.expense.total * 100) / 100).toFixed(2)}</td>
                           
                           </tr>                                               
                         </tbody>
