@@ -149,6 +149,7 @@ class AddTime extends React.Component {
       .patch(Global.url + `addtime/${id2}/${workerId2}`,this.state)
       .then(response => {
         this.props.history.push(`/admin/time`)
+        window.location.reload()
       })
       .catch(err => {
         alert(err.response)
@@ -165,6 +166,7 @@ class AddTime extends React.Component {
       .patch(Global.url + `addtime/${id}/${workerId}`,this.state)
       .then(response => {
         this.props.history.push(`/admin/time`)
+        window.location.reload()
       })
       .catch(err => {
         alert(err.response)

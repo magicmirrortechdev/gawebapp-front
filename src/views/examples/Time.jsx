@@ -214,8 +214,6 @@ class Time extends React.Component {
                                           },
                                         },
                                       }}>
-
-                              <DropdownItem to={`/admin/time/addtime/${estimateId}/${e.worker}/${e.workerId._id}`} tag={Link}>Add Hours</DropdownItem>
                               <DropdownItem to={`/admin/time/updatetime/${estimateId}/${e.worker}/${e.workerId._id}/${e.timeId}`} tag={Link}>Update Hours</DropdownItem>
 
                                 { loggedUser.level >= 4 ?
