@@ -102,6 +102,7 @@ class Time extends React.Component {
           e.workers.map((worker, i ) => {
             worker.time.map((time, i) => {
               times.push({
+                timeId: time._id,
                 date: time.date,
                 time: time.hours,
                 jobName: e.jobName,
@@ -187,7 +188,6 @@ class Time extends React.Component {
                        let jobName = <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
                        let projectManager = e.projectManager
                        let estimateId = e.estimateId
-
                        return(
                         loggedUser.level >= 2 ?
                         <tbody key={i}>
@@ -208,15 +208,15 @@ class Time extends React.Component {
                                               styles: {
                                                 ...data.styles,
                                                 overflow: 'auto',
-                                                maxHeight: 100,
+                                                maxHeight: 130,
                                               },
                                             };
                                           },
                                         },
-                                      }}
-                                                            >
+                                      }}>
 
                               <DropdownItem to={`/admin/time/addtime/${estimateId}/${e.worker}/${e.workerId._id}`} tag={Link}>Add Hours</DropdownItem>
+                              <DropdownItem to={`/admin/time/updatetime/${estimateId}/${e.worker}/${e.workerId._id}/${e.timeId}`} tag={Link}>Update Hours</DropdownItem>
 
                                 { loggedUser.level >= 4 ?
                                   <DropdownItem onClick={()=>{
