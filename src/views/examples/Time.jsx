@@ -218,7 +218,7 @@ class Time extends React.Component {
 
                                 { loggedUser.level >= 4 ?
                                   <DropdownItem onClick={()=>{
-                                  axios.patch(Global.url + `deletetime/${estimateId}/${e.timeId}`, {}).then(({data}) => {
+                                  axios.patch(Global.url + `deletetime/${estimateId}/${e.workerId._id}/${e.timeId}`, {}).then(({data}) => {
                                       window.location.reload()
                                       alert('Time Removed')
                                     })
