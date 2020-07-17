@@ -133,18 +133,12 @@ class AddTime extends React.Component {
     const workerId2 = this.state.worker_id2 ? this.state.worker_id2.split(".")[1] : undefined
     this.setState(prevState =>{
       return{
-        ...prevState,
         spinner: true
       }
     })
 
      if(this.state.worker_id === undefined){
-      this.setState(prevState =>{
-        return{
-          ...prevState,
-          spinner: false
-        }
-      })      
+           
       axios
       .patch(Global.url + `addtime/${id2}/${workerId2}`,this.state)
       .then(response => {
@@ -156,12 +150,6 @@ class AddTime extends React.Component {
       })
      }
      else if(this.state.worker_id){
-      this.setState(prevState =>{
-        return{
-          ...prevState,
-          spinner: false
-        }
-      })
       axios
       .patch(Global.url + `addtime/${id}/${workerId}`,this.state)
       .then(response => {
@@ -184,7 +172,7 @@ class AddTime extends React.Component {
     return (
       <>
         <div style={{display:"flex",backgroundColor:"rgba(183,183,183,0.5)", alignContent:"center", justifyContent:"center",height:"100%", width:"100%", alignItems:"center", visibility:this.state.spinner?"visible":'hidden', position:"absolute", zIndex:"1" }}>
-            <Spinner style={{ width: '3rem', height: '3rem' }} />
+            <p style={{"fontSize": "35px", "fontWeight": "bold"}}>Please wait...</p>
         </div>
         <Header />
         {/* Page content */}
