@@ -135,7 +135,6 @@ class Time extends React.Component {
 
   updateWindowDimensions = () => {
     this.setState(prevState => {return {...prevState, isMobileVersion : (window.innerWidth < 768) }})
-    console.log(this.state.isMobileVersion);
   }
 
   componentWillUnmount() {
