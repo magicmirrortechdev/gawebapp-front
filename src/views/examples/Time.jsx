@@ -94,13 +94,13 @@ const ButtonTwo = (props) => {
             }}>
 
           <DropdownItem
-              to={`/admin/time/addtime/${props.id}/${props.worker}/${props.workerId._id}`}
+              to={`/admin/time/addtime/${props.estimateId}/${props.worker}/${props.workerId._id}`}
               tag={Link}>Add Hours</DropdownItem>
-          <DropdownItem to={`/admin/time/updatetime/${props.id}/${props.worker}/${props.workerId._id}/${props.timeId}`} tag={Link}>Update Hours</DropdownItem>
+          <DropdownItem to={`/admin/time/updatetime/${props.estimateId}/${props.worker}/${props.workerId._id}/${props.timeId}`} tag={Link}>Update Hours</DropdownItem>
 
           {loggedUser.level >= 4 ?
               <DropdownItem onClick={() => {
-                axios.patch(Global.url + `deletetime/${props.id}/${props.workerId._id}/${props.timeId}`, {})
+                axios.patch(Global.url + `deletetime/${props.estimateId}/${props.workerId._id}/${props.timeId}`, {})
                     .then(({data}) => {
 
                       window.location.reload()
@@ -188,22 +188,16 @@ class Time extends React.Component {
         if(e.workers.length > 0){
           e.workers.forEach((worker) => {
             worker.time.forEach((time) => {
+              let band = false;
               if(loggedUser.level <= 1) {
                 if(worker.workerId._id === loggedUser._id) {
-                  times.push({
-                    timeId: time._id,
-                    date: time.date,
-                    time: time.hours,
-                    jobName: e.jobName,
-                    worker: worker._id,
-                    name: worker.workerId.name,
-                    projectManager: projectManager,
-                    estimateId: e._id,
-                    workerId: worker.workerId,
-                    workers: e.workers
-                  });
+                  band = true
                 }
-              } else {
+              } else{
+                band = true
+              }
+
+              if(band){
                 times.push({
                   timeId: time._id,
                   date: time.date,

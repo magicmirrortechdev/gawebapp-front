@@ -14,8 +14,7 @@ import AddTimeAllUsers from "views/examples/AddTimeAllUsers";
 import Home from "views/examples/Home";
 import SendEstimate from "views/examples/SendEstimate";
 import UpdateExpense from "views/examples/UpdateExpense";
-
-
+import UpdateTime from "./views/examples/UpdateTime";
 
 var routesWorker = [
   {
@@ -93,6 +92,14 @@ var routesWorker = [
     icon: "ni ni-ruler-pencil text-blue",
     component: AddTimeAllUsers,
     layout: "/admin",
+    invisible:true
+  },
+  {
+    path: "/updatetime/:estimateId/:id/:workerId/:timeId",
+    name: "Update Time",
+    icon: "ni ni-ruler-pencil text-blue",
+    component: UpdateTime,
+    layout: "/admin/time",
     invisible:true
   },
   {
