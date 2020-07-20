@@ -176,6 +176,7 @@ class Time extends React.Component {
 
     if (!this.state) return <p>Loading</p>
     else {
+      times = [];
       this.state.jobs.map((e,i) => {
         let projectManager = e.projectManager.map((e,i)=> !projectManager ? <p style={{fontSize:"10px"}}>Project Manager Delete</p> : <p style={{fontSize:"10px"}} key={i}>{e.projectId.name}</p>)
         if(e.workers.length > 0){
@@ -205,8 +206,8 @@ class Time extends React.Component {
         let newWorkerFilter = timeGeneral.workers.filter(wx => wx.workerId && wx.workerId._id === loggedUser._id)
         newWorkerFilter.map((worker, i) => {
           worker.time.map((time, j) =>{
-            if(!mapWorker[timeGeneral.estimateId]){
-              mapWorker[timeGeneral.estimateId] = true;
+            if(!mapWorker[timeGeneral.timeId]){
+              mapWorker[timeGeneral.timeId] = true;
               newWorker.push({
                 id: timeGeneral.estimateId,
                 date: time.date,
@@ -280,7 +281,7 @@ class Time extends React.Component {
                             {!this.state.isMobileVersion ?
                                 <>
                                   <td >
-                                    <ButtonOne {...e} ></ButtonOne>
+                                    <ButtonOne {...e}></ButtonOne>
                                   </td>
                                   <td scope="row"><Moment add={{days:1}} format={"MMM D, YY"}>{e.date}</Moment></td>
                                   <td scope="row">{e.name}</td>
