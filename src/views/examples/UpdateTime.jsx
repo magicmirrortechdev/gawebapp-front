@@ -33,7 +33,7 @@ class UpdateTime extends React.Component {
     jobName: '',
     nameWorker:'',
     date: ano+"-"+mes+"-"+dia,
-
+    spinner: false
   };
 
   handleInput = e => {
@@ -94,12 +94,16 @@ class UpdateTime extends React.Component {
 
   handleSubmit = (e, props) => {
     e.preventDefault()
+    this.setState(prevState =>{
+      return{
+        spinner: true
+      }
+    })
         axios
           .patch(Global.url + `updatetime/${this.props.match.params.estimateId}/${this.props.match.params.workerId}/${this.props.match.params.timeId}`,this.state)
           .then(response => {
             this.props.history.push(`/admin/time`)
             window.location.reload()
-            console.log(response)
           })
           .catch(err => {
             console.log(err.response)
@@ -112,6 +116,9 @@ class UpdateTime extends React.Component {
     console.log(this.state)
     return (
       <>
+        <div style={{display:"flex",backgroundColor:"rgba(183,183,183,0.5)", alignContent:"center", justifyContent:"center",height:"100%", width:"100%", alignItems:"center", visibility:this.state.spinner?"visible":'hidden', position:"absolute", zIndex:"1" }}>
+        <p style={{"fontSize": "35px", "fontWeight": "bold"}}>Please wait...</p>
+        </div>
         <Header />
         {/* Page content */}
         <Container className="mt--7" fluid>

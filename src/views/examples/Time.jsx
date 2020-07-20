@@ -181,6 +181,7 @@ class Time extends React.Component {
   }
 
   render() {
+
     if (!this.state) return <p>Loading</p>
     else {
       this.state.jobs.map((e,i) => {

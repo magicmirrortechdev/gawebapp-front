@@ -78,7 +78,6 @@ class UpdateExpense extends React.Component {
               total: total
             }
           })
-          console.log(this.state)
         })
         .catch(err => {
           console.log(err)
@@ -159,7 +158,7 @@ class UpdateExpense extends React.Component {
                               className="form-control-alternative"
                               placeholder="Select a date"
                               name="date"
-                              defaultValue={this.statedate}
+                              defaultValue={this.state.date}
                               type="date"
                               onChange={this.handleInput}
                             />

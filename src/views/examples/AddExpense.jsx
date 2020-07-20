@@ -71,7 +71,7 @@ class AddExpense extends React.Component {
      if(this.state.category===''){
       alert('Select a category')
     }
-    else if (!total.match(/^[-?0-9]*$/gm)){
+    else if (!total.match(/^0|-?[0-9]\d*(\.\d+)?$/gm)){
       alert('Total quantity not valid')
     }
     else{
@@ -101,7 +101,7 @@ class AddExpense extends React.Component {
                 </CardHeader>
                 <CardBody> 
 
-                  <Form onSubmit={this.handleSubmit}>
+                  <Form onSubmit={this.handleSubmit} enctype="multipart/form-data">
                     <div className="pl-lg-4">
                       <Row>
                         <Col lg="6">
