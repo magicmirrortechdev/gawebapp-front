@@ -46,10 +46,7 @@ const ButtonOne = (props) => {
               },
             },
           }}>
-
-        <DropdownItem to={`/admin/time/addtime/${props.estimateId}/${props.worker}/${props.workerId._id}`} tag={Link}>Add Hours</DropdownItem>
         <DropdownItem to={`/admin/time/updatetime/${props.estimateId}/${props.worker}/${props.workerId._id}/${props.timeId}`} tag={Link}>Update Hours</DropdownItem>
-
         { loggedUser.level >= 4 ?
             <DropdownItem onClick={()=>{
               axios.patch(Global.url + `deletetime/${props.estimateId}/${props.workerId._id}/${props.timeId}`, {}).then(({data}) => {
@@ -93,10 +90,6 @@ const ButtonTwo = (props) => {
                 },
               },
             }}>
-
-          <DropdownItem
-              to={`/admin/time/addtime/${props.id}/${props.worker}/${props.workerId._id}`}
-              tag={Link}>Add Hours</DropdownItem>
           <DropdownItem to={`/admin/time/updatetime/${props.id}/${props.worker}/${props.workerId._id}/${props.timeId}`} tag={Link}>Update Hours</DropdownItem>
 
           {loggedUser.level >= 4 ?
@@ -243,7 +236,7 @@ class Time extends React.Component {
                       <h3 className="mb-0">Employee Information</h3>
                     </div>
                     {
-                    loggedUser.level >= 2 ?
+                    loggedUser.level >= 1 ?
                     <div className="col text-right">
                     <Link to="addtime">
                       <p
@@ -279,9 +272,7 @@ class Time extends React.Component {
 
                   {times.length === 0 ?  <tbody><tr><td>No workers register</td></tr></tbody>:
                    times.map((e,i)=>{
-                       let jobName = <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
-                       let projectManager = e.projectManager
-                       let estimateId = e.estimateId
+
                        return(
                         loggedUser.level >= 2 ?
                         <tbody key={i}>
