@@ -21,7 +21,6 @@ import Moment from "react-moment";
 
 let loggedUser ;
 let times = [];
-let newWorker = []
 
 const ButtonOne = (props) => {
   return (
@@ -184,51 +183,46 @@ class Time extends React.Component {
     if (!this.state) return <p>Loading</p>
     else {
       times = [];
-      this.state.jobs.map((e,i) => {
+      this.state.jobs.forEach((e) => {
         let projectManager = e.projectManager.map((e,i)=> !projectManager ? <p style={{fontSize:"10px"}}>Project Manager Delete</p> : <p style={{fontSize:"10px"}} key={i}>{e.projectId.name}</p>)
         if(e.workers.length > 0){
-          e.workers.map((worker, i ) => {
-            worker.time.map((time, i) => {
-              times.push({
-                timeId: time._id,
-                date: time.date,
-                time: time.hours,
-                jobName: e.jobName,
-                worker: worker._id,
-                name: worker.workerId.name,
-                projectManager: projectManager,
-                estimateId: e._id,
-                workerId: worker.workerId,
-                workers: e.workers
-              });
+          e.workers.forEach((worker) => {
+            worker.time.forEach((time) => {
+              if(loggedUser.level <= 1) {
+                if(worker.workerId._id === loggedUser._id) {
+                  times.push({
+                    timeId: time._id,
+                    date: time.date,
+                    time: time.hours,
+                    jobName: e.jobName,
+                    worker: worker._id,
+                    name: worker.workerId.name,
+                    projectManager: projectManager,
+                    estimateId: e._id,
+                    workerId: worker.workerId,
+                    workers: e.workers
+                  });
+                }
+              } else {
+                times.push({
+                  timeId: time._id,
+                  date: time.date,
+                  time: time.hours,
+                  jobName: e.jobName,
+                  worker: worker._id,
+                  name: worker.workerId.name,
+                  projectManager: projectManager,
+                  estimateId: e._id,
+                  workerId: worker.workerId,
+                  workers: e.workers
+                });
+              }
             });
           })
         }
       });
 
       times = times.sort(compareValues('date','desc'));
-
-      let mapWorker = []
-      times.map((timeGeneral, i)=>{
-        let newWorkerFilter = timeGeneral.workers.filter(wx => wx.workerId && wx.workerId._id === loggedUser._id)
-        newWorkerFilter.map((worker, i) => {
-          worker.time.map((time, j) =>{
-            if(!mapWorker[timeGeneral.timeId]){
-              mapWorker[timeGeneral.timeId] = true;
-              newWorker.push({
-                id: timeGeneral.estimateId,
-                date: time.date,
-                time: time.hours,
-                jobName: timeGeneral.jobName,
-                worker: worker._id,
-                name: worker.workerId.name,
-                workerId: worker.workerId,
-              })
-            }
-          });
-        });
-      });
-      newWorker = newWorker.sort(compareValues('date','desc'));
     }
     return (
       <>
@@ -244,7 +238,7 @@ class Time extends React.Component {
                       <h3 className="mb-0">Employee Information</h3>
                     </div>
                     {
-                    loggedUser.level >= 2 ?
+                    loggedUser.level >= 1 ?
                     <div className="col text-right">
                     <Link to="addtime">
                       <p
@@ -280,9 +274,6 @@ class Time extends React.Component {
 
                   {times.length === 0 ?  <tbody><tr><td>No workers register</td></tr></tbody>:
                    times.map((e,i)=>{
-                       let jobName = <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
-                       let projectManager = e.projectManager
-                       let estimateId = e.estimateId
                        return(
                         loggedUser.level >= 2 ?
                         <tbody key={i}>
@@ -292,12 +283,12 @@ class Time extends React.Component {
                                   <td >
                                     <ButtonOne {...e}></ButtonOne>
                                   </td>
-                                  <td scope="row"><Moment add={{days:1}} format={"MMM D, YY"}>{e.date}</Moment></td>
-                                  <td scope="row">{e.name}</td>
+                                  <td><Moment add={{days:1}} format={"MMM D, YY"}>{e.date}</Moment></td>
+                                  <td>{e.timeId} - {e.name}</td>
                                   <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px", display:"flex", flexDirection:"column", alignItems:"baseline", alignContent:"center"}}>
                                     {e.time}</td>
                                   <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px"}} >
-                                    {e.jobName}
+                                    <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
                                   </td>
                                 </>
                               :
@@ -317,7 +308,7 @@ class Time extends React.Component {
                     })}
                   {//nuevo bloque
                     loggedUser.level <= 1 ?
-                        newWorker.map((e, i) => {
+                        times.map((e, i) => {
                           if (!e.workerId) return <th scope="row">Worker Delete</th>
                           return (
                             <tbody key={i}>
@@ -327,8 +318,8 @@ class Time extends React.Component {
                                   <td>
                                     <ButtonTwo {...e}></ButtonTwo>
                                   </td>
-                                  <td scope="row"><Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment></td>
-                                  <td scope="row">{e.name}</td>
+                                  <td><Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment></td>
+                                  <td> {e.timeId} {e.name}</td>
                                   <td style={{
                                         height: "100%",
                                         paddingTop: "35px",
