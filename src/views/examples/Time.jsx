@@ -16,47 +16,135 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-import Global from "../../global";
+import Global, {compareValues} from "../../global";
 import Moment from "react-moment";
-let loggedUser
-loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+
+let loggedUser ;
 let times = [];
 let newWorker = []
 
+const ButtonOne = (props) => {
+  return (
+    <UncontrolledDropdown>
+      <DropdownToggle>
+        ...
+      </DropdownToggle>
+      <DropdownMenu
+          modifiers={{
+            setMaxHeight: {
+              enabled: true,
+              order: 890,
+              fn: (data) => {
+                return {
+                  ...data,
+                  styles: {
+                    ...data.styles,
+                    overflow: 'auto',
+                    maxHeight: 130,
+                  },
+                };
+              },
+            },
+          }}>
+
+        <DropdownItem to={`/admin/time/addtime/${props.estimateId}/${props.worker}/${props.workerId._id}`} tag={Link}>Add Hours</DropdownItem>
+        <DropdownItem to={`/admin/time/updatetime/${props.estimateId}/${props.worker}/${props.workerId._id}/${props.timeId}`} tag={Link}>Update Hours</DropdownItem>
+
+        { loggedUser.level >= 4 ?
+            <DropdownItem onClick={()=>{
+              axios.patch(Global.url + `deletetime/${props.estimateId}/${props.workerId._id}/${props.timeId}`, {}).then(({data}) => {
+                window.location.reload()
+                alert('Time Removed')
+              })
+                  .catch(err => {
+                    console.log(err.response)
+                  })
+            }}><span
+                className="text-danger">Delete</span>
+            </DropdownItem>
+            : null
+        }
+
+      </DropdownMenu>
+    </UncontrolledDropdown>
+  )
+}
+
+const ButtonTwo = (props) => {
+  return (
+      <UncontrolledDropdown>
+        <DropdownToggle>
+          ...
+        </DropdownToggle>
+        <DropdownMenu
+            modifiers={{
+              setMaxHeight: {
+                enabled: true,
+                order: 890,
+                fn: (data) => {
+                  return {
+                    ...data,
+                    styles: {
+                      ...data.styles,
+                      overflow: 'auto',
+                      maxHeight: 100,
+                    },
+                  };
+                },
+              },
+            }}>
+
+          <DropdownItem
+              to={`/admin/time/addtime/${props.id}/${props.worker}/${props.workerId._id}`}
+              tag={Link}>Add Hours</DropdownItem>
+          <DropdownItem to={`/admin/time/updatetime/${props.id}/${props.worker}/${props.workerId._id}/${props.timeId}`} tag={Link}>Update Hours</DropdownItem>
+
+          {loggedUser.level >= 4 ?
+              <DropdownItem onClick={() => {
+                axios.patch(Global.url + `deletetime/${props.id}/${props.workerId._id}/${props.timeId}`, {})
+                    .then(({data}) => {
+
+                      window.location.reload()
+                      alert('Worker Removed')
+                    })
+                    .catch(err => {
+                      console.log(err.response)
+                    })
+              }}><span
+                  className="text-danger">Delete</span>
+              </DropdownItem>
+              : null
+          }
+
+        </DropdownMenu>
+      </UncontrolledDropdown>
+  )
+}
+
 class Time extends React.Component {
-  compareValues(key, order = 'asc') {
-    return function innerSort(a, b) {
-      if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
-        // property doesn't exist on either object
-        return 0;
-      }
-
-      const varA = (typeof a[key] === 'string')
-          ? a[key].toUpperCase() : a[key];
-      const varB = (typeof b[key] === 'string')
-          ? b[key].toUpperCase() : b[key];
-
-      let comparison = 0;
-      if (varA > varB) {
-        comparison = 1;
-      } else if (varA < varB) {
-        comparison = -1;
-      }
-      return (
-          (order === 'desc') ? (comparison * -1) : comparison
-      );
-    };
-  }
 
   state = {
-    jobs:[]
+    jobs:[],
+    isMobileVersion: false
   };
+
   constructor(props) {
     super(props);
     loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
   }
 
+  updateWindowDimensions = () => {
+    this.setState(prevState => {return {...prevState, isMobileVersion : (window.innerWidth < 768) }})
+    console.log(this.state.isMobileVersion);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateWindowDimensions)
+  }
+
   componentDidMount() {
+    this.updateWindowDimensions()
+    window.addEventListener('resize', this.updateWindowDimensions)
     loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
     if(loggedUser.level <=1){
       axios
@@ -93,7 +181,6 @@ class Time extends React.Component {
   }
 
   render() {
-
     if (!this.state) return <p>Loading</p>
     else {
       this.state.jobs.map((e,i) => {
@@ -118,7 +205,7 @@ class Time extends React.Component {
         }
       });
 
-      times = times.sort(this.compareValues('date','desc'));
+      times = times.sort(compareValues('date','desc'));
 
       let mapWorker = []
       times.map((timeGeneral, i)=>{
@@ -140,7 +227,7 @@ class Time extends React.Component {
           });
         });
       });
-      newWorker = newWorker.sort(this.compareValues('date','desc'));
+      newWorker = newWorker.sort(compareValues('date','desc'));
     }
     return (
       <>
@@ -175,16 +262,23 @@ class Time extends React.Component {
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
-                      <th scope="col"></th>
-                      <th scope="col">Date</th>
-                      <th scope="col">Name</th>
-                      <th scope="col">Hours</th>
-                      <th scope="col">Job</th>
+                    { !this.state.isMobileVersion ?
+                        <>
+                          <th scope="col"></th>
+                          <th scope="col">Date</th>
+                          <th scope="col">Name</th>
+                          <th scope="col">Hours</th>
+                          <th scope="col">Job</th>
+                        </>
+                      :
+                      <th>Details</th>
+                    }
                     </tr>
                   </thead>
-                  
-                     {times.length === 0 ?  <tbody><tr><td>No workers register</td></tr></tbody>:
-                     times.map((e,i)=>{
+
+
+                  {times.length === 0 ?  <tbody><tr><td>No workers register</td></tr></tbody>:
+                   times.map((e,i)=>{
                        let jobName = <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
                        let projectManager = e.projectManager
                        let estimateId = e.estimateId
@@ -192,58 +286,29 @@ class Time extends React.Component {
                         loggedUser.level >= 2 ?
                         <tbody key={i}>
                           <tr>
-                            <td >
-                              <UncontrolledDropdown>
-                               <DropdownToggle>
-                                  ...
-                              </DropdownToggle>
-                              <DropdownMenu
-                                modifiers={{
-                                        setMaxHeight: {
-                                          enabled: true,
-                                          order: 890,
-                                          fn: (data) => {
-                                            return {
-                                              ...data,
-                                              styles: {
-                                                ...data.styles,
-                                                overflow: 'auto',
-                                                maxHeight: 130,
-                                              },
-                                            };
-                                          },
-                                        },
-                                      }}>
-
-                              <DropdownItem to={`/admin/time/addtime/${estimateId}/${e.worker}/${e.workerId._id}`} tag={Link}>Add Hours</DropdownItem>
-                              <DropdownItem to={`/admin/time/updatetime/${estimateId}/${e.worker}/${e.workerId._id}/${e.timeId}`} tag={Link}>Update Hours</DropdownItem>
-
-                                { loggedUser.level >= 4 ?
-                                  <DropdownItem onClick={()=>{
-                                  axios.patch(Global.url + `deletetime/${estimateId}/${e.workerId._id}/${e.timeId}`, {}).then(({data}) => {
-                                      window.location.reload()
-                                      alert('Time Removed')
-                                    })
-                                    .catch(err => {
-                                      console.log(err.response)
-                                    })
-                                }}><span
-                                        className="text-danger">Delete</span>
-                                  </DropdownItem>
-                                  : null
-                                }
-
-                              </DropdownMenu>
-                              </UncontrolledDropdown>
-                            </td>
-                            <td scope="row"><Moment add={{days:1}} format={"MMM D, YY"}>{e.date}</Moment></td>
-                            <td scope="row">{e.name}</td>
-                            <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px", display:"flex", flexDirection:"column", alignItems:"baseline", alignContent:"center"}}>
-                            {e.time}</td>
-                            <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px"}} >
-                                 {e.jobName}
-                            </td>
-
+                            {!this.state.isMobileVersion ?
+                                <>
+                                  <td >
+                                    <ButtonOne {...e} ></ButtonOne>
+                                  </td>
+                                  <td scope="row"><Moment add={{days:1}} format={"MMM D, YY"}>{e.date}</Moment></td>
+                                  <td scope="row">{e.name}</td>
+                                  <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px", display:"flex", flexDirection:"column", alignItems:"baseline", alignContent:"center"}}>
+                                    {e.time}</td>
+                                  <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px"}} >
+                                    {e.jobName}
+                                  </td>
+                                </>
+                              :
+                              <>
+                                <td>
+                                  <Moment add={{days:1}} format={"MMM D, YY"}>{e.date}</Moment><br/>
+                                  {e.name} - {e.time}<br/>
+                                  <small>{e.jobName}</small> <br/>
+                                  <ButtonOne {...e}></ButtonOne>
+                                </td>
+                              </>
+                            }
                           </tr>
                         </tbody>
                          : null
@@ -253,76 +318,42 @@ class Time extends React.Component {
                     loggedUser.level <= 1 ?
                         newWorker.map((e, i) => {
                           if (!e.workerId) return <th scope="row">Worker Delete</th>
-                          let worker = e.workerId._id
                           return (
                             <tbody key={i}>
-                                  <tr>
+                              <tr>
+                                {!this.state.isMobileVersion ?
+                                 <>
+                                  <td>
+                                    <ButtonTwo {...e}></ButtonTwo>
+                                  </td>
+                                  <td scope="row"><Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment></td>
+                                  <td scope="row">{e.name}</td>
+                                  <td style={{
+                                        height: "100%",
+                                        paddingTop: "35px",
+                                        paddingLeft: "60px",
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        alignItems: "baseline",
+                                        alignContent: "center"
+                                      }}>
+                                  {e.time}</td>
+                                  <td style={{height: "100%", paddingTop: "35px", paddingLeft: "60px"}}>
+                                    {e.jobName}
+                                  </td>
+                                 </>
+                                  :
+                                  <>
                                     <td>
-                                      <UncontrolledDropdown>
-                                        <DropdownToggle>
-                                          ...
-                                        </DropdownToggle>
-                                        <DropdownMenu
-                                            modifiers={{
-                                              setMaxHeight: {
-                                                enabled: true,
-                                                order: 890,
-                                                fn: (data) => {
-                                                  return {
-                                                    ...data,
-                                                    styles: {
-                                                      ...data.styles,
-                                                      overflow: 'auto',
-                                                      maxHeight: 100,
-                                                    },
-                                                  };
-                                                },
-                                              },
-                                            }}
-                                        >
-
-                                          <DropdownItem
-                                              to={`/admin/time/addtime/${e.id}/${e.worker}/${e.workerId._id}`}
-                                              tag={Link}>Add Hours</DropdownItem>
-
-                                          {loggedUser.level >= 4 ?
-                                              <DropdownItem onClick={() => {
-                                                axios.patch(Global.url + `workerdelete/${e.id}/${e.worker}`, {worker: worker})
-                                                    .then(({data}) => {
-
-                                                      window.location.reload()
-                                                      alert('Worker Removed')
-                                                    })
-                                                    .catch(err => {
-                                                      console.log(err.response)
-                                                    })
-                                              }}><span
-                                                  className="text-danger">Delete</span>
-                                              </DropdownItem>
-                                              : null
-                                          }
-
-                                        </DropdownMenu>
-                                      </UncontrolledDropdown>
+                                      <Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment><br/>
+                                      {e.name} - {e.time}<br/>
+                                      <small>{e.jobName}</small><br/>
+                                      <ButtonTwo {...e}></ButtonTwo>
                                     </td>
-                                    <td scope="row"><Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment></td>
-                                    <td scope="row">{e.name}</td>
-                                    <td style={{
-                                      height: "100%",
-                                      paddingTop: "35px",
-                                      paddingLeft: "60px",
-                                      display: "flex",
-                                      flexDirection: "column",
-                                      alignItems: "baseline",
-                                      alignContent: "center"
-                                    }}>
-                                      {e.time}</td>
-                                    <td style={{height: "100%", paddingTop: "35px", paddingLeft: "60px"}}>
-                                      {e.jobName}
-                                    </td>
-
-                                  </tr>
-                                  </tbody>
+                                  </>
+                                }
+                              </tr>
+                            </tbody>
                           )
                         })
                         : null
