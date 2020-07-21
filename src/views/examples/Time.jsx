@@ -263,14 +263,8 @@ class Time extends React.Component {
                     }
                     </tr>
                   </thead>
-
-
                   {times.length === 0 ?  <tbody><tr><td>No workers register</td></tr></tbody>:
                    times.map((e,i)=>{
-<<<<<<< HEAD
-
-=======
->>>>>>> 98855d8080df5792ac0340855e3258fb47810582
                        return(
                         loggedUser.level >= 2 ?
                         <tbody key={i}>
