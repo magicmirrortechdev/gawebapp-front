@@ -278,7 +278,7 @@ class Time extends React.Component {
                                     <ButtonOne {...e}></ButtonOne>
                                   </td>
                                   <td><Moment add={{days:1}} format={"MMM D, YY"}>{e.date}</Moment></td>
-                                  <td>{e.timeId} - {e.name}</td>
+                                  <td>{e.name}</td>
                                   <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px", display:"flex", flexDirection:"column", alignItems:"baseline", alignContent:"center"}}>
                                     {e.time}</td>
                                   <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px"}} >
@@ -313,7 +313,7 @@ class Time extends React.Component {
                                     <ButtonTwo {...e}></ButtonTwo>
                                   </td>
                                   <td><Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment></td>
-                                  <td> {e.timeId} {e.name}</td>
+                                  <td>{e.name}</td>
                                   <td style={{
                                         height: "100%",
                                         paddingTop: "35px",
