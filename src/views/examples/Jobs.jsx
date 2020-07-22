@@ -81,7 +81,7 @@ const ActionButton = (props) => {
 
 const ActionButton2 = (props) => {
   return (
-      <UncontrolledDropdown>
+    <UncontrolledDropdown>
         <DropdownToggle>
           ...
         </DropdownToggle>
@@ -373,6 +373,16 @@ class Jobs extends React.Component {
                                 <td>
                                   {e.dateStart === "Update this field" ? "Update " : <Moment format={"MMM D, YY"}>{e.dateStart}</Moment>} - {e.dateEnd === "Update this field" ? "Update " : <Moment format={"MMM D, YY"}>{e.dateEnd}</Moment>}<br/>
                                   <small>{e.jobName}</small><br/>
+                                  {e.workers.map((worker,i)=>{
+                                    return(
+                                        !worker.workerId ? <span>Worker Delete</span> :
+                                            <span> {worker.workerId.name}{i === e.workers.length-1? '': ','}  </span>
+                                    )
+                                  })}<br/>
+                                  <b>${isNaN(parseFloat(Math.round(total * 100) / 100).toFixed(2))?'Check your quantities and figures in your estimate please':parseFloat(Math.round(total * 100) / 100).toFixed(2)}</b><br/>
+                                  <div className="buttonfloat-right buttonfloat-right-jobs">
+                                    <ActionButton2 {...e}></ActionButton2>
+                                  </div>
                                 </td>
                               </>
                             }

@@ -25,8 +25,8 @@ let loggedUser
 
 const ActionButton = (props) => {
   return(
-      <span className="dropdownButtons">
-    <UncontrolledDropdown>
+    <span className="dropdownButtons">
+      <UncontrolledDropdown>
       <DropdownToggle>
         ...
       </DropdownToggle>
@@ -97,7 +97,7 @@ const ActionButton = (props) => {
         }
       </DropdownMenu>
     </UncontrolledDropdown>
-  </span>
+    </span>
   )
 }
 
