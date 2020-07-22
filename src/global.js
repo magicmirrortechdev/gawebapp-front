@@ -15,7 +15,9 @@ let Global = {
 
     //merchantId: "5ddbe4b14d581e0017f78c46", //local
     merchantId: "5ddbe4b14d581e0017f78c46", // staging
-    //merchantId: "5df7a89cbd23660017c29f1f" //production 
+    //merchantId: "5df7a89cbd23660017c29f1f" //production
+
+    mobileWidth: 1024,
 };
 
 export function compareValues(key, order = 'asc') {

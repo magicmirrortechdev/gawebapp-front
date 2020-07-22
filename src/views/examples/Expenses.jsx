@@ -17,12 +17,63 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-import Global from "../../global";
+import Global, {compareValues} from "../../global";
 var loggedUser
+
+const ActionButton = (props) => {
+  return (
+    <span className="dropdownButtons">
+      <UncontrolledDropdown>
+        <DropdownToggle>
+          ...
+        </DropdownToggle>
+        <DropdownMenu modifiers={{
+          setMaxHeight: {
+            enabled: true,
+            order: 890,
+            fn: (data) => {
+              return {
+                ...data,
+                styles: {
+                  ...data.styles,
+                  overflow: 'auto',
+                  maxHeight: 130,
+                },
+              };
+            },
+          },
+        }}>
+          {
+           loggedUser.level >= 2 ? <DropdownItem to={`/admin/expenses/${props.estimateId}/${props.expense._id}/update`} tag={Link}>Update</DropdownItem> :
+               loggedUser.level === 1 && props.userInEstimate ? <DropdownItem to={`/admin/expenses/${props.estimateId}/${props.expense._id}/update`} tag={Link}>Update</DropdownItem> :
+                   <DropdownItem disabled to={`/admin/expenses/${props.estimateId}/${props.expense._id}/update`} tag={Link}>Update</DropdownItem>
+          }
+          {
+            loggedUser.level >= 4 ?
+              <DropdownItem onClick={()=>{
+                axios.patch(Global.url + `expensedelete/${props.estimateId}/${props.expense._id}`)
+                    .then(({data})=>{
+                      alert('Expense Delete')
+                      window.location.reload()
+                    })
+                    .catch(err => {
+                      console.log('err',err)
+                    })
+              }}><span
+                  className="text-danger">Delete</span>
+              </DropdownItem>
+              : null
+          }
+        </DropdownMenu>
+      </UncontrolledDropdown>
+    </span>
+  )
+}
 
 class Expenses extends React.Component {
   state = {
-    jobs:[]
+    jobs:[],
+    isMobileVersion: false
   };
 
   constructor(props) {
@@ -30,7 +81,18 @@ class Expenses extends React.Component {
     loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
   }
 
+  updateWindowDimensions = () => {
+    this.setState(prevState => {return {...prevState, isMobileVersion : (window.innerWidth < Global.mobileWidth) }})
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateWindowDimensions)
+  }
+
   componentDidMount() {
+    this.updateWindowDimensions()
+    window.addEventListener('resize', this.updateWindowDimensions)
+
     loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
     if(loggedUser.level <=1){
       axios
@@ -64,33 +126,6 @@ class Expenses extends React.Component {
     }
   }
 
-  compareValues(key, order = 'asc') {
-    return function innerSort(a, b) {
-      if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
-        // property doesn't exist on either object
-        return 0;
-      }
-  
-      const varA = (typeof a[key] === 'string')
-        ? a[key].toUpperCase() : a[key];
-      const varB = (typeof b[key] === 'string')
-        ? b[key].toUpperCase() : b[key];
-  
-      let comparison = 0;
-      if (varA > varB) {
-        comparison = 1;
-      } else if (varA < varB) {
-        comparison = -1;
-      }
-      return (
-        (order === 'desc') ? (comparison * -1) : comparison
-      );
-    };
-  }
-
-
-  
-
   render() {
     if (!this.state) return <p>Loading</p>
     let estimateId =""
@@ -111,7 +146,7 @@ class Expenses extends React.Component {
 
       return(estimateId, userInEstimate)
        }) 
-    allExpenses.sort(this.compareValues('date', 'desc'))
+    allExpenses.sort(compareValues('date', 'desc'))
     console.log(loggedUser.level)
     return (
       <>
@@ -128,10 +163,7 @@ class Expenses extends React.Component {
                     </div>
                     <div className="col text-right">
                     <Link to="addexpense">
-                      <p
-                        color="primary"
-                        size="sm" 
-                      >
+                      <p color="primary" size="sm" >
                         Add an Expense
                       </p>
                     </Link>
@@ -142,71 +174,56 @@ class Expenses extends React.Component {
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
-                      <th scope="col"></th>
-                      <th scope="col">Date</th>
-                      <th scope="col">Employee</th>
-                      <th scope="col">Description</th>
-                      <th scope="col">Category</th>
-                      
-                      <th scope="col">Total</th>
+                      {!this.state.isMobileVersion ?
+                        <>
+                          <th scope="col"></th>
+                          <th scope="col">Date</th>
+                          <th scope="col">Employee</th>
+                          <th scope="col">Description</th>
+                          <th scope="col">Category</th>
+                          <th scope="col">Total</th>
+                        </>
+                        :
+                        <th>Details</th>
+                      }
                     </tr>
                   </thead>
-                  
-                       {allExpenses.length === 0 ?  <tbody><tr><td>No expenses register</td></tr></tbody>:
-                        allExpenses.map((e,i)=>{
-                        return(
-                          <tbody key={i}>
-                      
-                          <tr>
-                          <td>
-                            <span className="dropdownButtons">
-                            <UncontrolledDropdown>
-                              <DropdownToggle>
-                                ...
-                              </DropdownToggle>
-                              <DropdownMenu>
-                                 {
-                                   loggedUser.level >= 2 ? <DropdownItem to={`/admin/expenses/${e.estimateId}/${e.expense._id}/update`} tag={Link}>Update</DropdownItem> : 
-                                   loggedUser.level === 1 && userInEstimate ? <DropdownItem to={`/admin/expenses/${e.estimateId}/${e.expense._id}/update`} tag={Link}>Update</DropdownItem> :
-                                   <DropdownItem disabled to={`/admin/expenses/${e.estimateId}/${e.expense._id}/update`} tag={Link}>Update</DropdownItem>
-                                 }
-                                {
-                                  loggedUser.level >= 4 ?
-                                  <DropdownItem onClick={()=>{
-                                  axios.patch(Global.url + `expensedelete/${e.estimateId}/${e.expense._id}`)
-                                  .then(({data})=>{
-                                    alert('Expense Delete')
-                                        window.location.reload()
-                                  })
-                                  .catch(err => {
-                                    console.log('err',err)
-                                  })
-                                }}><span
-                                    className="text-danger">Delete</span>
-                                </DropdownItem>
-                                :null
-                              }
-                              </DropdownMenu>
-                            </UncontrolledDropdown>
-                          </span>
-                          </td>
-                          <td>
-                          <Moment add={{days: 1}} date={new Date(e.expense.date)}  format={"MMM D, YY"} />
-                          </td>
-                          <td>{e.expense.workerId && e.expense.workerId.name}</td>
-                          <th scope="row" >{e.expense.description}</th>
-                          <td>{e.expense.category}</td>
-                          
-                          <td>$ {parseFloat(Math.round(e.expense.total * 100) / 100).toFixed(2)}</td>
-                          
-                          </tr>                                               
-                        </tbody>
-                       )
-                       })}
-                      
-                      
-                      
-                      
+                  <tbody>
+                    {allExpenses.length === 0 ?  <tbody><tr><td>No expenses register</td></tr></tbody>:
+                      allExpenses.map((e,i)=>{
+                      return(
+                        <tr>
+                          {!this.state.isMobileVersion ?
+                            <>
+                              <td>
+                                <ActionButton {...e} userInEstimate={userInEstimate}></ActionButton>
+                              </td>
+                              <td>
+                                <Moment add={{days: 1}} date={new Date(e.expense.date)}  format={"MMM D, YY"} />
+                              </td>
+                              <td>{e.expense.workerId && e.expense.workerId.name}</td>
+                              <td>{e.expense.description}</td>
+                              <td>{e.expense.category}</td>
+                              <td>$ {parseFloat(Math.round(e.expense.total * 100) / 100).toFixed(2)}</td>
+                            </>
+                            :
+                            <>
+                              <td>
+                                <Moment add={{days: 1}} date={new Date(e.expense.date)}  format={"MMM D, YY"} /><br/>
+                                {e.expense.workerId && e.expense.workerId.name}<br/>
+                                {e.expense.description}<br/>
+                                {e.expense.category}<br/>
+                                $ {parseFloat(Math.round(e.expense.total * 100) / 100).toFixed(2)}
+                                <div className="buttonfloat-right buttonfloat-right-estimates">
+                                  <ActionButton {...e} userInEstimate={userInEstimate}></ActionButton>
+                                </div>
+                              </td>
+                            </>
+                          }
+                        </tr>
+                     )
+                   })}
+                  </tbody>
                 </Table>
               </Card>
             </Col>

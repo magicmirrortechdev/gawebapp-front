@@ -133,7 +133,7 @@ class Time extends React.Component {
   }
 
   updateWindowDimensions = () => {
-    this.setState(prevState => {return {...prevState, isMobileVersion : (window.innerWidth < 768) }})
+    this.setState(prevState => {return {...prevState, isMobileVersion : (window.innerWidth < Global.mobileWidth) }})
   }
 
   componentWillUnmount() {
@@ -143,6 +143,7 @@ class Time extends React.Component {
   componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
+
     loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
     if(loggedUser.level <=1){
       axios
@@ -235,10 +236,7 @@ class Time extends React.Component {
                     loggedUser.level >= 1 ?
                     <div className="col text-right">
                     <Link to="addtime">
-                      <p
-                        color="primary"
-                        size="sm" 
-                      >
+                      <p color="primary" size="sm">
                         Add Time
                       </p>
                     </Link>
@@ -251,7 +249,7 @@ class Time extends React.Component {
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
-                    { !this.state.isMobileVersion ?
+                      { !this.state.isMobileVersion ?
                         <>
                           <th scope="col"></th>
                           <th scope="col">Date</th>
@@ -261,7 +259,7 @@ class Time extends React.Component {
                         </>
                       :
                       <th>Details</th>
-                    }
+                      }
                     </tr>
                   </thead>
 
@@ -273,25 +271,27 @@ class Time extends React.Component {
                         <tbody key={i}>
                           <tr>
                             {!this.state.isMobileVersion ?
-                                <>
-                                  <td >
-                                    <ButtonOne {...e}></ButtonOne>
-                                  </td>
-                                  <td><Moment add={{days:1}} format={"MMM D, YY"}>{e.date}</Moment></td>
-                                  <td>{e.name}</td>
-                                  <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px", display:"flex", flexDirection:"column", alignItems:"baseline", alignContent:"center"}}>
-                                    {e.time}</td>
-                                  <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px"}} >
-                                    <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
-                                  </td>
-                                </>
+                              <>
+                                <td >
+                                  <ButtonOne {...e}></ButtonOne>
+                                </td>
+                                <td><Moment add={{days:1}} format={"MMM D, YY"}>{e.date}</Moment></td>
+                                <td>{e.name}</td>
+                                <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px", display:"flex", flexDirection:"column", alignItems:"baseline", alignContent:"center"}}>
+                                  {e.time}</td>
+                                <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px"}} >
+                                  <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
+                                </td>
+                              </>
                               :
                               <>
                                 <td>
                                   <Moment add={{days:1}} format={"MMM D, YY"}>{e.date}</Moment><br/>
                                   {e.name} - {e.time}<br/>
                                   <small>{e.jobName}</small> <br/>
-                                  <ButtonOne {...e}></ButtonOne>
+                                  <div className="buttonfloat-right buttonfloat-right-times">
+                                    <ButtonOne {...e}></ButtonOne>
+                                  </div>
                                 </td>
                               </>
                             }
@@ -334,7 +334,9 @@ class Time extends React.Component {
                                       <Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment><br/>
                                       {e.name} - {e.time}<br/>
                                       <small>{e.jobName}</small><br/>
-                                      <ButtonTwo {...e}></ButtonTwo>
+                                      <div className="buttonfloat-right buttonfloat-right-times">
+                                        <ButtonTwo {...e}></ButtonTwo>
+                                      </div>
                                     </td>
                                   </>
                                 }

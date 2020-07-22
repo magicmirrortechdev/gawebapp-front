@@ -16,6 +16,8 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
+import Moment from "react-moment";
+import moment from 'moment/min/moment-with-locales';
 
 let loggedUser;
 
@@ -55,18 +57,18 @@ class UpdateExpense extends React.Component {
             let category = ''
             let description = ''
             let total
-              const expenses = data.estimate.expenses
-              expenses.map((e,i)=>{
-                if(e._id === this.props.match.params.expenseId){
-                  img = e.img
-                  date = e.date
-                  vendor = e.vendor
-                  category = e.category
-                  description = e.description
-                  total = e.total
-                }
-                return {img, date, vendor, description, category, total}
-              })
+            const expenses = data.estimate.expenses
+            expenses.map((e,i)=>{
+              if(e._id === this.props.match.params.expenseId){
+                img = e.img
+                date = moment(e.date).format("YYYY-MM-DD")
+                vendor = e.vendor
+                category = e.category
+                description = e.description
+                total = e.total
+              }
+              return {img, date, vendor, description, category, total}
+            })
             return {
               ...prevState,
               expenses: data.estimate.expenses,
@@ -78,6 +80,7 @@ class UpdateExpense extends React.Component {
               total: total
             }
           })
+          console.log(this.state);
         })
         .catch(err => {
           console.log(err)

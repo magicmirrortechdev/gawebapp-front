@@ -120,3 +120,26 @@ div.ReactTags__selected a.ReactTags__remove {
     }
 
 }
+
+.buttonfloat-right {
+    position: relative;
+    float: right;
+    height: 1px;
+}
+
+.buttonfloat-right-times {
+    top: -50px;
+}
+
+.buttonfloat-right-estimates {
+    right: 50px;
+    bottom: 35px;
+}
+
+@media screen and (max-width: 400px) {
+
+    .buttonfloat-right-estimates {
+        right: -10px;
+        bottom: 60px;
+    }
+}
