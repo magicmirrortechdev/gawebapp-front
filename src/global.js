@@ -1,12 +1,12 @@
 let Global = {
-    url: "http://localhost:3000/",
-    //url: "https://greenacorn.herokuapp.com/",
+    //url: "http://localhost:3000/",
+    url: "https://greenacorn.herokuapp.com/",
     //url: "https://green-acorn-app.herokuapp.com/",
 
 
     //testing && production
-    urlEnvironment: "local",
-    //urlEnvironment: "staging",
+    //urlEnvironment: "local",
+    urlEnvironment: "staging",
     //urlEnvironment: "production",
 
     //urlArgyle: "https://argyle-api-dev.herokuapp.com", //local
@@ -27,10 +27,10 @@ export function compareValues(key, order = 'asc') {
             return 0;
         }
 
-        const varA = (typeof a[key] === 'string')
-            ? a[key].toUpperCase() : a[key];
-        const varB = (typeof b[key] === 'string')
-            ? b[key].toUpperCase() : b[key];
+        const varA = (typeof a[key] === 'string') ?
+            a[key].toUpperCase() : a[key];
+        const varB = (typeof b[key] === 'string') ?
+            b[key].toUpperCase() : b[key];
 
         let comparison = 0;
         if (varA > varB) {

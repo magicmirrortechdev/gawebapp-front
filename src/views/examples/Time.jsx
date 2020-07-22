@@ -45,10 +45,7 @@ const ButtonOne = (props) => {
               },
             },
           }}>
-
-        <DropdownItem to={`/admin/time/addtime/${props.estimateId}/${props.worker}/${props.workerId._id}`} tag={Link}>Add Hours</DropdownItem>
         <DropdownItem to={`/admin/time/updatetime/${props.estimateId}/${props.worker}/${props.workerId._id}/${props.timeId}`} tag={Link}>Update Hours</DropdownItem>
-
         { loggedUser.level >= 4 ?
             <DropdownItem onClick={()=>{
               axios.patch(Global.url + `deletetime/${props.estimateId}/${props.workerId._id}/${props.timeId}`, {}).then(({data}) => {
@@ -92,10 +89,6 @@ const ButtonTwo = (props) => {
                 },
               },
             }}>
-
-          <DropdownItem
-              to={`/admin/time/addtime/${props.estimateId}/${props.worker}/${props.workerId._id}`}
-              tag={Link}>Add Hours</DropdownItem>
           <DropdownItem to={`/admin/time/updatetime/${props.estimateId}/${props.worker}/${props.workerId._id}/${props.timeId}`} tag={Link}>Update Hours</DropdownItem>
 
           {loggedUser.level >= 4 ?
@@ -262,8 +255,6 @@ class Time extends React.Component {
                       }
                     </tr>
                   </thead>
-
-
                   {times.length === 0 ?  <tbody><tr><td>No workers register</td></tr></tbody>:
                    times.map((e,i)=>{
                        return(

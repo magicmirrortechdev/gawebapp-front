@@ -77,8 +77,9 @@ class Invoices extends React.Component {
     let id
     let jobName
     this.state.estimates.map((e,i)=>{
+      client = e.clientId
       return e.invoices.map(ex =>{
-        allInvoices.push(ex)
+        allInvoices.push({invoice:ex, client:client})
         return(allInvoices)
       })
     })
@@ -86,12 +87,10 @@ class Invoices extends React.Component {
       if(!e.clientId) return <th>Client Delete</th>
       if(!e.workers)return <th scope="row">Worker Delete</th>
       estimateId = e._id
-      client = e.clientId.name 
       id = e._id
       jobName = e.jobName
       userInEstimate = e.workers.filter(wx => wx.workerId && wx.workerId._id === loggedUser._id).length > 0
     })
-
     return (
       <>
         <Header />
@@ -132,14 +131,18 @@ class Invoices extends React.Component {
                       <th scope="col">Balance</th>
                     </tr>
                   </thead>
-                  {
-                       allInvoices.length === 0 ?<tbody><tr><td>No invoices register</td></tr></tbody> : allInvoices.map((e,i) =>{
-                          const invoiceIndex = i + 1
-                          const paid = e.payment.reduce((acc, current, i) => acc + isNaN(current.paid) ? 0 : current.paid, 0) 
-                          const total = e.total - paid
-                          const total2 = e.total
+                  {   
 
-                          const paidAcc = e.payment.map((e,i)=>{
+                       allInvoices.length === 0 ?<tbody><tr><td>No invoices register</td></tr></tbody> : allInvoices.map((e,i) =>{
+                         console.log(e)
+                          let nameClient = e.client === null || e.client.name === undefined || !e.client.name ? <p>Client Delete</p>: e.client.name 
+
+                          const invoiceIndex = i + 1
+                          const paid = e.invoice.payment.reduce((acc, current, i) => acc + isNaN(current.paid) ? 0 : current.paid, 0) 
+                          const total = e.invoice.total - paid
+                          const total2 = e.invoice.total
+
+                          const paidAcc = e.invoice.payment.map((e,i)=>{
                             let sum = 0
                               sum += e.paid||0
                             
@@ -147,7 +150,6 @@ class Invoices extends React.Component {
                             return sum
                           })
                           const paidOk = this.sum(paidAcc)
-                          
                           return(
                             <tbody key={i}>
                         <tr>
@@ -158,21 +160,21 @@ class Invoices extends React.Component {
                                 ...
                               </DropdownToggle>
                               <DropdownMenu>{
-                                 e.total - paid === 0 ? <DropdownItem disabled to={`/admin/invoices/${id}/${e._id}`} tag={Link}>Accept Payment</DropdownItem> :
-                                <DropdownItem to={`/admin/invoices/${e._id}/${id}`} tag={Link}>Accept Payment</DropdownItem>
+                                 e.invoice.total - paid === 0 ? <DropdownItem disabled to={`/admin/invoices/${id}/${e.invoice._id}`} tag={Link}>Accept Payment</DropdownItem> :
+                                <DropdownItem to={`/admin/invoices/${e.invoice._id}/${id}`} tag={Link}>Accept Payment</DropdownItem>
                               } 
                                 {
-                                   loggedUser.level >= 3 ? <DropdownItem to={`/admin/invoices/${estimateId}/${e._id}/update`} tag={Link}>Update</DropdownItem> : 
-                                   loggedUser.level === 2 && userInEstimate ? <DropdownItem to={`/admin/invoices/${estimateId}/${e._id}/update`} tag={Link}>Update</DropdownItem> :
-                                   <DropdownItem disabled to={`/admin/invoices/${estimateId}/${e._id}/update`} tag={Link}>Update</DropdownItem>
+                                   loggedUser.level >= 3 ? <DropdownItem to={`/admin/invoices/${estimateId}/${e.invoice._id}/update`} tag={Link}>Update</DropdownItem> : 
+                                   loggedUser.level === 2 && userInEstimate ? <DropdownItem to={`/admin/invoices/${estimateId}/${e.invoice._id}/update`} tag={Link}>Update</DropdownItem> :
+                                   <DropdownItem disabled to={`/admin/invoices/${estimateId}/${e.invoice._id}/update`} tag={Link}>Update</DropdownItem>
                                  }
 
-                                <DropdownItem to={`/admin/invoices/${estimateId}/${e._id}/email`} tag={Link}>Send by email</DropdownItem>
+                                <DropdownItem to={`/admin/invoices/${estimateId}/${e.invoice._id}/email`} tag={Link}>Send by email</DropdownItem>
                                
                                 {
                                   loggedUser.level >= 4 ?
                                   <DropdownItem onClick={()=>{
-                                    axios.patch(Global.url + `invoicedelete/${id}/${e._id}`)
+                                    axios.patch(Global.url + `invoicedelete/${id}/${e.invoice._id}`)
                                     .then(({data})=>{
                                         alert('Invoice Delete ')
                                         window.location.reload()
@@ -192,19 +194,19 @@ class Invoices extends React.Component {
                           </div>
                         </td>
                         <td>
-                          <Button id={"toggle" + e._id} color="primary"><i className="ni ni-bold-down"></i></Button>
+                          <Button id={"toggle" + e.invoice._id} color="primary"><i className="ni ni-bold-down"></i></Button>
                         </td>
                         
-                        <th scope="row" >{!client ? 'Client Delete' : client }</th>
+                        <th scope="row" >{!nameClient ? 'Client Delete' : nameClient }</th>
                         <td><Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment></td>
-                        <td>{e.total-paid === 0 ? 'Paid' : e.status}</td>
-                        <td>${parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}</td> 
+                        <td>{e.invoice.total-paid === 0 ? 'Paid' : e.invoice.status}</td>
+                        <td>${parseFloat(Math.round(e.invoice.total * 100) / 100).toFixed(2)}</td> 
                         <td>${parseFloat(Math.round(total * 100) / 100).toFixed(2)}</td>                       
                         
                         </tr>
                         <tr>
                             <td colSpan={7}>
-                            <UncontrolledCollapse toggler={"#toggle" + e._id}>
+                            <UncontrolledCollapse toggler={"#toggle" + e.invoice._id}>
                                 <Card>
                                   <CardBody>
                                   <h3>Invoice # {invoiceIndex} from Job:  {jobName}</h3>
@@ -221,7 +223,7 @@ class Invoices extends React.Component {
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    {e.payment.length === 0 ? <tbody><tr><td>No payments register</td></tr></tbody> :  e.payment.map((e,i)=>{
+                                                    {e.invoice.payment.length === 0 ? <tbody><tr><td>No payments register</td></tr></tbody> :  e.invoice.payment.map((e,i)=>{
                                                       const paymentIndex = i +1
                                                       return(
                                                         

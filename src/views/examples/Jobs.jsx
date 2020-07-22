@@ -244,7 +244,6 @@ class Jobs extends React.Component {
   }
 
   render() {
-    console.log('Aqui está el state', this.state )
     if (!this.state) return <p>Loading</p>
     return (
       <>
