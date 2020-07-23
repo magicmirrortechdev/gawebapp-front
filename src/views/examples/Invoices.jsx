@@ -80,6 +80,7 @@ const ActionButton = (props) => {
 const ActionDropDown = (props) => {
   return (
     <UncontrolledCollapse toggler={"#toggle" + props.invoice._id}>
+      {!props.isMobileVersion ?
         <Card>
           <CardBody>
             <h3>Invoice # {props.invoiceIndex} from Job: {props.jobName}</h3>
@@ -115,7 +116,40 @@ const ActionDropDown = (props) => {
             </Table>
           </CardBody>
         </Card>
-      </UncontrolledCollapse>
+        :
+        <>
+          <div className="col-md-12"><b>Invoice # {props.invoiceIndex} from Job: {props.jobName}</b></div><br/>
+          <Table
+              className="align-items-center table-flush col-xs-12">
+            <thead className="thead-light">
+              <tr>
+                <th scope="col">Payments</th>
+              </tr>
+            </thead>
+            <tbody>
+              {props.invoice.payment.length === 0 ?
+                <tr>
+                  <td>No payments register</td>
+                </tr>
+                : props.invoice.payment.map((e, i) => {
+                  const paymentIndex = i + 1
+                  return (
+                    <tr key={i}>
+                      <td>
+                        Payment # {paymentIndex}<br/>
+                        <Moment format={"MMM D, YY"}>{e.date}</Moment><br/>
+                        $ {isNaN(parseFloat(Math.round(props.paid * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(props.paid * 100) / 100).toFixed(2)}<br/>
+                        $ {parseFloat(Math.round((props.total2 - props.paidOk[i]) * 100) / 100).toFixed(2)}
+                      </td>
+                    </tr>
+                  )
+                })
+              }
+            </tbody>
+          </Table>
+        </>
+      }
+    </UncontrolledCollapse>
   )
 }
 
@@ -164,7 +198,7 @@ const RowInvoice = (props) =>{
             </td>
           </tr>
           <tr>
-            <td>
+            <td className="tdMobile">
               <ActionDropDown {...props}></ActionDropDown>
             </td>
           </tr>

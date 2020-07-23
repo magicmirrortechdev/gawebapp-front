@@ -140,17 +140,24 @@ div.ReactTags__selected a.ReactTags__remove {
     top: -50px;
 }
 
+.autowidth {
+    width: auto;
+}
+
 @media screen and (max-width: 400px) {
     .buttonfloat-right-estimates {
         right: -10px;
         bottom: 60px;
     }
-
 }
 
 @media screen and (max-width: 1024px) {
     .dropdown-menu .dropdown-item {
         padding: .4rem .8rem;
         font-size: 0.875rem;
+    }
+
+    .card .table .tdMobile {
+        white-space: pre-wrap;
     }
 }
