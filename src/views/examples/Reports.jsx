@@ -29,8 +29,10 @@ import Global from "../../global";
 import Header from "components/Headers/Header.jsx";
 import ReportJobs from "./reports/ReportJobs";
 import ReportWorkers from "./reports/ReportWorkers";
+import PDFViewer from 'pdf-viewer-reactjs';
 
 let loggedUser;
+let pdfFile;
 
 class Reports extends React.Component {
     state = {
@@ -38,7 +40,8 @@ class Reports extends React.Component {
         workers: [],
         activeTab: '1',
         buttonActive: '1',
-        modal: false
+        modal: false,
+        extension: ''
     };
 
     constructor(props) {
@@ -74,6 +77,8 @@ class Reports extends React.Component {
                     })
                     if(img !== ''){
                         console.log("img>>>> ", img.substring(img.length - 3, img.length).toLowerCase());
+                        pdfFile = img;
+                        console.log(pdfFile);
                     }
 
                     return {
@@ -409,7 +414,20 @@ class Reports extends React.Component {
                 <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                     <ModalHeader toggle={this.toggleModal}> Expense detail</ModalHeader>
                     <ModalBody>
-                        {this.state.img && <img width="100%" height="100%" src={this.state.img} alt="photo_url" />}
+                        {this.state.img && this.state.extension !=='pdf'?
+                            <img width="100%" height="100%" src={this.state.img} alt="photo_url" />
+                            :null
+                        }
+
+                        {this.state.img && this.state.extension === 'pdf' ?
+                            <PDFViewer
+                                document={{
+                                    url: pdfFile,
+                                }}
+                            />
+                            : null
+                        }
+
                     </ModalBody>
                     <ModalFooter>
                         <Button color="primary" onClick={this.toggleModal}>Close</Button>
