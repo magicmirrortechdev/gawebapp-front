@@ -2,50 +2,41 @@ import React from 'react';
 import {Button, Card, Table, UncontrolledCollapse} from "reactstrap";
 import CardBody from "reactstrap/es/CardBody";
 import Moment from 'react-moment'
+import {compareValues} from  "../../../global";
 
 class ReportJobs extends React.Component{
-    compareValues(key, order = 'asc') {
-    return function innerSort(a, b) {
-      if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
-        // property doesn't exist on either object
-        return 0;
-      }
-  
-      const varA = (typeof a[key] === 'string')
-        ? a[key].toUpperCase() : a[key];
-      const varB = (typeof b[key] === 'string')
-        ? b[key].toUpperCase() : b[key];
-  
-      let comparison = 0;
-      if (varA > varB) {
-        comparison = 1;
-      } else if (varA < varB) {
-        comparison = -1;
-      }
-      return (
-        (order === 'desc') ? (comparison * -1) : comparison
-      );
-    };
+
+    handleModal = (estimateId, expenseId ) => (e) =>{
+        this.props.openModal(estimateId, expenseId)
     }
+
     render() {
         return (
             <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">
                 <tr>
-                    <th></th>
-                    <th scope="col">Job Name</th>
-                    <th scope="col">Invoices</th>
-                    <th scope="col">Expenses</th>
-                    <th scope="col">Effective Labor</th>
-                    <th scope="col">Profit</th>
+                    {!this.props.isMobileVersion ?
+                        <>
+                            <th></th>
+                            <th scope="col">Job Name</th>
+                            <th scope="col">Invoices</th>
+                            <th scope="col">Expenses</th>
+                            <th scope="col">Effective Labor</th>
+                            <th scope="col">Profit</th>
+                        </>
+                        :
+                        <>
+                            <th>Details</th>
+                        </>
+                    }
                 </tr>
                 </thead>
-
-                {this.props.jobs.length === 0 ? <tbody>
+                <tbody>
+                    {this.props.jobs.length === 0 ?
                     <tr>
                         <td>No Jobs register</td>
                     </tr>
-                    </tbody> :
+                    :
                     this.props.jobs.map((e, i) => {
                         if(!e.clientId) return <th>Client Delete</th>
                         let totalEstimate = e.items.reduce((acc, cv, i)=> acc +cv.subtotal,0)
@@ -76,7 +67,7 @@ class ReportJobs extends React.Component{
                             paymentWxTotal = timeWx * paymentWx
                             timeTotal.push(paymentWxTotal)
                             effectiveTotal.push(effectiveWxTotal)
-                        
+
                             payment.push(paymentWx)
                             effective.push(effectiveWx)
                             time.push(timeWx)
@@ -89,23 +80,23 @@ class ReportJobs extends React.Component{
                         let totalProfit = !totalEffective ? totalInvoices - totalExpenses : totalInvoices - totalExpenses - totalEffective;
                         let jobName = e.jobName
                         let nameClient = jobName.split('-')[0]
-                        e.invoices.sort(this.compareValues('date','desc'))
-                        e.expenses.sort(this.compareValues('date','desc'))
+                        e.invoices.sort(compareValues('date','desc'))
+                        e.expenses.sort(compareValues('date','desc'))
 
                         return (
-                            <tbody key={i}>
-                            <tr>
-                                <td>
-                                    <Button id={"toggle" + i} color="primary"><i
-                                        className="ni ni-bold-down"></i></Button>
-                                </td>
-                                <td>{e.jobName}<br/> <b>Estimate total:</b> ${parseFloat(Math.round(totalEstimate * 100) / 100).toFixed(2)}</td>
-                                <td>${parseFloat(Math.round(totalInvoices * 100) / 100).toFixed(2)}</td>
-                                <td>${parseFloat(Math.round(totalExpenses * 100) / 100).toFixed(2)}</td>
-                                <td>${!totalTime ? 0 :  parseFloat(Math.round(totalEffective * 100) / 100).toFixed(2)}</td>
-                                <td>${parseFloat(Math.round(totalProfit * 100) / 100).toFixed(2)}</td>
-                            </tr>
-                            <tr>
+                            <>
+                                <tr key={i}>
+                                    <td>
+                                        <Button id={"toggle" + i} color="primary"><i
+                                            className="ni ni-bold-down"></i></Button>
+                                    </td>
+                                    <td>{e.jobName}<br/> <b>Estimate total:</b> ${parseFloat(Math.round(totalEstimate * 100) / 100).toFixed(2)}</td>
+                                    <td>${parseFloat(Math.round(totalInvoices * 100) / 100).toFixed(2)}</td>
+                                    <td>${parseFloat(Math.round(totalExpenses * 100) / 100).toFixed(2)}</td>
+                                    <td>${!totalTime ? 0 :  parseFloat(Math.round(totalEffective * 100) / 100).toFixed(2)}</td>
+                                    <td>${parseFloat(Math.round(totalProfit * 100) / 100).toFixed(2)}</td>
+                                </tr>
+                                <tr>
                                 <td colSpan={7}>
                                     <UncontrolledCollapse toggler={"#toggle" + i}>
                                         <Card>
@@ -120,7 +111,6 @@ class ReportJobs extends React.Component{
                                                         <th scope="col">Client Name</th>
                                                         <th scope="col">Total</th>
                                                         <th scope="col">Status</th>
-
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -135,10 +125,10 @@ class ReportJobs extends React.Component{
                                                             <td align="right">$ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}</td>
                                                             <td>{ e.total-paid === 0 ? 'Paid' : e.status}</td>
                                                         </tr>
-                                                        
+
                                                         )
                                                     })
-                                                        
+
                                                     }
                                                         <tr>
                                                             <td></td>
@@ -153,41 +143,40 @@ class ReportJobs extends React.Component{
                                                     className="align-items-center table-flush col-md-6 col-xs-12"
                                                     responsive>
                                                     <thead className="thead-light">
-                                                    <tr>
-                                                        <th></th>
-                                                        <th scope="col">Worker</th>
-                                                        <th scope="col">Payroll Expense</th>
-                                                        <th scope="col">Labor Expense
-                                                            (Efective Rate)
-                                                        </th>
-                                                        <th scope="col">Hours</th>
-                                                    </tr>
+                                                        <tr>
+                                                            <th></th>
+                                                            <th scope="col">Worker</th>
+                                                            <th scope="col">Payroll Expense</th>
+                                                            <th scope="col">Labor Expense
+                                                                (Efective Rate)
+                                                            </th>
+                                                            <th scope="col">Hours</th>
+                                                        </tr>
                                                     </thead>
                                                     <tbody>
-                                                    {e.workers.length === 0 ? <tr><td>No workers</td></tr>: e.workers.sort(this.compareValues('date','asc')).map((wx, i) => {
+                                                    {e.workers.length === 0 ? <tr><td>No workers</td></tr>: e.workers.sort(compareValues('date','asc')).map((wx, i) => {
                                                             if(!wx.workerId)return <td>Worker Delete</td>
                                                             let time = wx.time ? (wx.time.reduce((acc, current, i) => acc + current.hours, 0)) : 0;
                                                             let time2 = []
-                                                            let hoursA 
+                                                            let hoursA
                                                             time2.push(time)
                                                             time2.reduce((ac,cv)=> ac + cv, 0)
                                                             let effective = wx.workerId.effective ? wx.workerId.effective : 0;
                                                             let payment = wx.workerId.payment ? wx.workerId.payment : 0;
                                                             let hoursWor = wx.time.map((e,i)=>{ return e.hours})
                                                             hoursA = hoursWor.map(e=>e)
-                                                            console.log(wx.time)
                                                             return (
                                                                 <>
-                                                                <tr>
-                                                                    <td>
-                                                                        <Button id={"toggle" + wx._id} color="primary"><i
-                                                                            className="ni ni-bold-down"></i></Button>
-                                                                    </td>
-                                                                    <td>{wx.workerId.name}</td>
-                                                                    <td align="right">$ {isNaN(parseFloat(Math.round((payment*time) * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round((payment*time) * 100) / 100).toFixed(2)} </td>
-                                                                    <td align="right">$ {isNaN(parseFloat(Math.round((effective*time) * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round((effective*time) * 100) / 100).toFixed(2)}</td>
-                                                                    <td align="right">{isNaN(time) ? 0 : time}</td>
-                                                                </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <Button id={"toggle" + wx._id} color="primary"><i
+                                                                                className="ni ni-bold-down"></i></Button>
+                                                                        </td>
+                                                                        <td>{wx.workerId.name}</td>
+                                                                        <td align="right">$ {isNaN(parseFloat(Math.round((payment*time) * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round((payment*time) * 100) / 100).toFixed(2)} </td>
+                                                                        <td align="right">$ {isNaN(parseFloat(Math.round((effective*time) * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round((effective*time) * 100) / 100).toFixed(2)}</td>
+                                                                        <td align="right">{isNaN(time) ? 0 : time}</td>
+                                                                    </tr>
                                                                 <tr>
                                                                 <td colSpan={7}>
                                                                     <UncontrolledCollapse toggler={"#toggle" + wx._id}>
@@ -200,19 +189,17 @@ class ReportJobs extends React.Component{
                                                                                 <tr>
                                                                                     <th scope="col">Date</th>
                                                                                     <th scope="col">Hours</th>
-
-
                                                                                 </tr>
                                                                                 </thead>
                                                                                 <tbody>
                                                                                     {
-                                                                                    wx.time.sort(this.compareValues('date','desc')).map((e)=>{
+                                                                                    wx.time.sort(compareValues('date','desc')).map((e)=>{
                                                                                         return(
                                                                                             <tr>
                                                                                             <td><Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment></td>
                                                                                             <td>{e.hours}</td>
                                                                                             </tr>
-                                                                                             
+
                                                                                         )})}
                                                                                 </tbody>
                                                                             </Table>
@@ -241,6 +228,7 @@ class ReportJobs extends React.Component{
                                                     responsive>
                                                     <thead className="thead-light">
                                                     <tr>
+                                                        <th></th>
                                                         <th scope="col">Date</th>
                                                         <th scope="col">Expense Type</th>
                                                         <th scope="col">Amount</th>
@@ -250,27 +238,27 @@ class ReportJobs extends React.Component{
                                                     </thead>
                                                     <tbody>
                                                     {e.expenses.length === 0 ? <tbody><tr><td>No expenses register</td></tr></tbody>:e.expenses.map((ex, ix) => {
-                                                            return (
-                                                                <tr>
-                                                                    <td >
+                                                        return (
+                                                            <tr>
+                                                                <td><Button onClick={this.handleModal(e._id, ex._id)}><i className="fas fa-receipt"></i> View</Button> </td>
+                                                                <td>
                                                                     <Moment add={{days: 1}} format={"MMM D, YY"}>
                                                                     {ex.date}
                                                                     </Moment>
-                                                                    </td>
-                                                                    <td>{ex.category}</td>
-                                                                    <td align="right">$ {parseFloat(Math.round(ex.total * 100) / 100).toFixed(2)}</td>
-                                                                    <td>{ex.vendor}</td>
-                                                                    <td>{ex.description}</td>
-                                                                </tr>
-                                                            )
-                                                        }
+                                                                </td>
+                                                                <td>{ex.category}</td>
+                                                                <td align="right">$ {parseFloat(Math.round(ex.total * 100) / 100).toFixed(2)}</td>
+                                                                <td>{ex.vendor}</td>
+                                                                <td>{ex.description}</td>
+                                                            </tr>
+                                                        )
+                                                    }
                                                     )}
-                                                                <tr>
-                                                                    
-                                                                    <td></td>
-                                                                    <td>Total:</td>
-                                                                    <td align="right">$ {!totalExpenses ? 0 :  parseFloat(Math.round(totalExpenses * 100) / 100).toFixed(2)}</td>
-                                                                </tr>
+                                                        <tr>
+                                                            <td></td>
+                                                            <td>Total:</td>
+                                                            <td align="right">$ {!totalExpenses ? 0 :  parseFloat(Math.round(totalExpenses * 100) / 100).toFixed(2)}</td>
+                                                        </tr>
                                                     </tbody>
                                                 </Table>
                                             </CardBody>
@@ -278,10 +266,10 @@ class ReportJobs extends React.Component{
                                     </UncontrolledCollapse>
                                 </td>
                             </tr>
-
-                            </tbody>
+                            </>
                         )
                     })}
+                </tbody>
             </Table>
         )
     }

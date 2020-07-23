@@ -17,7 +17,11 @@ import {
     Nav,
     NavItem,
     NavLink,
-    Button
+    Button,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader
 } from "reactstrap";
 // core components
 import Global from "../../global";
@@ -33,7 +37,8 @@ class Reports extends React.Component {
         jobs: [],
         workers: [],
         activeTab: '1',
-        buttonActive: '1'
+        buttonActive: '1',
+        modal: false
     };
 
     constructor(props) {
@@ -48,19 +53,61 @@ class Reports extends React.Component {
             });
         }
     }
+
+    toggleModal = () => {
+        this.setState({
+            modal: !this.state.modal
+        })
+    };
+
+    handleOpenModal = (estimateId, expenseId) => {
+        axios.get(Global.url + `estimatedetail/${estimateId}`)
+            .then(({data}) => {
+                this.setState(prevState => {
+                    let img = '';
+                    const expenses = data.estimate.expenses
+                    expenses.map((e, i) => {
+                        if (e._id === expenseId) {
+                            img = e.img
+                        }
+                        return {img}
+                    })
+                    if(img !== ''){
+                        console.log("img>>>> ", img.substring(img.length - 3, img.length).toLowerCase());
+                    }
+
+                    return {
+                        ...prevState,
+                        img: img,
+                        modal: true,
+                        extension: img === ''? '': img.substring(img.length - 3, img.length).toLowerCase()
+                    }
+                });
+            })
+    }
+
     handleInput = e => {
-    e.persist()
-    this.setState(prevState => ({
-      ...prevState,
-      [e.target.name]: e.target.value
-    }))
+        e.persist()
+        this.setState(prevState => ({
+          ...prevState,
+          [e.target.name]: e.target.value
+        }))
+    }
+
+    updateWindowDimensions = () => {
+        this.setState(prevState => {return {...prevState, isMobileVersion : (window.innerWidth < Global.mobileWidth) }})
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateWindowDimensions)
     }
 
     componentDidMount(props) {
+        this.updateWindowDimensions()
+        window.addEventListener('resize', this.updateWindowDimensions)
 
         axios.get(Global.url + `openjobs`)
             .then(({data}) => {
-                console.log(data);
                 this.setState(prevState => {
                     return {
                         ...prevState,
@@ -74,7 +121,6 @@ class Reports extends React.Component {
 
         axios.get(Global.url + `workers`)
             .then(({data}) => {
-                console.log(data);
                 this.setState(prevState => {
                     return {
                         ...prevState,
@@ -163,37 +209,36 @@ class Reports extends React.Component {
 
   clearFilter= ()=>{
     axios.get(Global.url + `openjobs`)
-            .then(({data}) => {
-                console.log(data);
-                this.setState(prevState => {
-                    return {
-                        ...prevState,
-                        buttonActive: "1",
-                        activeTab: "1",
-                        ...data
-                    }
-                })
+        .then(({data}) => {
+            console.log(data);
+            this.setState(prevState => {
+                return {
+                    ...prevState,
+                    buttonActive: "1",
+                    activeTab: "1",
+                    ...data
+                }
             })
-            .catch(err => {
-                console.log(err)
-            });
+        })
+        .catch(err => {
+            console.log(err)
+        });
 
-        axios.get(Global.url + `workers`)
-            .then(({data}) => {
-                console.log(data);
-                this.setState(prevState => {
-                    return {
-                        ...prevState,
-                        workers: data.users
-                    }
-                })
+    axios.get(Global.url + `workers`)
+        .then(({data}) => {
+            console.log(data);
+            this.setState(prevState => {
+                return {
+                    ...prevState,
+                    workers: data.users
+                }
             })
-            .catch(err => {
-                console.log(err)
-            });
-            document.getElementById("startDate").value = "";
-            document.getElementById("endDate").value = "";
-
+        })
+        .catch(err => {
+            console.log(err)
+        });
+    document.getElementById("startDate").value = "";
+    document.getElementById("endDate").value = "";
   }
 
     render() {
@@ -225,7 +270,7 @@ class Reports extends React.Component {
 
                                 <Form className="card-header" >
                                     <Row form>
-                                        <Col md={2}>
+                                        <Col md={4}>
                                             <FormGroup>
                                                 <label
                                                     className="form-control-label"
@@ -241,7 +286,7 @@ class Reports extends React.Component {
                                                 />
                                             </FormGroup>
                                         </Col>
-                                        <Col md={2}>
+                                        <Col md={4}>
                                             <FormGroup>
                                                 <label
                                                     className="form-control-label"
@@ -257,85 +302,69 @@ class Reports extends React.Component {
                                                 />
                                                 
                                             </FormGroup>
-                                            
                                         </Col>
-                                        <Col md={2}>
+                                        <Col md={2} lg={2} xl={2} xs={3} sm={2}>
                                             <FormGroup>
                                             <label
-                                            className="form-control-label"
-                                            htmlFor="input-dateStart"
-                                            >Click to</label> 
+                                                className="form-control-label"
+                                                htmlFor="input-dateStart">
+                                                &nbsp;</label>
                                             <br/>
                                             <Button
                                                 className="form-control-alternative"
                                                 color="info"
-                                                onClick={ this.filterDate }
-                                                >Search</Button>
+                                                onClick={ this.filterDate }>
+                                                <i className="fa fa-search"></i> {this.state.isMobileVersion? '' : 'Search'}
+                                            </Button>
                                             </FormGroup>
                                         </Col>
-                                        <Col md={2}>
+                                        <Col md={2} lg={1} xl={2} xs={2} sm={2}>
                                             <FormGroup>
                                             <label
                                             className="form-control-label"
                                             htmlFor="input-dateStart"
-                                            >Click to</label> 
+                                            >&nbsp;</label>
                                             <br/>
                                             <Button
                                                 className="form-control-alternative"
                                                 color="info"
-                                                onClick={this.clearFilter}
-                                                >Clear</Button>
+                                                onClick={this.clearFilter}>
+                                                <i className="fa fa-trash"></i> {this.state.isMobileVersion? '' : 'Clear'}</Button>
                                             </FormGroup>
                                         </Col>
-                                        {/*
-                                        <Col md={{size: 3, offset: 5}}>
-                                            <FormGroup>
-                                                <label
-                                                    className="form-control-label"
-                                                    htmlFor="input-dateStart">
-                                                    Filter
-                                                </label>
-                                                <Input type="select" name="filter"
-                                                       onChange={this.handleSubmit}
-                                                       className="form-control-alternative">
-                                                    <option>Project Manager</option>
-                                                    <option>Job Name</option>
-                                                    <option>Start Date</option>
-                                                </Input>
-                                            </FormGroup>
-                                        </Col>
-                                        */}
                                     </Row>
-                                    
                                 </Form>
                                 <Form className="card-header">
 
                                 <Row form>
                                      {this.state.activeTab === '1' ?  
-                                        <Col md={{size: 6}}>
+                                        <Col md={12}>
                                             <FormGroup>
                                                 <label
                                                 className="form-control-label"
                                                 htmlFor="input-dateStart">
-                                                Filter By Jobs
+                                                    Filter By Jobs
                                                 </label>
                                                 <br/>
                                                 <span>
-                                                <Button
-                                                className="form-control-alternative"
-                                                color={this.state.buttonActive==="1"?"info": "secondary"}
-                                                onClick={this.getOpen}
-                                                >Open</Button>
-                                                <Button
-                                                className="form-control-alternative"
-                                                color={this.state.buttonActive==="2"?"info": "secondary"}
-                                                onClick={this.getClose}
-                                                >Close</Button>
-                                                <Button
-                                                className="form-control-alternative"
-                                                color={this.state.buttonActive==="3"?"info": "secondary"}
-                                                onClick={this.getAll}
-                                                >All</Button>
+                                                    <Button
+                                                        className="form-control-alternative"
+                                                        color={this.state.buttonActive==="1"?"info": "secondary"}
+                                                        onClick={this.getOpen}>
+                                                        {!this.state.isMobileVersion? 'Open' : <small>Open</small>}
+                                                    </Button>
+                                                    <Button
+                                                        className="form-control-alternative"
+                                                        color={this.state.buttonActive==="2"?"info": "secondary"}
+                                                        onClick={this.getClose}>
+                                                        {!this.state.isMobileVersion? 'Close' : <small>Close</small>}
+                                                    </Button>
+                                                    <Button
+                                                        className="form-control-alternative"
+                                                        color={this.state.buttonActive==="3"?"info": "secondary"}
+                                                        onClick={this.getAll}>
+                                                        {!this.state.isMobileVersion? 'All' : <small>All</small>}
+                                                    </Button>
                                                 </span>
                                             </FormGroup>
                                         </Col>
@@ -367,18 +396,25 @@ class Reports extends React.Component {
 
                                 <TabContent activeTab={this.state.activeTab}>
                                     <TabPane tabId="1">
-                                        <ReportJobs jobs={this.state.jobs} />
+                                        <ReportJobs jobs={this.state.jobs} openModal={this.handleOpenModal} isMobileVersion={this.state.isMobileVersion} />
                                     </TabPane>
                                     <TabPane tabId="2">
-                                        <ReportWorkers workers={this.state.workers} />
+                                        <ReportWorkers workers={this.state.workers} isMobileVersion={this.state.isMobileVersion}/>
                                     </TabPane>
                                 </TabContent>
-
                             </Card>
                         </Col>
-
                     </Row>
                 </Container>
+                <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
+                    <ModalHeader toggle={this.toggleModal}> Expense detail</ModalHeader>
+                    <ModalBody>
+                        {this.state.img && <img width="100%" height="100%" src={this.state.img} alt="photo_url" />}
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="primary" onClick={this.toggleModal}>Close</Button>
+                    </ModalFooter>
+                </Modal>
             </>
         );
     }
