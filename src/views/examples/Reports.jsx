@@ -30,6 +30,7 @@ import Header from "components/Headers/Header.jsx";
 import ReportJobs from "./reports/ReportJobs";
 import ReportWorkers from "./reports/ReportWorkers";
 import PDFViewer from 'pdf-viewer-reactjs';
+import CustomNavigation from './reports/Navigation';
 
 let loggedUser;
 let pdfFile;
@@ -424,22 +425,7 @@ class Reports extends React.Component {
                                 document={{
                                     url: pdfFile,
                                 }}
-                                css='customViewer'
-                                canvasCss='customCanvas'
-                                navigation={{
-                                css: {
-                                    navbarWrapper: 'customWrapper',
-                                    zoomOutBtn: 'customPrevBtn',
-                                    resetZoomBtn: 'customResetBtn',
-                                    zoomInBtn: 'customNextBtn',
-                                    previousPageBtn: 'customPrevBtn',
-                                    pageIndicator: 'customPages',
-                                    nextPageBtn: 'customNextBtn',
-                                    rotateLeftBtn: 'customPrevBtn',
-                                    resetRotationBtn: 'customResetBtn',
-                                    rotateRightBtn: 'customNextBtn',
-                                },
-                            }}
+                                navigation={CustomNavigation}
                             />
                             : null
                         }
