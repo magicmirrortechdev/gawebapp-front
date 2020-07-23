@@ -137,9 +137,9 @@ const ActionDropDown = (props) => {
                     <tr key={i}>
                       <td>
                         Payment # {paymentIndex}<br/>
-                        <Moment format={"MMM D, YY"}>{e.date}</Moment><br/>
-                        $ {isNaN(parseFloat(Math.round(props.paid * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(props.paid * 100) / 100).toFixed(2)}<br/>
-                        $ {parseFloat(Math.round((props.total2 - props.paidOk[i]) * 100) / 100).toFixed(2)}
+                        <b><Moment format={"MMM D, YY"}>{e.date}</Moment></b> <br/>
+                        Total: <b>$ {isNaN(parseFloat(Math.round(props.paid * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(props.paid * 100) / 100).toFixed(2)}</b>,
+                        Balance: <b>$ {parseFloat(Math.round((props.total2 - props.paidOk[i]) * 100) / 100).toFixed(2)}</b>
                       </td>
                     </tr>
                   )
@@ -154,6 +154,8 @@ const ActionDropDown = (props) => {
 }
 
 const RowInvoice = (props) =>{
+  console.log(props);
+
   return (
     <>
       {!props.isMobileVersion?
@@ -348,6 +350,7 @@ class Invoices extends React.Component {
                       const paidOk = this.sum(paidAcc)
                       return(
                         <RowInvoice {...e}
+                          id={id}
                           isMobileVersion={this.state.isMobileVersion}
                           paid={paid}
                           invoiceIndex={invoiceIndex}
