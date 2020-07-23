@@ -22,6 +22,38 @@ import Global from "../../global";
 const authService = new AuthService()
 let loggedUser
 
+const ActionButton = (props) =>{
+  return (
+    <UncontrolledDropdown>
+        <DropdownToggle>
+          ...
+        </DropdownToggle>
+        <DropdownMenu>
+          {loggedUser.level >=3 ? <DropdownItem to={`/admin/workers/update/${props._id}`} tag={Link}>Update</DropdownItem> : null}
+          {
+            loggedUser.level >=4 ?
+                <DropdownItem onClick={()=>{
+                  authService
+                      .workerDelete(props._id)
+                      .then(({data}) => {
+                        alert('WorkerDelete')
+                        window.location.reload()
+
+                      })
+                      .catch(err => {
+                        console.log(err.response)
+                        alert(err.response.data.msg || err.response.data.err.message)
+                      })
+                }}><span
+                    className="text-danger">Delete</span>
+                </DropdownItem>
+                :null
+          }
+        </DropdownMenu>
+    </UncontrolledDropdown>
+  )
+}
+
 class Workers extends React.Component {
   state = {
     users:[]
@@ -31,10 +63,19 @@ class Workers extends React.Component {
     loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
   }
 
+  updateWindowDimensions = () => {
+    this.setState(prevState => {return {...prevState, isMobileVersion : (window.innerWidth < Global.mobileWidth) }})
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateWindowDimensions)
+  }
 
   componentDidMount() {
-    axios
-      .get(Global.url + `getusers`)
+    this.updateWindowDimensions()
+    window.addEventListener('resize', this.updateWindowDimensions)
+
+    axios.get(Global.url + `getusers`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -49,9 +90,6 @@ class Workers extends React.Component {
         console.log(err)
       })
   }
-
-
-  
 
   render() {
     if (!this.state) return <p>Loading</p>
@@ -70,14 +108,11 @@ class Workers extends React.Component {
                     </div>
                     {loggedUser.level >= 3 ?
                       <div className="col text-right">
-                      <Link to="addworker">
-                        <p
-                          color="primary"
-                          size="sm" 
-                        >
-                          Add a Worker
-                        </p>
-                      </Link>
+                        <Link to="addworker">
+                          <p color="primary" size="sm">
+                            Add a Worker
+                          </p>
+                        </Link>
                       </div>
                       : null
                     }
@@ -86,66 +121,55 @@ class Workers extends React.Component {
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
-                      {loggedUser.level >= 3 ?<th scope="col"></th> : null}
-                      <th scope="col">Name</th>
-                      <th scope="col">Email</th>
-                      <th scope="col">Pay Rate</th>
-                      <th scope="col">Effective Rate</th>
+                      {!this.state.isMobileVersion ?
+                        <>
+                          {loggedUser.level >= 3 ? <th scope="col"></th> : null}
+                          <th scope="col">Name</th>
+                          <th scope="col">Email</th>
+                          <th scope="col">Pay Rate</th>
+                          <th scope="col">Effective Rate</th>
+                        </>
+                        :
+                        <>
+                          <th>Worker</th>
+                        </>
+                      }
                     </tr>
                   </thead>
-                  
-                    
-
-                     {this.state.users.length === 0 ?  <tbody><tr><td>No workers register</td></tr></tbody>:
-                     this.state.users.map((e,i)=>{
-                      return(
-                        <tbody key={i}>
-                        <tr >
-                        {
-                        loggedUser.level >=3 ?
-                        <td>
-                        <UncontrolledDropdown>
-                        <DropdownToggle>
-                            ...
-                        </DropdownToggle>
-                        <DropdownMenu>
-                            {loggedUser.level >=3 ? <DropdownItem to={`/admin/workers/update/${e._id}`} tag={Link}>Update</DropdownItem> : null}
-                            { 
-                              loggedUser.level >=4 ?
-                              <DropdownItem onClick={()=>{
-                              authService
-                                .workerDelete(e._id)
-                                .then(({data}) => {
-                                  alert('WorkerDelete')
-                                  window.location.reload()
-                                  
-                                })
-                                .catch(err => {
-                                  console.log(err.response)
-                                  alert(err.response.data.msg || err.response.data.err.message)
-                                })
-                            }}><span
-                                    className="text-danger">Delete</span>
-                              </DropdownItem>
-                              :null
-                            }
-                        </DropdownMenu>
-                        </UncontrolledDropdown>
-                        </td>: null}
-                        <th scope="row" >{e.name}</th>
-                        <td>{e.email}</td>
-                        <td>{e.payment}</td>
-                        <td>{e.effective}</td>
-                        
-                        
-                        </tr>
-                       
-                    
-                      </tbody>
-                     )  
+                  <tbody>
+                   {this.state.users.length === 0 ? <tr><td>No workers register</td></tr> :
+                   this.state.users.map((e,i)=>{
+                    return(
+                      <tr key={i}>
+                        {!this.state.isMobileVersion ?
+                          <>
+                            {
+                            loggedUser.level >=3 ?
+                            <td>
+                              <ActionButton {...e}></ActionButton>
+                            </td>: null}
+                            <td>{e.name}</td>
+                            <td>{e.email}</td>
+                            <td>{e.payment}</td>
+                            <td>{e.effective}</td>
+                          </>
+                          :
+                          <>
+                            <td>
+                              {e.name}<br/>
+                              Payment: <b>{e.payment}</b><br/>
+                              Effective: <b>{e.effective}</b><br/>
+                              <small>({e.email})</small><br/>
+                              <div className="buttonfloat-right buttonfloat-right-jobs">
+                                <ActionButton {...e}></ActionButton>
+                              </div>
+                            </td>
+                          </>
+                        }
+                      </tr>
+                      )
                     })}
-                      
-                      
+                  </tbody>
                 </Table>
               </Card>
             </Col>

@@ -20,6 +20,38 @@ import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 let loggedUser
 
+const ActionButton = (props) => {
+  return (
+    <UncontrolledDropdown>
+          <DropdownToggle>
+            ...
+          </DropdownToggle>
+          <DropdownMenu>
+            <DropdownItem to={`/admin/clients/estimatecreate/${props._id}`} tag={Link}>Create Estimate</DropdownItem>
+            <DropdownItem to={`/admin/clients/update/${props._id}`} tag={Link}>Update Client</DropdownItem>
+
+            { loggedUser.level >= 4 ?
+                <DropdownItem onClick={()=>{
+                  authService
+                      .clientDelete(props._id)
+                      .then(({data}) => {
+                        alert('Client Delete')
+                        window.location.reload()
+                      })
+                      .catch(err => {
+                        //aquí deberia ir una notificacion o un swal o un toastr
+                        console.log(err.response)
+                      })
+                }}><span
+                    className="text-danger">Delete</span>
+                </DropdownItem>
+                :null
+            }
+          </DropdownMenu>
+        </UncontrolledDropdown>
+  )
+}
+
 const authService = new AuthService()
 
 class Clients extends React.Component {
@@ -31,10 +63,19 @@ class Clients extends React.Component {
     loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
   }
 
+  updateWindowDimensions = () => {
+    this.setState(prevState => {return {...prevState, isMobileVersion : (window.innerWidth < 1024) }})
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateWindowDimensions)
+  }
 
   componentDidMount() {
-    axios
-      .get(Global.url + `checkclients`)
+    this.updateWindowDimensions()
+    window.addEventListener('resize', this.updateWindowDimensions)
+
+    axios.get(Global.url + `checkclients`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -69,79 +110,59 @@ class Clients extends React.Component {
                     </div>
                     <div className="col text-right">
                     <Link to="addclient">
-                      <p
-                        color="primary"
-                        size="sm" 
-                      >
+                      <p color="primary" size="sm"  >
                         Add Client
                       </p>
                     </Link>
-                      
                     </div>
                   </Row>
                 </CardHeader>
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
-                      <th scope="col"></th>
-                      <th scope="col">Name</th>
-                      <th scope="col">Email</th>
-                      <th scope="col">Phone Number</th>
-                      
+                      {!this.state.isMobileVersion ?
+                        <>
+                          <th scope="col"></th>
+                          <th scope="col">Name</th>
+                          <th scope="col">Email</th>
+                          <th scope="col">Phone Number</th>
+                        </>
+                        :
+                        <>
+                          <th>Details</th>
+                        </>
+                      }
                     </tr>
                   </thead>
-                  
-                    
-
-                     {this.state.clients.length === 0 ?  <tbody><tr><td>No clients register</td></tr></tbody>:
+                  <tbody>
+                    {this.state.clients.length === 0 ?  <tbody><tr><td>No clients register</td></tr></tbody>:
                      this.state.clients.map((e,i)=>{
-                      return(
-                        <tbody key={i}>
-                        <tr>
-                        <td>
-                        <div className="dropdownButtons">
-                        <UncontrolledDropdown>
-                           <DropdownToggle>
-                              ...
-                          </DropdownToggle>
-                          <DropdownMenu>
-                          <DropdownItem to={`/admin/clients/estimatecreate/${e._id}`} tag={Link}>Create Estimate</DropdownItem>
-                          <DropdownItem to={`/admin/clients/update/${e._id}`} tag={Link}>Update Client</DropdownItem>
-
-                          { loggedUser.level >= 4 ?
-                            <DropdownItem onClick={()=>{
-                            authService
-                              .clientDelete(e._id)
-                              .then(({data}) => {
-                                alert('Client Delete')
-                                window.location.reload()
-                                
-                              })
-                              .catch(err => {
-                                //aquí deberia ir una notificacion o un swal o un toastr
-                                console.log(err.response)
-                              })
-                          }}><span
-                                  className="text-danger">Delete</span>
-                          </DropdownItem>
-                            :null
-                          }
-                          </DropdownMenu>
-                        </UncontrolledDropdown>
-                          </div>
-                        </td>
-                        <th scope="row" >{e.name}</th>
-                        <td>{e.email}</td>
-                        <td>{e.phone}</td>
-                        
-                        </tr>
-                       
-                    
-                      </tbody>
-                     )  
+                    return(
+                      <tr key={i}>
+                        {!this.state.isMobileVersion ?
+                          <>
+                            <td>
+                              <ActionButton {...e}></ActionButton>
+                            </td>
+                            <td>{e.name}</td>
+                            <td>{e.email}</td>
+                            <td>{e.phone}</td>
+                          </>
+                          :
+                          <>
+                            <td>
+                              {e.name}<br/>
+                              <small>{e.email} {!e.phone ? '' : ' - ' + e.phone }</small>
+                              <div className="buttonfloat-right buttonfloat-right-clients">
+                                <ActionButton {...e}></ActionButton>
+                              </div>
+                            </td>
+                          </>
+                        }
+                      </tr>
+                     )
                     })}
-                      
-                      
+                  </tbody>
                 </Table>
               </Card>
             </Col>

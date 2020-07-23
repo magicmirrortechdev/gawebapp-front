@@ -140,6 +140,10 @@ div.ReactTags__selected a.ReactTags__remove {
     top: -50px;
 }
 
+.buttonfloat-right-clients {
+    bottom: 23px;
+}
+
 .autowidth {
     width: auto;
 }
@@ -148,6 +152,10 @@ div.ReactTags__selected a.ReactTags__remove {
     .buttonfloat-right-estimates {
         right: -10px;
         bottom: 60px;
+    }
+
+    .buttonfloat-right-clients {
+        right: -10px !important;
     }
 }
 
