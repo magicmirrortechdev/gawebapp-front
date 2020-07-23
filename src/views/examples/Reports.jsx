@@ -424,6 +424,22 @@ class Reports extends React.Component {
                                 document={{
                                     url: pdfFile,
                                 }}
+                                css='customViewer'
+                                canvasCss='customCanvas'
+                                navigation={{
+                                css: {
+                                    navbarWrapper: 'customWrapper',
+                                    zoomOutBtn: 'customPrevBtn',
+                                    resetZoomBtn: 'customResetBtn',
+                                    zoomInBtn: 'customNextBtn',
+                                    previousPageBtn: 'customPrevBtn',
+                                    pageIndicator: 'customPages',
+                                    nextPageBtn: 'customNextBtn',
+                                    rotateLeftBtn: 'customPrevBtn',
+                                    resetRotationBtn: 'customResetBtn',
+                                    rotateRightBtn: 'customNextBtn',
+                                },
+                            }}
                             />
                             : null
                         }
