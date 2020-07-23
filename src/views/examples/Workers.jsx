@@ -32,22 +32,21 @@ const ActionButton = (props) =>{
           {loggedUser.level >=3 ? <DropdownItem to={`/admin/workers/update/${props._id}`} tag={Link}>Update</DropdownItem> : null}
           {
             loggedUser.level >=4 ?
-                <DropdownItem onClick={()=>{
-                  authService
-                      .workerDelete(props._id)
-                      .then(({data}) => {
-                        alert('WorkerDelete')
-                        window.location.reload()
-
-                      })
-                      .catch(err => {
-                        console.log(err.response)
-                        alert(err.response.data.msg || err.response.data.err.message)
-                      })
-                }}><span
-                    className="text-danger">Delete</span>
-                </DropdownItem>
-                :null
+              <DropdownItem onClick={()=>{
+                authService
+                  .workerDelete(props._id)
+                  .then(({data}) => {
+                    alert('WorkerDelete')
+                    window.location.reload()
+                  })
+                  .catch(err => {
+                    console.log(err.response)
+                    alert(err.response.data.msg || err.response.data.err.message)
+                  })
+              }}><span
+                  className="text-danger">Delete</span>
+              </DropdownItem>
+              :null
           }
         </DropdownMenu>
     </UncontrolledDropdown>
