@@ -170,7 +170,7 @@ const RowInvoice = (props) =>{
               </Button>
             </td>
             <td>{!props.nameClient ? 'Client Delete' : props.nameClient}</td>
-            <td><Moment add={{days: 1}} format={"MMM D, YY"}>{props.date}</Moment></td>
+            <td><Moment format={"MMM D, YY"}>{props.date}</Moment></td>
             <td>{props.invoice.total - props.paid === 0 ? 'Paid' : props.invoice.status}</td>
             <td>${parseFloat(Math.round(props.invoice.total * 100) / 100).toFixed(2)}</td>
             <td>${parseFloat(Math.round(props.total * 100) / 100).toFixed(2)}</td>
@@ -185,7 +185,7 @@ const RowInvoice = (props) =>{
         <>
           <tr>
             <td>
-              <Moment add={{days: 1}} format={"MMM D, YY"}>{props.date}</Moment><br/>
+              <Moment format={"MMM D, YY"}>{props.date}</Moment><br/>
               {!props.nameClient ? 'Client Delete' : props.nameClient}<br/>
               Status: <b>{props.invoice.total - props.paid === 0 ? 'Paid' : props.invoice.status}</b><br/>
               Total: <b>${parseFloat(Math.round(props.invoice.total * 100) / 100).toFixed(2)}</b><br/>
