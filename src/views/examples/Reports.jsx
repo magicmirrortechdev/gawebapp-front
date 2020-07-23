@@ -77,7 +77,7 @@ class Reports extends React.Component {
                     })
                     if(img !== ''){
                         console.log("img>>>> ", img.substring(img.length - 3, img.length).toLowerCase());
-                        pdfFile = img;
+                        pdfFile = img.replace("http", "https");
                         console.log(pdfFile);
                     }
 
