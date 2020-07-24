@@ -64,6 +64,21 @@ class Reports extends React.Component {
         })
     };
 
+    handleExpenseOpenModal = (url) => {
+        this.setState(prevState => {
+            let img = url;
+            if (img !== '') {
+                pdfFile = img.replace("http", "https");
+            }
+            return {
+                ...prevState,
+                img: img,
+                modal: true,
+                extension: img === '' ? '' : img.substring(img.length - 3, img.length).toLowerCase()
+            }
+        })
+    }
+
     handleOpenModal = (estimateId, expenseId) => {
         axios.get(Global.url + `estimatedetail/${estimateId}`)
             .then(({data}) => {
@@ -77,9 +92,7 @@ class Reports extends React.Component {
                         return {img}
                     })
                     if(img !== ''){
-                        console.log("img>>>> ", img.substring(img.length - 3, img.length).toLowerCase());
                         pdfFile = img.replace("http", "https");
-                        console.log(pdfFile);
                     }
 
                     return {
@@ -405,7 +418,7 @@ class Reports extends React.Component {
                                         <ReportJobs jobs={this.state.jobs} openModal={this.handleOpenModal} isMobileVersion={this.state.isMobileVersion} />
                                     </TabPane>
                                     <TabPane tabId="2">
-                                        <ReportWorkers workers={this.state.workers} isMobileVersion={this.state.isMobileVersion}/>
+                                        <ReportWorkers workers={this.state.workers} openModal={this.handleExpenseOpenModal} isMobileVersion={this.state.isMobileVersion}/>
                                     </TabPane>
                                 </TabContent>
                             </Card>

@@ -154,8 +154,6 @@ const ActionDropDown = (props) => {
 }
 
 const RowInvoice = (props) =>{
-  console.log(props);
-
   return (
     <>
       {!props.isMobileVersion?
