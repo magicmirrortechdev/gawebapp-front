@@ -308,7 +308,9 @@ class Jobs extends React.Component {
                           <th scope="col">Total</th>
                         </>
                         :
-                        <th>Details</th>
+                        <>
+                          <th scope="col">Details</th>
+                        </>
                       }
                     </tr>
                   </thead>
@@ -327,7 +329,7 @@ class Jobs extends React.Component {
                       return(
                         <>
                         {e.status === "Closed" ?
-                          <tr key={i}>
+                          <tr key={e._id}>
                             {!this.state.isMobileVersion ?
                               <>
                                 <td>
