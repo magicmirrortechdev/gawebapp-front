@@ -60,6 +60,7 @@ const DropDownExpense = (props) =>{
                                 responsive>
                                 <thead className="thead-light">
                                 <tr>
+                                    <th scope="col"></th>
                                     <th scope="col">Date</th>
                                     <th scope="col">Expense Type</th>
                                     <th scope="col">Amount</th>
@@ -74,6 +75,7 @@ const DropDownExpense = (props) =>{
                                         props.expenses.sort(compareValues('date','desc')).map((ex, i) => {
                                                 return (
                                                     <tr>
+                                                        <td><Button onClick={props.handleModal(ex.img)}><i className="fas fa-receipt"></i> View</Button> </td>
                                                         <td><Moment add={{days:1}} format={"MMM D, YY"}>{ex.date}</Moment></td>
                                                         <td>{ex.category}</td>
                                                         <td align="right">$ {ex.total}</td>
