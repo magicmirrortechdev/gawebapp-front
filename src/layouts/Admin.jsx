@@ -1,9 +1,6 @@
 
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-// reactstrap components
-import { Container } from "reactstrap";
-// core components
 import AdminNavbar from "components/Navbars/AdminNavbar.jsx";
 import Sidebar from "components/Sidebar/Sidebar.jsx";
 
@@ -239,7 +236,18 @@ class Admin extends React.Component {
   render() {
     return (
       <>
-        
+        <div id="spinner" style={{display:"flex",backgroundColor:"rgba(183,183,183,0.5)", alignContent:"center", justifyContent:"center",height:"100%", width:"100%", alignItems:"center", visibility:'hidden', position:"absolute", zIndex:"1" }}>
+          <div>
+            <div className="loadingio-spinner-eclipse-9uhm73z846u">
+              <div className="ldio-cv9d96mw3dl">
+                <div></div>
+              </div>
+            </div>
+            <p style={{"fontSize": "35px", "fontWeight": "bold"}}>
+              Please wait...
+            </p>
+          </div>
+        </div>
         <Sidebar
           {...this.props}
           routes={loggedUser.level >= 2 ? routes : routesWorker}

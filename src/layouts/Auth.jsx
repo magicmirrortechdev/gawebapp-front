@@ -3,7 +3,6 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 // reactstrap components
 import { Container, Row } from "reactstrap";
-
 // core components
 import AuthNavbar from "components/Navbars/AuthNavbar.jsx";
 import AuthFooter from "components/Footers/AuthFooter.jsx";
@@ -35,6 +34,17 @@ class Auth extends React.Component {
   render() {
     return (
       <>
+        <div id="spinner" style={{display:"flex",backgroundColor:"rgba(183,183,183,0.5)", alignContent:"center", justifyContent:"center",height:"100%", width:"100%", alignItems:"center", visibility:'hidden', position:"absolute", zIndex:"1" }}>
+          <p style={{"fontSize": "35px", "fontWeight": "bold"}}>
+            <div className="loadingio-spinner-eclipse-9uhm73z846u">
+              <div className="ldio-cv9d96mw3dl">
+                <div></div>
+              </div>
+            </div>
+            <br/>
+            Please wait...
+          </p>
+        </div>
         <div className="main-content">
           <AuthNavbar />
           <div className="header bg-gradient-info py-7 py-lg-8">

@@ -24,12 +24,6 @@ const argyleService = new ArgyleService()
 
 let loggedUser;
 
-const KeyCodes = {
-  comma: 188,
-  enter: 13,
-};
-
-const delimiters = [KeyCodes.comma, KeyCodes.enter];
 var fecha = new Date(); 
       var mes = fecha.getMonth()+1; 
       var dia = fecha.getDate(); 

@@ -266,7 +266,6 @@ class Invoices extends React.Component {
     if (!this.state) return <p>Loading</p>
     let allInvoices=[]
     let userInEstimate 
-    let estimateId
     let client
     let id
     let jobName
@@ -277,10 +276,9 @@ class Invoices extends React.Component {
         return(allInvoices)
       })
     })
-    this.state.estimates.map((e,i)=>{
+    this.state.estimates.forEach((e,i)=>{
       if(!e.clientId) return <th>Client Delete</th>
       if(!e.workers)return <th scope="row">Worker Delete</th>
-      estimateId = e._id
       id = e._id
       jobName = e.jobName
       userInEstimate = e.workers.filter(wx => wx.workerId && wx.workerId._id === loggedUser._id).length > 0
@@ -347,7 +345,7 @@ class Invoices extends React.Component {
                       })
                       const paidOk = this.sum(paidAcc)
                       return(
-                        <RowInvoice {...e}
+                        <RowInvoice key={i} {...e}
                           id={id}
                           isMobileVersion={this.state.isMobileVersion}
                           paid={paid}

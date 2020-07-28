@@ -1,7 +1,5 @@
-
 import React from "react";
 import { withRouter } from 'react-router-dom'
-
 
 // reactstrap components
 import {
@@ -20,7 +18,6 @@ import AuthService from '../../services/services'
 const authService = new AuthService()
 
 class Login extends React.Component {
-  
 
   componentDidMount(props) {
     const loggedUser = localStorage.getItem('loggedUser')
@@ -72,7 +69,7 @@ class Login extends React.Component {
             
             <CardBody className="px-lg-5 py-lg-5">
               <div className="text-center text-muted mb-4">
-                <small>Sign in with credentials 🔑</small>
+                <small>Sign in with credentials <i className="fas fa-key"></i></small>
               </div>
               <Form role="form">
                 <FormGroup className="mb-3">

@@ -21,13 +21,6 @@ import { WithContext as ReactTags } from 'react-tag-input';
 import Header from 'components/Headers/Header.jsx'
 import Global from "../../global";
 
-const KeyCodes = {
-  comma: 188,
-  enter: 13,
-};
-
-const delimiters = [KeyCodes.comma, KeyCodes.enter];
-
 class SendEstimate extends React.Component {
   state = {
     name: '',
