@@ -41,18 +41,18 @@ const ActionButton = (props) => {
         }
         {
           loggedUser.level >= 3 ?
-            <DropdownItem to={`/admin/invoices/${props.estimateId}/${props.invoice._id}/update`}
+            <DropdownItem to={`/admin/invoices/${props.id}/${props.invoice._id}/update`}
                           tag={Link}>Update</DropdownItem> :
             loggedUser.level === 2 && props.userInEstimate ?
               <DropdownItem
-                to={`/admin/invoices/${props.estimateId}/${props.invoice._id}/update`}
+                to={`/admin/invoices/${props.id}/${props.invoice._id}/update`}
                 tag={Link}>Update</DropdownItem> :
               <DropdownItem disabled
-                to={`/admin/invoices/${props.estimateId}/${props.invoice._id}/update`}
+                to={`/admin/invoices/${props.id}/${props.invoice._id}/update`}
                 tag={Link}>Update</DropdownItem>
         }
 
-        <DropdownItem to={`/admin/invoices/${props.estimateId}/${props.invoice._id}/email`}
+        <DropdownItem to={`/admin/invoices/${props.id}/${props.invoice._id}/email`}
           tag={Link}>Send by email</DropdownItem>
         {
           loggedUser.level >= 4 ?
