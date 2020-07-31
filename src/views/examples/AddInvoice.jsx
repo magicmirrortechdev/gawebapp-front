@@ -52,7 +52,7 @@ class AddInvoice extends React.Component {
         this.setState(prevState => {
           return {
             ...prevState,
-            ...data
+            jobs: data.jobs.filter(job => job.status !== "Closed")
           }
         })
         console.log('aquiiii', this.state.jobs)
