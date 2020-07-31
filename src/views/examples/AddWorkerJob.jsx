@@ -55,8 +55,9 @@ class AddWorkerJob extends React.Component {
     e.preventDefault()
     const workerIn =[]
     const estimate = await axios.get(Global.url+`estimatedetail/${this.props.match.params.id}`)
-    estimate.data.estimate.workers.map(e =>{
-      return workerIn.push(e.workerId._id) 
+    estimate.data.estimate.workers.forEach(e =>{
+      if(e.workerId)
+        workerIn.push(e.workerId._id)
     })
     if(workerIn.includes(this.state._id)){
       alert('This worker already exists in this job')
