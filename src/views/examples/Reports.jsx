@@ -32,7 +32,6 @@ import ReportWorkers from "./reports/ReportWorkers";
 import PDFViewer from 'pdf-viewer-reactjs';
 import CustomNavigation from './reports/Navigation';
 
-let loggedUser;
 let pdfFile;
 
 class Reports extends React.Component {
@@ -44,11 +43,6 @@ class Reports extends React.Component {
         modal: false,
         extension: ''
     };
-
-    constructor(props) {
-        super(props);
-        loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
-    }
 
     toggleTab(tab) {
         if (this.state.activeTab !== tab) {

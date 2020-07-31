@@ -13,7 +13,12 @@ import AuthLayout from "layouts/Auth.jsx";
 import ForgotPassword from "views/forgotpassword/ForgotPassword";
 import ResetPassword from "views/forgotpassword/ResetPassword";
 
-Sentry.init({dsn: "https://93b92174eea24e52a0386666ca85a996@o411135.ingest.sentry.io/5285963"});
+import httpService from './services/interceptors';
+import history from './services/history';
+
+httpService.setupInterceptors(history);
+
+//Sentry.init({dsn: "https://93b92174eea24e52a0386666ca85a996@o411135.ingest.sentry.io/5285963"});
 
 ReactDOM.render(
   <BrowserRouter>

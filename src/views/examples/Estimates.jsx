@@ -164,15 +164,12 @@ class Estimates extends React.Component {
     authService.convertInvoice(_id)
     .then(response => {
       this.props.history.push(`estimates`)
-      console.log(response)
     }).catch(err => {
       console.log(err.response)
     })
   }
 
   render() {
-    console.log(loggedUser)
-    console.log('el state',  this.state)
     if (!this.state) return <p>Loading</p>
     return (
       <>
@@ -217,7 +214,8 @@ class Estimates extends React.Component {
                     </tr>
                   </thead>
                   <tbody >
-                    {this.state.estimates.length === 0 ?  <tbody><tr><td>No estimates register</td></tr></tbody>:
+                    {this.state.estimates.length === 0 ? <tr><td>No estimates register</td></tr>
+                      :
                        this.state.estimates.map((e,i)=>{
                         let nameEstimate = e.nameEstimate
                         let subtotal = e.items.reduce((acc, current, i) => acc + current.subtotal, 0)

@@ -16,7 +16,6 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
-import Moment from "react-moment";
 import moment from 'moment/min/moment-with-locales';
 
 let loggedUser;

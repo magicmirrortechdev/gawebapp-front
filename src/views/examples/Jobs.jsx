@@ -171,8 +171,7 @@ class Jobs extends React.Component {
   componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-    axios
-      .get(Global.url + `openjobs`)
+    axios.get(Global.url + `openjobs`)
       .then(({ data }) => {
         this.setState(prevState => {
           return {
@@ -309,7 +308,9 @@ class Jobs extends React.Component {
                           <th scope="col">Total</th>
                         </>
                         :
-                        <th>Details</th>
+                        <>
+                          <th scope="col">Details</th>
+                        </>
                       }
                     </tr>
                   </thead>
@@ -328,7 +329,7 @@ class Jobs extends React.Component {
                       return(
                         <>
                         {e.status === "Closed" ?
-                          <tr>
+                          <tr key={e._id}>
                             {!this.state.isMobileVersion ?
                               <>
                                 <td>
@@ -350,7 +351,7 @@ class Jobs extends React.Component {
                             }
                           </tr>
                           :
-                          <tr>
+                          <tr key={i}>
                             {!this.state.isMobileVersion ?
                               <>
                                 <td>

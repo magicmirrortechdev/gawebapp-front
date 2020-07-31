@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Card, Table, UncontrolledCollapse, Row, Col, ListGroup, ListGroupItem} from "reactstrap";
+import {Button, Card, Table, UncontrolledCollapse, Row, Col} from "reactstrap";
 import CardBody from "reactstrap/es/CardBody";
 import Moment from 'react-moment'
 import {compareValues} from  "../../../global";
@@ -234,19 +234,17 @@ class ReportJobs extends React.Component{
                                                                 if(!wx.workerId)return <td>Worker Delete</td>
                                                                 let time = wx.time ? (wx.time.reduce((acc, current, i) => acc + current.hours, 0)) : 0;
                                                                 let time2 = []
-                                                                let hoursA
                                                                 time2.push(time)
                                                                 time2.reduce((ac,cv)=> ac + cv, 0)
                                                                 let effective = wx.workerId.effective ? wx.workerId.effective : 0;
                                                                 let payment = wx.workerId.payment ? wx.workerId.payment : 0;
-                                                                let hoursWor = wx.time.map((e,i)=>{ return e.hours})
-                                                                hoursA = hoursWor.map(e=>e)
                                                                 return (
                                                                     <>
                                                                         <tr>
                                                                             <td>
-                                                                                <Button id={"toggle" + wx._id} color="primary"><i
-                                                                                    className="ni ni-bold-down"></i></Button>
+                                                                                <Button id={"toggle" + wx._id} color="primary">
+                                                                                    <i className="ni ni-bold-down"></i>
+                                                                                </Button>
                                                                             </td>
                                                                             <td>{wx.workerId.name}</td>
                                                                             <td align="right">$ {isNaN(parseFloat(Math.round((payment*time) * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round((payment*time) * 100) / 100).toFixed(2)} </td>
@@ -352,13 +350,10 @@ class ReportJobs extends React.Component{
                                                             if(!wx.workerId)return <td>Worker Delete</td>
                                                             let time = wx.time ? (wx.time.reduce((acc, current, i) => acc + current.hours, 0)) : 0;
                                                             let time2 = []
-                                                            let hoursA
                                                             time2.push(time)
                                                             time2.reduce((ac,cv)=> ac + cv, 0)
                                                             let effective = wx.workerId.effective ? wx.workerId.effective : 0;
                                                             let payment = wx.workerId.payment ? wx.workerId.payment : 0;
-                                                            let hoursWor = wx.time.map((e,i)=>{ return e.hours})
-                                                            hoursA = hoursWor.map(e=>e)
                                                             return (
                                                                 <>
                                                                     <tr>

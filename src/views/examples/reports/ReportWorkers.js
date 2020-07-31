@@ -60,6 +60,7 @@ const DropDownExpense = (props) =>{
                                 responsive>
                                 <thead className="thead-light">
                                 <tr>
+                                    <th scope="col"></th>
                                     <th scope="col">Date</th>
                                     <th scope="col">Expense Type</th>
                                     <th scope="col">Amount</th>
@@ -74,6 +75,7 @@ const DropDownExpense = (props) =>{
                                         props.expenses.sort(compareValues('date','desc')).map((ex, i) => {
                                                 return (
                                                     <tr>
+                                                        <td><Button onClick={props.handleModal(ex.img)}><i className="fas fa-receipt"></i> View</Button> </td>
                                                         <td><Moment add={{days:1}} format={"MMM D, YY"}>{ex.date}</Moment></td>
                                                         <td>{ex.category}</td>
                                                         <td align="right">$ {ex.total}</td>
@@ -195,35 +197,24 @@ class ReportWorkers extends React.Component{
                         </tr>
                         :
                         this.props.workers.map((e, i) => {
-                            let totalExpenses = 0;
-                            let hours = 0;
                             let jobs = [];
-                            let reports = [];
                             let hoursPerJob = []
-                            let hoursTime = 0
                             let hoursFull = []
 
-                            e.works.sort(compareValues('date','desc')).map((e, i) => {
-                                e.time.sort(compareValues('date','desc')).map((time, i) => {
-                                    hoursTime += time.hours;
+                            e.works.sort(compareValues('date','desc')).forEach((e, i) => {
+                                e.time.sort(compareValues('date','desc')).forEach((time, i) => {
                                     hoursFull.push({hoursT: time.hours, date: time.date})
                                     hoursPerJob.push({works: e._id,  time: time.hours, date: time.date, hours: hoursFull})
                                 })
                             })
 
-                            e.works.sort(compareValues('date','desc')).map(works => {
+                            e.works.sort(compareValues('date','desc')).forEach(works => {
                                 if(works.workId instanceof Array ){ //search
 
-                                    works.workId.sort(compareValues('date','desc')).map(work => {
+                                    works.workId.sort(compareValues('date','desc')).forEach(work => {
                                         if(works.time.length > 0){
-                                            let hours = 0
-                                            let date
-                                            let hoursT
-                                            hoursPerJob.map(hoursTime => {
-                                                if(hoursTime.works == work._id){
-                                                    hours += hoursTime.time
-                                                    date = hoursTime.date
-                                                    hoursT = hoursTime.hours
+                                            hoursPerJob.forEach(hoursTime => {
+                                                if(hoursTime.works === work._id){
 
                                                     jobs.push({
                                                         date: hoursTime.date,
@@ -242,17 +233,10 @@ class ReportWorkers extends React.Component{
                                 }else{
 
                                     if(works.workId && works.workId.workers){
-                                        works.workId.workers.sort(compareValues('date','desc')).map(worker => {
+                                        works.workId.workers.sort(compareValues('date','desc')).forEach(worker => {
                                             if(worker.workerId && worker.workerId._id === e._id ) {
-                                                let hours = 0
-                                                let date
-                                                let hoursT
-                                                hoursPerJob.map(hoursTime => {
-                                                    if (hoursTime.works == works._id) {
-                                                        hours += hoursTime.time
-                                                        date = hoursTime.date
-                                                        hoursT = hoursTime.hours
-
+                                                hoursPerJob.forEach(hoursTime => {
+                                                    if (hoursTime.works === works._id) {
                                                         jobs.push({
                                                             date: hoursTime.date,
                                                             jobName : works.workId.jobName,

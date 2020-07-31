@@ -20,10 +20,10 @@ import {
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 
-var fecha = new Date(); 
-      var mes = fecha.getMonth()+1; 
-      var dia = fecha.getDate(); 
-      var ano = fecha.getFullYear(); 
+var fecha = new Date();
+      var mes = fecha.getMonth()+1;
+      var dia = fecha.getDate();
+      var ano = fecha.getFullYear();
       if(dia<10)
         dia='0'+dia; //agrega cero si es menor de 10
       if(mes<10)
@@ -48,9 +48,9 @@ class UpdateTime extends React.Component {
     axios
       .get(Global.url + `estimatedetail/${this.props.match.params.estimateId}`)
       .then(({ data }) => {
-        data.estimate.workers.map((worker, i)=>{
+        data.estimate.workers.forEach((worker, i)=>{
           if(worker._id === this.props.match.params.id){
-            worker.time.map((timeU, j) =>{
+            worker.time.forEach((timeU, j) =>{
               if(timeU._id === this.props.match.params.timeId){
                 this.setState(prevState => {
                   return {
@@ -99,26 +99,22 @@ class UpdateTime extends React.Component {
         spinner: true
       }
     })
-        axios
-          .patch(Global.url + `updatetime/${this.props.match.params.estimateId}/${this.props.match.params.workerId}/${this.props.match.params.timeId}`,this.state)
-          .then(response => {
-            this.props.history.push(`/admin/time`)
-            window.location.reload()
-          })
-          .catch(err => {
-            console.log(err.response)
-          })
+    axios
+      .patch(Global.url + `updatetime/${this.props.match.params.estimateId}/${this.props.match.params.workerId}/${this.props.match.params.timeId}`,this.state)
+      .then(response => {
+        this.props.history.push(`/admin/time`)
+        window.location.reload()
+      })
+      .catch(err => {
+        console.log(err.response)
+      })
   }
 
   render() {
     const jobName = this.state.jobName
     const workerName = this.state.nameWorker
-    console.log(this.state)
     return (
       <>
-        <div style={{display:"flex",backgroundColor:"rgba(183,183,183,0.5)", alignContent:"center", justifyContent:"center",height:"100%", width:"100%", alignItems:"center", visibility:this.state.spinner?"visible":'hidden', position:"absolute", zIndex:"1" }}>
-        <p style={{"fontSize": "35px", "fontWeight": "bold"}}>Please wait...</p>
-        </div>
         <Header />
         {/* Page content */}
         <Container className="mt--7" fluid>
@@ -133,7 +129,7 @@ class UpdateTime extends React.Component {
                   </Row>
                 </CardHeader>
                 <CardBody>
-                  
+
                   <Form onSubmit={this.handleSubmit}>
                     <div className="pl-lg-4">
                       <Row>
@@ -205,20 +201,15 @@ class UpdateTime extends React.Component {
                               step="any"
                             />
                           </FormGroup>
-                          
+
                         </Col>
                       </Row>
-                      
-                      
+
+
                       <Row>
                         <Col lg="6">
                           <FormGroup>
-                        
-                            <Button
-                              className="form-control-alternative"
-                              color="info"
-
-                            >Update Hours</Button>
+                            <Button className="form-control-alternative" color="info">Update Hours</Button>
                           </FormGroup>
                         </Col>
                       </Row>
@@ -227,7 +218,6 @@ class UpdateTime extends React.Component {
                 </CardBody>
               </Card>
             </Col>
-            
           </Row>
         </Container>
       </>

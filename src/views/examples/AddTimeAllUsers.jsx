@@ -10,7 +10,6 @@ import {
   Container,
   Row,
   Col,
-  Spinner,
   Button,
   FormGroup,
   Input,
@@ -94,7 +93,7 @@ class AddTime extends React.Component {
     axios
       .get(Global.url + `estimatedetail/${this.state._id}`)
       .then(({ data }) => {
-        data.estimate.workers.map(e =>{
+        data.estimate.workers.forEach(e =>{
           if(e.workerId._id === loggedUser._id){
             this.setState(prevState=>{
               return{
@@ -171,9 +170,6 @@ class AddTime extends React.Component {
     console.log('state Diego', this.state.worker_id)
     return (
       <>
-        <div style={{display:"flex",backgroundColor:"rgba(183,183,183,0.5)", alignContent:"center", justifyContent:"center",height:"100%", width:"100%", alignItems:"center", visibility:this.state.spinner?"visible":'hidden', position:"absolute", zIndex:"1" }}>
-            <p style={{"fontSize": "35px", "fontWeight": "bold"}}>Please wait...</p>
-        </div>
         <Header />
         {/* Page content */}
         <Container className="mt--7" fluid>
