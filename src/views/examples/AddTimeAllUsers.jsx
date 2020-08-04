@@ -20,7 +20,7 @@ import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 
 let loggedUser;
-
+let jobs;
 
 var fecha = new Date(); 
       var mes = fecha.getMonth()+1; 
@@ -47,14 +47,35 @@ class AddTime extends React.Component {
 
   handleInput = e => {
     e.persist()
-    
     this.setState(prevState => ({
       ...prevState,
       [e.target.name]: e.target.value
     }))
     this.setState(({ value }) => ({ value: !value }))
-  }
 
+    if(e.target.name === '_id'){
+        jobs.forEach((item) => {
+            if(item._id === e.target.value){
+                this.setState(prevState => ({
+                    ...prevState,
+                    workers: item.workers
+                }))
+
+                item.workers.forEach((worker) => {
+                    if(worker.workerId && worker.workerId._id === loggedUser._id){
+                        this.setState(prevState=>{
+                            return{
+                                ...prevState,
+                                worker_id2: worker._id+'.'+ worker.workerId._id,
+                            }
+                        })
+                    }
+                });
+            }
+        })
+    }
+
+  }
 
   handleInput2 = e => {
     e.persist()
@@ -75,7 +96,8 @@ class AddTime extends React.Component {
     axios
       .get(Global.url + `openjobs`)
       .then(({ data }) => {
-        this.setState(prevState => {
+          jobs = data.jobs;
+          this.setState(prevState => {
           return {
             ...prevState,
             ...data
@@ -86,41 +108,6 @@ class AddTime extends React.Component {
         console.log(err)
       })
       
-  }
-
-  componentDidUpdate(prevProps, prevState){
-    if (prevState.value !== this.state.value) {
-    axios
-      .get(Global.url + `estimatedetail/${this.state._id}`)
-      .then(({ data }) => {
-        data.estimate.workers.forEach(e =>{
-          if(e.workerId._id === loggedUser._id){
-            this.setState(prevState=>{
-              return{
-                ...prevState,
-                workers: data.estimate.workers,
-                worker_id2:e._id+'.'+e.workerId._id,
-                ...data
-              }
-            })
-          }
-          else{
-            this.setState(prevState => {
-              
-              return {
-                ...prevState,
-                workers: data.estimate.workers,
-                ...data
-              }
-            })
-            }
-        })
-        
-      })
-      .catch(err => {
-        console.log(err)
-      })
-    }
   }
 
   handleSubmit = (e, props) => {
@@ -161,13 +148,8 @@ class AddTime extends React.Component {
      }
       
   }
-      
-      
-        
-  
 
   render() {
-    console.log('state Diego', this.state.worker_id)
     return (
       <>
         <Header />
@@ -195,7 +177,7 @@ class AddTime extends React.Component {
                               className="form-control-alternative"
                               type="select"
                               onChange={this.handleInput}
-                              
+
                             >
                             <option>Select Job to Add Time</option>
                             {this.state.jobs.map((e,i)=>{
@@ -203,8 +185,8 @@ class AddTime extends React.Component {
                                 <option key={i} value={`${e._id}`}>{e.jobName}</option>)
                             })
                             }
-                            
-                            
+
+
                             </Input>
                         </FormGroup>
                         <FormGroup>
