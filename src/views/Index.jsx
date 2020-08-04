@@ -22,7 +22,10 @@ class Index extends React.Component {
   };
 
 
-
+  constructor(props) {
+    super(props);
+    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+  }
 
   toggleNavs = (e, index) => {
     e.preventDefault();
