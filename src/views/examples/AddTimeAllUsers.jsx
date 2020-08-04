@@ -67,17 +67,18 @@ class AddTime extends React.Component {
                     this.setState(prevState => ({
                         ...prevState,
                         workers: item.workers,
-                        worker_id2: user._id+'.'+ user.workerId._id,
+                        worker_id: user._id+'.'+ user.workerId._id,
                     }))
                 }else{
-                    let newState = this.state;
-                    delete newState["worker_id2"];
-                    newState["workers"] = item.workers;
-                    this.setState(newState);
+                    this.setState(prevState => ({
+                        ...prevState,
+                        workers: item.workers
+                    }))
                 }
             }
         })
     }
+      console.log(this.state);
   }
 
   componentDidMount() {
@@ -103,27 +104,12 @@ class AddTime extends React.Component {
 
     const id = this.state.worker_id ? this.state.worker_id.split(".")[0] : undefined
     const workerId = this.state.worker_id ? this.state.worker_id.split(".")[1] : undefined
-    const id2 = this.state.worker_id2 ? this.state.worker_id2.split(".")[0] : undefined
-    const workerId2 = this.state.worker_id2 ? this.state.worker_id2.split(".")[1] : undefined
     this.setState(prevState =>{
       return{
         spinner: true
       }
     })
 
-     if(this.state.worker_id === undefined){
-           
-      axios
-      .patch(Global.url + `addtime/${id2}/${workerId2}`,this.state)
-      .then(response => {
-        this.props.history.push(`/admin/time`)
-        //window.location.reload()
-      })
-      .catch(err => {
-        alert(err.response)
-      })
-     }
-     else if(this.state.worker_id){
       axios
       .patch(Global.url + `addtime/${id}/${workerId}`,this.state)
       .then(response => {
@@ -133,8 +119,7 @@ class AddTime extends React.Component {
       .catch(err => {
         alert(err.response)
       })
-     }
-      
+
   }
 
   render() {
