@@ -29,10 +29,6 @@ const addFiles = async () => {
     const files = glob('**/*.{png,ico,json,js,css,woff,woff2}', { cwd, ignore });
     const newFiles = files.map(toCache => `'/${toCache}'`).toString();
 
-    console.log(files);
-    console.log("..................");
-    console.log(newFiles);
-
     // find and replace options; add hash ID, files to cache array, and site base URL
     const replaceOptions = {
         files: resolve(cwd, 'sw.js'),
