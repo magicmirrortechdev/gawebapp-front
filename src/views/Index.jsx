@@ -14,18 +14,12 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 
-let loggedUser
 class Index extends React.Component {
   state = {
     activeNav: 1,
     chartExample1Data: "data1"
   };
 
-
-  constructor(props) {
-    super(props);
-    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
-  }
 
   toggleNavs = (e, index) => {
     e.preventDefault();
@@ -43,7 +37,7 @@ class Index extends React.Component {
   };
 
   componentDidMount(props) {
-    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+    const loggedUser = localStorage.getItem('loggedUser')
     if (!loggedUser) return this.props.history.push('/')
   }
   render() {
