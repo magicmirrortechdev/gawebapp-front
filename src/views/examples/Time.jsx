@@ -49,12 +49,11 @@ const ButtonOne = (props) => {
         { loggedUser.level >= 4 ?
             <DropdownItem onClick={()=>{
               axios.patch(Global.url + `deletetime/${props.estimateId}/${props.workerId._id}/${props.timeId}`, {}).then(({data}) => {
-                window.location.reload()
-                alert('Time Removed')
+                props.loadTime();
+                alert("Time was removed");
+              }).catch(err => {
+                  console.log(err)
               })
-                  .catch(err => {
-                    console.log(err.response)
-                  })
             }}><span
                 className="text-danger">Delete</span>
             </DropdownItem>
@@ -95,8 +94,7 @@ const ButtonTwo = (props) => {
               <DropdownItem onClick={() => {
                 axios.patch(Global.url + `deletetime/${props.estimateId}/${props.workerId._id}/${props.timeId}`, {})
                     .then(({data}) => {
-
-                      window.location.reload()
+                      props.loadTime();
                       alert('Worker Removed')
                     })
                     .catch(err => {
@@ -123,6 +121,7 @@ class Time extends React.Component {
   constructor(props) {
     super(props);
     loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+    this.loadTime = this.loadTime.bind(this)
   }
 
   updateWindowDimensions = () => {
@@ -136,39 +135,41 @@ class Time extends React.Component {
   componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
+    this.loadTime()
+  }
 
+  loadTime() {
     loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
-    if(loggedUser.level <=1){
+    if (loggedUser.level <= 1) {
       axios
-      .get(Global.url + `checkjobs/${loggedUser._id}`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          console.log(data)
-          return {
-            ...prevState,
-            ...data
-          }
-        })
-      })
-      .catch(err => {
-        console.log(err.response)
-      })
-    }
-    else if(loggedUser.level >=2){
+          .get(Global.url + `checkjobs/${loggedUser._id}`)
+          .then(({data}) => {
+            this.setState(prevState => {
+              console.log(data)
+              return {
+                ...prevState,
+                ...data
+              }
+            })
+          })
+          .catch(err => {
+            console.log(err.response)
+          })
+    } else if (loggedUser.level >= 2) {
       axios
-      .get(Global.url + `checkjobs`)
-      .then(({ data }) => {
-        console.log(data)
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            ...data
-          }
-        })
-      })
-      .catch(err => {
-        console.log(err.response)
-      })
+          .get(Global.url + `checkjobs`)
+          .then(({data}) => {
+            console.log(data)
+            this.setState(prevState => {
+              return {
+                ...prevState,
+                ...data
+              }
+            })
+          })
+          .catch(err => {
+            console.log(err)
+          })
     }
   }
 
@@ -264,7 +265,7 @@ class Time extends React.Component {
                             {!this.state.isMobileVersion ?
                               <>
                                 <td >
-                                  <ButtonOne {...e}></ButtonOne>
+                                  <ButtonOne {...e} loadTime={this.loadTime}></ButtonOne>
                                 </td>
                                 <td><Moment add={{days:1}} format={"MMM D, YY"}>{e.date}</Moment></td>
                                 <td>{e.name}</td>
@@ -281,7 +282,7 @@ class Time extends React.Component {
                                   {e.name} - {e.time}<br/>
                                   <small>{e.jobName}</small> <br/>
                                   <div className="buttonfloat-right buttonfloat-right-times">
-                                    <ButtonOne {...e}></ButtonOne>
+                                    <ButtonOne {...e} loadTime={this.loadTime}></ButtonOne>
                                   </div>
                                 </td>
                               </>
@@ -301,7 +302,7 @@ class Time extends React.Component {
                                 {!this.state.isMobileVersion ?
                                  <>
                                   <td>
-                                    <ButtonTwo {...e}></ButtonTwo>
+                                    <ButtonTwo {...e} loadTime={this.loadTime}></ButtonTwo>
                                   </td>
                                   <td><Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment></td>
                                   <td>{e.name}</td>
@@ -326,7 +327,7 @@ class Time extends React.Component {
                                       {e.name} - {e.time}<br/>
                                       <small>{e.jobName}</small><br/>
                                       <div className="buttonfloat-right buttonfloat-right-times">
-                                        <ButtonTwo {...e}></ButtonTwo>
+                                        <ButtonTwo {...e} loadTime={this.loadTime}></ButtonTwo>
                                       </div>
                                     </td>
                                   </>

@@ -103,7 +103,6 @@ class UpdateTime extends React.Component {
       .patch(Global.url + `updatetime/${this.props.match.params.estimateId}/${this.props.match.params.workerId}/${this.props.match.params.timeId}`,this.state)
       .then(response => {
         this.props.history.push(`/admin/time`)
-        window.location.reload()
       })
       .catch(err => {
         console.log(err.response)

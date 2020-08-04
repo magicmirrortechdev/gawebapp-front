@@ -59,7 +59,7 @@
         "react-scripts": "2.1.8",
         "react-select": "^3.0.8",
         "react-tag-input": "^6.2.1",
-        "reactstrap": "7.1.0",
+        "reactstrap": "8.4.0",
         "replace-in-file": "^6.1.0"
     },
     "devDependencies": {
