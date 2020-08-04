@@ -78,7 +78,6 @@ class AddTime extends React.Component {
             }
         })
     }
-      console.log(this.state);
   }
 
   componentDidMount() {
