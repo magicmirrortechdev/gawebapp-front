@@ -12,7 +12,6 @@ import {
 } from "reactstrap";
 
 // core components
-
 import Header from "components/Headers/Header.jsx";
 
 class Index extends React.Component {
@@ -20,6 +19,8 @@ class Index extends React.Component {
     activeNav: 1,
     chartExample1Data: "data1"
   };
+
+
   toggleNavs = (e, index) => {
     e.preventDefault();
     this.setState({
@@ -34,6 +35,11 @@ class Index extends React.Component {
     setTimeout(() => wow(), 1000);
     // this.chartReference.update();
   };
+
+  componentDidMount(props) {
+    const loggedUser = localStorage.getItem('loggedUser')
+    if (!loggedUser) return this.props.history.push('/')
+  }
   render() {
     return (
       <>
