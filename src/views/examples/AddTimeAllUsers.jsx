@@ -61,35 +61,31 @@ class AddTime extends React.Component {
                     workers: item.workers
                 }))
 
+                let user = null;
                 item.workers.forEach((worker) => {
                     if(worker.workerId && worker.workerId._id === loggedUser._id){
-                        this.setState(prevState=>{
-                            return{
-                                ...prevState,
-                                worker_id2: worker._id+'.'+ worker.workerId._id,
-                            }
-                        })
+                        user = worker;
                     }
                 });
+
+                if(user !== null){
+                    this.setState(prevState=>{
+                        return{
+                            ...prevState,
+                            worker_id2: worker._id+'.'+ worker.workerId._id,
+                        }
+                    })
+                }else{
+                    this.setState(prevState=>{
+                        return{
+                            ...prevState,
+                            worker_id2: undefined
+                        }
+                    })
+                }
             }
         })
     }
-
-  }
-
-  handleInput2 = e => {
-    e.persist()
-    console.log('los values', loggedUser._id, e.target.value)
-    if(loggedUser._id === e.target.value){
-      console.log('Si es el mismo')
-      this.setState({diego: e.target.value})
-      
-    }
-    this.setState(prevState => ({
-      ...prevState,
-      [e.target.name]: e.target.value
-    }))
-    this.setState(({ value }) => ({ value: !value }))
   }
 
   componentDidMount() {
