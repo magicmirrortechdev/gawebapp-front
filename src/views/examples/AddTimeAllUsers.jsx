@@ -72,7 +72,7 @@ class AddTime extends React.Component {
                     this.setState(prevState=>{
                         return{
                             ...prevState,
-                            worker_id2: worker._id+'.'+ worker.workerId._id,
+                            worker_id2: user._id+'.'+ user.workerId._id,
                         }
                     })
                 }else{
