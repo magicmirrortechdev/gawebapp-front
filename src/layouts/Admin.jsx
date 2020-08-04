@@ -14,10 +14,7 @@ class Admin extends React.Component {
     super(props);
     loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
 }
-  componentDidMount(props) {
-    const loggedUser = localStorage.getItem('loggedUser')
-    if (!loggedUser) return this.props.history.push('/auth/login')
-  }
+  
   componentDidUpdate(e) {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
