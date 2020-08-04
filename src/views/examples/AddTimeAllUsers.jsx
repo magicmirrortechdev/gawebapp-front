@@ -60,9 +60,6 @@ class AddTime extends React.Component {
                     ...prevState,
                     workers: item.workers
                 }))
-
-<<<<<<< HEAD
-=======
                 let user = null;
                 item.workers.forEach((worker) => {
                     if(worker.workerId && worker.workerId._id === loggedUser._id){
@@ -90,7 +87,6 @@ class AddTime extends React.Component {
     }
   }
 
->>>>>>> 054ac337de3411a804850a2dbc1e2fa51c6bd4dc
   componentDidMount() {
     axios
       .get(Global.url + `openjobs`)
