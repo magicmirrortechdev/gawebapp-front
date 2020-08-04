@@ -18,7 +18,7 @@
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
-        "postbuild": "react-snap",
+        "postbuild": "node cached-assets.js && react-snap",
         "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
         "compile-sass": "node-sass src/assets/scss/argon-dashboard-react.scss src/assets/css/argon-dashboard-react.css",
         "minify-sass": "node-sass src/assets/scss/argon-dashboard-react.scss src/assets/css/argon-dashboard-react.min.css --output-style compressed",
@@ -40,6 +40,7 @@
         "axios": "^0.19.0",
         "chart.js": "2.7.3",
         "classnames": "2.2.6",
+        "glob": "^7.1.6",
         "material-ui": "^0.20.2",
         "moment": "^2.24.0",
         "nouislider": "13.1.1",
@@ -58,7 +59,8 @@
         "react-scripts": "2.1.8",
         "react-select": "^3.0.8",
         "react-tag-input": "^6.2.1",
-        "reactstrap": "7.1.0"
+        "reactstrap": "7.1.0",
+        "replace-in-file": "^6.1.0"
     },
     "devDependencies": {
         "@types/googlemaps": "3.30.18",
