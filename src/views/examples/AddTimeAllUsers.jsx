@@ -56,21 +56,6 @@ class AddTime extends React.Component {
   }
 
 
-  handleInput2 = e => {
-    e.persist()
-    console.log('los values', loggedUser._id, e.target.value)
-    if(loggedUser._id === e.target.value){
-      console.log('Si es el mismo')
-      this.setState({diego: e.target.value})
-      
-    }
-    this.setState(prevState => ({
-      ...prevState,
-      [e.target.name]: e.target.value
-    }))
-    this.setState(({ value }) => ({ value: !value }))
-  }
-
   componentDidMount() {
     axios
       .get(Global.url + `openjobs`)
