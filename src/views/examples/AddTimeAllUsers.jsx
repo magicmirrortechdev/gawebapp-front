@@ -56,11 +56,6 @@ class AddTime extends React.Component {
     if(e.target.name === '_id'){
         jobs.forEach((item) => {
             if(item._id === e.target.value){
-                this.setState(prevState => ({
-                    ...prevState,
-                    workers: item.workers
-                }))
-
                 let user = null;
                 item.workers.forEach((worker) => {
                     if(worker.workerId && worker.workerId._id === loggedUser._id){
@@ -69,19 +64,16 @@ class AddTime extends React.Component {
                 });
 
                 if(user !== null){
-                    this.setState(prevState=>{
-                        return{
-                            ...prevState,
-                            worker_id2: user._id+'.'+ user.workerId._id,
-                        }
-                    })
+                    this.setState(prevState => ({
+                        ...prevState,
+                        workers: item.workers,
+                        worker_id2: user._id+'.'+ user.workerId._id,
+                    }))
                 }else{
-                    this.setState(prevState=>{
-                        return{
-                            ...prevState,
-                            worker_id2: undefined
-                        }
-                    })
+                    let newState = this.state;
+                    delete newState["worker_id2"];
+                    newState["workers"] = item.workers;
+                    this.setState(newState);
                 }
             }
         })
@@ -125,7 +117,7 @@ class AddTime extends React.Component {
       .patch(Global.url + `addtime/${id2}/${workerId2}`,this.state)
       .then(response => {
         this.props.history.push(`/admin/time`)
-        window.location.reload()
+        //window.location.reload()
       })
       .catch(err => {
         alert(err.response)
@@ -136,7 +128,7 @@ class AddTime extends React.Component {
       .patch(Global.url + `addtime/${id}/${workerId}`,this.state)
       .then(response => {
         this.props.history.push(`/admin/time`)
-        window.location.reload()
+        //window.location.reload()
       })
       .catch(err => {
         alert(err.response)
