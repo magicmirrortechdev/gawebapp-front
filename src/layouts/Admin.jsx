@@ -236,7 +236,7 @@ class Admin extends React.Component {
 
 
   render(props) {
-    if (!loggedUser) return this.props.history.push('/auth/login')
+    if (!loggedUser) return this.props.history.push('/')
 
     return (
       <>
