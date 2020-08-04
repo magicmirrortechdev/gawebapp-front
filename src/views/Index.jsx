@@ -12,14 +12,18 @@ import {
 } from "reactstrap";
 
 // core components
-
 import Header from "components/Headers/Header.jsx";
 
+let loggedUser
 class Index extends React.Component {
   state = {
     activeNav: 1,
     chartExample1Data: "data1"
   };
+
+
+
+
   toggleNavs = (e, index) => {
     e.preventDefault();
     this.setState({
@@ -34,6 +38,11 @@ class Index extends React.Component {
     setTimeout(() => wow(), 1000);
     // this.chartReference.update();
   };
+
+  componentDidMount(props) {
+    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+    if (!loggedUser) return this.props.history.push('/')
+  }
   render() {
     return (
       <>
