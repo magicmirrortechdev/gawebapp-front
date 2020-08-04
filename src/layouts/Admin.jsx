@@ -14,11 +14,13 @@ class Admin extends React.Component {
     super(props);
     loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
 }
+  
   componentDidUpdate(e) {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
     this.refs.mainContent.scrollTop = 0;
   }
+  
 
   getRoutes = routes => {
     return routes.map((prop, key) => {
@@ -233,7 +235,12 @@ class Admin extends React.Component {
   }
 
 
-  render() {
+  render(props) {
+    if (!loggedUser){ 
+      this.props.history.push('/')
+      window.location.reload()
+    }
+
     return (
       <>
         <div id="spinner" style={{display:"flex",backgroundColor:"rgba(183,183,183,0.5)", alignContent:"center", justifyContent:"center",height:"100%", width:"100%", alignItems:"center", visibility:'hidden', position:"absolute", zIndex:"1" }}>

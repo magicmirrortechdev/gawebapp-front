@@ -38,7 +38,7 @@ class Index extends React.Component {
 
   componentDidMount(props) {
     const loggedUser = localStorage.getItem('loggedUser')
-    if (!loggedUser) return this.props.history.push('/')
+    if (!loggedUser) return this.props.history.push('/auth/login')
   }
   render() {
     return (
