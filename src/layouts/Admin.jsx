@@ -235,7 +235,9 @@ class Admin extends React.Component {
   }
 
 
-  render() {
+  render(props) {
+    if (!loggedUser) return this.props.history.push('/auth/login')
+
     return (
       <>
         <div id="spinner" style={{display:"flex",backgroundColor:"rgba(183,183,183,0.5)", alignContent:"center", justifyContent:"center",height:"100%", width:"100%", alignItems:"center", visibility:'hidden', position:"absolute", zIndex:"1" }}>
