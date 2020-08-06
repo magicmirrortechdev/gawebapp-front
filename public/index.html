@@ -13,7 +13,10 @@
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
     <link rel="apple-touch-icon" sizes="76x76" href="%PUBLIC_URL%/apple-icon.png" />
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <link rel="preload" href="/fonts/OpenSans-Regular-subset.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    <link rel="preload" href="/fonts/OpenSans-Regular-subset.woff" as="font" type="font/woff" crossorigin="anonymous">
+    <link rel="preload" href="/fonts/OpenSans-Bold-subset.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    <link rel="preload" href="/fonts/OpenSans-Bold-subset.woff" as="font" type="font/woff" crossorigin="anonymous">
 
     <title>Green Acorn App</title>
 </head>
@@ -41,7 +44,27 @@
                 });
         }
     </script>
+    <script type="text/javascript">
+        if ('fonts' in document) {
+            const openSansReg = new FontFace(
+                'Burbank',
+                "url(/fonts/OpenSans-Regular.woff2) format('woff2'), url(/fonts/OpenSans-Regular.woff) format('woff')", {
+                    weight: '400'
+                }
+            );
+            const openSansBld = new FontFace(
+                'Burbank',
+                "url(/fonts/OpenSans-Bold.woff2) format('woff2'), url(/fonts/OpenSans-Bold.woff) format('woff')", {
+                    weight: '700'
+                }
+            );
+            Promise.all([openSansReg.load(), openSansBld.load()]).then(fonts => {
+                for (const font of fonts) {
+                    document.fonts.add(font);
+                }
+            });
+        }
+    </script>
 </body>
 
-</html>
 </html>
