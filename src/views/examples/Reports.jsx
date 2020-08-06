@@ -62,7 +62,8 @@ class Reports extends React.Component {
         this.setState(prevState => {
             let img = url;
             if (img !== '') {
-                pdfFile = img.replace("http", "https");
+                img = img.replace("http", "https");
+                pdfFile = img;
             }
             return {
                 ...prevState,
@@ -86,7 +87,8 @@ class Reports extends React.Component {
                         return {img}
                     })
                     if(img !== ''){
-                        pdfFile = img.replace("http", "https");
+                        img = img.replace("http", "https");
+                        pdfFile = img
                     }
 
                     return {
