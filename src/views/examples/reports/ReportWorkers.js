@@ -6,7 +6,7 @@ import {compareValues} from  "../../../global";
 
 const DropDownExpense = (props) =>{
     return (
-        <UncontrolledCollapse toggler={"#toggle" + props.i}>
+        <UncontrolledCollapse key={props.id} toggler={"#toggle" + props.i}>
             {!props.isMobileVersion?
                 <Card>
                     <CardBody>
@@ -17,17 +17,17 @@ const DropDownExpense = (props) =>{
                                 responsive>
                                 <thead className="thead-light">
                                 <tr>
-                                    <th scope="col">Job Date</th>
-                                    <th scope="col">Job</th>
-                                    <th scope="col">Payroll Expense</th>
-                                    <th scope="col">Labor Expense
+                                    <th>Job Date</th>
+                                    <th>Job</th>
+                                    <th>Payroll Expense</th>
+                                    <th>Labor Expense
                                         (Effective Rate)
                                     </th>
-                                    <th scope="col">Hours</th>
+                                    <th>Hours</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {props.jobs.sort(compareValues('date','desc')).map((wx, i) => {
+                                {props.e.jobs.sort(compareValues('date','desc')).map((wx, i) => {
                                         return (
                                             <>
                                                 <tr>
@@ -44,12 +44,12 @@ const DropDownExpense = (props) =>{
                                 <tr>
                                     <td></td>
                                     <td align="right">Total:</td>
-                                    <td align="right">$ {isNaN(parseFloat(Math.round(props.totalPayroll.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)) ? 0 :
-                                        parseFloat(Math.round(props.totalPayroll.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)}</td>
-                                    <td align="right">$ {isNaN(parseFloat(Math.round(props.totalEffective.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)) ? 0 :
-                                        parseFloat(Math.round(props.totalEffective.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)}</td>
-                                    <td align="right">{isNaN(props.totalHours.reduce((ac,cv)=> ac+cv,0)) ? 0.00 :
-                                        props.totalHours.reduce((ac,cv)=> ac+cv,0).toFixed(2)}</td>
+                                    <td align="right">$ {isNaN(parseFloat(Math.round(props.e.totalPayroll.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)) ? 0 :
+                                        parseFloat(Math.round(props.e.totalPayroll.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)}</td>
+                                    <td align="right">$ {isNaN(parseFloat(Math.round(props.e.totalEffective.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)) ? 0 :
+                                        parseFloat(Math.round(props.e.totalEffective.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)}</td>
+                                    <td align="right">{isNaN(props.e.totalHours.reduce((ac,cv)=> ac+cv,0)) ? 0.00 :
+                                        props.e.totalHours.reduce((ac,cv)=> ac+cv,0).toFixed(2)}</td>
                                 </tr>
                                 </tbody>
                             </Table>
@@ -71,8 +71,8 @@ const DropDownExpense = (props) =>{
                                 </thead>
                                 <tbody>
                                 {
-                                    !props.expenses ? <p>Loading</p> :
-                                        props.expenses.sort(compareValues('date','desc')).map((ex, i) => {
+                                    !props.e.expenses ? <p>Loading</p> :
+                                        props.e.expenses.sort(compareValues('date','desc')).map((ex, i) => {
                                                 return (
                                                     <tr>
                                                         <td><Button onClick={props.handleModal(ex.img)}><i className="fas fa-receipt"></i> View</Button> </td>
@@ -101,7 +101,7 @@ const DropDownExpense = (props) =>{
                             </tr>
                         </thead>
                         <tbody>
-                        {props.jobs.sort(compareValues('date','desc')).map((wx, i) => {
+                        {props.e.jobs.sort(compareValues('date','desc')).map((wx, i) => {
                             return (
                                 <tr>
                                     <td className="tdMobile">
@@ -134,8 +134,8 @@ const DropDownExpense = (props) =>{
                         </thead>
                         <tbody>
                         {
-                            !props.expenses ? <p>Loading</p> :
-                                props.expenses.sort(compareValues('date','desc')).map((ex, i) => {
+                            !props.e.expenses ? <p>Loading</p> :
+                                props.e.expenses.sort(compareValues('date','desc')).map((ex, i) => {
                                     return (
                                         <tr>
                                             <td>
@@ -166,7 +166,6 @@ const DropDownExpense = (props) =>{
 class ReportWorkers extends React.Component{
 
     handleModal = (url) => (e) =>{
-        console.log("url---", url);
         this.props.openModal(url)
     }
 
@@ -180,11 +179,11 @@ class ReportWorkers extends React.Component{
                             {!this.props.isMobileVersion ?
                                 <>
                                     <th style={{width: "100px"}}></th>
-                                    <th scope="col">Worker</th>
+                                    <th >Worker</th>
                                 </>
                                 :
                                 <>
-                                    <th scope="col">Worker</th>
+                                    <th >Worker</th>
                                 </>
                             }
                         </tr>
@@ -196,122 +195,43 @@ class ReportWorkers extends React.Component{
                             <td>No workers register</td>
                         </tr>
                         :
-                        this.props.workers.map((e, i) => {
-                            let jobs = [];
-                            let hoursPerJob = []
-                            let hoursFull = []
-
-                            e.works.sort(compareValues('date','desc')).forEach((e, i) => {
-                                e.time.sort(compareValues('date','desc')).forEach((time, i) => {
-                                    hoursFull.push({hoursT: time.hours, date: time.date})
-                                    hoursPerJob.push({works: e._id,  time: time.hours, date: time.date, hours: hoursFull})
-                                })
-                            })
-
-                            e.works.sort(compareValues('date','desc')).forEach(works => {
-                                if(works.workId instanceof Array ){ //search
-
-                                    works.workId.sort(compareValues('date','desc')).forEach(work => {
-                                        if(works.time.length > 0){
-                                            hoursPerJob.forEach(hoursTime => {
-                                                if(hoursTime.works === work._id){
-
-                                                    jobs.push({
-                                                        date: hoursTime.date,
-                                                        jobName : work.jobName,
-                                                        hours: hoursTime.time,
-                                                        hoursT: hoursTime.time,
-                                                        payroll: e.payment * hoursTime.time,
-                                                        effective : e.effective * hoursTime.time,
-                                                    });
-
-                                                }
-                                            });
-                                        }
-                                    });
-
-                                }else{
-
-                                    if(works.workId && works.workId.workers){
-                                        works.workId.workers.sort(compareValues('date','desc')).forEach(worker => {
-                                            if(worker.workerId && worker.workerId._id === e._id ) {
-                                                hoursPerJob.forEach(hoursTime => {
-                                                    if (hoursTime.works === works._id) {
-                                                        jobs.push({
-                                                            date: hoursTime.date,
-                                                            jobName : works.workId.jobName,
-                                                            hours: hoursTime.time,
-                                                            hoursT: hoursTime.time,
-                                                            payroll: e.payment * hoursTime.time,
-                                                            effective : e.effective * hoursTime.time,
-                                                        });
-
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                }
-                            });
-
-                            let totalPayroll = []
-                            let totalEffective = []
-                            let totalHours = []
-                            jobs.map((e,i)=>{
-                                totalPayroll.push(e.payroll)
-                                totalEffective.push(e.effective)
-                                totalHours.push(e.hours)
-
-                                return{totalPayroll, totalEffective, totalHours}
-                            })
-                            return (
+                        this.props.workers.map((e, i) =>
+                            <>
+                            {!this.props.isMobileVersion?
                                 <>
-                                {!this.props.isMobileVersion?
-                                    <>
-                                        <tr key={i}>
-                                            <td>
-                                                <Button id={"toggle" + i} color="primary"><i className="ni ni-bold-down"></i></Button>
-                                            </td>
-                                            <td>{e.name} &nbsp; &nbsp; <Badge style={{fontSize:"12px"}} color="info">{e.role}</Badge></td>
-                                        </tr>
-                                        <tr>
-                                            <td colSpan={7}>
-                                                <DropDownExpense i={i}
-                                                                 handleModal={this.handleModal}
-                                                                 isMobileVersion={this.props.isMobileVersion}
-                                                                 expenses={e.expenses}
-                                                                 e={e}
-                                                                 jobs={jobs}
-                                                                 totalEffective={totalEffective}
-                                                                 totalHours={totalHours}
-                                                                 totalPayroll={totalPayroll}></DropDownExpense>
-                                            </td>
-                                        </tr>
-                                    </>
-                                    :
-                                    <>
-                                        <tr key={i}>
-                                            <td className="tdMobile">
-                                                <Button id={"toggle" + i} color="primary"><i className="ni ni-bold-down"></i></Button>
-                                                {e.name} &nbsp; &nbsp; <Badge style={{fontSize:"12px"}} color="info">{e.role}</Badge>
-                                            </td>
-                                        </tr>
-                                        <tr>
+                                    <tr key={i}>
+                                        <td>
+                                            <Button id={"toggle" + i} color="primary"><i className="ni ni-bold-down"></i></Button>
+                                        </td>
+                                        <td>{e.name} &nbsp; &nbsp; <Badge style={{fontSize:"12px"}} color="info">{e.role}</Badge></td>
+                                    </tr>
+                                    <tr>
+                                        <td colSpan={7}>
                                             <DropDownExpense i={i}
                                                              handleModal={this.handleModal}
                                                              isMobileVersion={this.props.isMobileVersion}
-                                                             expenses={e.expenses}
-                                                             e={e}
-                                                             jobs={jobs}
-                                                             totalEffective={totalEffective}
-                                                             totalHours={totalHours}
-                                                             totalPayroll={totalPayroll}></DropDownExpense>
-                                        </tr>
-                                    </>
-                                }
+                                                             e={e}></DropDownExpense>
+                                        </td>
+                                    </tr>
                                 </>
-                            )
-                        })}
+                                :
+                                <>
+                                    <tr key={i}>
+                                        <td className="tdMobile">
+                                            <Button id={"toggle" + i} color="primary"><i className="ni ni-bold-down"></i></Button>
+                                            {e.name} &nbsp; &nbsp; <Badge style={{fontSize:"12px"}} color="info">{e.role}</Badge>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <DropDownExpense i={i}
+                                                         handleModal={this.handleModal}
+                                                         isMobileVersion={this.props.isMobileVersion}
+                                                         e={e}></DropDownExpense>
+                                    </tr>
+                                </>
+                            }
+                            </>
+                        )}
                     </tbody>
                 </Table>
             </div>

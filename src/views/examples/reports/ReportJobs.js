@@ -6,7 +6,7 @@ import {compareValues} from  "../../../global";
 
 const DropDownExpense = (props) =>{
     return(
-        <UncontrolledCollapse toggler={"#toggle" + props.id}>
+        <UncontrolledCollapse key={props.id} toggler={"#toggle" + props.id}>
             {!props.isMobileVersion?
                 <Card>
                     <CardBody>
@@ -15,8 +15,8 @@ const DropDownExpense = (props) =>{
                             responsive>
                             <thead className="thead-light">
                             <tr>
-                                <th scope="col">Date</th>
-                                <th scope="col">Hours</th>
+                                <th>Date</th>
+                                <th>Hours</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -66,11 +66,11 @@ class ReportJobs extends React.Component{
                     {!this.props.isMobileVersion ?
                         <>
                             <th></th>
-                            <th scope="col">Job Name</th>
-                            <th scope="col">Invoices</th>
-                            <th scope="col">Expenses</th>
-                            <th scope="col">Effective Labor</th>
-                            <th scope="col">Profit</th>
+                            <th>Job Name</th>
+                            <th>Invoices</th>
+                            <th>Expenses</th>
+                            <th>Effective Labor</th>
+                            <th>Profit</th>
                         </>
                         :
                         <>
@@ -185,10 +185,10 @@ class ReportJobs extends React.Component{
                                                         responsive>
                                                         <thead className="thead-light">
                                                             <tr>
-                                                                <th scope="col">Date</th>
-                                                                <th scope="col">Client Name</th>
-                                                                <th scope="col">Total</th>
-                                                                <th scope="col">Status</th>
+                                                                <th >Date</th>
+                                                                <th >Client Name</th>
+                                                                <th >Total</th>
+                                                                <th >Status</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -220,18 +220,18 @@ class ReportJobs extends React.Component{
                                                         <thead className="thead-light">
                                                         <tr>
                                                             <th></th>
-                                                            <th scope="col">Worker</th>
-                                                            <th scope="col">Payroll Expense</th>
-                                                            <th scope="col">Labor Expense
+                                                            <th >Worker</th>
+                                                            <th >Payroll Expense</th>
+                                                            <th >Labor Expense
                                                                 (Efective Rate)
                                                             </th>
-                                                            <th scope="col">Hours</th>
+                                                            <th >Hours</th>
                                                         </tr>
                                                         </thead>
                                                         <tbody>
                                                         {e.workers.length === 0 ? <tr><td>No workers</td></tr>
                                                             : e.workers.sort(compareValues('date','asc')).map((wx, i) => {
-                                                                if(!wx.workerId)return <td>Worker Delete</td>
+                                                                if(!wx.workerId)return <tr><td>Worker Delete</td></tr>
                                                                 let time = wx.time ? (wx.time.reduce((acc, current, i) => acc + current.hours, 0)) : 0;
                                                                 let time2 = []
                                                                 time2.push(time)
@@ -253,7 +253,7 @@ class ReportJobs extends React.Component{
                                                                         </tr>
                                                                         <tr>
                                                                             <td colSpan={7}>
-                                                                                <DropDownExpense id={wx._id} time={wx.time}></DropDownExpense>
+                                                                                <DropDownExpense key={wx._id} id={wx._id} time={wx.time}></DropDownExpense>
                                                                             </td>
                                                                         </tr>
                                                                     </>
@@ -276,11 +276,11 @@ class ReportJobs extends React.Component{
                                                     <thead className="thead-light">
                                                     <tr>
                                                         <th></th>
-                                                        <th scope="col">Date</th>
-                                                        <th scope="col">Expense Type</th>
-                                                        <th scope="col">Amount</th>
-                                                        <th scope="col">Vendor</th>
-                                                        <th scope="col">Description</th>
+                                                        <th >Date</th>
+                                                        <th >Expense Type</th>
+                                                        <th >Amount</th>
+                                                        <th >Vendor</th>
+                                                        <th >Description</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -317,7 +317,7 @@ class ReportJobs extends React.Component{
                                                     className="align-items-center table-flush table-striped col-xs-12">
                                                     <thead className="thead-light">
                                                         <tr>
-                                                            <th scope="col" align="center"><b>Invoices</b></th>
+                                                            <th  align="center"><b>Invoices</b></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -341,7 +341,7 @@ class ReportJobs extends React.Component{
                                                     className="align-items-center table-flush table-striped col-xs-12">
                                                     <thead className="thead-light">
                                                         <tr>
-                                                            <th scope="col" align="center"><b>Labor</b></th>
+                                                            <th  align="center"><b>Labor</b></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -379,7 +379,7 @@ class ReportJobs extends React.Component{
                                                                     </tr>
                                                                     <tr>
                                                                         <td colSpan={7}>
-                                                                            <DropDownExpense id={wx._id} time={wx.time} isMobileVersion={this.props.isMobileVersion}></DropDownExpense>
+                                                                            <DropDownExpense key={wx._id} id={wx._id} time={wx.time} isMobileVersion={this.props.isMobileVersion}></DropDownExpense>
                                                                         </td>
                                                                     </tr>
                                                                 </>
@@ -392,7 +392,7 @@ class ReportJobs extends React.Component{
                                                     className="align-items-center table-striped table-flush col-xs-12">
                                                     <thead className="thead-light">
                                                         <tr>
-                                                            <th scope="col" align="center"><b>Expenses</b></th>
+                                                            <th  align="center"><b>Expenses</b></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>

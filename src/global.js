@@ -1,21 +1,24 @@
 let Global = {
     //url: "http://localhost:3000/",
-    url: "https://greenacorn.herokuapp.com/",
+    //url: "https://greenacorn.herokuapp.com/",
     //url: "https://green-acorn-app.herokuapp.com/",
-
+    url: process.env.REACT_APP_URL,
 
     //testing && production
     //urlEnvironment: "local",
-    urlEnvironment: "staging",
+    //urlEnvironment: "staging",
     //urlEnvironment: "production",
+    urlEnvironment: process.env.REACT_APP_URLENVIRONMENT,
 
     //urlArgyle: "https://argyle-api-dev.herokuapp.com", //local
-    urlArgyle: "https://argyle-api-dev.herokuapp.com", //staging
+    //urlArgyle: "https://argyle-api-dev.herokuapp.com", //staging
     //urlArgyle: "https://api.roverpayapp.com", //production
+    urlArgyle: process.env.REACT_APP_URLARGYLE,
 
     //merchantId: "5ddbe4b14d581e0017f78c46", //local
-    merchantId: "5ddbe4b14d581e0017f78c46", // staging
+    //merchantId: "5ddbe4b14d581e0017f78c46", // staging
     //merchantId: "5df7a89cbd23660017c29f1f", //production
+    merchantId: process.env.REACT_APP_MERCHANTID,
 
     mobileWidth: 1024,
 };
