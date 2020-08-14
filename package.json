@@ -14,7 +14,7 @@
     ],
     "homepage": "/",
     "scripts": {
-        "start": "react-scripts start",
+        "start": "react-app-env start --env-file=.env",
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
@@ -68,6 +68,7 @@
         "@types/react": "16.8.7",
         "node-sass": "^4.11.0",
         "prop-types": "^15.7.2",
+        "react-app-env": "^1.2.3",
         "react-snap": "^1.23.0",
         "typescript": "3.3.3333"
     }
