@@ -21,9 +21,9 @@ const DropDownExpense = (props) =>{
                             </thead>
                             <tbody>
                             {
-                                props.time.sort(compareValues('date','desc')).map((e)=>{
+                                props.time.sort(compareValues('date','desc')).map((e, i)=>{
                                     return(
-                                        <tr>
+                                        <tr key={i}>
                                             <td><Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment></td>
                                             <td>{e.hours}</td>
                                         </tr>
@@ -37,9 +37,9 @@ const DropDownExpense = (props) =>{
                 <>
                     <ul style={{"list-style-type": "none"}}>
                         {
-                        props.time.sort(compareValues('date','desc')).map((e)=>{
+                        props.time.sort(compareValues('date','desc')).map((e, i)=>{
                             return(
-                                <li>
+                                <li key={i}>
                                     Date:<b> <Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment></b> -
                                     Hours:<b> {e.hours}</b>
                                 </li>
@@ -131,11 +131,10 @@ class ReportJobs extends React.Component{
                         e.expenses.sort(compareValues('date','desc'))
 
                         return (
-                            <>
-                                <tr key={i}>
+                            <React.Fragment key={i}>
+                                <tr >
                                     {!this.props.isMobileVersion ?
-                                        <>
-
+                                        <React.Fragment key={i}>
                                             <td>
                                                 <Button id={"toggle" + i} color="primary"><i className="ni ni-bold-down"></i></Button>
                                             </td>
@@ -146,9 +145,9 @@ class ReportJobs extends React.Component{
                                             <td>${parseFloat(Math.round(totalExpenses * 100) / 100).toFixed(2)}</td>
                                             <td>${!totalTime ? 0 : parseFloat(Math.round(totalEffective * 100) / 100).toFixed(2)}</td>
                                             <td>${parseFloat(Math.round(totalProfit * 100) / 100).toFixed(2)}</td>
-                                        </>
+                                        </React.Fragment>
                                         :
-                                        <>
+                                        <React.Fragment key={i}>
                                             <td className="tdMobile">
                                                 {e.jobName} <br/>
                                                 <small>Estimate total: </small><b>${parseFloat(Math.round(totalEstimate * 100) / 100).toFixed(2)}</b><br/>
@@ -170,7 +169,7 @@ class ReportJobs extends React.Component{
                                                 </Row>
                                                 <Button id={"toggle" + i} color="primary"><i className="ni ni-bold-down"></i></Button>
                                             </td>
-                                        </>
+                                        </React.Fragment>
                                     }
                                 </tr>
                                 <tr>
@@ -197,7 +196,7 @@ class ReportJobs extends React.Component{
                                                                     : e.invoices.map((e, i)=>{
                                                                     const paid = e.payment.reduce((acc, current, i) => acc + current.paid, 0)
                                                                     return(
-                                                                        <tr>
+                                                                        <tr key={i}>
                                                                             <td><Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment></td>
                                                                             <td>{clientName ? clientName : nameClient}</td>
                                                                             <td align="right">$ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}</td>
@@ -220,12 +219,12 @@ class ReportJobs extends React.Component{
                                                         <thead className="thead-light">
                                                         <tr>
                                                             <th></th>
-                                                            <th >Worker</th>
-                                                            <th >Payroll Expense</th>
-                                                            <th >Labor Expense
+                                                            <th>Worker</th>
+                                                            <th>Payroll Expense</th>
+                                                            <th>Labor Expense
                                                                 (Efective Rate)
                                                             </th>
-                                                            <th >Hours</th>
+                                                            <th>Hours</th>
                                                         </tr>
                                                         </thead>
                                                         <tbody>
@@ -239,7 +238,7 @@ class ReportJobs extends React.Component{
                                                                 let effective = wx.workerId.effective ? wx.workerId.effective : 0;
                                                                 let payment = wx.workerId.payment ? wx.workerId.payment : 0;
                                                                 return (
-                                                                    <>
+                                                                    <React.Fragment key={i}>
                                                                         <tr>
                                                                             <td>
                                                                                 <Button id={"toggle" + wx._id} color="primary">
@@ -256,7 +255,7 @@ class ReportJobs extends React.Component{
                                                                                 <DropDownExpense key={wx._id} id={wx._id} time={wx.time}></DropDownExpense>
                                                                             </td>
                                                                         </tr>
-                                                                    </>
+                                                                    </React.Fragment>
                                                                 )
                                                             }
                                                         )}
@@ -287,7 +286,7 @@ class ReportJobs extends React.Component{
                                                     {e.expenses.length === 0 ? <tr><td>No expenses register</td></tr>
                                                         : e.expenses.map((ex, ix) => {
                                                             return (
-                                                                <tr>
+                                                                <tr key={ix}>
                                                                     <td><Button onClick={this.handleModal(e._id, ex._id)}><i className="fas fa-receipt"></i> View</Button> </td>
                                                                     <td>
                                                                         <Moment add={{days: 1}} format={"MMM D, YY"}>
@@ -326,7 +325,7 @@ class ReportJobs extends React.Component{
                                                             e.invoices.map((e, i)=>{
                                                             const paid = e.payment.reduce((acc, current, i) => acc + current.paid, 0)
                                                             return(
-                                                                <tr>
+                                                                <tr key={i}>
                                                                     <td>
                                                                         <Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment> <b>({ e.total-paid === 0 ? 'Paid' : e.status})</b> $ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}<br/>
                                                                         Client: {clientName ? clientName : nameClient}<br/>
@@ -347,7 +346,7 @@ class ReportJobs extends React.Component{
                                                     <tbody>
                                                     {e.workers.length === 0 ? <tr><td>No workers</td></tr>
                                                         : e.workers.sort(compareValues('date','asc')).map((wx, i) => {
-                                                            if(!wx.workerId)return <td>Worker Delete</td>
+                                                            if(!wx.workerId)return <tr><td>Worker Delete</td></tr>
                                                             let time = wx.time ? (wx.time.reduce((acc, current, i) => acc + current.hours, 0)) : 0;
                                                             let time2 = []
                                                             time2.push(time)
@@ -355,7 +354,7 @@ class ReportJobs extends React.Component{
                                                             let effective = wx.workerId.effective ? wx.workerId.effective : 0;
                                                             let payment = wx.workerId.payment ? wx.workerId.payment : 0;
                                                             return (
-                                                                <>
+                                                                <React.Fragment key={i}>
                                                                     <tr>
                                                                         <td>
                                                                             <Row>
@@ -382,7 +381,7 @@ class ReportJobs extends React.Component{
                                                                             <DropDownExpense key={wx._id} id={wx._id} time={wx.time} isMobileVersion={this.props.isMobileVersion}></DropDownExpense>
                                                                         </td>
                                                                     </tr>
-                                                                </>
+                                                                </React.Fragment>
                                                             )
                                                         }
                                                     )}
@@ -399,7 +398,7 @@ class ReportJobs extends React.Component{
                                                     {e.expenses.length === 0 ? <tr><td>No expenses register</td></tr>
                                                         : e.expenses.map((ex, ix) => {
                                                             return (
-                                                                <tr>
+                                                                <tr key={ix}>
                                                                     <td>
                                                                         <Moment add={{days: 1}} format={"MMM D, YY"}>
                                                                             {ex.date}
@@ -423,7 +422,7 @@ class ReportJobs extends React.Component{
                                     </UncontrolledCollapse>
                                 </td>
                             </tr>
-                            </>
+                        </React.Fragment>
                         )
                     })}
                 </tbody>

@@ -29,7 +29,7 @@ const DropDownExpense = (props) =>{
                                 <tbody>
                                 {props.e.jobs.sort(compareValues('date','desc')).map((wx, i) => {
                                         return (
-                                            <>
+                                            <React.Fragment key={i}>
                                                 <tr>
                                                     <td><Moment add={{days:1}} format={"MMM D, YY"}>{wx.date}</Moment></td>
                                                     <td>{wx.jobName}</td>
@@ -37,7 +37,7 @@ const DropDownExpense = (props) =>{
                                                     <td align="right">$ {isNaN(parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)} </td>
                                                     <td align="right">{isNaN(parseFloat(Math.round(wx.hours * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.hours * 100) / 100).toFixed(2)} </td>
                                                 </tr>
-                                            </>
+                                            </React.Fragment>
                                         )
                                     }
                                 )}
@@ -74,7 +74,7 @@ const DropDownExpense = (props) =>{
                                     !props.e.expenses ? <p>Loading</p> :
                                         props.e.expenses.sort(compareValues('date','desc')).map((ex, i) => {
                                                 return (
-                                                    <tr>
+                                                    <tr key={i}>
                                                         <td><Button onClick={props.handleModal(ex.img)}><i className="fas fa-receipt"></i> View</Button> </td>
                                                         <td><Moment add={{days:1}} format={"MMM D, YY"}>{ex.date}</Moment></td>
                                                         <td>{ex.category}</td>
@@ -103,7 +103,7 @@ const DropDownExpense = (props) =>{
                         <tbody>
                         {props.e.jobs.sort(compareValues('date','desc')).map((wx, i) => {
                             return (
-                                <tr>
+                                <tr key={i}>
                                     <td className="tdMobile">
                                         <Moment add={{days:1}} format={"MMM D, YY"}>{wx.date}</Moment><br/>
                                         {wx.jobName}
@@ -137,7 +137,7 @@ const DropDownExpense = (props) =>{
                             !props.e.expenses ? <p>Loading</p> :
                                 props.e.expenses.sort(compareValues('date','desc')).map((ex, i) => {
                                     return (
-                                        <tr>
+                                        <tr key={i}>
                                             <td>
                                                 <Moment add={{days: 1}} format={"MMM D, YY"}>
                                                     {ex.date}
@@ -196,10 +196,10 @@ class ReportWorkers extends React.Component{
                         </tr>
                         :
                         this.props.workers.map((e, i) =>
-                            <>
+                            <React.Fragment key={i}>
                             {!this.props.isMobileVersion?
-                                <>
-                                    <tr key={i}>
+                                <React.Fragment key={i}>
+                                    <tr >
                                         <td>
                                             <Button id={"toggle" + i} color="primary"><i className="ni ni-bold-down"></i></Button>
                                         </td>
@@ -213,10 +213,10 @@ class ReportWorkers extends React.Component{
                                                              e={e}></DropDownExpense>
                                         </td>
                                     </tr>
-                                </>
+                                </React.Fragment>
                                 :
-                                <>
-                                    <tr key={i}>
+                                <React.Fragment key={i}>
+                                    <tr>
                                         <td className="tdMobile">
                                             <Button id={"toggle" + i} color="primary"><i className="ni ni-bold-down"></i></Button>
                                             {e.name} &nbsp; &nbsp; <Badge style={{fontSize:"12px"}} color="info">{e.role}</Badge>
@@ -228,9 +228,9 @@ class ReportWorkers extends React.Component{
                                                          isMobileVersion={this.props.isMobileVersion}
                                                          e={e}></DropDownExpense>
                                     </tr>
-                                </>
+                                </React.Fragment>
                             }
-                            </>
+                            </React.Fragment>
                         )}
                     </tbody>
                 </Table>
