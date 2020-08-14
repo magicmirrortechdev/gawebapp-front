@@ -183,7 +183,7 @@ class Sidebar extends React.Component {
             <span>Logout</span>
             </Button> : null}
             {/* Divider */}
-            <h5 style={{marginTop:"15px"}}>V 2.4.2</h5>
+            <h5 style={{marginTop:"15px"}}>V 2.4.3</h5>
           </Collapse>
         </Container>
         
