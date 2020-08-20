@@ -25,9 +25,22 @@ class AuthService {
     addJob(data) {
         return this.service.post('/createjob', data)
     }
+
+    //users
+    getUsers() {
+        return this.service.get('/getusers')
+    }
     addWorker(data) {
         return this.service.post('/addworker', data)
     }
+    updateWorker(id, data) {
+        return this.service.patch('updateworker/' + id, data)
+    }
+    workerDelete(data) {
+        return this.service.delete(`/deleteworker/${data}`)
+    }
+
+    //estimates
     addEstimate(data) {
         return this.service.post('/addestimate', data)
     }
@@ -48,9 +61,6 @@ class AuthService {
     }
     invoiceDelete(data) {
         return this.service.patch(`/invoicedelete/${data}`)
-    }
-    workerDelete(data) {
-        return this.service.delete(`/deleteworker/${data}`)
     }
     clientDelete(data) {
         return this.service.delete(`/deleteclient/${data}`)

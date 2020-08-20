@@ -14,45 +14,27 @@ import {
   InputGroup,
   Col,
 } from "reactstrap";
-import AuthService from '../../services/services'
-const authService = new AuthService()
+import {connect} from "react-redux";
+import {logInUser} from "../../redux/actions/authAction";
 
 class Login extends React.Component {
 
-  componentDidMount(props) {
-    const loggedUser = localStorage.getItem('loggedUser')
-    if (loggedUser) return this.props.history.push('/admin/index')
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.userLogged) {
+      return nextProps.history.push('/admin/index')
+    }
   }
 
-  handleSubmit = (e, props) => {
-    e.preventDefault()
-    
-        authService
-          .login(this.state)
-          .then(response => {
-            let promise = new Promise((resolve, reject) => {
-              localStorage.setItem('loggedUser', JSON.stringify(response.data.user))
-              resolve();
-            })
-
-            promise.then(() => {
-              if (response.data.user.role === 'ADMIN') {
-                this.props.history.push(`/admin/index`)
-              }
-              if (response.data.user.role === 'WORKER') {
-                this.props.history.push(`/admin/index`)
-              }
-              if (response.data.user.role === 'PROJECT MANAGER') {
-                this.props.history.push(`/admin/index`)
-              }
-            })
-
-          })
-          .catch(err => {
-            console.log(err.response)
-          })
-      
+  componentDidMount(props) {
+    if(this.props.userLogged){
+      return this.props.history.push('/admin/index')
     }
+  }
+
+  handleSubmit =  (e, props) => {
+    e.preventDefault()
+    this.props.logInUser(this.state)
+  }
   
   handleInput = e => {
     e.persist()
@@ -61,6 +43,7 @@ class Login extends React.Component {
       [e.target.name]: e.target.value
     }))
   }
+
   render() {
     return (
       <>
@@ -129,4 +112,9 @@ class Login extends React.Component {
   }
 }
 
-export default withRouter(Login);
+const mapStateToProps = state => ({
+  err: state.auth.loginErr,
+  userLogged: state.auth.userLogged,
+})
+
+export default connect(mapStateToProps, {logInUser})(withRouter(Login));

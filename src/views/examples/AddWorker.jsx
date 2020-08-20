@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom'
 import AuthService from '../../services/services'
 import axios from 'axios'
 
-
 import {
   Card,
   CardHeader,
@@ -20,8 +19,9 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
+import {connect} from "react-redux";
+import {addUser} from "../../redux/actions/userAction";
 const authService = new AuthService()
-
 
 class AddWorker extends React.Component {
   state = {
@@ -47,16 +47,8 @@ class AddWorker extends React.Component {
 
   handleSubmit = (e, props) => {
     e.preventDefault()
-        authService
-          .addWorker(this.state)
-          .then(response => {
-            this.props.history.push(`workers`)
-            console.log(response)
-          })
-          .catch(err => {
-            console.log(err.response.data.err.message)
-            alert(err.response.data.err.message)
-          })
+    this.props.addUser(this.state)
+    this.props.history.push(`workers`)
   }
 
   render() {
@@ -333,4 +325,4 @@ class AddWorker extends React.Component {
   }
 }
 
-export default withRouter(AddWorker);
+export default connect(null, {addUser})(withRouter(AddWorker));

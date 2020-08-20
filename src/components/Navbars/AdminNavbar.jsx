@@ -18,23 +18,31 @@ import {
   Media,
   Button
 } from "reactstrap";
-import AuthService from '../../services/services'
 
-const authService = new AuthService()
+import {store} from "../../redux/store";
+import {logoutUser} from '../../redux/actions/authAction'
+import {connect} from "react-redux";
 
+let loggedUser
 class AdminNavbar extends React.Component {
+
+  constructor(props) {
+    super(props);
+    const {auth} = store.getState();
+    loggedUser = auth.userLogged
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if(!nextProps.userLogged){
+      return nextProps.history.push('/')
+    }
+  }
+
   handleLogout = () => {
-    authService
-      .logout()
-      .then(() => {
-        localStorage.removeItem('loggedUser')
-        this.props.history.push('/')
-      })
-      .catch(err => console.log(err))
+    this.props.logoutUser()
   }
 
   render() {
-    const loggedUser = JSON.parse(localStorage.getItem('loggedUser'))
     return (
       <>
         <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
@@ -66,7 +74,7 @@ class AdminNavbar extends React.Component {
                   <Media className="align-items-center">
                     <Media className="ml-2 d-none d-lg-block">
                       <span className="mb-0 text-sm font-weight-bold">
-                        {loggedUser.name}
+                        {loggedUser? (loggedUser.name) : ''}
                       </span>
                     </Media>
                   </Media>
@@ -89,5 +97,8 @@ class AdminNavbar extends React.Component {
     );
   }
 }
+const mapStateToProps = state => ({
+  userLogged: state.auth.userLogged,
+})
 
-export default AdminNavbar;
+export default connect(mapStateToProps, {logoutUser})(AdminNavbar);

@@ -1,4 +1,3 @@
-
 import React from "react";
 
 import {
@@ -10,9 +9,9 @@ import {
   Col,
   Button
 } from "reactstrap";
-
 // core components
 import Header from "components/Headers/Header.jsx";
+import {store} from "../redux/store";
 
 class Index extends React.Component {
   state = {
@@ -37,7 +36,8 @@ class Index extends React.Component {
   };
 
   componentDidMount(props) {
-    const loggedUser = localStorage.getItem('loggedUser')
+    const {auth} = store.getState();
+    const loggedUser = auth.userLogged
     if (!loggedUser) return this.props.history.push('/auth/login')
   }
   render() {

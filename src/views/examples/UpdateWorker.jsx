@@ -18,6 +18,8 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
+import {connect} from "react-redux";
+import {updateUser} from "../../redux/actions/userAction";
 
 class UpdateWorker extends React.Component {
   state = {
@@ -48,31 +50,23 @@ class UpdateWorker extends React.Component {
   }
 
   componentDidMount() {
-    axios
-      .get(Global.url + `workerdetail/${this.props.match.params.id}`)
-      .then(({ data }) => {
-        const user= data.user
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            name: user.name,
-            role: user.role,
-            email: user.email,
-            address:user.address,
-            contact:user.contact,
-            phone: user.phone,
-            mobile:user.mobile,
-            activity:user.activity,
-            type:user.type,
-            payment:user.payment,
-            effective:user.effective,
-          }
-        })
-
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    const user = this.props.users.filter(item => item._id === this.props.match.params.id)[0]
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        name: user.name,
+        role: user.role,
+        email: user.email,
+        address:user.address,
+        contact:user.contact,
+        phone: user.phone,
+        mobile:user.mobile,
+        activity:user.activity,
+        type:user.type,
+        payment:user.payment,
+        effective:user.effective,
+      }
+    })
   }
 
   handleInput = e => {
@@ -95,22 +89,15 @@ class UpdateWorker extends React.Component {
 
   handleSubmit = (e, props) => {
     e.preventDefault()
-    axios
-      .patch(Global.url + `updateworker/${this.props.match.params.id}`,this.state)
-      .then(response => {
-        this.props.history.push(`/admin/workers`)
-        console.log(response)
-      })
-      .catch(err => {
-        console.log(err)
-      })
+
+    this.props.updateUser(this.props.match.params.id, this.state);
+    this.props.history.push(`/admin/workers`)
   }
 
   render() {
     const user = this.state
     if (!this.state) return <p>Loading</p>
     const typeUser = user.type
-    console.log(user)
     const roles = [{role: 'WORKER'}, {role: 'PROJECT MANAGER'}]
     const types = [{type: '1099'}, {type: 'Employee'}]
     return (
@@ -376,4 +363,8 @@ class UpdateWorker extends React.Component {
   }
 }
 
-export default withRouter(UpdateWorker);
+const mapStateToProps = state => ({
+  users: state.user.users,
+})
+
+export default connect(mapStateToProps, {updateUser})(withRouter(UpdateWorker));

@@ -19,6 +19,7 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
+import {store} from "../../redux/store";
 
 const authService = new AuthService()
 let loggedUser
@@ -112,7 +113,8 @@ class Estimates extends React.Component {
 
   constructor(props) {
     super(props);
-    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+    const {user} = store.getState();
+    loggedUser = user.userLogged
   }
 
   updateWindowDimensions = () => {
@@ -124,10 +126,9 @@ class Estimates extends React.Component {
   }
 
   componentDidMount() {
-    this.updateWindowDimensions()
-    window.addEventListener('resize', this.updateWindowDimensions)
+    //this.updateWindowDimensions()
+    //window.addEventListener('resize', this.updateWindowDimensions)
 
-    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
     if(loggedUser.level <=1){
       axios
       .get(Global.url + `checkestimates/${loggedUser._id}`)

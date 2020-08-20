@@ -1,7 +1,5 @@
 import React from "react";
-import { Link } from 'react-router-dom'
-import axios from 'axios'
-import AuthService from '../../services/services'
+import {Link} from 'react-router-dom'
 
 import {
   Card,
@@ -18,10 +16,11 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
+import {store} from "../../redux/store";
+import {connect} from "react-redux";
+import {getUsers, removeUser} from '../../redux/actions/userAction'
 
-const authService = new AuthService()
 let loggedUser
-
 const ActionButton = (props) =>{
   return (
     <UncontrolledDropdown>
@@ -33,16 +32,8 @@ const ActionButton = (props) =>{
           {
             loggedUser.level >=4 ?
               <DropdownItem onClick={()=>{
-                authService
-                  .workerDelete(props._id)
-                  .then(({data}) => {
-                    alert('WorkerDelete')
-                    window.location.reload()
-                  })
-                  .catch(err => {
-                    console.log(err.response)
-                    alert(err.response.data.msg || err.response.data.err.message)
-                  })
+                props.removeUser(props._id)
+                alert('WorkerDelete')
               }}><span
                   className="text-danger">Delete</span>
               </DropdownItem>
@@ -54,12 +45,10 @@ const ActionButton = (props) =>{
 }
 
 class Workers extends React.Component {
-  state = {
-    users:[]
-  };
   constructor(props) {
     super(props);
-    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+    const {auth} = store.getState();
+    loggedUser = auth.userLogged
   }
 
   updateWindowDimensions = () => {
@@ -73,24 +62,11 @@ class Workers extends React.Component {
   componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-
-    axios.get(Global.url + `getusers`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            ...data
-          }
-        })
-
-        console.log('Aqui está el state', this.state.clients )
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    this.props.getUsers();
   }
 
   render() {
+    const { users } = this.props;
     if (!this.state) return <p>Loading</p>
     return (
       <>
@@ -136,8 +112,8 @@ class Workers extends React.Component {
                     </tr>
                   </thead>
                   <tbody>
-                   {this.state.users.length === 0 ? <tr><td>No workers register</td></tr> :
-                   this.state.users.map((e,i)=>{
+                   {users.length === 0 ? <tr><td>No workers register</td></tr> :
+                   users.map((e,i)=>{
                     return(
                       <tr key={i}>
                         {!this.state.isMobileVersion ?
@@ -145,7 +121,7 @@ class Workers extends React.Component {
                             {
                             loggedUser.level >=3 ?
                             <td>
-                              <ActionButton {...e}></ActionButton>
+                              <ActionButton {...e} removeUser={this.props.removeUser}></ActionButton>
                             </td>: null}
                             <td>{e.name}</td>
                             <td>{e.email}</td>
@@ -160,7 +136,7 @@ class Workers extends React.Component {
                               Effective: <b>{e.effective}</b><br/>
                               <small>({e.email})</small><br/>
                               <div className="buttonfloat-right buttonfloat-right-jobs">
-                                <ActionButton {...e}></ActionButton>
+                                <ActionButton {...e} removeUser={this.props.removeUser}></ActionButton>
                               </div>
                             </td>
                           </>
@@ -180,4 +156,8 @@ class Workers extends React.Component {
   }
 }
 
-export default Workers;
+const mapStateToProps = state => ({
+  users: state.user.users,
+})
+
+export default connect(mapStateToProps, {getUsers, removeUser})(Workers);

@@ -54,6 +54,7 @@ const ActionButton = (props) => {
             .then(response => {
               alert('Job Open Again')
               window.location.reload()
+              //TODO
             }).catch(err => {
               console.log(err.response)
             })
@@ -66,6 +67,7 @@ const ActionButton = (props) => {
               .then(({data}) => {
                 alert('Job Delete')
                 window.location.reload()
+                //TODO
               }).catch(err => {
                 console.log(err.response)
               })
@@ -119,6 +121,7 @@ const ActionButton2 = (props) => {
                 .then(({data}) => {
                   alert('Job Closed')
                   window.location.reload()
+                  //TODO
                 })
                 .catch(err => {
                   console.log(err.response)
@@ -133,7 +136,7 @@ const ActionButton2 = (props) => {
                 .then(({data}) => {
                   alert('Job Delete')
                   window.location.reload()
-
+                  //TODO
                 })
                 .catch(err => {
                   console.log(err.response)

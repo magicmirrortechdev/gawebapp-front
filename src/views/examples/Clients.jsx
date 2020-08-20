@@ -37,6 +37,8 @@ const ActionButton = (props) => {
                       .then(({data}) => {
                         alert('Client Delete')
                         window.location.reload()
+
+                        //TODO
                       })
                       .catch(err => {
                         //aquí deberia ir una notificacion o un swal o un toastr
