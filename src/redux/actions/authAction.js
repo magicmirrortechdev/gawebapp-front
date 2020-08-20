@@ -17,6 +17,7 @@ export const logInUser = (data) => async dispatch => {
 
     authService.login(data)
     .then(response => {
+        localStorage.setItem('loggedUser', JSON.stringify(response.data.user)) // remove when is done Redux implementation
         dispatch({type: LOG_IN_FULFILLED, payload: response.data.user})
     })
     .catch(err => {
