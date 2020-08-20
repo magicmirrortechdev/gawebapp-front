@@ -37,9 +37,7 @@ export const userReducer = (state = initialState, action) => {
 
         case FETCH_WORKER_UPDATE_SUCCESS:
             let index = state.users.findIndex(u => u._id === action.payload.id)
-            console.log(index, updater(state.users, action.payload.data, index))
-
-            return {...state, users: updater(state.users, action.payload, index)}
+            return {...state, users: updater(state.users, action.payload.data, index)}
         case FETCH_WORKER_UPDATE_FAILURE:
             return merger(state, {usersEr: action.payload})
 
