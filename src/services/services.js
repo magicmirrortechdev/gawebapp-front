@@ -19,13 +19,25 @@ class AuthService {
     logout() {
         return this.service.get('/logout')
     }
-    addClient(data) {
-        return this.service.post('/createclient', data)
-    }
+
+
     addJob(data) {
         return this.service.post('/createjob', data)
     }
 
+    //clients
+    getClients() {
+        return this.service.get('/checkclients')
+    }
+    addClient(data) {
+        return this.service.post('/createclient', data)
+    }
+    updateClient(id, data) {
+        return this.service.patch('updateclient/' + id, data)
+    }
+    deleteClient(data) {
+        return this.service.delete(`/deleteclient/${data}`)
+    }
     //users
     getUsers() {
         return this.service.get('/getusers')
@@ -36,7 +48,7 @@ class AuthService {
     updateWorker(id, data) {
         return this.service.patch('updateworker/' + id, data)
     }
-    workerDelete(data) {
+    deleteWorker(data) {
         return this.service.delete(`/deleteworker/${data}`)
     }
 
@@ -62,9 +74,7 @@ class AuthService {
     invoiceDelete(data) {
         return this.service.patch(`/invoicedelete/${data}`)
     }
-    clientDelete(data) {
-        return this.service.delete(`/deleteclient/${data}`)
-    }
+
     closeJob(data) {
         return this.service.patch(`/closejob/${data}`)
     }

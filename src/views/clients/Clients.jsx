@@ -1,5 +1,5 @@
 import React from "react";
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import {
   Card,
@@ -15,36 +15,36 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-import Global from "../../global";
 import {store} from "../../redux/store";
 import {connect} from "react-redux";
-import {getUsers, removeUser} from '../../redux/actions/userAction'
+import {getClients, removeClient} from "../../redux/actions/clientAction";
 
 let loggedUser
-const ActionButton = (props) =>{
+const ActionButton = (props) => {
   return (
     <UncontrolledDropdown>
-        <DropdownToggle>
-          ...
-        </DropdownToggle>
-        <DropdownMenu>
-          {loggedUser.level >=3 ? <DropdownItem to={`/admin/workers/update/${props._id}`} tag={Link}>Update</DropdownItem> : null}
-          {
-            loggedUser.level >=4 ?
-              <DropdownItem onClick={()=>{
-                props.removeUser(props._id)
-                alert('WorkerDelete')
-              }}><span
-                  className="text-danger">Delete</span>
-              </DropdownItem>
-              :null
-          }
-        </DropdownMenu>
-    </UncontrolledDropdown>
+          <DropdownToggle>
+            ...
+          </DropdownToggle>
+          <DropdownMenu>
+            <DropdownItem to={`/admin/clients/estimatecreate/${props._id}`} tag={Link}>Create Estimate</DropdownItem>
+            <DropdownItem to={`/admin/clients/update/${props._id}`} tag={Link}>Update Client</DropdownItem>
+
+            { loggedUser.level >= 4 ?
+                <DropdownItem onClick={()=>{
+                  props.removeClient(props._id)
+                  alert('Client Delete')
+                }}><span
+                    className="text-danger">Delete</span>
+                </DropdownItem>
+                :null
+            }
+          </DropdownMenu>
+        </UncontrolledDropdown>
   )
 }
 
-class Workers extends React.Component {
+class Clients extends React.Component {
   constructor(props) {
     super(props);
     const {auth} = store.getState();
@@ -52,7 +52,7 @@ class Workers extends React.Component {
   }
 
   updateWindowDimensions = () => {
-    this.setState(prevState => {return {...prevState, isMobileVersion : (window.innerWidth < Global.mobileWidth) }})
+    this.setState(prevState => {return {...prevState, isMobileVersion : (window.innerWidth < 1024) }})
   }
 
   componentWillUnmount() {
@@ -62,11 +62,11 @@ class Workers extends React.Component {
   componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-    this.props.getUsers();
+    this.props.getClients();
   }
 
   render() {
-    const { users } = this.props;
+    const { clients } = this.props;
     if (!this.state) return <p>Loading</p>
     return (
       <>
@@ -81,16 +81,13 @@ class Workers extends React.Component {
                     <div className="col">
                       <h3 className="mb-0">Information</h3>
                     </div>
-                    {loggedUser.level >= 3 ?
-                      <div className="col text-right">
-                        <Link to="addworker">
-                          <p color="primary" size="sm">
-                            Add a Worker
-                          </p>
-                        </Link>
-                      </div>
-                      : null
-                    }
+                    <div className="col text-right">
+                    <Link to="addclient">
+                      <p color="primary" size="sm"  >
+                        Add Client
+                      </p>
+                    </Link>
+                    </div>
                   </Row>
                 </CardHeader>
                 <Table className="align-items-center table-flush" responsive>
@@ -98,51 +95,45 @@ class Workers extends React.Component {
                     <tr>
                       {!this.state.isMobileVersion ?
                         <>
-                          {loggedUser.level >= 3 ? <th scope="col"></th> : null}
+                          <th scope="col"></th>
                           <th scope="col">Name</th>
                           <th scope="col">Email</th>
-                          <th scope="col">Pay Rate</th>
-                          <th scope="col">Effective Rate</th>
+                          <th scope="col">Phone Number</th>
                         </>
                         :
                         <>
-                          <th>Worker</th>
+                          <th>Details</th>
                         </>
                       }
                     </tr>
                   </thead>
                   <tbody>
-                   {users.length === 0 ? <tr><td>No workers register</td></tr> :
-                   users.map((e,i)=>{
+                    {clients.length === 0 ?  <tbody><tr><td>No clients register</td></tr></tbody>:
+                     clients.map((e,i)=>{
                     return(
                       <tr key={i}>
                         {!this.state.isMobileVersion ?
                           <>
-                            {
-                            loggedUser.level >=3 ?
                             <td>
-                              <ActionButton {...e} removeUser={this.props.removeUser}></ActionButton>
-                            </td>: null}
+                              <ActionButton {...e} removeClient={this.props.removeClient}></ActionButton>
+                            </td>
                             <td>{e.name}</td>
                             <td>{e.email}</td>
-                            <td>{e.payment}</td>
-                            <td>{e.effective}</td>
+                            <td>{e.phone}</td>
                           </>
                           :
                           <>
                             <td>
                               {e.name}<br/>
-                              Payment: <b>{e.payment}</b><br/>
-                              Effective: <b>{e.effective}</b><br/>
-                              <small>({e.email})</small><br/>
-                              <div className="buttonfloat-right buttonfloat-right-jobs">
-                                <ActionButton {...e} removeUser={this.props.removeUser}></ActionButton>
+                              <small>{e.email} {!e.phone ? '' : ' - ' + e.phone }</small>
+                              <div className="buttonfloat-right buttonfloat-right-clients">
+                                <ActionButton {...e} removeClient={this.props.removeClient}></ActionButton>
                               </div>
                             </td>
                           </>
                         }
                       </tr>
-                      )
+                     )
                     })}
                   </tbody>
                 </Table>
@@ -156,8 +147,9 @@ class Workers extends React.Component {
   }
 }
 
+
 const mapStateToProps = state => ({
-  users: state.user.users,
+  clients: state.client.clients,
 })
 
-export default connect(mapStateToProps, {getUsers, removeUser})(Workers);
+export default connect(mapStateToProps, {getClients, removeClient})(Clients);

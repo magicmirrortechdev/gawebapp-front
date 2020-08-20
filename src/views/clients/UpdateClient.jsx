@@ -1,5 +1,4 @@
 import React from "react";
-import AuthService from '../../services/services'
 
 import {
   Card,
@@ -15,10 +14,10 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-const authService = new AuthService()
+import {updateClient} from "../../redux/actions/clientAction";
+import {connect} from "react-redux";
 
-
-class AddClient extends React.Component {
+class UpdateClient extends React.Component {
   state = {
     name:'',
     email:'',
@@ -32,6 +31,25 @@ class AddClient extends React.Component {
     notes:''
   };
 
+  componentDidMount() {
+    const client = this.props.clients.filter(item => item._id === this.props.match.params.id)[0]
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        name: client.name,
+        email: client.email,
+        address: client.address,
+        contact: client.contactName,
+        phone: client.phone,
+        mobile: client.mobile,
+        website: client.website,
+        tax: client.tax,
+        customPayment: client.customPayment,
+        notes:client.note,
+        ...client,
+      }
+    })
+  }
 
   handleInput = e => {
     e.persist()
@@ -43,20 +61,13 @@ class AddClient extends React.Component {
 
   handleSubmit = (e, props) => {
     e.preventDefault()
-        authService
-          .addClient(this.state)
-          .then(response => {
-            this.props.history.push(`clients`)
-            console.log(response)
-          })
-          .catch(err => {
-            console.log(err.response)
-            alert(err.response.data.message)
-          })
+    this.props.updateClient(this.props.match.params.id, this.state);
+    this.props.history.push(`/admin/clients`)
   }
 
   render() {
     const client = this.state
+    console.log(client);
     return (
       <>
         <Header forms={true}/>
@@ -240,22 +251,22 @@ class AddClient extends React.Component {
                               Custom Payment Terms
                             </label>
                             <Input
-                              defaultValue={client.customPayment}
+                              value={client.customPayment}
                               name="customPayment"
                               className="form-control-alternative"
                               placeholder="Select one"
                               type="select"
                               onChange={this.handleInput}
                             >
-                            <option>None</option>
-                            <option>7 days</option>
-                            <option>14 days</option>
-                            <option>21 days</option>
-                            <option>30 days</option>
-                            <option>45 days</option>
-                            <option>60 days</option>
-                            <option>90 days</option>
-                            <option>Custom</option>
+                            <option value="None">None</option>
+                            <option value="7 days">7 days</option>
+                            <option value="14 days">14 days</option>
+                            <option value="21 days">21 days</option>
+                            <option value="30 days">30 days</option>
+                            <option value="45 days">45 days</option>
+                            <option value="60 days">60 days</option>
+                            <option value="90 days">90 days</option>
+                            <option value="Custom">Custom</option>
                             </Input>
                           </FormGroup>
                         </Col>
@@ -303,4 +314,8 @@ class AddClient extends React.Component {
   }
 }
 
-export default AddClient;
+const mapStateToProps = state => ({
+  clients: state.client.clients,
+})
+
+export default connect(mapStateToProps, {updateClient})(UpdateClient);

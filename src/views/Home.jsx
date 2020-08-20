@@ -13,7 +13,7 @@ import {
   InputGroup,
   Col
 } from "reactstrap";
-import AuthService from '../../services/services'
+import AuthService from '../services/services'
 const authService = new AuthService()
 
 

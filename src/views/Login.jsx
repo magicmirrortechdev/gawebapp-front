@@ -15,7 +15,7 @@ import {
   Col,
 } from "reactstrap";
 import {connect} from "react-redux";
-import {logInUser} from "../../redux/actions/authAction";
+import {logInUser} from "../redux/actions/authAction";
 
 class Login extends React.Component {
 

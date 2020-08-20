@@ -1,35 +1,40 @@
 import Index from "views/Index.jsx";
-import Login from "views/examples/Login.jsx";
+import Home from "views/Home";
+import Login from "views/Login.jsx";
+
 import Time from "views/examples/Time.jsx";
 import Estimates from "views/examples/Estimates.jsx";
 import Expenses from "views/examples/Expenses.jsx";
 import UpdateEstimate from "views/examples/UpdateEstimate.jsx";
 import UpdateJob from "views/examples/UpdateJob.jsx";
 import Invoices from "views/examples/Invoices.jsx";
-import Clients from "views/examples/Clients.jsx";
-import AddClient from "views/examples/AddClient.jsx";
-import Workers from "views/examples/Workers.jsx";
+
+import Clients from "views/clients/Clients.jsx";
+import AddClient from "views/clients/AddClient.jsx";
+import UpdateClient from "./views/clients/UpdateClient.jsx"
+
+import Workers from "views/workers/Workers.jsx";
+import AddWorker from "views/workers/AddWorker.jsx";
+import UpdateWorker from "./views/workers/UpdateWorker.jsx";
+import AddWorkerJob from "views/workers/AddWorkerJob.jsx";
+
 import AddExpense from "views/examples/AddExpense.jsx";
 import AddExpenseByWorker from "views/examples/AddExpenseByWorker.jsx";
 import Jobs from "views/examples/Jobs.jsx";
 import AddJob from "views/examples/AddJob.jsx";
-import AddWorker from "views/examples/AddWorker.jsx";
-import AddWorkerJob from "views/examples/AddWorkerJob.jsx";
 import AddTime from "views/examples/AddTime.jsx";
 import UpdateTime from "views/examples/UpdateTime.jsx";
 import AddPM from "views/examples/AddProjectManager.jsx";
 import AddEstimate from "views/examples/AddEstimate.jsx";
 import Reports from "./views/examples/Reports";
 import AddReport from "./views/examples/AddReport";
-import UpdateWorker from "./views/examples/UpdateWorker.jsx";
-import UpdateClient from "./views/examples/UpdateClient.jsx"
+
 import AddEstimateByUser from './views/examples/AddEstimateByUser.jsx'
 import AddInvoice from './views/examples/AddInvoice.jsx'
 import AddInvoiceByEstimate from './views/examples/AddInvoiceByEstimate.jsx'
 import AddTimeAllUsers from "views/examples/AddTimeAllUsers";
 import PayInvoice from "views/examples/PayInvoice";
 import AddInvoiceByJob from "views/examples/AddInvoiceByJob";
-import Home from "views/examples/Home";
 import SendEstimate from "views/examples/SendEstimate";
 import UpdateExpense from "views/examples/UpdateExpense";
 import updateInvoice from "views/examples/UpdateInvoice";

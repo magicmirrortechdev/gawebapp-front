@@ -53,7 +53,7 @@ export const updateUser = (id, data) => async dispatch => {
 export const removeUser = (id) => async dispatch => {
     dispatch({type: FETCH_WORKER_REMOVE_SENT})
     try {
-        await authService.workerDelete(id)
+        await authService.deleteWorker(id)
         dispatch({type: FETCH_WORKER_REMOVE_SUCCESS, payload: {id: id}})
     } catch (err){
         dispatch({type: FETCH_WORKER_REMOVE_FAILURE, payload: err})
