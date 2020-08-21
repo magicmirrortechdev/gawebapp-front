@@ -2,7 +2,6 @@ import React from "react";
 import { withRouter } from 'react-router-dom'
 import axios from 'axios'
 
-
 import {
   Card,
   CardHeader,
@@ -10,7 +9,6 @@ import {
   Container,
   Row,
   Col,
-
   Button,
   FormGroup,
   Input,
@@ -19,7 +17,8 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
-
+import {connect} from "react-redux";
+import {addUser} from '../../redux/actions/userAction'
 
 class AddWorkerJob extends React.Component {
   state = {
@@ -36,19 +35,6 @@ class AddWorkerJob extends React.Component {
 
   componentDidMount() {
 
-    axios
-      .get(Global.url + `getusers`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            ...data
-          }
-        })
-      })
-      .catch(err => {
-        console.log(err)
-      })
   }
 
   handleSubmit = async (e, props) => {
@@ -76,6 +62,7 @@ class AddWorkerJob extends React.Component {
   }
 
   render() {
+    const {users} = this.props
     console.log(this.state)
     return (
       <>
@@ -107,7 +94,7 @@ class AddWorkerJob extends React.Component {
                               
                             >
                             <option>Select worker</option>
-                            {this.state.users.map((e,i)=>{
+                            {users.map((e,i)=>{
                               return(
                                 e.role === 'PROJECT MANAGER' ? <option key={i} value={`${e._id}`}>{e.name} (Project Manager)</option> :
                                 e.role === 'WORKER' ? <option key={i} value={`${e._id}`}>{e.name} (Worker)</option> :
@@ -149,4 +136,8 @@ class AddWorkerJob extends React.Component {
   }
 }
 
-export default withRouter(AddWorkerJob);
+const mapStateToProps = state => ({
+  users: state.user.users,
+})
+
+export default connect(null, {addUser})(withRouter(AddWorkerJob));

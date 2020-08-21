@@ -1,5 +1,4 @@
 import React from "react";
-import axios from 'axios'
 import AuthService from '../../services/services'
 import { Link } from "react-router-dom";
 import Moment from 'react-moment'
@@ -18,8 +17,9 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-import Global from "../../global";
 import {store} from "../../redux/store";
+import {getEstimates, convertJob, decline, removeEstimate} from "../../redux/actions/estimateAction"
+import {connect} from "react-redux";
 
 const authService = new AuthService()
 let loggedUser
@@ -48,53 +48,27 @@ const ActionButton = (props) => {
               },
             },
           }}>
-        <DropdownItem to={`/admin/estimates/${props._id}/invoice`} tag={Link}>Convert to Invoice</DropdownItem>
+        <DropdownItem to={`/admin/estimates/${props.item._id}/invoice`} tag={Link}>Convert to Invoice</DropdownItem>
         <DropdownItem onClick={()=>{
-          authService
-              .convertJob(props._id)
-              .then(response => {
-                this.props.history.push(`jobs`)
-                console.log(response)
-
-              })
-              .catch(err => {
-                console.log(err.response)
-              })
+          props.props.convertJob(props.item._id, props.item)
+          props.props.history.push(`jobs`)
         }}>Approve</DropdownItem>
         <DropdownItem onClick={()=>{
-          authService
-              .decline(props._id)
-              .then(response => {
-                window.location.reload()
-                console.log(response)
-
-              })
-              .catch(err => {
-                console.log(err.response)
-              })
+          props.props.decline(props.item._id, props.item)
         }}>Decline</DropdownItem>
-        <DropdownItem to={`/admin/estimates/${props._id}/email`} tag={Link}>Send by email</DropdownItem>
+        <DropdownItem to={`/admin/estimates/${props.item._id}/email`} tag={Link}>Send by email</DropdownItem>
         {
-
-          loggedUser.level >= 3 ? <DropdownItem to={`/admin/estimates/${props._id}`} tag={Link}>Update</DropdownItem> :
-              loggedUser.level === 2 && props.workers.filter(wx =>  wx.workerId._id === loggedUser._id).length > 0 ? <DropdownItem to={`/admin/estimates/${props._id}`} tag={Link}>Update</DropdownItem> :
-                  <DropdownItem disabled to={`/admin/estimates/${props._id}`} tag={Link}>Update</DropdownItem>
+          loggedUser.level >= 3 ? <DropdownItem to={`/admin/estimates/${props.item._id}`} tag={Link}>Update</DropdownItem> :
+              loggedUser.level === 2 && props.item.workers.filter(wx =>  wx.workerId._id === loggedUser._id).length > 0 ? <DropdownItem to={`/admin/estimates/${props.item._id}`} tag={Link}>Update</DropdownItem> :
+                  <DropdownItem disabled to={`/admin/estimates/${props.item._id}`} tag={Link}>Update</DropdownItem>
         }
         {loggedUser.level >= 4 ? <DropdownItem onClick={()=>{
-              authService
-                  .estimateDelete(props._id)
-                  .then(({data}) => {
-                    alert('Estimate Delete')
-                    window.location.reload()
-
-                  })
-                  .catch(err => {
-                    console.log(err.response)
-                  })
-            }}><span
-                className="text-danger">Delete</span>
-            </DropdownItem>
-            :null
+          props.props.removeEstimate(props.item._id)
+          alert('Estimate Delete')
+          }}><span
+              className="text-danger">Delete</span>
+          </DropdownItem>
+          :null
         }
       </DropdownMenu>
     </UncontrolledDropdown>
@@ -104,7 +78,6 @@ const ActionButton = (props) => {
 
 class Estimates extends React.Component {
   state = {
-    estimates:[],
     id:'',
     btnDropup: false,
     userId: false,
@@ -113,8 +86,8 @@ class Estimates extends React.Component {
 
   constructor(props) {
     super(props);
-    const {user} = store.getState();
-    loggedUser = user.userLogged
+    const {auth} = store.getState();
+    loggedUser = auth.userLogged
   }
 
   updateWindowDimensions = () => {
@@ -126,38 +99,14 @@ class Estimates extends React.Component {
   }
 
   componentDidMount() {
-    //this.updateWindowDimensions()
-    //window.addEventListener('resize', this.updateWindowDimensions)
+    this.updateWindowDimensions()
+    window.addEventListener('resize', this.updateWindowDimensions)
 
     if(loggedUser.level <=1){
-      axios
-      .get(Global.url + `checkestimates/${loggedUser._id}`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            ...data
-          }
-        })
-      })
-      .catch(err => {
-        console.log(err.response)
-      })
+      this.props.getEstimates(loggedUser._id)
     }
     else if(loggedUser.level >=2){
-      axios
-      .get(Global.url + `checkestimates`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            ...data
-          }
-        })
-      })
-      .catch(err => {
-        console.log(err.response)
-      })
+      this.props.getEstimates()
     }
   }
 
@@ -171,6 +120,7 @@ class Estimates extends React.Component {
   }
 
   render() {
+    const {estimates} = this.props
     if (!this.state) return <p>Loading</p>
     return (
       <>
@@ -215,9 +165,9 @@ class Estimates extends React.Component {
                     </tr>
                   </thead>
                   <tbody >
-                    {this.state.estimates.length === 0 ? <tr><td>No estimates register</td></tr>
+                    {estimates.length === 0 ? <tr><td>No estimates register</td></tr>
                       :
-                       this.state.estimates.map((e,i)=>{
+                       estimates.map((e,i)=>{
                         let nameEstimate = e.nameEstimate
                         let subtotal = e.items.reduce((acc, current, i) => acc + current.subtotal, 0)
                         let tax = parseInt(e.tax) * subtotal / 100
@@ -228,7 +178,7 @@ class Estimates extends React.Component {
                             {!this.state.isMobileVersion ?
                                 <>
                                   <td>
-                                    <ActionButton {...e}></ActionButton>
+                                    <ActionButton item={e} props={this.props} ></ActionButton>
                                   </td>
                                   <td>{nameEstimate ? nameEstimate : e.clientId.name}</td>
                                   <td><Moment format={"MMM D, YY"}>{e.dateCreate}</Moment></td>
@@ -243,7 +193,7 @@ class Estimates extends React.Component {
                                     {e.status === "Approve" ? "Approved" : e.status}<br/>
                                     ${parseFloat(Math.round(total * 100) / 100).toFixed(2)}<br/>
                                     <div className="buttonfloat-right buttonfloat-right-estimates">
-                                      <ActionButton {...e}></ActionButton>
+                                      <ActionButton item={e} props={this.props}></ActionButton>
                                     </div>
                                   </td>
                                 </>
@@ -262,4 +212,8 @@ class Estimates extends React.Component {
   }
 }
 
-export default Estimates;
+const mapStateToProps = state => ({
+  estimates: state.estimate.estimates,
+})
+
+export default connect(mapStateToProps, {getEstimates, convertJob, decline, removeEstimate})(Estimates);

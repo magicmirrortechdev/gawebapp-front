@@ -2,18 +2,19 @@ import Index from "views/Index.jsx";
 import Home from "views/Home";
 import Login from "views/Login";
 
+import Estimates from "views/estimates/Estimates.jsx";
+import UpdateEstimate from "views/estimates/UpdateEstimate.jsx";
+import SendEstimate from "views/estimates/SendEstimate";
+import AddEstimate from "views/estimates/AddEstimate.jsx";
+import AddEstimateByUser from './views/estimates/AddEstimateByUser.jsx'
+
 import Time from "views/examples/Time.jsx";
-import Estimates from "views/examples/Estimates.jsx";
 import Expenses from "views/examples/Expenses.jsx";
-import UpdateEstimate from "views/examples/UpdateEstimate.jsx";
 import AddExpense from "views/examples/AddExpense.jsx";
 import AddExpenseByWorker from "views/examples/AddExpenseByWorker.jsx";
 import AddTime from "views/examples/AddTime.jsx";
-import AddEstimate from "views/examples/AddEstimate.jsx";
-import AddEstimateByUser from './views/examples/AddEstimateByUser.jsx'
 import AddInvoiceByEstimate from './views/examples/AddInvoiceByEstimate.jsx'
 import AddTimeAllUsers from "views/examples/AddTimeAllUsers";
-import SendEstimate from "views/examples/SendEstimate";
 import UpdateExpense from "views/examples/UpdateExpense";
 import UpdateTime from "./views/examples/UpdateTime";
 

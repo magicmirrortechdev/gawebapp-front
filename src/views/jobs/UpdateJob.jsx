@@ -18,6 +18,8 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
+import {connect} from "react-redux";
+import {updateJob} from "../../redux/actions/jobAction";
 
 class UpdateJob extends React.Component {
   
@@ -42,29 +44,21 @@ class UpdateJob extends React.Component {
   };
 
   componentDidMount() {
-    axios
-      .get(Global.url + `estimatedetail/${this.props.match.params.id}`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          return {
-            
-            ...prevState,
-            name: data.estimate.clientId.name,
-            email: data.estimate.clientId.email,
-            address: data.estimate.clientId.address,
-            tax: data.estimate.tax,
-            discount: data.estimate.discount,
-            paid: data.estimate.paid,
-            comments: data.estimate.comments,
-            ...data.estimate
-          }
-          
-        })
-        console.log(this.state)
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    const job = this.props.jobs.filter(item => item._id === this.props.match.params.id)[0]
+
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        name: job.clientId.name,
+        email: job.clientId.email,
+        address: job.clientId.address,
+        tax: job.tax,
+        discount: job.discount,
+        paid: job.paid,
+        comments: job.comments,
+        ...job
+      }
+    })
   }
 
   handleInput = e => {
@@ -78,19 +72,12 @@ class UpdateJob extends React.Component {
 
   handleSubmit = (e, props) => {
     e.preventDefault()
-    axios
-      .patch(Global.url + `estimateupdate/${this.props.match.params.id}`, this.state)
-      .then((response) => {
-        this.props.history.push(`/admin/jobs`)
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    this.props.updateJob(this.props.match.params.id, this.state)
+    this.props.history.push(`/admin/jobs`)
   }
 
   render() {
-  
-  console.log('el stateee',this.state)
+    console.log('el stateee',this.state)
     return (
       <>
         <Header />
@@ -188,4 +175,9 @@ class UpdateJob extends React.Component {
   }
 }
 
-export default withRouter(UpdateJob);
+
+const mapStateToProps = state => ({
+  jobs: state.job.jobs,
+})
+
+export default connect(mapStateToProps, {updateJob})(withRouter(UpdateJob));

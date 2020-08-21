@@ -20,6 +20,10 @@ import { WithContext as ReactTags } from 'react-tag-input';
 // core components
 import Header from 'components/Headers/Header.jsx'
 import Global from "../../global";
+import {connect} from "react-redux";
+import {updateEstimate} from "../../redux/actions/estimateAction";
+import AuthService from '../../services/services'
+const authService = new AuthService()
 
 class SendEstimate extends React.Component {
   state = {
@@ -42,28 +46,23 @@ class SendEstimate extends React.Component {
   }
 
   componentDidMount() {
-    axios
-      .get(Global.url + `estimatedetail/${this.props.match.params.id}`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          let total 
-          total = data.estimate.items.reduce((acc, current, i) => acc + current.subtotal, 0)
-          console.log('el sb', total)
-          return {
-            ...prevState,
-            name: data.estimate.nameEstimate ? data.estimate.nameEstimate : data.estimate.clientId.name,
-            email: data.estimate.clientId.email,
-            addressEstimate: data.estimate.addressEstimate,
-            total: total,
-            address: data.estimate.addressEstimate ? data.estimate.addressEstimate : data.estimate.clientId.address,
-            items: data.estimate.items,
-            tags: [{id: data.estimate.clientId.email, text: data.estimate.clientId.email}]
-          }
-        })
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    if (this.props.estimates.length === 0) this.props.history.push(`/admin/estimates`)
+    const estimate = this.props.estimates.filter(item => item._id === this.props.match.params.id)[0]
+    this.setState(prevState => {
+      let total
+      total = estimate.items.reduce((acc, current, i) => acc + current.subtotal, 0)
+      console.log('el sb', total)
+      return {
+        ...prevState,
+        name: estimate.nameEstimate ? estimate.nameEstimate : estimate.clientId.name,
+        email: estimate.clientId.email,
+        addressEstimate: estimate.addressEstimate,
+        total: total,
+        address: estimate.addressEstimate ? estimate.addressEstimate : estimate.clientId.address,
+        items: estimate.items,
+        tags: [{id: estimate.clientId.email, text: estimate.clientId.email}]
+      }
+    })
   }
 
   addToCart = product => {
@@ -82,13 +81,9 @@ class SendEstimate extends React.Component {
     }))
   }
 
-  handleSubmit = (e, props) => {
+  handleSubmit = (e) => {
     e.preventDefault()
-    axios
-      .post(
-        Global.url + `sendestimate`,
-        this.state
-      )
+    authService.sendEstimates(this.state)
       .then(response => {
         this.props.history.push(`/admin/estimates`)
         console.log(response)
@@ -121,7 +116,6 @@ class SendEstimate extends React.Component {
   }
 
   render() {
-    console.log('state  email',this.state)
     let address = this.state.address
     let addressEstimate = this.state.addressEstimate
     if (!this.state) return <p> Loading </p>
@@ -296,4 +290,8 @@ class SendEstimate extends React.Component {
   }
 }
 
-export default withRouter(SendEstimate)
+const mapStateToProps = state => ({
+  estimates: state.estimate.estimates,
+})
+
+export default connect(mapStateToProps, {updateEstimate})(withRouter(SendEstimate));

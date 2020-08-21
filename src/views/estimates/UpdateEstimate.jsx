@@ -18,6 +18,8 @@ import {
 // core components
 import Header from 'components/Headers/Header.jsx'
 import Global from "../../global";
+import {connect} from "react-redux";
+import {updateEstimate} from "../../redux/actions/estimateAction";
 
 class UpdateEstimate extends React.Component {
   state = {
@@ -41,29 +43,22 @@ class UpdateEstimate extends React.Component {
     jobName: '',
   }
   componentDidMount() {
-    axios
-      .get(Global.url + `estimatedetail/${this.props.match.params.id}`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            name: data.estimate.nameEstimate ? data.estimate.nameEstimate : data.estimate.clientId.name,
-            email: data.estimate.clientId.email,
-            address: data.estimate.addressEstimate ? data.estimate.addressEstimate : data.estimate.clientId.address,
-            nameEstimate: data.estimate.nameEstimate,
-            addressEstimate: data.estimate.addressEstimate,
-            tax: data.estimate.tax,
-            discount: data.estimate.discount,
-            paid: data.estimate.paid,
-            comments: data.estimate.comments,
-            ...data.estimate,
-          }
-        })
-        console.log(this.state)
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    const estimate = this.props.estimates.filter(item => item._id === this.props.match.params.id)[0]
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        name: estimate.nameEstimate ? estimate.nameEstimate : estimate.clientId.name,
+        email: estimate.clientId.email,
+        address: estimate.addressEstimate ? estimate.addressEstimate : estimate.clientId.address,
+        nameEstimate: estimate.nameEstimate,
+        addressEstimate: estimate.addressEstimate,
+        tax: estimate.tax,
+        discount: estimate.discount,
+        paid: estimate.paid,
+        comments: estimate.comments,
+        ...estimate,
+      }
+    })
   }
 
   addToCart = product => {
@@ -93,17 +88,8 @@ class UpdateEstimate extends React.Component {
 
   handleSubmit = (e, props) => {
     e.preventDefault()
-    axios
-      .patch(
-        Global.url + `estimateupdate/${this.props.match.params.id}`,
-        this.state
-      )
-      .then(response => {
-        this.props.history.push(`/admin/estimates`)
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    this.props.updateEstimate(this.props.match.params.id, this.state)
+    this.props.history.push(`/admin/estimates`)
   }
 
   render() {
@@ -454,4 +440,8 @@ class UpdateEstimate extends React.Component {
   }
 }
 
-export default withRouter(UpdateEstimate)
+const mapStateToProps = state => ({
+  estimates: state.estimate.estimates,
+})
+
+export default connect(mapStateToProps, {updateEstimate})(withRouter(UpdateEstimate));

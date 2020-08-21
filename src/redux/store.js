@@ -1,15 +1,47 @@
-import {createStore, applyMiddleware} from 'redux'
+import {createStore, applyMiddleware, combineReducers} from 'redux'
 import thunk from 'redux-thunk'
 import {persistStore, persistReducer} from 'redux-persist'
-import storage from 'redux-persist/lib/storage'
+import localforage from 'localforage';
+import {authReducer} from "./reducers/authReducer";
+import {userReducer} from "./reducers/userReducer";
+import {clientReducer} from "./reducers/clientReducer";
+import {estimateReducer} from "./reducers/estimateReducer";
+import {jobReducer} from "./reducers/jobReducer";
 
-import reducer from './reducer'
-
-const persistConfig = {
-    key: 'ga:data:',
-    storage,
+const authPersistConfig = {
+    key: 'ga:auth',
+    storage: localforage,
+    whitelist: ['auth']
 }
 
-const persistedReducer = persistReducer(persistConfig, reducer)
+const clientPersistConfig = {
+    key: 'ga:client',
+    storage: localforage,
+}
+
+const userPersistConfig = {
+    key: 'ga:user',
+    storage: localforage,
+}
+
+const estimatesPersistConfig = {
+    key: 'ga:estimate',
+    storage: localforage,
+}
+
+const jobsPersistConfig = {
+    key: 'ga:job',
+    storage: localforage,
+}
+
+const reducer = combineReducers({
+    auth: authReducer,
+    user: persistReducer(userPersistConfig, userReducer),
+    client: persistReducer(clientPersistConfig, clientReducer),
+    estimate: persistReducer(estimatesPersistConfig, estimateReducer),
+    job: persistReducer(jobsPersistConfig, jobReducer)
+})
+
+const persistedReducer = persistReducer(authPersistConfig, reducer)
 export const store = createStore(persistedReducer, applyMiddleware(thunk))
 export const persistor = persistStore(store)

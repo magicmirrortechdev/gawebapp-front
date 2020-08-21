@@ -20,11 +20,6 @@ class AuthService {
         return this.service.get('/logout')
     }
 
-
-    addJob(data) {
-        return this.service.post('/createjob', data)
-    }
-
     //clients
     getClients() {
         return this.service.get('/checkclients')
@@ -53,28 +48,54 @@ class AuthService {
     }
 
     //estimates
+    getEstimates(id = ""){
+        return this.service.get('/checkestimates/'+ id)
+    }
+    getEstimate(id = ""){
+        return this.service.get('/estimatedetail/'+ id)
+    }
     addEstimate(data) {
         return this.service.post('/addestimate', data)
-    }
-    convertInvoice(data) {
-        return this.service.patch(`/convertinvoice/${data}`)
-    }
-    convertJob(data) {
-        return this.service.get(`/convertjob/${data}`)
-    }
-    paidInvoice(data) {
-        return this.service.patch(`/paidinvoice/${data}`)
     }
     decline(data) {
         return this.service.patch(`/estimatedecline/${data}`)
     }
-    estimateDelete(data) {
+    deleteEstimate(data) {
         return this.service.delete(`/estimatedelete/${data}`)
     }
+    sendEstimates(data){
+        return this.service.post('/sendestimate', data)
+    }
+    updateEstimate(id, data) {
+        return this.service.patch('/estimateupdate/' + id, data)
+    }
+
     invoiceDelete(data) {
         return this.service.patch(`/invoicedelete/${data}`)
     }
+    paidInvoice(data) {
+        return this.service.patch(`/paidinvoice/${data}`)
+    }
+    convertInvoice(data) {
+        return this.service.patch(`/convertinvoice/${data}`)
+    }
 
+    //jobs
+    getJobs() {
+        return this.service.get('/checkjobs')
+    }
+    openJobs() {
+        return this.service.get('/openjobs')
+    }
+    closeJobs(){
+        return this.service.get('/closeJobs')
+    }
+    addJob(data) {
+        return this.service.post('/createjob', data)
+    }
+    convertJob(data) {
+        return this.service.get(`/convertjob/${data}`)
+    }
     closeJob(data) {
         return this.service.patch(`/closejob/${data}`)
     }

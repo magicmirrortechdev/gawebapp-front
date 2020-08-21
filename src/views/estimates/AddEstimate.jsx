@@ -20,6 +20,8 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
+import {connect} from "react-redux";
+import {addEstimate} from "../../redux/actions/estimateAction";
 const authService = new AuthService()
 
 var fecha = new Date(); 
@@ -91,15 +93,8 @@ class AddEstimate extends React.Component {
 
   handleSubmit = (e, props) => {
     e.preventDefault()
-        authService
-          .addEstimate(this.state)
-          .then(response => {
-            this.props.history.push(`estimates`)
-            console.log(response)
-          })
-          .catch(err => {
-            console.log(err.response)
-          })
+    this.props.addEstimate(this.state)
+    this.props.history.push(`estimates`)
   }
 
   render() {
@@ -115,9 +110,7 @@ class AddEstimate extends React.Component {
     quantity: parseInt(this.state.quantity),
     rate: parseInt(this.state.rate),
     subtotal: parseInt(this.state.quantity * this.state.rate),
-
   }
-  
 
   let subtotal = this.state.items.reduce((acc, current, i) => acc + current.subtotal, 0)
   let tax = parseInt(this.state.tax) * subtotal / 100
@@ -128,8 +121,7 @@ class AddEstimate extends React.Component {
 
   let total = subtotal + tax - discount - paid
   let jobName = address+clientName
-  
-  console.log('el stateee',this.state)
+
     return (
       <>
         <Header forms={true}/>
@@ -517,4 +509,4 @@ class AddEstimate extends React.Component {
   }
 }
 
-export default withRouter(AddEstimate);
+export default connect(null, {addEstimate})(withRouter(AddEstimate));

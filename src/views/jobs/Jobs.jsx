@@ -21,6 +21,9 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
+import {store} from "../../redux/store";
+import {connect} from "react-redux";
+import {getJobs, closeJob, removeJob, convertJob} from "../../redux/actions/jobAction";
 
 const authService = new AuthService()
 let loggedUser
@@ -48,30 +51,18 @@ const ActionButton = (props) => {
             },
           },
         }}>
-        <DropdownItem to={`/admin/jobs/${props._id}/invoice`} tag={Link}>Convert to Invoice</DropdownItem>
+        <DropdownItem to={`/admin/jobs/${props.item._id}/invoice`} tag={Link}>Convert to Invoice</DropdownItem>
         <DropdownItem onClick={()=>{
-          authService.convertJob(props._id)
-            .then(response => {
-              alert('Job Open Again')
-              window.location.reload()
-              //TODO
-            }).catch(err => {
-              console.log(err.response)
-            })
+          props.props.convertJob(props.item._id, props.item)
+          alert('Job Open Again')
         }}>
           <span>Open Job</span>
         </DropdownItem>
         {loggedUser.level >= 4 ?
           <DropdownItem onClick={()=>{
-            authService.estimateDelete(props._id)
-              .then(({data}) => {
-                alert('Job Delete')
-                window.location.reload()
-                //TODO
-              }).catch(err => {
-                console.log(err.response)
-              })
-            }}>
+            props.props.removeJob(props.item._id)
+            alert('Job Delete')
+          }}>
             <span className="text-danger">Delete</span>
           </DropdownItem>
           : null
@@ -104,35 +95,26 @@ const ActionButton2 = (props) => {
               },
             },
           }}>
-          <DropdownItem to={`/admin/jobs/${props._id}/invoice`} tag={Link}>Convert to Invoice</DropdownItem>
+          <DropdownItem to={`/admin/jobs/${props.item._id}/invoice`} tag={Link}>Convert to Invoice</DropdownItem>
           {
             loggedUser.level >= 3 ?
-                <DropdownItem to={`/admin/jobs/${props._id}`} tag={Link}>Update</DropdownItem> :
-                loggedUser.level === 2 && props.workers.filter(wx =>  wx.workerId._id === loggedUser._id).length > 0 ?
-                  <DropdownItem to={`/admin/jobs/${props._id}`} tag={Link}>Update</DropdownItem> :
-                  <DropdownItem disabled to={`/admin/jobs/${props._id}`} tag={Link}>Update</DropdownItem>
+                <DropdownItem to={`/admin/jobs/${props.item._id}`} tag={Link}>Update</DropdownItem> :
+                loggedUser.level === 2 && props.item.workers.filter(wx =>  wx.workerId._id === loggedUser._id).length > 0 ?
+                  <DropdownItem to={`/admin/jobs/${props.item._id}`} tag={Link}>Update</DropdownItem> :
+                  <DropdownItem disabled to={`/admin/jobs/${props.item._id}`} tag={Link}>Update</DropdownItem>
           }
-          <DropdownItem to={`/admin/jobs/${props._id}/addexpense`} tag={Link}>Add Expense</DropdownItem>
-          <DropdownItem to={`/admin/jobs/addworker/${props._id}`} tag={Link}>Add Worker</DropdownItem>
-          <DropdownItem to={`/admin/jobs/addpm/${props._id}`} tag={Link}>Add Project Manager</DropdownItem>
+          <DropdownItem to={`/admin/jobs/${props.item._id}/addexpense`} tag={Link}>Add Expense</DropdownItem>
+          <DropdownItem to={`/admin/jobs/addworker/${props.item._id}`} tag={Link}>Add Worker</DropdownItem>
+          <DropdownItem to={`/admin/jobs/addpm/${props.item._id}`} tag={Link}>Add Project Manager</DropdownItem>
           <DropdownItem onClick={()=>{
-            authService
-                .closeJob(props._id)
-                .then(({data}) => {
-                  alert('Job Closed')
-                  window.location.reload()
-                  //TODO
-                })
-                .catch(err => {
-                  console.log(err.response)
-                })
-            }}>
-            <span>Close Job</span>
+            props.props.closeJob(props.item._id, props.item)
+            alert('Job Closed')
+          }}><span>Close Job</span>
           </DropdownItem>
           {loggedUser.level >= 4 ?
             <DropdownItem onClick={()=>{
               authService
-                .estimateDelete(props._id)
+                .estimateDelete(props.item._id)
                 .then(({data}) => {
                   alert('Job Delete')
                   window.location.reload()
@@ -153,14 +135,14 @@ const ActionButton2 = (props) => {
 
 class Jobs extends React.Component {
   state = {
-    jobs:[],
     filter: "",
     buttonActive: '1'
   };
 
   constructor(props) {
     super(props);
-    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+    const {auth} = store.getState();
+    loggedUser = auth.userLogged
   }
 
   updateWindowDimensions = () => {
@@ -174,19 +156,9 @@ class Jobs extends React.Component {
   componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-    axios.get(Global.url + `openjobs`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            ...data
-          }
-        })
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    this.props.getJobs();
   }
+
   handleInput = e => {
     e.persist()
     this.setState(prevState => ({
@@ -196,57 +168,46 @@ class Jobs extends React.Component {
   }
 
   getOpen =()=>{
-    axios
-      .get(Global.url + `openjobs`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            buttonActive: "1",
-            ...data
-          }
-        })
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        buttonActive: "1",
+      }
+    })
   }
   getClose =()=>{
-    axios
-      .get(Global.url + `closejobs`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            buttonActive: "2",
-            ...data
-          }
-        })
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        buttonActive: "2",
+      }
+    })
   }
 
   getAll =()=>{
-    axios
-      .get(Global.url + `checkjobs`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            buttonActive: "3",
-            ...data
-          }
-        })
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    this.setState(prevState => {
+      return {
+          ...prevState,
+          buttonActive: "3",
+      }
+    })
   }
 
   render() {
+    const {jobs} = this.props;
+    let jobsFilter = [];
     if (!this.state) return <p>Loading</p>
+    switch(this.state.buttonActive){
+      case '1':
+        jobsFilter = jobs.filter(job => job.status === 'Approve')
+        break;
+      case '2':
+        jobsFilter = jobs.filter(job => job.status === 'Closed')
+        break;
+      default:
+        jobsFilter = jobs
+        break;
+    }
     return (
       <>
         <Header />
@@ -318,12 +279,12 @@ class Jobs extends React.Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {this.state.jobs.length === 0 ?
+                    {jobsFilter.length === 0 ?
                     <tr>
                       <td>No Jobs register</td>
                     </tr>
                     :
-                    this.state.jobs.map((e,i)=>{
+                    jobsFilter.map((e,i)=>{
                       let subtotal = e.items ? (e.items.reduce((acc, current, i) => acc + current.subtotal, 0)) : 0 ;
                       let tax = parseInt(e.tax) * subtotal / 100
                       let discount = e.discount
@@ -336,7 +297,7 @@ class Jobs extends React.Component {
                             {!this.state.isMobileVersion ?
                               <>
                                 <td>
-                                  <ActionButton {...e}></ActionButton>
+                                  <ActionButton item={e} props={this.props} ></ActionButton>
                                 </td>
                                 <td>{e.jobName}</td>
                                 <td>Closed</td>
@@ -347,7 +308,7 @@ class Jobs extends React.Component {
                                   {e.jobName}<br/>
                                   Closed<br/>
                                   <div className="buttonfloat-right buttonfloat-right-estimates">
-                                    <ActionButton {...e}></ActionButton>
+                                    <ActionButton item={e} props={this.props} ></ActionButton>
                                   </div>
                                 </td>
                               </>
@@ -358,7 +319,7 @@ class Jobs extends React.Component {
                             {!this.state.isMobileVersion ?
                               <>
                                 <td>
-                                  <ActionButton2 {...e}></ActionButton2>
+                                  <ActionButton2 item={e} props={this.props}></ActionButton2>
                                 </td>
                                 <td>{e.jobName}</td>
                                 <td>{e.dateStart === "Update this field" ? "Update this field" : <Moment format={"MMM D, YY"}>{e.dateStart}</Moment>}</td>
@@ -385,7 +346,7 @@ class Jobs extends React.Component {
                                   })}<br/>
                                   <b>${isNaN(parseFloat(Math.round(total * 100) / 100).toFixed(2))?'Check your quantities and figures in your estimate please':parseFloat(Math.round(total * 100) / 100).toFixed(2)}</b><br/>
                                   <div className="buttonfloat-right buttonfloat-right-jobs">
-                                    <ActionButton2 {...e}></ActionButton2>
+                                    <ActionButton2 item={e} props={this.props}></ActionButton2>
                                   </div>
                                 </td>
                               </>
@@ -408,4 +369,8 @@ class Jobs extends React.Component {
   }
 }
 
-export default Jobs;
+const mapStateToProps = state => ({
+  jobs: state.job.jobs,
+})
+
+export default connect(mapStateToProps, {getJobs, closeJob, removeJob, convertJob})(Jobs);

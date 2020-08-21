@@ -43,6 +43,7 @@
         "chart.js": "2.7.3",
         "classnames": "2.2.6",
         "glob": "^7.1.6",
+        "localforage": "^1.9.0",
         "material-ui": "^0.20.2",
         "moment": "^2.24.0",
         "nouislider": "13.1.1",
