@@ -20,9 +20,10 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-import Global from "../../global";
+import {store} from "../../redux/store";
+import {connect} from "react-redux";
+import {getJobs, removeInvoice} from "../../redux/actions/jobAction";
 let loggedUser
-loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
 
 const ActionButton = (props) => {
   return (
@@ -33,39 +34,32 @@ const ActionButton = (props) => {
         </DropdownToggle>
         <DropdownMenu>
         {
-          props.invoice.total - props.paid === 0 ?
-            <DropdownItem disabled to={`/admin/invoices/${props.id}/${props.invoice._id}`}
+          props.item.invoice.total - props.paid === 0 ?
+            <DropdownItem disabled to={`/admin/invoices/${props.item.id}/${props.item.invoice._id}`}
                           tag={Link}>Accept Payment</DropdownItem> :
-            <DropdownItem to={`/admin/invoices/${props.invoice._id}/${props.id}`} tag={Link}>
+            <DropdownItem to={`/admin/invoices/${props.item.id}/${props.item.invoice._id}`} tag={Link}>
               Accept Payment</DropdownItem>
         }
         {
           loggedUser.level >= 3 ?
-            <DropdownItem to={`/admin/invoices/${props.id}/${props.invoice._id}/update`}
+            <DropdownItem to={`/admin/invoices/${props.item.id}/${props.item.invoice._id}/update`}
                           tag={Link}>Update</DropdownItem> :
             loggedUser.level === 2 && props.userInEstimate ?
               <DropdownItem
-                to={`/admin/invoices/${props.id}/${props.invoice._id}/update`}
+                to={`/admin/invoices/${props.item.id}/${props.item.invoice._id}/update`}
                 tag={Link}>Update</DropdownItem> :
               <DropdownItem disabled
-                to={`/admin/invoices/${props.id}/${props.invoice._id}/update`}
+                to={`/admin/invoices/${props.item.id}/${props.item.invoice._id}/update`}
                 tag={Link}>Update</DropdownItem>
         }
 
-        <DropdownItem to={`/admin/invoices/${props.id}/${props.invoice._id}/email`}
+        <DropdownItem to={`/admin/invoices/${props.item.id}/${props.item.invoice._id}/email`}
           tag={Link}>Send by email</DropdownItem>
         {
           loggedUser.level >= 4 ?
             <DropdownItem onClick={() => {
-              axios.patch(Global.url + `invoicedelete/${props.id}/${props.invoice._id}`)
-                  .then(({data}) => {
-                    alert('Invoice Delete ')
-                    window.location.reload()
-                    //TODO
-                  })
-                  .catch(err => {
-                    console.log(err.response)
-                  })
+              props.props.removeInvoice(props.item.id, props.item.invoice._id)
+              alert('Invoice Delete ')
             }}>
               <span className="text-danger">Delete</span>
             </DropdownItem>
@@ -80,11 +74,11 @@ const ActionButton = (props) => {
 
 const ActionDropDown = (props) => {
   return (
-    <UncontrolledCollapse toggler={"#toggle" + props.invoice._id}>
+    <UncontrolledCollapse toggler={"#toggle" + props.item.invoice._id}>
       {!props.isMobileVersion ?
         <Card>
           <CardBody>
-            <h3>Invoice # {props.invoiceIndex} from Job: {props.jobName}</h3>
+            <h3>Invoice # {props.invoiceIndex} from Job: {props.item.jobName}</h3>
             <h3>- Payments</h3>
             <Table
                 className="align-items-center table-flush col-md-6 col-xs-12"
@@ -98,10 +92,10 @@ const ActionDropDown = (props) => {
               </tr>
               </thead>
               <tbody>
-              {props.invoice.payment.length === 0 ? <tr>
+              {props.item.invoice.payment.length === 0 ? <tr>
                     <td>No payments register</td>
                   </tr>
-                  : props.invoice.payment.map((e, i) => {
+                  : props.item.invoice.payment.map((e, i) => {
                     const paymentIndex = i + 1
                     return (
                         <tr key={i}>
@@ -119,7 +113,7 @@ const ActionDropDown = (props) => {
         </Card>
         :
         <>
-          <div className="col-md-12"><b>Invoice # {props.invoiceIndex} from Job: {props.jobName}</b></div><br/>
+          <div className="col-md-12"><b>Invoice # {props.invoiceIndex} from Job: {props.item.jobName}</b></div><br/>
           <Table
               className="align-items-center table-flush col-xs-12">
             <thead className="thead-light">
@@ -128,17 +122,17 @@ const ActionDropDown = (props) => {
               </tr>
             </thead>
             <tbody>
-              {props.invoice.payment.length === 0 ?
+              {props.item.invoice.payment.length === 0 ?
                 <tr>
                   <td>No payments register</td>
                 </tr>
-                : props.invoice.payment.map((e, i) => {
+                : props.item.invoice.payment.map((e, i) => {
                   const paymentIndex = i + 1
                   return (
                     <tr key={i}>
                       <td>
                         Payment # {paymentIndex}<br/>
-                        <b><Moment format={"MMM D, YY"}>{e.date}</Moment></b> <br/>
+                        <b><Moment format={"MMM D, YY"}>{e.item.date}</Moment></b> <br/>
                         Total: <b>$ {isNaN(parseFloat(Math.round(props.paid * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(props.paid * 100) / 100).toFixed(2)}</b>,
                         Balance: <b>$ {parseFloat(Math.round((props.total2 - props.paidOk[i]) * 100) / 100).toFixed(2)}</b>
                       </td>
@@ -164,14 +158,14 @@ const RowInvoice = (props) =>{
               <ActionButton {...props}></ActionButton>
             </td>
             <td>
-              <Button id={"toggle" + props.invoice._id} color="primary">
+              <Button id={"toggle" + props.item.invoice._id} color="primary">
                 <i className="ni ni-bold-down"></i>
               </Button>
             </td>
             <td>{!props.nameClient ? 'Client Delete' : props.nameClient}</td>
-            <td><Moment format={"MMM D, YY"}>{props.date}</Moment></td>
-            <td>{props.invoice.total - props.paid === 0 ? 'Paid' : props.invoice.status}</td>
-            <td>${parseFloat(Math.round(props.invoice.total * 100) / 100).toFixed(2)}</td>
+            <td><Moment format={"MMM D, YY"}>{props.item.date}</Moment></td>
+            <td>{props.total - props.paid === 0 ? 'Paid' : props.item.invoice.status}</td>
+            <td>${parseFloat(Math.round(props.item.invoice.total * 100) / 100).toFixed(2)}</td>
             <td>${parseFloat(Math.round(props.total * 100) / 100).toFixed(2)}</td>
           </tr>
           <tr>
@@ -184,15 +178,15 @@ const RowInvoice = (props) =>{
         <>
           <tr>
             <td>
-              <Moment format={"MMM D, YY"}>{props.date}</Moment><br/>
-              {!props.nameClient ? 'Client Delete' : props.nameClient}<br/>
-              Status: <b>{props.invoice.total - props.paid === 0 ? 'Paid' : props.invoice.status}</b><br/>
-              Total: <b>${parseFloat(Math.round(props.invoice.total * 100) / 100).toFixed(2)}</b><br/>
+              <Moment format={"MMM D, YY"}>{props.item.date}</Moment><br/>
+              {!props.item.nameClient ? 'Client Delete' : props.item.nameClient}<br/>
+              Status: <b>{props.item.invoice.total - props.paid === 0 ? 'Paid' : props.item.invoice.status}</b><br/>
+              Total: <b>${parseFloat(Math.round(props.item.invoice.total * 100) / 100).toFixed(2)}</b><br/>
               Balance: <b>${parseFloat(Math.round(props.total * 100) / 100).toFixed(2)}</b><br/>
               <div className="buttonfloat-right buttonfloat-right-estimates">
                 <ActionButton {...props}></ActionButton>
               </div>
-              <Button id={"toggle" + props.invoice._id} color="primary">
+              <Button id={"toggle" + props.item.invoice._id} color="primary">
                 <i className="ni ni-bold-down"></i>
               </Button>
 
@@ -211,7 +205,6 @@ const RowInvoice = (props) =>{
 
 class Invoices extends React.Component {
   state = {
-    estimates:[],
     id:'',
     btnDropup: false,
     modal: false
@@ -219,7 +212,8 @@ class Invoices extends React.Component {
 
   constructor(props) {
     super(props);
-    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+    const {auth} = store.getState();
+    loggedUser = auth.userLogged
   }
 
   updateWindowDimensions = () => {
@@ -233,21 +227,8 @@ class Invoices extends React.Component {
   componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-
-    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
-    axios
-      .get(Global.url + `checkestimates`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            ...data
-          }
-        })
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    if(this.props.jobs.length === 0)
+      this.props.getJobs()
   }
 
   sum(array) {
@@ -264,25 +245,25 @@ class Invoices extends React.Component {
   }
 
   render() {
+    const {jobs} = this.props
     if (!this.state) return <p>Loading</p>
     let allInvoices=[]
     let userInEstimate 
     let client
     let id
     let jobName
-    this.state.estimates.map((e,i)=>{
-      client = e.clientId
-      return e.invoices.map(ex =>{
-        allInvoices.push({invoice:ex, client:client})
-        return(allInvoices)
-      })
-    })
-    this.state.estimates.forEach((e,i)=>{
-      if(!e.clientId) return <th>Client Delete</th>
-      if(!e.workers)return <th scope="row">Worker Delete</th>
+    jobs.forEach((e,i)=>{
       id = e._id
       jobName = e.jobName
       userInEstimate = e.workers.filter(wx => wx.workerId && wx.workerId._id === loggedUser._id).length > 0
+      client = e.clientId
+      e.invoices.forEach(ex =>{
+        allInvoices.push({invoice:ex, client, id, jobName, userInEstimate})
+      })
+    })
+    jobs.forEach((e,i)=>{
+      if(!e.clientId) return <th>Client Delete</th>
+      if(!e.workers)return <th scope="row">Worker Delete</th>
     })
     return (
       <>
@@ -331,7 +312,6 @@ class Invoices extends React.Component {
                   <tbody>
                   {
                     allInvoices.length === 0 ?<tr><td>No invoices register</td></tr> : allInvoices.map((e,i) =>{
-                      console.log(e)
                       let nameClient = e.client === null || e.client.name === undefined || !e.client.name ? <p>Client Delete</p>: e.client.name
 
                       const invoiceIndex = i + 1
@@ -346,17 +326,15 @@ class Invoices extends React.Component {
                       })
                       const paidOk = this.sum(paidAcc)
                       return(
-                        <RowInvoice key={i} {...e}
-                          id={id}
+                        <RowInvoice key={i} item={e}
                           isMobileVersion={this.state.isMobileVersion}
                           paid={paid}
                           invoiceIndex={invoiceIndex}
-                          jobName={jobName}
                           total={total}
                           total2={total2}
                           paidOk={paidOk}
-                          userInEstimate={userInEstimate}
-                          nameClient={nameClient}> </RowInvoice>
+                          nameClient={nameClient}
+                          props={this.props}> </RowInvoice>
                       )
                     })
                   }
@@ -372,6 +350,8 @@ class Invoices extends React.Component {
   }
 }
 
+const mapStateToProps = state => ({
+  jobs: state.job.jobs,
+})
 
-
-export default Invoices;
+export default connect(mapStateToProps, {getJobs, removeInvoice})(Invoices);

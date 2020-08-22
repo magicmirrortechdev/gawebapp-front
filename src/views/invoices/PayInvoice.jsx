@@ -1,7 +1,5 @@
 import React from "react";
 import { withRouter } from 'react-router-dom'
-import axios from 'axios'
-
 
 import {
   Card,
@@ -18,8 +16,11 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-import Global from "../../global";
+import {store} from "../../redux/store";
+import {connect} from "react-redux";
+import {getJobs, payInvoice} from "../../redux/actions/jobAction";
 
+let loggedUser
 var fecha = new Date(); 
       var mes = fecha.getMonth()+1; 
       var dia = fecha.getDate(); 
@@ -36,6 +37,13 @@ class PayInvoice extends React.Component {
     date: ano+"-"+mes+"-"+dia,
   };
 
+  constructor(props) {
+    super(props);
+    console.log("constructor!!!")
+    const {auth} = store.getState();
+    loggedUser = auth.userLogged
+  }
+
   handleInput = e => {
     e.persist()
     this.setState(prevState => ({
@@ -45,34 +53,22 @@ class PayInvoice extends React.Component {
   }
 
   componentDidMount() {
-    axios
-      .get(Global.url + `estimatedetail/${this.props.match.params.invoiceId}`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            clientName: data.estimate.clientId.name,
-            jobName: data.estimate.jobName,
-            ...data
-          }
-        })
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    if (this.props.jobs.length === 0) this.props.history.push(`/admin/jobs`)
+    const job = this.props.jobs.filter(item => item._id === this.props.match.params.id)[0]
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        clientName: job.clientId.name,
+        jobName: job.jobName,
+        ...job
+      }
+    })
   }
 
   handleSubmit = (e, props) => {
     e.preventDefault()
-        axios
-          .patch(Global.url + `pay-invoice/${this.props.match.params.id}/${this.props.match.params.invoiceId}`,this.state)
-          .then(response => {
-            this.props.history.push(`/admin/invoices`)
-            console.log(response)
-          })
-          .catch(err => {
-            console.log(err.response)
-          })
+    this.props.payInvoice(this.props.match.params.id, this.props.match.params.invoiceId, this.state)
+    this.props.history.push(`/admin/invoices`)
   }
 
   render() {
@@ -196,4 +192,8 @@ class PayInvoice extends React.Component {
   }
 }
 
-export default withRouter(PayInvoice);
+const mapStateToProps = state => ({
+  jobs: state.job.jobs,
+})
+
+export default connect(mapStateToProps, {getJobs, payInvoice})(withRouter(PayInvoice));

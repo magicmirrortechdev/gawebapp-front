@@ -1,7 +1,5 @@
 import React from "react";
 import { Link } from 'react-router-dom'
-import axios from 'axios'
-import AuthService from '../../services/services'
 import Moment from 'react-moment'
 import {
   Card,
@@ -25,9 +23,7 @@ import {store} from "../../redux/store";
 import {connect} from "react-redux";
 import {getJobs, closeJob, removeJob, convertJob} from "../../redux/actions/jobAction";
 
-const authService = new AuthService()
 let loggedUser
-
 const ActionButton = (props) => {
   return (
     <UncontrolledDropdown>
@@ -113,17 +109,9 @@ const ActionButton2 = (props) => {
           </DropdownItem>
           {loggedUser.level >= 4 ?
             <DropdownItem onClick={()=>{
-              authService
-                .estimateDelete(props.item._id)
-                .then(({data}) => {
-                  alert('Job Delete')
-                  window.location.reload()
-                  //TODO
-                })
-                .catch(err => {
-                  console.log(err.response)
-                })
-              }}>
+              props.props.removeJob(props.item._id)
+                alert('Job Delete')
+            }}>
               <span className="text-danger">Delete</span>
             </DropdownItem>
             : null

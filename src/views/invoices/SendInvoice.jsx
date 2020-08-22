@@ -15,15 +15,16 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-import Global from "../../global";
 import { WithContext as ReactTags } from 'react-tag-input';
 import ArgyleService from "../../services/argyleService";
 import moment from "moment";
+import {connect} from "react-redux";
+import {getJobs, sendInvoice} from "../../redux/actions/jobAction";
+import {store} from "../../redux/store";
 
 const argyleService = new ArgyleService()
 
 let loggedUser;
-
 var fecha = new Date(); 
       var mes = fecha.getMonth()+1; 
       var dia = fecha.getDate(); 
@@ -48,47 +49,44 @@ class SendInvoice extends React.Component {
 
   constructor(props) {
     super(props);
-    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+    const {auth} = store.getState();
+    loggedUser = auth.userLogged
     this.handleDelete = this.handleDelete.bind(this);
     this.handleAddition = this.handleAddition.bind(this);
     this.handleDrag = this.handleDrag.bind(this);
   }
 
   componentDidMount() {
-    this.setState({
-      workerId: loggedUser._id
+    if (this.props.jobs.length === 0) this.props.history.push(`/admin/invoices`)
+    const job = this.props.jobs.filter(item => item._id === this.props.match.params.id)[0]
+    this.setState(prevState => {
+      let date = ''
+      let description = ''
+      let total
+      const invoices = job.invoices
+      invoices.map((e,i)=>{
+        if(e._id === this.props.match.params.invoiceId){
+          description = e.description
+          total = e.total
+        }
+        return {date,description,total}
+      })
+      return {
+        ...prevState,
+        workerId: loggedUser._id,
+        invoiceId: this.props.match.params.invoiceId,
+        jobId: job._id,
+        name: job.clientId.name,
+        email: job.clientId.email,
+        jobName: job.jobName,
+        description,
+        total,
+        tags: [{
+          id: job.clientId.email,
+          text: job.clientId.email}]
+      }
     })
-    axios
-      .get(Global.url + `estimatedetail/${this.props.match.params.id}`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          let date = ''
-          let description = ''
-          let total
-          const invoices = data.estimate.invoices
-              invoices.map((e,i)=>{
-                if(e._id === this.props.match.params.invoiceId){
-                  description = e.description
-                  total = e.total
-                }
-                return {date,description,total}
-              })
-          return {
-            ...prevState,
-            invoiceId: this.props.match.params.invoiceId,
-            jobId: data.estimate._id,
-            name: data.estimate.clientId.name,
-            email: data.estimate.clientId.email,
-            jobName: data.estimate.jobName,
-            description,
-            total,
-            tags: [{id: data.estimate.clientId.email, text: data.estimate.clientId.email}]
-          }
-        })
-      })
-      .catch(err => {
-        console.log(err.response)
-      })
+
   }
 
   handleInput = e => {
@@ -120,24 +118,25 @@ class SendInvoice extends React.Component {
     //mandarlo al primer correo con el primer nombre nada mas
     console.log(this.state.tags[0]);
     argyleService.checkArgyleUser(this.state.tags[0].text, this.state.name).then((result) =>{
-      argyleService.addCharge(data).then(responseArgyle => {
-        console.log("argyle, ", responseArgyle);
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            urlPay: responseArgyle.data.data.url
-          }
-        })
+      argyleService.addCharge(data).then(
+        responseArgyle => {
+          console.log("argyle, ", responseArgyle);
+          this.setState(prevState => {
+            return {
+              ...prevState,
+              urlPay: responseArgyle.data.data.url
+            }
+          })
 
-        axios.post(Global.url + `sendinvoice`,this.state)
-            .then(response => {
-              this.props.history.push(`/admin/invoices`)
-              console.log(response)
-            })
-            .catch(err => {
-              console.log(err.response)
-            })
-      })
+          this.props.sendInvoice(this.state);
+          this.props.history.push(`/admin/invoices`)
+          },
+        errorArgyle =>{
+          console.log(errorArgyle);
+          this.props.sendInvoice(this.state);
+          this.props.history.push(`/admin/invoices`)
+        }
+      )
     })
   }
 
@@ -163,11 +162,8 @@ class SendInvoice extends React.Component {
     this.setState({ tags: newTags });
   }
 
-  render() {    
-    console.log(this.state)
+  render() {
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
-    
-
     return (
       <>
         <Header forms={true}/>
@@ -315,4 +311,8 @@ class SendInvoice extends React.Component {
   }
 }
 
-export default withRouter(SendInvoice);
+const mapStateToProps = state => ({
+  jobs: state.job.jobs,
+})
+
+export default connect(mapStateToProps, {getJobs, sendInvoice})(withRouter(SendInvoice));

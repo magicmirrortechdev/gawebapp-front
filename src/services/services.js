@@ -70,14 +70,24 @@ class AuthService {
         return this.service.patch('/estimateupdate/' + id, data)
     }
 
-    invoiceDelete(data) {
-        return this.service.patch(`/invoicedelete/${data}`)
+
+    invoiceDelete(id, invoiceId) {
+        return this.service.patch(`/invoicedelete/${id}/${invoiceId}`)
     }
     paidInvoice(data) {
         return this.service.patch(`/paidinvoice/${data}`)
     }
-    convertInvoice(data) {
-        return this.service.patch(`/convertinvoice/${data}`)
+    convertInvoice(id, data) {
+        return this.service.patch('/convertinvoice/'+ id, data)
+    }
+    updateInvoice(id, invoiceId, data) {
+        return this.service.patch('/invoiceupdate/'+ id +'/' + invoiceId, data)
+    }
+    payInvoice(id, invoiceId, data) {
+        return this.service.patch('/pay-invoice/'+ id +'/' + invoiceId, data)
+    }
+    sendInvoice(data) {
+        return this.service.post('/sendinvoice/', data)
     }
 
     //jobs

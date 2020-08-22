@@ -12,9 +12,16 @@ import Jobs from "views/jobs/Jobs.jsx";
 import AddJob from "views/jobs/AddJob.jsx";
 import UpdateJob from "views/jobs/UpdateJob.jsx";
 
+import Invoices from "views/invoices/Invoices.jsx";
+import AddInvoice from './views/invoices/AddInvoice.jsx'
+import AddInvoiceByEstimate from './views/invoices/AddInvoiceByEstimate.jsx'
+import PayInvoice from "views/invoices/PayInvoice";
+import AddInvoiceByJob from "views/invoices/AddInvoiceByJob";
+import UpdateInvoice from "views/invoices/UpdateInvoice";
+import SendInvoice from "views/invoices/SendInvoice";
+
 import Time from "views/examples/Time.jsx";
 import Expenses from "views/examples/Expenses.jsx";
-import Invoices from "views/examples/Invoices.jsx";
 
 import Clients from "views/clients/Clients.jsx";
 import AddClient from "views/clients/AddClient.jsx";
@@ -33,14 +40,9 @@ import AddPM from "views/examples/AddProjectManager.jsx";
 import Reports from "./views/examples/Reports";
 import AddReport from "./views/examples/AddReport";
 
-import AddInvoice from './views/examples/AddInvoice.jsx'
-import AddInvoiceByEstimate from './views/examples/AddInvoiceByEstimate.jsx'
 import AddTimeAllUsers from "views/examples/AddTimeAllUsers";
-import PayInvoice from "views/examples/PayInvoice";
-import AddInvoiceByJob from "views/examples/AddInvoiceByJob";
+
 import UpdateExpense from "views/examples/UpdateExpense";
-import updateInvoice from "views/examples/UpdateInvoice";
-import SendInvoice from "views/examples/SendInvoice";
 
 var routes = [
   {
@@ -156,7 +158,7 @@ var routes = [
     path: "/:estimateId/:invoiceId/update",
     name: "Update Invoice",
     icon: "ni ni-credit-card text-orange",
-    component: updateInvoice,
+    component: UpdateInvoice,
     layout: "/admin/invoices",
     invisible:true
   },

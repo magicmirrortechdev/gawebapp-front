@@ -29,11 +29,19 @@ export const jobReducer = (state = initialState, action) => {
             return {...state, jobs: adder(state.jobs, action.payload)}
 
         case FETCH_ESTIMATE_UPDATE_SUCCESS:
-            let index = state.jobs.findIndex(u => u._id === action.payload.id)
-            return {...state, jobs: updater(state.jobs, action.payload.data, index)}
+            try{
+                let index = state.jobs.findIndex(u => u._id === action.payload.id)
+                return {...state, jobs: updater(state.jobs, action.payload.data, index)}
+            } catch(e){
+                return state
+            }
 
         case FETCH_ESTIMATE_REMOVE_SUCCESS:
-            return {...state, jobs: remover(state.jobs, action.payload.id)}
+            try{
+                return {...state, jobs: remover(state.jobs, action.payload.id)}
+            }catch(e){
+                return state
+            }
 
         case FETCH_JOB_FAILURE:
         case FETCH_JOB_ADD_FAILURE:

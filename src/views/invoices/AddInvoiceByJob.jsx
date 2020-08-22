@@ -15,60 +15,73 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-import Global from "../../global";
+import {connect} from "react-redux";
+import {getJobs, convertInvoice} from "../../redux/actions/jobAction";
+import {store} from "../../redux/store";
 
 let loggedUser;
-
-class UpdateInvoice extends React.Component {
+var fecha = new Date(); 
+      var mes = fecha.getMonth()+1; 
+      var dia = fecha.getDate(); 
+      var ano = fecha.getFullYear(); 
+      if(dia<10)
+        dia='0'+dia; //agrega cero si es menor de 10
+      if(mes<10)
+        mes='0'+mes //agrega cero si es menor de 10
+class AddInvoice extends React.Component {
   state = {
     workerId: "",
-    date:'',
-    description: '',
-    total: parseInt(''),
-    jobName: '',
+    date:ano+"-"+mes+"-"+dia,
+    name: '',
+      email: '',
+      address: '',
+      items: [],
+      itemName: '',
+      description: '',
+      comments: '',
+      subtotal: parseInt(''),
+      tax: parseInt(''),
+      discount: parseInt(''),
+      paid: parseInt(''),
+      total: 0,
+      dateCreate: '',
+      jobName: '',
   };
 
   constructor(props) {
     super(props);
     console.log("constructor!!!")
-    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
-    console.log("jsonParse", loggedUser);
+    const {auth} = store.getState();
+    loggedUser = auth.userLogged
   }
 
   componentDidMount() {
-    console.log(loggedUser);
-    this.setState({
-      workerId: loggedUser._id
+
+    if (this.props.jobs.length === 0) this.props.history.push(`/admin/jobs`)
+
+    const job = this.props.jobs.filter(item => item._id === this.props.match.params.id)[0]
+
+    let subtotal = job.items.reduce((acc, current, i) => acc + current.subtotal, 0)
+    let tax = (parseInt(job.tax) * subtotal) / 100
+    let discount = parseInt(job.discount)
+    let paid = parseInt(job.paid)
+
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        workerId: loggedUser._id,
+        name: job.clientId.name,
+        email: job.clientId.email,
+        address: job.clientId.address,
+        tax: job.tax,
+        discount: job.discount,
+        paid: job.paid,
+        comments: job.comments,
+        jobName: job.jobName,
+        total:  parseInt(subtotal + tax - discount - paid),
+        ...job,
+      }
     })
-    axios
-      .get(Global.url + `estimatedetail/${this.props.match.params.estimateId}`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          let date = ''
-          let description = ''
-          let total
-          const invoices = data.estimate.invoices
-              invoices.map((e,i)=>{
-                if(e._id === this.props.match.params.invoiceId){
-                  date = e.date
-                  description = e.description
-                  total = e.total
-                }
-                return {date,description,total}
-              })
-          return {
-            ...prevState,
-            jobName: data.estimate.jobName,
-            date: date,
-            description: description,
-            total: total
-          }
-        })
-        console.log(this.state)
-      })
-      .catch(err => {
-        console.log(err.response)
-      })
   }
 
   handleInput = e => {
@@ -82,21 +95,13 @@ class UpdateInvoice extends React.Component {
 
   handleSubmit = async (e, props) => {
     e.preventDefault()
-        axios.patch(Global.url + `invoiceupdate/${this.props.match.params.estimateId}/${this.props.match.params.invoiceId}`,this.state)
-        .then(response => {
-          this.props.history.push(`/admin/invoices`)
-          console.log(response)
-        })
-        .catch(err => {
-          console.log(err.response)
-        })
+    this.props.convertInvoice(this.props.match.params.id, this.state)
+    this.props.history.push(`/admin/invoices`)
   }
 
   render() {    
     console.log(this.state)
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
-    
-
     return (
       <>
         <Header forms={true}/>
@@ -126,7 +131,6 @@ class UpdateInvoice extends React.Component {
                             Job Name
                             </label>
                             <Input
-                              disabled
                               name="_id"
                               className="form-control-alternative"
                               type="text"
@@ -164,7 +168,7 @@ class UpdateInvoice extends React.Component {
                               className="form-control-alternative"
                               type="number"
                               onChange={this.handleInput}
-                              value={this.state.total}
+                              placeholder="0"
                               step="any"
                             />
                           </FormGroup>
@@ -176,10 +180,9 @@ class UpdateInvoice extends React.Component {
                               Description
                             </label>
                             <Input
-                              defaultValue={this.state.description}
                               name="description"
                               className="form-control-alternative"
-                              placeholder="This is an invoice generated with the items of an estimate"
+                              placeholder="This is an invoice generated in Jobs"
                               type="text"
                               onChange={this.handleInput}
                             />
@@ -213,4 +216,8 @@ class UpdateInvoice extends React.Component {
   }
 }
 
-export default withRouter(UpdateInvoice);
+const mapStateToProps = state => ({
+  jobs: state.job.jobs,
+})
+
+export default connect(mapStateToProps, {getJobs, convertInvoice})(withRouter(AddInvoice));

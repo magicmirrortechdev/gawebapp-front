@@ -29,11 +29,19 @@ export const estimateReducer = (state = initialState, action) => {
             return {...state, estimates: adder(state.estimates, action.payload)}
 
         case FETCH_ESTIMATE_UPDATE_SUCCESS:
-            let index = state.estimates.findIndex(u => u._id === action.payload.id)
-            return {...state, estimates: updater(state.estimates, action.payload.data, index)}
+            try{
+                let index = state.estimates.findIndex(u => u._id === action.payload.id)
+                return {...state, estimates: updater(state.estimates, action.payload.data, index)}
+            } catch(e){
+                return state
+            }
 
         case FETCH_ESTIMATE_REMOVE_SUCCESS:
-            return {...state, estimates: remover(state.estimates, action.payload.id)}
+            try{
+                return {...state, estimates: remover(state.estimates, action.payload.id)}
+            } catch(e){
+                return state
+            }
 
         case FETCH_ESTIMATE_FAILURE:
         case FETCH_ESTIMATE_ADD_FAILURE:
