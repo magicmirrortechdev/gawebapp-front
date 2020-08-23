@@ -57,10 +57,9 @@ class AddInvoice extends React.Component {
 
   componentDidMount() {
 
-    if (this.props.jobs.length === 0) this.props.history.push(`/admin/jobs`)
+    if (this.props.jobs.length === 0) this.props.history.push(`/admin/invoices`)
 
     const job = this.props.jobs.filter(item => item._id === this.props.match.params.id)[0]
-
     let subtotal = job.items.reduce((acc, current, i) => acc + current.subtotal, 0)
     let tax = (parseInt(job.tax) * subtotal) / 100
     let discount = parseInt(job.discount)

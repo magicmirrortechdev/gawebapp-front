@@ -1,6 +1,5 @@
 import React from "react";
 import {  withRouter } from 'react-router-dom'
-import axios from 'axios'
 import {
   Card,
   CardHeader,
@@ -15,7 +14,9 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-import Global from "../../global";
+import {store} from "../../redux/store";
+import {connect} from "react-redux";
+import {convertInvoice, getJobs} from "../../redux/actions/jobAction";
 
 let loggedUser;
 var fecha = new Date(); 
@@ -49,42 +50,34 @@ class AddInvoice extends React.Component {
   constructor(props) {
     super(props);
     console.log("constructor!!!")
-    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
-    console.log("jsonParse", loggedUser);
+    const {auth} = store.getState();
+    loggedUser = auth.userLogged
   }
 
   componentDidMount() {
     console.log(loggedUser);
-    this.setState({
-      workerId: loggedUser._id
+    const job = this.props.jobs.filter(item => item._id === this.props.match.params.id)[0]
+    let subtotal = job.items.reduce((acc, current, i) => acc + current.subtotal, 0)
+    let tax = (parseInt(job.tax) * subtotal) / 100
+    let discount = parseInt(job.discount)
+    let paid = parseInt(job.paid)
+
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        workerId: loggedUser._id,
+        name: job.clientId.name,
+        email: job.clientId.email,
+        address: job.clientId.address,
+        tax: job.tax,
+        discount: job.discount,
+        paid: job.paid,
+        comments: job.comments,
+        jobName: job.jobName,
+        items: job.items,
+        total:  parseInt(subtotal + tax - discount - paid)
+      }
     })
-    axios
-      .get(Global.url + `estimatedetail/${this.props.match.params.id}`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            name: data.estimate.clientId.name,
-            email: data.estimate.clientId.email,
-            address: data.estimate.clientId.address,
-            tax: data.estimate.tax,
-            discount: data.estimate.discount,
-            paid: data.estimate.paid,
-            comments: data.estimate.comments,
-            jobName: data.estimate.jobName,
-            items: data.estimate.items
-          }
-        })
-        let subtotal = this.state.items.reduce((acc, current, i) => acc + current.subtotal, 0)
-        let tax = (parseInt(this.state.tax) * subtotal) / 100
-        let discount = parseInt(this.state.discount)
-        let paid = parseInt(this.state.paid)
-        this.setState(prevState=>{return{total:  parseInt(subtotal + tax - discount - paid)}})
-        console.log(this.state)
-      })
-      .catch(err => {
-        console.log(err.response)
-      })
   }
 
   handleInput = e => {
@@ -95,24 +88,15 @@ class AddInvoice extends React.Component {
     }))
   }
 
-
   handleSubmit = async (e, props) => {
     e.preventDefault()
-        axios.patch(Global.url + `convertinvoice/${this.props.match.params.id}`,this.state)
-        .then(response => {
-          this.props.history.push(`/admin/invoices`)
-          console.log(response)
-        })
-        .catch(err => {
-          console.log(err.response)
-        })
+    this.props.convertInvoice(this.props.match.params.id, this.state)
+    this.props.history.push(`/admin/invoices`)
   }
 
   render() {    
     console.log(this.state)
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
-    
-
     return (
       <>
         <Header forms={true}/>
@@ -227,4 +211,8 @@ class AddInvoice extends React.Component {
   }
 }
 
-export default withRouter(AddInvoice);
+const mapStateToProps = state => ({
+  jobs: state.job.jobs,
+})
+
+export default connect(mapStateToProps, {getJobs, convertInvoice})(withRouter(AddInvoice));

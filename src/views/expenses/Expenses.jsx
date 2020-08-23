@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from 'react-router-dom'
-import axios from 'axios'
 import Moment from 'react-moment'
 
 import {
@@ -18,8 +17,11 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global, {compareValues} from "../../global";
-var loggedUser
+import {store} from "../../redux/store";
+import {connect} from "react-redux";
+import {getJobs, removeExpense} from "../../redux/actions/jobAction";
 
+let loggedUser
 const ActionButton = (props) => {
   return (
     <span className="dropdownButtons">
@@ -44,22 +46,15 @@ const ActionButton = (props) => {
           },
         }}>
           {
-           loggedUser.level >= 2 ? <DropdownItem to={`/admin/expenses/${props.estimateId}/${props.expense._id}/update`} tag={Link}>Update</DropdownItem> :
-               loggedUser.level === 1 && props.userInEstimate ? <DropdownItem to={`/admin/expenses/${props.estimateId}/${props.expense._id}/update`} tag={Link}>Update</DropdownItem> :
-                   <DropdownItem disabled to={`/admin/expenses/${props.estimateId}/${props.expense._id}/update`} tag={Link}>Update</DropdownItem>
+           loggedUser.level >= 2 ? <DropdownItem to={`/admin/expenses/${props.item.estimateId}/${props.item.expense._id}/update`} tag={Link}>Update</DropdownItem> :
+               loggedUser.level === 1 && props.userInEstimate ? <DropdownItem to={`/admin/expenses/${props.item.estimateId}/${props.item.expense._id}/update`} tag={Link}>Update</DropdownItem> :
+                   <DropdownItem disabled to={`/admin/expenses/${props.item.estimateId}/${props.item.expense._id}/update`} tag={Link}>Update</DropdownItem>
           }
           {
             loggedUser.level >= 4 ?
               <DropdownItem onClick={()=>{
-                axios.patch(Global.url + `expensedelete/${props.estimateId}/${props.expense._id}`)
-                    .then(({data})=>{
-                      alert('Expense Delete')
-                      window.location.reload()
-                      //TODO
-                    })
-                    .catch(err => {
-                      console.log('err',err)
-                    })
+                props.props.removeExpense(props.item.estimateId, props.item.expense._id)
+                alert('Expense Delete')
               }}><span
                   className="text-danger">Delete</span>
               </DropdownItem>
@@ -79,7 +74,8 @@ class Expenses extends React.Component {
 
   constructor(props) {
     super(props);
-    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+    const {auth} = store.getState();
+    loggedUser = auth.userLogged
   }
 
   updateWindowDimensions = () => {
@@ -94,61 +90,34 @@ class Expenses extends React.Component {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
 
-    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
-    if(loggedUser.level <=1){
-      axios
-      .get(Global.url + `checkjobs/${loggedUser._id}`)
-      .then(({ data }) => {
-        console.log('si entraaa')
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            ...data
-          }
-        })
-      })
-      .catch(err => {
-        console.log('err response usuario 1-',err)
-      })
+    if(loggedUser.level <= 1){
+      this.props.getJobs(loggedUser._id)
     }
-    if(loggedUser.level >=2){
-      axios.get(Global.url + `checkjobs`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            ...data
-          }
-        })
-      })
-      .catch(err => {
-        console.log('err response usuario 2+', err)
-      })
+    if(loggedUser.level >= 2){
+      this.props.getJobs();
     }
   }
 
   render() {
+    const {jobs} = this.props
     if (!this.state) return <p>Loading</p>
     let estimateId =""
     let allExpenses=[]
     let userInEstimate 
-    this.state.jobs.map((e,i)=>{
-      return e.expenses.map(ex =>{
+    jobs.forEach((e,i) => {
+      e.expenses.forEach(ex =>{
         allExpenses.push({estimateId: e._id, expense:ex, date:ex.date})
-        return(allExpenses)
       })
     })
-    this.state.jobs.map((e,i)=>{
+    jobs.forEach((e,i) => {
       if(!e.workers)return <th scope="row">Worker Delete</th>
       estimateId = e._id
       userInEstimate =e.workers.length > 0 && e.workers.filter(wx =>{ 
         return (wx.workerId && wx.workerId._id  === loggedUser._id)
       }).length > 0
+    })
 
-      return(estimateId, userInEstimate)
-       }) 
-    allExpenses.sort(compareValues('date', 'desc'))
-    console.log(loggedUser.level)
+    allExpenses = allExpenses.sort(compareValues('date', 'desc'))
     return (
       <>
         <Header />
@@ -197,7 +166,7 @@ class Expenses extends React.Component {
                           {!this.state.isMobileVersion ?
                             <>
                               <td>
-                                <ActionButton {...e} userInEstimate={userInEstimate}></ActionButton>
+                                <ActionButton item={e} userInEstimate={userInEstimate} props={this.props}></ActionButton>
                               </td>
                               <td>
                                 <Moment add={{days: 1}} date={new Date(e.expense.date)}  format={"MMM D, YY"} />
@@ -216,7 +185,7 @@ class Expenses extends React.Component {
                                 {e.expense.category}<br/>
                                 $ {parseFloat(Math.round(e.expense.total * 100) / 100).toFixed(2)}
                                 <div className="buttonfloat-right buttonfloat-right-estimates">
-                                  <ActionButton {...e} userInEstimate={userInEstimate}></ActionButton>
+                                  <ActionButton item={e} userInEstimate={userInEstimate} props={this.props}></ActionButton>
                                 </div>
                               </td>
                             </>
@@ -236,4 +205,8 @@ class Expenses extends React.Component {
   }
 }
 
-export default Expenses;
+const mapStateToProps = state => ({
+  jobs: state.job.jobs,
+})
+
+export default connect(mapStateToProps, {getJobs, removeExpense})(Expenses);

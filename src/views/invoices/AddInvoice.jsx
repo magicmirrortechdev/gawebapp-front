@@ -16,6 +16,9 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
+import {store} from "../../redux/store";
+import {connect} from "react-redux";
+import {addInvoice, convertInvoice} from "../../redux/actions/jobAction";
 
 let loggedUser;
 var fecha = new Date(); 
@@ -36,30 +39,16 @@ class AddInvoice extends React.Component {
   constructor(props) {
     super(props);
     console.log("constructor!!!")
-    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+    const {auth} = store.getState();
+    loggedUser = auth.userLogged
   }
 
   componentDidMount() {
-    console.log(loggedUser);
+    if (this.props.jobs.length === 0) this.props.history.push(`/admin/invoices`)
     this.setState({
       workerId: loggedUser._id,
-      jobs:[]
+      jobs: this.props.jobs.filter(job => job.status !== "Closed")
     })
-    console.log("montando componente, " );
-    axios
-      .get(Global.url + `checkjobs`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            jobs: data.jobs.filter(job => job.status !== "Closed")
-          }
-        })
-        console.log('aquiiii', this.state.jobs)
-      })
-      .catch(err => {
-        console.log(err)
-      })
   }
 
   handleInput = e => {
@@ -82,18 +71,11 @@ class AddInvoice extends React.Component {
 
   handleSubmit = async (e, props) => {
     e.preventDefault()
-      axios.patch(Global.url + `convertinvoice/${this.state._id}`,this.state)
-        .then(response => {
-          this.props.history.push(`/admin/invoices`)
-        })
-      .catch(err => {
-        console.log(err)
-        console.log(err.response)
-      })
+    this.props.convertInvoice(this.state._id, this.state)
+    this.props.history.push(`/admin/invoices`)
   }
 
   render() {
-    
     console.log(this.state)
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
     return (
@@ -213,4 +195,8 @@ class AddInvoice extends React.Component {
   }
 }
 
-export default withRouter(AddInvoice);
+const mapStateToProps = state => ({
+  jobs: state.job.jobs,
+})
+
+export default connect(mapStateToProps, {addInvoice, convertInvoice})(withRouter(AddInvoice));

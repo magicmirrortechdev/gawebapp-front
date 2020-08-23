@@ -16,75 +16,40 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
-import moment from 'moment/min/moment-with-locales';
+import {store} from "../../redux/store";
+import {connect} from "react-redux";
+import {addExpense} from "../../redux/actions/jobAction";
 
 let loggedUser;
-
-class UpdateExpense extends React.Component {
+var fecha = new Date(); 
+      var mes = fecha.getMonth()+1; 
+      var dia = fecha.getDate(); 
+      var ano = fecha.getFullYear(); 
+      if(dia<10)
+        dia='0'+dia; //agrega cero si es menor de 10
+      if(mes<10)
+        mes='0'+mes //agrega cero si es menor de 10
+class AddExpense extends React.Component {
   state = {
     workerId: "",
-    expenses:[],
-    img: '',
-    date:'',
-    vendor:'',
-    category: '',    
-    description: '',
-    total: parseInt('')
+    date: ano+"-"+mes+"-"+dia,
+    colorError: false
   };
 
   constructor(props) {
     super(props);
-    console.log("constructor!!!")
-    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
-    console.log("jsonParse", loggedUser);
+    const {auth} = store.getState();
+    loggedUser = auth.userLogged
+    this.selectRef = React.createRef();
   }
 
   componentDidMount() {
-    console.log(loggedUser);
     this.setState({
-      workerId: loggedUser._id
+      workerId: loggedUser._id,
+      jobs: this.props.jobs.filter(job => job.status === 'Approve'),
+      _id: '',
+      category: '',
     })
-    console.log("montando componente, " );
-    
-      axios
-        .get(Global.url + `estimatedetail/${this.props.match.params.estimateId}`)
-        .then(({ data }) => {
-          this.setState(prevState => {
-            let img = ''
-            let date = ''
-            let vendor = ''
-            let category = ''
-            let description = ''
-            let total
-            const expenses = data.estimate.expenses
-            expenses.map((e,i)=>{
-              if(e._id === this.props.match.params.expenseId){
-                img = e.img
-                date = moment(e.date).format("YYYY-MM-DD")
-                vendor = e.vendor
-                category = e.category
-                description = e.description
-                total = e.total
-              }
-              return {img, date, vendor, description, category, total}
-            })
-            return {
-              ...prevState,
-              expenses: data.estimate.expenses,
-              img: img,
-              date: date,
-              vendor: vendor,
-              category: category,
-              description: description,
-              total: total
-            }
-          })
-          console.log(this.state);
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    
   }
 
   handleInput = e => {
@@ -96,7 +61,6 @@ class UpdateExpense extends React.Component {
   }
 
   uploadPhoto = async e => {
-    
     const file = new FormData()
     file.append('photo', e.target.files[0])
 
@@ -106,25 +70,29 @@ class UpdateExpense extends React.Component {
     this.setState(prevState => ({ ...prevState, img }))
   }
 
-  
-
   handleSubmit = async (e, props) => {
+    const total =  this.state.total
+
     e.preventDefault()
-        axios.patch(Global.url + `expenseupdate/${this.props.match.params.estimateId}/${this.props.match.params.expenseId}`,this.state)
-        .then(response => {
-          this.props.history.push(`/admin/expenses`)
-          console.log(response)
-        })
-        .catch(err => {
-          console.log(err.response)
-        })
-        
+    if (this.state._id==='') {
+      alert('Select a Job to continue');
+    }
+    else if (this.state.category==='') {
+      alert('Select a category to continue');
+    }
+    else if (!total.match(/^0|-?[0-9]\d*(\.\d+)?$/gm)){
+      alert('Total quantity not valid')
+    }
+    else {
+      this.setState({ colorError: false });
+      this.props.addExpense(this.state._id, this.state)
+      this.props.history.push('/admin/expenses')
+    }
+       
   }
 
   render() {
     console.log(this.state)
-
-    const categories = [{category: 'Job Materials'}, {category: 'Gas'}, {category:'Supplies'}, {category:'Sub Contractors'}]
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
     return (
       <>
@@ -148,20 +116,44 @@ class UpdateExpense extends React.Component {
                       <Row>
                         <Col lg="6">
                           <FormGroup>
+                          <label
+                              className="form-control-label d-inline-block"
+                              htmlFor="input-date"
+                            >
+                              Job Name *
+                            </label>
+                            <Input
+                              ref={this.selectRef}
+                              name="_id"
+                              className="form-control-alternative"
+                              type="select"
+                              onChange={this.handleInput}                              
+                            >
+                            <option selected disabled>Select Job to Add Expense</option>
+                            {this.state.jobs.map((e,i)=>{
+                              return(
+                                <option key={i} value={`${e._id}`}>{e.jobName}</option>)
+                            })
+                            }
+                            
+                            
+                            </Input>
+                          </FormGroup>
+                          <FormGroup>
                             <label
                               className="form-control-label d-inline-block"
                               htmlFor="input-date"
                             >
-                              Expense Date
+                              Expense Date *
                             </label>
                             <Input
                               required
-                              id="date"
                               className="form-control-alternative"
                               placeholder="Select a date"
+                              id="date"
                               name="date"
-                              defaultValue={this.state.date}
                               type="date"
+                              value={this.state.date}
                               onChange={this.handleInput}
                             />
                           </FormGroup>
@@ -177,7 +169,6 @@ class UpdateExpense extends React.Component {
                               className="form-control-alternative"
                               placeholder="Enter name of vendor"
                               type="text"
-                              defaultValue={this.state.vendor}
                               onChange={this.handleInput}
                             />
                           </FormGroup>
@@ -187,7 +178,7 @@ class UpdateExpense extends React.Component {
                               className="form-control-label"
                               htmlFor="input-category"
                             >
-                              Category
+                              Category *
                             </label>
                             <Input
                               required
@@ -197,12 +188,11 @@ class UpdateExpense extends React.Component {
                               type="select"
                               onChange={this.handleInput}
                             >
-                            {categories.map((e,i)=>{
-                              return(
-                                this.state.category === e.category ? <option selected key={i}>{this.state.category}</option>: 
-                                <option key={i}>{e.category}</option>
-                              )
-                            })}
+                            <option selected disabled >Choose One</option>
+                            <option>Job Materials</option>
+                            <option>Gas</option>
+                            <option>Supplies</option>
+                            <option>Sub Contractors</option>
                             </Input>
                           </FormGroup>
                           <FormGroup>
@@ -217,7 +207,6 @@ class UpdateExpense extends React.Component {
                               className="form-control-alternative"
                               placeholder="Enter a description (optional)"
                               type="text"
-                              defaultValue={this.state.description}
                               onChange={this.handleInput}
                             />
                           </FormGroup>
@@ -227,7 +216,7 @@ class UpdateExpense extends React.Component {
                               className="form-control-label"
                               htmlFor="input-last-name"
                             >
-                              Image
+                              Image *
                             </label>
                             <Input
                               name="photo"
@@ -244,15 +233,15 @@ class UpdateExpense extends React.Component {
                               className="form-control-label"
                               htmlFor="input-first-name"
                             >
-                              Total
+                              Total *
                             </label>
                             <Input
+                              required
                               name="total"
                               className="form-control-alternative"
-                              type="number"
+                              placeholder="Enter the total"
+                              type="text"
                               onChange={this.handleInput}
-                              value={this.state.total}
-                              step="any"
                             />
                           </FormGroup>
                         </Col>
@@ -263,8 +252,7 @@ class UpdateExpense extends React.Component {
                             >
                               Image Preview
                             </label>
-                          {!this.state.img  ? <img width="100%" height="100%" src={this.state.img} alt="photo_url" /> :
-                           <img width="100%" height="100%" src={this.state.img} alt="photo_url" />}
+                          {this.state.img && <img width="100%" height="100%" src={this.state.img} alt="photo_url" />}
                         </Col>
                       </Row>
                       
@@ -274,6 +262,7 @@ class UpdateExpense extends React.Component {
                           <FormGroup>
                         
                             <Button
+                              disabled={this.state.img ? false : true}
                               className="form-control-alternative"
                               color="info"
 
@@ -294,4 +283,9 @@ class UpdateExpense extends React.Component {
   }
 }
 
-export default withRouter(UpdateExpense);
+
+const mapStateToProps = state => ({
+  jobs: state.job.jobs,
+})
+
+export default connect(mapStateToProps, {addExpense})(withRouter(AddExpense));

@@ -1,6 +1,5 @@
 import React from "react";
 import { withRouter } from 'react-router-dom'
-import axios from 'axios'
 
 import {
   Card,
@@ -16,15 +15,12 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-import Global from "../../global";
 import {connect} from "react-redux";
-import {addUser} from '../../redux/actions/userAction'
+import {addUser, getUsers} from '../../redux/actions/userAction'
+import {addWorkers} from '../../redux/actions/jobAction'
 
+let estimate
 class AddWorkerJob extends React.Component {
-  state = {
-    users:[]
-  };
-
   handleInput = e => {
     e.persist()
     this.setState(prevState => ({
@@ -34,14 +30,14 @@ class AddWorkerJob extends React.Component {
   }
 
   componentDidMount() {
-
+    if(this.props.users.length === 0) this.props.getUsers()
+    estimate = this.props.jobs.filter(item => item._id === this.props.match.params.id)[0]
   }
 
   handleSubmit = async (e, props) => {
     e.preventDefault()
     const workerIn =[]
-    const estimate = await axios.get(Global.url+`estimatedetail/${this.props.match.params.id}`)
-    estimate.data.estimate.workers.forEach(e =>{
+    estimate.workers.forEach(e =>{
       if(e.workerId)
         workerIn.push(e.workerId._id)
     })
@@ -49,21 +45,13 @@ class AddWorkerJob extends React.Component {
       alert('This worker already exists in this job')
     }
     else {
-      axios
-          .patch(Global.url + `addworkers/${this.props.match.params.id}`,{id2: this.state._id})
-          .then(response => {
-            this.props.history.push(`/admin/jobs`)
-            console.log(response)
-          })
-          .catch(err => {
-            console.log(err.response)
-          })
+      this.props.addWorkers(this.props.match.params.id, {id2: this.state._id})
+      this.props.history.push(`/admin/jobs`)
     }
   }
 
   render() {
     const {users} = this.props
-    console.log(this.state)
     return (
       <>
         <Header />
@@ -138,6 +126,7 @@ class AddWorkerJob extends React.Component {
 
 const mapStateToProps = state => ({
   users: state.user.users,
+  jobs: state.job.jobs
 })
 
-export default connect(null, {addUser})(withRouter(AddWorkerJob));
+export default connect(mapStateToProps, {addUser, getUsers, addWorkers})(withRouter(AddWorkerJob));

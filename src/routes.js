@@ -20,8 +20,12 @@ import AddInvoiceByJob from "views/invoices/AddInvoiceByJob";
 import UpdateInvoice from "views/invoices/UpdateInvoice";
 import SendInvoice from "views/invoices/SendInvoice";
 
+import Expenses from "views/expenses/Expenses.jsx";
+import AddExpense from "views/expenses/AddExpense.jsx";
+import AddExpenseByWorker from "views/expenses/AddExpenseByWorker.jsx";
+import UpdateExpense from "views/expenses/UpdateExpense";
+
 import Time from "views/examples/Time.jsx";
-import Expenses from "views/examples/Expenses.jsx";
 
 import Clients from "views/clients/Clients.jsx";
 import AddClient from "views/clients/AddClient.jsx";
@@ -32,8 +36,6 @@ import AddWorker from "views/workers/AddWorker.jsx";
 import UpdateWorker from "./views/workers/UpdateWorker.jsx";
 import AddWorkerJob from "views/workers/AddWorkerJob.jsx";
 
-import AddExpense from "views/examples/AddExpense.jsx";
-import AddExpenseByWorker from "views/examples/AddExpenseByWorker.jsx";
 import AddTime from "views/examples/AddTime.jsx";
 import UpdateTime from "views/examples/UpdateTime.jsx";
 import AddPM from "views/examples/AddProjectManager.jsx";
@@ -42,7 +44,6 @@ import AddReport from "./views/examples/AddReport";
 
 import AddTimeAllUsers from "views/examples/AddTimeAllUsers";
 
-import UpdateExpense from "views/examples/UpdateExpense";
 
 var routes = [
   {

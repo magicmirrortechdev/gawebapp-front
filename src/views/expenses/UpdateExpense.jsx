@@ -16,33 +16,66 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
+import moment from 'moment/min/moment-with-locales';
+import {store} from "../../redux/store";
+import {connect} from "react-redux";
+import {getJobs, updateExpense} from "../../redux/actions/jobAction";
 
 let loggedUser;
-var fecha = new Date(); 
-      var mes = fecha.getMonth()+1; 
-      var dia = fecha.getDate(); 
-      var ano = fecha.getFullYear(); 
-      if(dia<10)
-        dia='0'+dia; //agrega cero si es menor de 10
-      if(mes<10)
-        mes='0'+mes //agrega cero si es menor de 10
-        
-class AddExpense extends React.Component {
+
+class UpdateExpense extends React.Component {
   state = {
     workerId: "",
-    date: ano+"-"+mes+"-"+dia,
-    _id: '',
-    category: '',
+    expenses:[],
+    img: '',
+    date:'',
+    vendor:'',
+    category: '',    
+    description: '',
+    total: parseInt('')
   };
 
   constructor(props) {
     super(props);
-    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+    console.log("constructor!!!")
+    const {auth} = store.getState();
+    loggedUser = auth.userLogged
   }
 
   componentDidMount() {
-    this.setState({
-      workerId: loggedUser._id
+    console.log(loggedUser);
+    if (this.props.jobs.length === 0) this.props.history.push(`/admin/expenses`)
+    const job = this.props.jobs.filter(item => item._id === this.props.match.params.estimateId)[0]
+    this.setState(prevState => {
+      let img = ''
+      let date = ''
+      let vendor = ''
+      let category = ''
+      let description = ''
+      let total
+      const expenses = job.expenses
+      expenses.map((e,i)=>{
+        if(e._id === this.props.match.params.expenseId){
+          img = e.img
+          date = moment(e.date).format("YYYY-MM-DD")
+          vendor = e.vendor
+          category = e.category
+          description = e.description
+          total = e.total
+        }
+        return {img, date, vendor, description, category, total}
+      })
+      return {
+        ...prevState,
+        workerId: loggedUser._id,
+        expenses: job.expenses,
+        img: img,
+        date: date,
+        vendor: vendor,
+        category: category,
+        description: description,
+        total: total
+      }
     })
   }
 
@@ -65,24 +98,14 @@ class AddExpense extends React.Component {
   }
 
   handleSubmit = async (e, props) => {
-    const total =  this.state.total
-
-    e.preventDefault()
-     if(this.state.category===''){
-      alert('Select a category')
-    }
-    else if (!total.match(/^0|-?[0-9]\d*(\.\d+)?$/gm)){
-      alert('Total quantity not valid')
-    }
-    else{
-      await axios.patch(Global.url + `addexpense/${this.props.match.params.id}`,this.state)
-        this.props.history.push('/admin/jobs')
-    }
-        
+    this.props.updateExpense(this.props.match.params.estimateId, this.props.match.params.expenseId, this.state);
+    this.props.history.push(`/admin/expenses`)
   }
 
   render() {
     console.log(this.state)
+
+    const categories = [{category: 'Job Materials'}, {category: 'Gas'}, {category:'Supplies'}, {category:'Sub Contractors'}]
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
     return (
       <>
@@ -101,7 +124,7 @@ class AddExpense extends React.Component {
                 </CardHeader>
                 <CardBody> 
 
-                  <Form onSubmit={this.handleSubmit} enctype="multipart/form-data">
+                  <Form onSubmit={this.handleSubmit}>
                     <div className="pl-lg-4">
                       <Row>
                         <Col lg="6">
@@ -110,7 +133,7 @@ class AddExpense extends React.Component {
                               className="form-control-label d-inline-block"
                               htmlFor="input-date"
                             >
-                              Expense Date *
+                              Expense Date
                             </label>
                             <Input
                               required
@@ -118,7 +141,7 @@ class AddExpense extends React.Component {
                               className="form-control-alternative"
                               placeholder="Select a date"
                               name="date"
-                              value={this.state.date}
+                              defaultValue={this.state.date}
                               type="date"
                               onChange={this.handleInput}
                             />
@@ -135,6 +158,7 @@ class AddExpense extends React.Component {
                               className="form-control-alternative"
                               placeholder="Enter name of vendor"
                               type="text"
+                              defaultValue={this.state.vendor}
                               onChange={this.handleInput}
                             />
                           </FormGroup>
@@ -144,7 +168,7 @@ class AddExpense extends React.Component {
                               className="form-control-label"
                               htmlFor="input-category"
                             >
-                              Category *
+                              Category
                             </label>
                             <Input
                               required
@@ -154,11 +178,12 @@ class AddExpense extends React.Component {
                               type="select"
                               onChange={this.handleInput}
                             >
-                            <option disabled selected >Choose One</option>
-                            <option>Job Materials</option>
-                            <option>Gas</option>
-                            <option>Supplies</option>
-                            <option>Sub Contractors</option>
+                            {categories.map((e,i)=>{
+                              return(
+                                this.state.category === e.category ? <option selected key={i}>{this.state.category}</option>: 
+                                <option key={i}>{e.category}</option>
+                              )
+                            })}
                             </Input>
                           </FormGroup>
                           <FormGroup>
@@ -173,6 +198,7 @@ class AddExpense extends React.Component {
                               className="form-control-alternative"
                               placeholder="Enter a description (optional)"
                               type="text"
+                              defaultValue={this.state.description}
                               onChange={this.handleInput}
                             />
                           </FormGroup>
@@ -182,7 +208,7 @@ class AddExpense extends React.Component {
                               className="form-control-label"
                               htmlFor="input-last-name"
                             >
-                              Image *
+                              Image
                             </label>
                             <Input
                               name="photo"
@@ -199,15 +225,15 @@ class AddExpense extends React.Component {
                               className="form-control-label"
                               htmlFor="input-first-name"
                             >
-                              Total *
+                              Total
                             </label>
                             <Input
-                              required
                               name="total"
                               className="form-control-alternative"
-                              placeholder="Enter the total"
-                              type="text"
+                              type="number"
                               onChange={this.handleInput}
+                              value={this.state.total}
+                              step="any"
                             />
                           </FormGroup>
                         </Col>
@@ -218,7 +244,8 @@ class AddExpense extends React.Component {
                             >
                               Image Preview
                             </label>
-                          {this.state.img && <img width="100%" height="100%" src={this.state.img} alt="photo_url" />}
+                          {!this.state.img  ? <img width="100%" height="100%" src={this.state.img} alt="photo_url" /> :
+                           <img width="100%" height="100%" src={this.state.img} alt="photo_url" />}
                         </Col>
                       </Row>
                       
@@ -228,7 +255,6 @@ class AddExpense extends React.Component {
                           <FormGroup>
                         
                             <Button
-                              disabled={this.state.img ? false : true}
                               className="form-control-alternative"
                               color="info"
 
@@ -249,4 +275,8 @@ class AddExpense extends React.Component {
   }
 }
 
-export default withRouter(AddExpense);
+const mapStateToProps = state => ({
+  jobs: state.job.jobs,
+})
+
+export default connect(mapStateToProps, {getJobs, updateExpense})(withRouter(UpdateExpense));

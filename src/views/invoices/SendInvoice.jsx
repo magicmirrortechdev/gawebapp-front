@@ -117,27 +117,34 @@ class SendInvoice extends React.Component {
 
     //mandarlo al primer correo con el primer nombre nada mas
     console.log(this.state.tags[0]);
-    argyleService.checkArgyleUser(this.state.tags[0].text, this.state.name).then((result) =>{
-      argyleService.addCharge(data).then(
-        responseArgyle => {
-          console.log("argyle, ", responseArgyle);
-          this.setState(prevState => {
-            return {
-              ...prevState,
-              urlPay: responseArgyle.data.data.url
-            }
-          })
+    argyleService.checkArgyleUser(this.state.tags[0].text, this.state.name).then(
+      result =>{
+        argyleService.addCharge(data).then(
+          responseArgyle => {
+            console.log("argyle, ", responseArgyle);
+            this.setState(prevState => {
+              return {
+                ...prevState,
+                urlPay: responseArgyle.data.data.url
+              }
+            })
 
-          this.props.sendInvoice(this.state);
-          this.props.history.push(`/admin/invoices`)
-          },
-        errorArgyle =>{
-          console.log(errorArgyle);
-          this.props.sendInvoice(this.state);
-          this.props.history.push(`/admin/invoices`)
-        }
-      )
-    })
+            this.props.sendInvoice(this.state);
+            this.props.history.push(`/admin/invoices`)
+            },
+          errorArgyle =>{
+            console.log(errorArgyle);
+            this.props.sendInvoice(this.state);
+            this.props.history.push(`/admin/invoices`)
+          }
+        )
+      },
+      errorArgyle =>{
+        console.log(errorArgyle);
+        this.props.sendInvoice(this.state);
+        this.props.history.push(`/admin/invoices`)
+      }
+    )
   }
 
   handleDelete(i) {

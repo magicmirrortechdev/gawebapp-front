@@ -91,8 +91,12 @@ class AuthService {
     }
 
     //jobs
-    getJobs() {
-        return this.service.get('/checkjobs')
+    getJobs(id) {
+        if (id){
+            return this.service.get('/checkjobs/' + id)
+        }else {
+            return this.service.get('/checkjobs')
+        }
     }
     openJobs() {
         return this.service.get('/openjobs')
@@ -109,9 +113,24 @@ class AuthService {
     closeJob(data) {
         return this.service.patch(`/closejob/${data}`)
     }
-    pullWorker(data) {
-        return this.service.patch(`/pullworker  /${data}`)
+    addWorkers(id, data) {
+        return this.service.patch('/addworkers/' + id, data)
     }
+    pullWorker(data) {
+        return this.service.patch(`/pullworker/${data}`)
+    }
+
+    //expense
+    addExpense(id, data) {
+        return this.service.patch('/addexpense/' + id, data)
+    }
+    updateExpense(id, expenseId, data) {
+        return this.service.patch('/expenseupdate/' + id + '/' + expenseId, data)
+    }
+    removeExpense(id, expenseId) {
+        return this.service.patch('/expensedelete/' + id + '/' + expenseId)
+    }
+
 
 }
 

@@ -144,7 +144,11 @@ class Jobs extends React.Component {
   componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-    this.props.getJobs();
+    if(loggedUser.level <=1) {
+      this.props.getJobs(loggedUser._id)
+    }else{
+      this.props.getJobs();
+    }
   }
 
   handleInput = e => {

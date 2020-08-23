@@ -16,6 +16,9 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
+import {store} from "../../redux/store";
+import {connect} from "react-redux";
+import {addExpense} from "../../redux/actions/jobAction";
 
 let loggedUser;
 var fecha = new Date(); 
@@ -26,40 +29,25 @@ var fecha = new Date();
         dia='0'+dia; //agrega cero si es menor de 10
       if(mes<10)
         mes='0'+mes //agrega cero si es menor de 10
+        
 class AddExpense extends React.Component {
   state = {
     workerId: "",
     date: ano+"-"+mes+"-"+dia,
-    colorError: false
+    _id: '',
+    category: '',
   };
 
   constructor(props) {
     super(props);
-    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
-    this.selectRef = React.createRef();
+    const {auth} = store.getState();
+    loggedUser = auth.userLogged
   }
 
   componentDidMount() {
     this.setState({
-      workerId: loggedUser._id,
-      jobs:[],
-      _id: '',
-      category: '',
-
+      workerId: loggedUser._id
     })
-    axios
-      .get(Global.url + `openjobs`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            ...data
-          }
-        })
-      })
-      .catch(err => {
-        console.log(err)
-      })
   }
 
   handleInput = e => {
@@ -84,21 +72,16 @@ class AddExpense extends React.Component {
     const total =  this.state.total
 
     e.preventDefault()
-    if (this.state._id==='') {
-      alert('Select a Job to continue');
-    }
-    else if (this.state.category==='') {
-      alert('Select a category to continue');
+     if(this.state.category===''){
+      alert('Select a category')
     }
     else if (!total.match(/^0|-?[0-9]\d*(\.\d+)?$/gm)){
       alert('Total quantity not valid')
     }
-    else {
-      this.setState({ colorError: false });
-       await axios.patch(Global.url + `addexpense/${this.state._id}`,this.state)
-      this.props.history.push('/admin/expenses')
+    else{
+      this.props.addExpense(this.props.match.params.id, this.state)
+      this.props.history.push('/admin/jobs')
     }
-       
   }
 
   render() {
@@ -121,34 +104,10 @@ class AddExpense extends React.Component {
                 </CardHeader>
                 <CardBody> 
 
-                  <Form onSubmit={this.handleSubmit}>
+                  <Form onSubmit={this.handleSubmit} enctype="multipart/form-data">
                     <div className="pl-lg-4">
                       <Row>
                         <Col lg="6">
-                          <FormGroup>
-                          <label
-                              className="form-control-label d-inline-block"
-                              htmlFor="input-date"
-                            >
-                              Job Name *
-                            </label>
-                            <Input
-                              ref={this.selectRef}
-                              name="_id"
-                              className="form-control-alternative"
-                              type="select"
-                              onChange={this.handleInput}                              
-                            >
-                            <option selected disabled>Select Job to Add Expense</option>
-                            {this.state.jobs.map((e,i)=>{
-                              return(
-                                <option key={i} value={`${e._id}`}>{e.jobName}</option>)
-                            })
-                            }
-                            
-                            
-                            </Input>
-                          </FormGroup>
                           <FormGroup>
                             <label
                               className="form-control-label d-inline-block"
@@ -158,12 +117,12 @@ class AddExpense extends React.Component {
                             </label>
                             <Input
                               required
+                              id="date"
                               className="form-control-alternative"
                               placeholder="Select a date"
-                              id="date"
                               name="date"
-                              type="date"
                               value={this.state.date}
+                              type="date"
                               onChange={this.handleInput}
                             />
                           </FormGroup>
@@ -198,7 +157,7 @@ class AddExpense extends React.Component {
                               type="select"
                               onChange={this.handleInput}
                             >
-                            <option selected disabled >Choose One</option>
+                            <option disabled selected >Choose One</option>
                             <option>Job Materials</option>
                             <option>Gas</option>
                             <option>Supplies</option>
@@ -293,4 +252,4 @@ class AddExpense extends React.Component {
   }
 }
 
-export default withRouter(AddExpense);
+export default connect(null, {addExpense})(withRouter(AddExpense));

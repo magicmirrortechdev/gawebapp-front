@@ -8,14 +8,14 @@ import SendEstimate from "views/estimates/SendEstimate";
 import AddEstimate from "views/estimates/AddEstimate.jsx";
 import AddEstimateByUser from './views/estimates/AddEstimateByUser.jsx'
 import AddInvoiceByEstimate from './views/invoices/AddInvoiceByEstimate.jsx'
+import Expenses from "views/expenses/Expenses.jsx";
+import AddExpense from "views/expenses/AddExpense.jsx";
+import AddExpenseByWorker from "views/expenses/AddExpenseByWorker.jsx";
+import UpdateExpense from "views/expenses/UpdateExpense";
 
 import Time from "views/examples/Time.jsx";
-import Expenses from "views/examples/Expenses.jsx";
-import AddExpense from "views/examples/AddExpense.jsx";
-import AddExpenseByWorker from "views/examples/AddExpenseByWorker.jsx";
 import AddTime from "views/examples/AddTime.jsx";
 import AddTimeAllUsers from "views/examples/AddTimeAllUsers";
-import UpdateExpense from "views/examples/UpdateExpense";
 import UpdateTime from "./views/examples/UpdateTime";
 
 var routesWorker = [
