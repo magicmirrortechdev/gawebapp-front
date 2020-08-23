@@ -116,6 +116,9 @@ class AuthService {
     addWorkers(id, data) {
         return this.service.patch('/addworkers/' + id, data)
     }
+    addProjectManager (id, data) {
+        return this.service.patch('/addpm/' + id, data)
+    }
     pullWorker(data) {
         return this.service.patch(`/pullworker/${data}`)
     }

@@ -1,6 +1,5 @@
 import React from "react";
 import { withRouter } from 'react-router-dom'
-import axios from 'axios'
 import {
   Card,
   CardHeader,
@@ -16,9 +15,11 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-import Global from "../../global";
+import {connect} from "react-redux";
+import {getUsers} from "../../redux/actions/userAction";
+import {addProjectManager} from "../../redux/actions/jobAction";
 
-
+let estimate
 class AddWorkerJob extends React.Component {
   state = {
     users:[]
@@ -33,40 +34,29 @@ class AddWorkerJob extends React.Component {
   }
 
   componentDidMount() {
-    axios
-      .get(Global.url + `projectm`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            ...data
-          }
-        })
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    if(this.props.users.length === 0) this.props.getUsers()
+    estimate = this.props.jobs.filter(item => item._id === this.props.match.params.id)[0]
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        users: this.props.users.filter(user => user.role === "PROJECT MANAGER")
+      }
+    })
+
   }
 
-  handleSubmit = async(e, props) => {
+  handleSubmit = (e, props) => {
     e.preventDefault()
     const workerIn =[]
-    const estimate = await axios.get(Global.url+`estimatedetail/${this.props.match.params.id}`)
-    estimate.data.estimate.projectManager.map(e =>{
+    estimate.projectManager.map(e =>{
       return workerIn.push(e.projectId._id) 
     })
     if(workerIn.includes(this.state._id)){
       alert('This PM already exists in this job')
     }
     else {
-        axios
-          .patch(Global.url + `addpm/${this.props.match.params.id}`,{id2: this.state._id})
-          .then(response => {
-            this.props.history.push(`/admin/jobs`)
-          })
-          .catch(err => {
-            console.log(err.response)
-          })
+      this.props.addProjectManager(this.props.match.params.id, {id2: this.state._id})
+      this.props.history.push(`/admin/jobs`)
     }
   }
 
@@ -93,41 +83,29 @@ class AddWorkerJob extends React.Component {
                     <div className="pl-lg-4">
                       <Row>
                         <Col lg="6">
-                      
-                          
                           <FormGroup>
-                            
                             <Input
                               name="_id"
                               className="form-control-alternative"
                               type="select"
-                              onChange={this.handleInput}
-                              
-                            >
-                            <option>Select worker</option>
+                              onChange={this.handleInput}>
+                            <option>Select project manager</option>
                             {this.state.users.map((e,i)=>{
-                              return(
-                                <option key={i} value={`${e._id}`}>{e.name}</option>)
-                            })
+                                return(
+                                  <option key={i} value={`${e._id}`}>{e.name}</option>)
+                              })
                             }
-                            
-                            
                             </Input>
                           </FormGroup>
-                          
                         </Col>
                       </Row>
-                      
-                      
                       <Row>
                         <Col lg="6">
                           <FormGroup>
-                        
                             <Button
                               className="form-control-alternative"
-                              color="info"
-
-                            >Add Worker</Button>
+                              color="info">
+                              Add Project Manager</Button>
                           </FormGroup>
                         </Col>
                       </Row>
@@ -144,4 +122,9 @@ class AddWorkerJob extends React.Component {
   }
 }
 
-export default withRouter(AddWorkerJob);
+const mapStateToProps = state => ({
+  users: state.user.users,
+  jobs: state.job.jobs
+})
+
+export default connect(mapStateToProps, {getUsers, addProjectManager})(withRouter(AddWorkerJob));

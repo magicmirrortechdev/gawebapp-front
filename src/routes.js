@@ -11,6 +11,8 @@ import AddEstimate from "views/estimates/AddEstimate.jsx";
 import Jobs from "views/jobs/Jobs.jsx";
 import AddJob from "views/jobs/AddJob.jsx";
 import UpdateJob from "views/jobs/UpdateJob.jsx";
+import AddWorkerJob from "views/jobs/AddWorkerJob.jsx";
+import AddPM from "views/jobs/AddProjectManager.jsx";
 
 import Invoices from "views/invoices/Invoices.jsx";
 import AddInvoice from './views/invoices/AddInvoice.jsx'
@@ -22,8 +24,8 @@ import SendInvoice from "views/invoices/SendInvoice";
 
 import Expenses from "views/expenses/Expenses.jsx";
 import AddExpense from "views/expenses/AddExpense.jsx";
-import AddExpenseByWorker from "views/expenses/AddExpenseByWorker.jsx";
 import UpdateExpense from "views/expenses/UpdateExpense";
+import AddExpenseByWorker from "views/expenses/AddExpenseByWorker.jsx";
 
 import Time from "views/examples/Time.jsx";
 
@@ -34,11 +36,9 @@ import UpdateClient from "./views/clients/UpdateClient.jsx"
 import Workers from "views/workers/Workers.jsx";
 import AddWorker from "views/workers/AddWorker.jsx";
 import UpdateWorker from "./views/workers/UpdateWorker.jsx";
-import AddWorkerJob from "views/workers/AddWorkerJob.jsx";
 
 import AddTime from "views/examples/AddTime.jsx";
 import UpdateTime from "views/examples/UpdateTime.jsx";
-import AddPM from "views/examples/AddProjectManager.jsx";
 import Reports from "./views/examples/Reports";
 import AddReport from "./views/examples/AddReport";
 

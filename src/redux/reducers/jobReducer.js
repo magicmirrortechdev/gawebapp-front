@@ -31,6 +31,8 @@ export const jobReducer = (state = initialState, action) => {
         case FETCH_ESTIMATE_UPDATE_SUCCESS:
             try{
                 let index = state.jobs.findIndex(u => u._id === action.payload.id)
+                console.log(state.jobs[index]);
+                console.log(action.payload.data);
                 return {...state, jobs: updater(state.jobs, action.payload.data, index)}
             } catch(e){
                 return state
