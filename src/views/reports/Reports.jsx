@@ -31,9 +31,11 @@ import ReportJobs from "./ReportJobs";
 import ReportWorkers from "./ReportWorkers";
 import PDFViewer from 'pdf-viewer-reactjs';
 import CustomNavigation from './Navigation';
+import {connect} from "react-redux";
+import {getUsers} from "../../redux/actions/userAction"
+import {getJobs} from "../../redux/actions/jobAction"
 
 let pdfFile;
-
 class Reports extends React.Component {
     state = {
         jobs: [],
@@ -75,30 +77,29 @@ class Reports extends React.Component {
     }
 
     handleOpenModal = (estimateId, expenseId) => {
-        axios.get(Global.url + `estimatedetail/${estimateId}`)
-            .then(({data}) => {
-                this.setState(prevState => {
-                    let img = '';
-                    const expenses = data.estimate.expenses
-                    expenses.map((e, i) => {
-                        if (e._id === expenseId) {
-                            img = e.img
-                        }
-                        return {img}
-                    })
-                    if (img !== '') {
-                        img = img.replace("http", "https");
-                        pdfFile = img
-                    }
-
-                    return {
-                        ...prevState,
-                        img: img,
-                        modal: true,
-                        extension: img === '' ? '' : img.substring(img.length - 3, img.length).toLowerCase()
-                    }
-                });
+        const job = this.props.jobs.filter(item => item._id === this.props.match.params.estimateId)[0]
+        this.setState(prevState => {
+            let img = '';
+            const expenses = job.expenses
+            expenses.map((e, i) => {
+                if (e._id === expenseId) {
+                    img = e.img
+                }
+                return {img}
             })
+            if (img !== '') {
+                img = img.replace("http", "https");
+                pdfFile = img
+            }
+
+            return {
+                ...prevState,
+                img: img,
+                modal: true,
+                extension: img === '' ? '' : img.substring(img.length - 3, img.length).toLowerCase()
+            }
+        });
+
     }
 
     handleInput = e => {
@@ -123,84 +124,50 @@ class Reports extends React.Component {
         this.updateWindowDimensions()
         window.addEventListener('resize', this.updateWindowDimensions)
 
-        axios.get(Global.url + `openjobs`)
-            .then(({data}) => {
-                this.setState(prevState => {
-                    return {
-                        ...prevState,
-                        ...data
-                    }
-                })
-            })
-            .catch(err => {
-                console.log(err)
-            });
+        if (this.props.jobs.length === 0) this.props.getJobs()
+        if (this.props.users.length === 0 ) this.props.getUsers()
 
-        axios.get(Global.url + `workers`)
-            .then(({data}) => {
-                this.setState(prevState => {
-                    return {
-                        ...prevState,
-                        workers: this.workersTransformer(data.users)
-                    }
-                })
-            })
-            .catch(err => {
-                console.log(err)
-            });
-
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                jobs: this.props.jobs.filter(job => job.status === 'Approve'),
+                workers: this.workersTransformer(
+                    this.props.users.filter(user => user.role === "WORKER" ||
+                    user.role ==="PROJECT MANAGER" ||
+                    user.role ==="ADMIN"))
+            }
+        })
     }
 
     getOpen = () => {
-        axios
-            .get(Global.url + `openjobs`)
-            .then(({data}) => {
-                this.setState(prevState => {
-                    return {
-                        ...prevState,
-                        buttonActive: "1",
-                        ...data
-                    }
-                })
-            })
-            .catch(err => {
-                console.log(err)
-            })
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                buttonActive: "1",
+                jobs: this.props.jobs.filter(job => job.status === 'Approve')
+            }
+        })
     }
 
     getClose = () => {
-        axios
-            .get(Global.url + `closejobs`)
-            .then(({data}) => {
-                this.setState(prevState => {
-                    return {
-                        ...prevState,
-                        buttonActive: "2",
-                        ...data
-                    }
-                })
-            })
-            .catch(err => {
-                console.log(err)
-            })
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                buttonActive: "2",
+                jobs: this.props.jobs.filter(job => job.status === 'Closed')
+            }
+        })
     }
 
     getAll = () => {
-        axios
-            .get(Global.url + `checkjobs`)
-            .then(({data}) => {
-                this.setState(prevState => {
-                    return {
-                        ...prevState,
-                        buttonActive: "3",
-                        ...data
-                    }
-                })
-            })
-            .catch(err => {
-                console.log(err)
-            })
-    }
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                buttonActive: "3",
+                jobs: this.props.jobs
+            }
+        })
+     }
 
     filterDate = () => {
         let dates = {"startDate": this.state.startDate, "endDate": this.state.endDate}
@@ -228,34 +195,20 @@ class Reports extends React.Component {
     }
 
     clearFilter = () => {
-        axios.get(Global.url + `openjobs`)
-            .then(({data}) => {
-                console.log(data);
-                this.setState(prevState => {
-                    return {
-                        ...prevState,
-                        buttonActive: "1",
-                        activeTab: "1",
-                        ...data
-                    }
-                })
-            })
-            .catch(err => {
-                console.log(err)
-            });
 
-        axios.get(Global.url + `workers`)
-            .then(({data}) => {
-                this.setState(prevState => {
-                    return {
-                        ...prevState,
-                        workers: this.workersTransformer(data.users)
-                    }
-                })
-            })
-            .catch(err => {
-                console.log(err)
-            });
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                buttonActive: "1",
+                activeTab: "1",
+                jobs: this.props.jobs.filter(job => job.status === 'Approve'),
+                workers: this.workersTransformer(
+                    this.props.users.filter(user => user.role === "WORKER" ||
+                        user.role ==="PROJECT MANAGER" ||
+                        user.role ==="ADMIN"))
+            }
+        })
+
         document.getElementById("startDate").value = "";
         document.getElementById("endDate").value = "";
     }
@@ -532,4 +485,10 @@ class Reports extends React.Component {
     }
 }
 
-export default Reports;
+
+const mapStateToProps = state => ({
+    users: state.user.users,
+    jobs: state.job.jobs
+})
+
+export default connect(mapStateToProps, {getUsers, getJobs})(Reports);

@@ -1,8 +1,5 @@
 import React from "react";
 import { withRouter } from 'react-router-dom'
-import axios from 'axios'
-
-
 import {
   Card,
   CardHeader,
@@ -18,7 +15,6 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-import Global from "../../global";
 import {connect} from "react-redux";
 import {updateTime} from "../../redux/actions/jobAction";
 
