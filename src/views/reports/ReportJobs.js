@@ -2,7 +2,7 @@ import React from 'react';
 import {Button, Card, Table, UncontrolledCollapse, Row, Col} from "reactstrap";
 import CardBody from "reactstrap/es/CardBody";
 import Moment from 'react-moment'
-import {compareValues} from  "../../../global";
+import {compareValues} from  "../../global";
 
 const DropDownExpense = (props) =>{
     return(

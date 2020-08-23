@@ -18,6 +18,9 @@ import {
 import Header from "components/Headers/Header.jsx";
 import Global, {compareValues} from "../../global";
 import Moment from "react-moment";
+import {store} from "../../redux/store";
+import {connect} from "react-redux";
+import {getJobs, removeTime} from "../../redux/actions/jobAction";
 
 let loggedUser ;
 let times = [];
@@ -45,15 +48,11 @@ const ButtonOne = (props) => {
               },
             },
           }}>
-        <DropdownItem to={`/admin/time/updatetime/${props.estimateId}/${props.worker}/${props.workerId._id}/${props.timeId}`} tag={Link}>Update Hours</DropdownItem>
+        <DropdownItem to={`/admin/time/updatetime/${props.item.estimateId}/${props.item.worker}/${props.item.workerId._id}/${props.item.timeId}`} tag={Link}>Update Hours</DropdownItem>
         { loggedUser.level >= 4 ?
             <DropdownItem onClick={()=>{
-              axios.patch(Global.url + `deletetime/${props.estimateId}/${props.workerId._id}/${props.timeId}`, {}).then(({data}) => {
-                props.loadTime();
-                alert("Time was removed");
-              }).catch(err => {
-                  console.log(err)
-              })
+              props.props.removeTime(props.item.estimateId, props.item.workerId._id, props.item.timeId)
+              alert("Time was removed");
             }}><span
                 className="text-danger">Delete</span>
             </DropdownItem>
@@ -88,18 +87,12 @@ const ButtonTwo = (props) => {
                 },
               },
             }}>
-          <DropdownItem to={`/admin/time/updatetime/${props.estimateId}/${props.worker}/${props.workerId._id}/${props.timeId}`} tag={Link}>Update Hours</DropdownItem>
+          <DropdownItem to={`/admin/time/updatetime/${props.time.estimateId}/${props.time.worker}/${props.time.workerId._id}/${props.time.timeId}`} tag={Link}>Update Hours</DropdownItem>
 
           {loggedUser.level >= 4 ?
               <DropdownItem onClick={() => {
-                axios.patch(Global.url + `deletetime/${props.estimateId}/${props.workerId._id}/${props.timeId}`, {})
-                    .then(({data}) => {
-                      props.loadTime();
-                      alert('Worker Removed')
-                    })
-                    .catch(err => {
-                      console.log(err.response)
-                    })
+                props.props.removeTime(props.item.estimateId, props.item.workerId._id, props.item.timeId)
+                alert("Time was removed");
               }}><span
                   className="text-danger">Delete</span>
               </DropdownItem>
@@ -120,7 +113,8 @@ class Time extends React.Component {
 
   constructor(props) {
     super(props);
-    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+    const {auth} = store.getState();
+    loggedUser = auth.userLogged
     this.loadTime = this.loadTime.bind(this)
   }
 
@@ -139,46 +133,21 @@ class Time extends React.Component {
   }
 
   loadTime() {
-    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
-    if (loggedUser.level <= 1) {
-      axios
-          .get(Global.url + `checkjobs/${loggedUser._id}`)
-          .then(({data}) => {
-            this.setState(prevState => {
-              console.log(data)
-              return {
-                ...prevState,
-                ...data
-              }
-            })
-          })
-          .catch(err => {
-            console.log(err.response)
-          })
-    } else if (loggedUser.level >= 2) {
-      axios
-          .get(Global.url + `checkjobs`)
-          .then(({data}) => {
-            console.log(data)
-            this.setState(prevState => {
-              return {
-                ...prevState,
-                ...data
-              }
-            })
-          })
-          .catch(err => {
-            console.log(err)
-          })
+    if(this.props.jobs.length === 0){
+      if(loggedUser.level <=1) {
+        this.props.getJobs(loggedUser._id)
+      }else{
+        this.props.getJobs();
+      }
     }
   }
 
   render() {
-
+    const {jobs} = this.props
     if (!this.state) return <p>Loading</p>
     else {
       times = [];
-      this.state.jobs.forEach((e) => {
+      jobs.forEach((e) => {
         let projectManager = e.projectManager.map((e,i)=> !projectManager ? <p style={{fontSize:"10px"}}>Project Manager Delete</p> : <p style={{fontSize:"10px"}} key={i}>{e.projectId.name}</p>)
         if(e.workers.length > 0){
           e.workers.forEach((worker) => {
@@ -265,7 +234,7 @@ class Time extends React.Component {
                             {!this.state.isMobileVersion ?
                               <>
                                 <td >
-                                  <ButtonOne {...e} loadTime={this.loadTime}></ButtonOne>
+                                  <ButtonOne item={e} props={this.props}></ButtonOne>
                                 </td>
                                 <td><Moment add={{days:1}} format={"MMM D, YY"}>{e.date}</Moment></td>
                                 <td>{e.name}</td>
@@ -282,7 +251,7 @@ class Time extends React.Component {
                                   {e.name} - {e.time}<br/>
                                   <small>{e.jobName}</small> <br/>
                                   <div className="buttonfloat-right buttonfloat-right-times">
-                                    <ButtonOne {...e} loadTime={this.loadTime}></ButtonOne>
+                                    <ButtonOne item={e} props={this.props}></ButtonOne>
                                   </div>
                                 </td>
                               </>
@@ -302,7 +271,7 @@ class Time extends React.Component {
                                 {!this.state.isMobileVersion ?
                                  <>
                                   <td>
-                                    <ButtonTwo {...e} loadTime={this.loadTime}></ButtonTwo>
+                                    <ButtonTwo item={e} props={this.props}></ButtonTwo>
                                   </td>
                                   <td><Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment></td>
                                   <td>{e.name}</td>
@@ -327,7 +296,7 @@ class Time extends React.Component {
                                       {e.name} - {e.time}<br/>
                                       <small>{e.jobName}</small><br/>
                                       <div className="buttonfloat-right buttonfloat-right-times">
-                                        <ButtonTwo {...e} loadTime={this.loadTime}></ButtonTwo>
+                                        <ButtonTwo item={e} props={this.props}></ButtonTwo>
                                       </div>
                                     </td>
                                   </>
@@ -336,7 +305,7 @@ class Time extends React.Component {
                             </tbody>
                           )
                         })
-                        : null
+                      : null
                   }
                 </Table>
               </Card>
@@ -349,4 +318,8 @@ class Time extends React.Component {
   }
 }
 
-export default Time;
+const mapStateToProps = state => ({
+  jobs: state.job.jobs,
+})
+
+export default connect(mapStateToProps, {getJobs, removeTime})(Time);

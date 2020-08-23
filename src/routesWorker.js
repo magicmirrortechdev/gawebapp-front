@@ -13,10 +13,10 @@ import AddExpense from "views/expenses/AddExpense.jsx";
 import AddExpenseByWorker from "views/expenses/AddExpenseByWorker.jsx";
 import UpdateExpense from "views/expenses/UpdateExpense";
 
-import Time from "views/examples/Time.jsx";
-import AddTime from "views/examples/AddTime.jsx";
-import AddTimeAllUsers from "views/examples/AddTimeAllUsers";
-import UpdateTime from "./views/examples/UpdateTime";
+import Time from "views/times/Time.jsx";
+import AddTime from "views/times/AddTime.jsx";
+import UpdateTime from "./views/times/UpdateTime";
+import AddTimeAllUsers from "views/times/AddTimeAllUsers";
 
 var routesWorker = [
   {

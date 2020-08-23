@@ -1,8 +1,5 @@
 import React from "react";
 import { withRouter } from 'react-router-dom'
-import axios from 'axios'
-
-
 import {
   Card,
   CardHeader,
@@ -10,6 +7,7 @@ import {
   Container,
   Row,
   Col,
+
   Button,
   FormGroup,
   Input,
@@ -17,10 +15,8 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-import Global from "../../global";
-
-let loggedUser;
-let jobs;
+import {connect} from "react-redux";
+import {addTime} from "../../redux/actions/jobAction";
 
 var fecha = new Date(); 
       var mes = fecha.getMonth()+1; 
@@ -32,18 +28,11 @@ var fecha = new Date();
         mes='0'+mes //agrega cero si es menor de 10
 class AddTime extends React.Component {
   state = {
-    jobs: [],
+    jobName: '',
     nameWorker:'',
-    workers:[],
-    value: false,
-    time: parseInt(''),
     date: ano+"-"+mes+"-"+dia,
-    spinner: false
+
   };
-  constructor(props) {
-    super(props);
-    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
-  }
 
   handleInput = e => {
     e.persist()
@@ -51,77 +40,33 @@ class AddTime extends React.Component {
       ...prevState,
       [e.target.name]: e.target.value
     }))
-    this.setState(({ value }) => ({ value: !value }))
-
-    if(e.target.name === '_id'){
-        jobs.forEach((item) => {
-            if(item._id === e.target.value){
-                let user = null;
-                item.workers.forEach((worker) => {
-                    if(worker.workerId && worker.workerId._id === loggedUser._id){
-                        user = worker;
-                    }
-                });
-
-                if(user !== null){
-                    this.setState(prevState => ({
-                        ...prevState,
-                        workers: item.workers,
-                        worker_id: user._id+'.'+ user.workerId._id,
-                    }))
-                }else{
-                    this.setState(prevState => ({
-                        ...prevState,
-                        workers: item.workers
-                    }))
-                }
-            }
-        })
-    }
   }
 
   componentDidMount() {
-    axios
-      .get(Global.url + `openjobs`)
-      .then(({ data }) => {
-          jobs = data.jobs;
-          this.setState(prevState => {
-          return {
-            ...prevState,
-            ...data
-          }
-        })
-      })
-      .catch(err => {
-        console.log(err)
-      })
-      
+    if (this.props.jobs.length === 0) this.props.history.push(`/admin/times`)
+    const job = this.props.jobs.filter(item => item._id === this.props.match.params.estimateId)[0]
+    const user = this.props.users.filter(item => item._id === this.props.match.params.workerId)[0]
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        jobName: job.jobName,
+        ...job,
+        nameWorker: user.name,
+        ...user
+      }
+    })
   }
 
   handleSubmit = (e, props) => {
     e.preventDefault()
-
-    const id = this.state.worker_id ? this.state.worker_id.split(".")[0] : undefined
-    const workerId = this.state.worker_id ? this.state.worker_id.split(".")[1] : undefined
-    this.setState(prevState =>{
-      return{
-        spinner: true
-      }
-    })
-
-      axios
-      .patch(Global.url + `addtime/${id}/${workerId}`,this.state)
-      .then(response => {
-        this.props.history.push(`/admin/time`)
-        //window.location.reload()
-      })
-      .catch(err => {
-        alert(err.response)
-      })
-
+    this.props.addTime(this.props.match.params.id, this.props.match.params.workerId, this.state)
+    this.props.history.push(`/admin/time`)
   }
 
   render() {
+    console.log(this.state)
+    const jobName = this.state.jobName
+    const workerName = this.state.nameWorker
     return (
       <>
         <Header />
@@ -144,44 +89,38 @@ class AddTime extends React.Component {
                       <Row>
                         <Col lg="8">
                         <FormGroup>
-                            <Input
-                              name="_id"
-                              className="form-control-alternative"
-                              type="select"
-                              onChange={this.handleInput}
-
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-hours"
                             >
-                            <option>Select Job to Add Time</option>
-                            {this.state.jobs.map((e,i)=>{
-                              return(
-                                <option key={i} value={`${e._id}`}>{e.jobName}</option>)
-                            })
-                            }
-
-
-                            </Input>
-                        </FormGroup>
-                        <FormGroup>
+                              Job Name
+                            </label>
                             <Input
-                              name="worker_id"
-                              className="form-control-alternative"
-                              type="select"
+                              value={jobName}
+                              name="jobName"
+                              className="form-control-alternative lg"
+                              type="text"
                               onChange={this.handleInput}
-                              
-                            >
-                            <option>Select worker</option>
-                            { this.state.workers.map((e,i)=>{
-                              if(!e.workerId)return <option>Worker Delete</option>
-                              return(
-                                loggedUser._id === e.workerId._id ?  <option selected key={i} value={ `${e._id}.${e.workerId._id}`}>{e.workerId.name}</option> :
-                                 <option  key={i} value={`${e._id}.${e.workerId._id}`}>{e.workerId.name}</option>)
-                            })
-                            }
-                            
-                            
-                            </Input>
-                        </FormGroup>
+                              disabled
+                            />
+                          </FormGroup>
                         <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-hours"
+                            >
+                              Worker Name
+                            </label>
+                            <Input
+                              value={workerName}
+                              name="workerName"
+                              className="form-control-alternative"
+                              type="text"
+                              onChange={this.handleInput}
+                              disabled
+                            />
+                          </FormGroup>
+                          <FormGroup>
                             <label
                               className="form-control-label d-inline-block"
                               htmlFor="input-date"
@@ -199,7 +138,7 @@ class AddTime extends React.Component {
                               onChange={this.handleInput}
                             />
                           </FormGroup>
-                        <FormGroup>
+                          <FormGroup>
                             <label
                               className="form-control-label"
                               htmlFor="input-hours"
@@ -209,6 +148,7 @@ class AddTime extends React.Component {
                             <Input
                               name="time"
                               className="form-control-alternative"
+                              placeholder="0"
                               type="number"
                               onChange={this.handleInput}
                               step="any"
@@ -244,4 +184,9 @@ class AddTime extends React.Component {
   }
 }
 
-export default withRouter(AddTime);
+const mapStateToProps = state => ({
+  jobs: state.job.jobs,
+  users: state.user.users
+})
+
+export default connect(mapStateToProps, {addTime})(withRouter(AddTime));

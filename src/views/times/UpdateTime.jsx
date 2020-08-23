@@ -19,6 +19,8 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
+import {connect} from "react-redux";
+import {updateTime} from "../../redux/actions/jobAction";
 
 var fecha = new Date();
       var mes = fecha.getMonth()+1;
@@ -45,51 +47,27 @@ class UpdateTime extends React.Component {
   }
 
   componentDidMount() {
-    axios
-      .get(Global.url + `estimatedetail/${this.props.match.params.estimateId}`)
-      .then(({ data }) => {
-        data.estimate.workers.forEach((worker, i)=>{
-          if(worker._id === this.props.match.params.id){
-            worker.time.forEach((timeU, j) =>{
-              if(timeU._id === this.props.match.params.timeId){
-                this.setState(prevState => {
-                  return {
-                    ...prevState,
-                    date: timeU.date.substring(0, 10),
-                    time: timeU.hours,
-                    ...data
-                  }
-                })
+    const job = this.props.jobs.filter(item => item._id === this.props.match.params.estimateId)[0]
+    const user = this.props.users.filter(item => item._id === this.props.match.params.workerId)[0]
+    job.workers.forEach((worker, i)=>{
+      if(worker._id === this.props.match.params.id){
+        worker.time.forEach((timeU, j) =>{
+          if(timeU._id === this.props.match.params.timeId){
+            this.setState(prevState => {
+              return {
+                ...prevState,
+                date: timeU.date.substring(0, 10),
+                time: timeU.hours,
+                jobName: job.jobName,
+                nameWorker: user.name,
+                ...job,
+                ...user
               }
             })
           }
         })
-
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            jobName: data.estimate.jobName,
-            ...data
-          }
-        })
-      })
-      .catch(err => {
-        console.log(err)
-      })
-      axios
-      .get(Global.url + `workerdetail/${this.props.match.params.workerId}`)
-      .then(({ data }) => {
-        this.setState(prevState => {
-          return {
-            ...prevState,
-            nameWorker: data.user.name,
-            ...data
-          }
-        })
-      })
-      .catch(err => {
-        console.log(err)
-      })
+      }
+    })
   }
 
   handleSubmit = (e, props) => {
@@ -99,14 +77,8 @@ class UpdateTime extends React.Component {
         spinner: true
       }
     })
-    axios
-      .patch(Global.url + `updatetime/${this.props.match.params.estimateId}/${this.props.match.params.workerId}/${this.props.match.params.timeId}`,this.state)
-      .then(response => {
-        this.props.history.push(`/admin/time`)
-      })
-      .catch(err => {
-        console.log(err.response)
-      })
+    this.props.updateTime(this.props.match.params.estimateId, this.props.match.params.workerId, this.props.match.params.timeId, this.state)
+    this.props.history.push(`/admin/time`)
   }
 
   render() {
@@ -224,4 +196,10 @@ class UpdateTime extends React.Component {
   }
 }
 
-export default withRouter(UpdateTime);
+
+const mapStateToProps = state => ({
+  jobs: state.job.jobs,
+  users: state.user.users
+})
+
+export default connect(mapStateToProps, {updateTime})(withRouter(UpdateTime));

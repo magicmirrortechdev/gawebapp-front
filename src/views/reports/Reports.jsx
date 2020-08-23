@@ -27,10 +27,10 @@ import {
 import Global, {compareValues} from "../../global";
 
 import Header from "components/Headers/Header.jsx";
-import ReportJobs from "./reports/ReportJobs";
-import ReportWorkers from "./reports/ReportWorkers";
+import ReportJobs from "./ReportJobs";
+import ReportWorkers from "./ReportWorkers";
 import PDFViewer from 'pdf-viewer-reactjs';
-import CustomNavigation from './reports/Navigation';
+import CustomNavigation from './Navigation';
 
 let pdfFile;
 

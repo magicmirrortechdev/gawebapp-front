@@ -119,6 +119,15 @@ class AuthService {
     addProjectManager (id, data) {
         return this.service.patch('/addpm/' + id, data)
     }
+    addTime (estimateId, workerId, data) {
+        return this.service.patch('/addtime/' + estimateId + "/" + workerId, data )
+    }
+    updateTime (estimateId, workerId, timeId, data) {
+        return this.service.patch('/updatetime/' + estimateId + "/" + workerId + "/" + timeId, data )
+    }
+    removeTime (estimateId, workerId, timeId){
+        return this.service.patch('/deletetime/' + estimateId + "/" + workerId + "/" + timeId)
+    }
     pullWorker(data) {
         return this.service.patch(`/pullworker/${data}`)
     }
