@@ -27,9 +27,7 @@ export const getJobs = () => async dispatch => {
 export const addJob = (data) => async dispatch => {
     try{
         const response = await authService.addJob(data);
-        const response2 = await authService.getJob(response.data.estimate._id)
-
-        dispatch({type: FETCH_ESTIMATE_ADD_SUCCESS, payload: response2.data.estimate})
+        dispatch({type: FETCH_ESTIMATE_ADD_SUCCESS, payload: response.data.estimate})
     } catch(err) {
         dispatch({type: FETCH_JOB_ADD_FAILURE, payload: err.message})
         console.log(err)
