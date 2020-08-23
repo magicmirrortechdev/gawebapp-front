@@ -1,7 +1,5 @@
 import React from "react";
 import {  withRouter } from 'react-router-dom'
-import axios from 'axios'
-
 
 import {
   Card,
@@ -17,7 +15,6 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-import Global from "../../global";
 import {connect} from "react-redux";
 import {updateJob} from "../../redux/actions/jobAction";
 
@@ -174,7 +171,6 @@ class UpdateJob extends React.Component {
     );
   }
 }
-
 
 const mapStateToProps = state => ({
   jobs: state.job.jobs,

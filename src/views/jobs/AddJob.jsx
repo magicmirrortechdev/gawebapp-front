@@ -1,7 +1,5 @@
 import React from "react";
 import { withRouter } from 'react-router-dom'
-import AuthService from '../../services/services'
-
 
 import {
   Card,
@@ -17,8 +15,8 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-const authService = new AuthService()
-
+import {connect} from "react-redux";
+import {addJob} from "../../redux/actions/jobAction";
 
 let date = new Date()
 let day = date.getDate()
@@ -38,20 +36,10 @@ class AddJob extends React.Component {
     }))
   }
 
- 
-
   handleSubmit = (e, props) => {
     e.preventDefault()
-        authService
-          .addJob(this.state)
-          .then(response => {
-            this.props.history.push(`jobs`)
-            console.log(response)
-          })
-          .catch(err => {
-            console.log(err.response)
-            alert(err.response.data.msg || err.response.data.err.message)
-          })
+    this.props.addJob(this.state)
+    this.props.history.push(`jobs`)
   }
 
   render() {
@@ -181,4 +169,4 @@ class AddJob extends React.Component {
   }
 }
 
-export default withRouter(AddJob);
+export default connect({}, {addJob})(withRouter(AddJob));
