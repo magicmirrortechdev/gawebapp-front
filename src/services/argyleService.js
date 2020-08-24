@@ -1,6 +1,5 @@
 import axios from 'axios'
 import Global from "../global";
-import moment from "moment";
 
 const baseURL = Global.urlArgyle;
 let argyleUser;

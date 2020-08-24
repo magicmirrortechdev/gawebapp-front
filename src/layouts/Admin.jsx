@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import AdminNavbar from "components/Navbars/AdminNavbar.jsx";
@@ -6,21 +5,22 @@ import Sidebar from "components/Sidebar/Sidebar.jsx";
 
 import routes from "routes.js";
 import routesWorker from 'routesWorker'
+import {store} from "../redux/store";
 
 let loggedUser
-
 class Admin extends React.Component {
+
   constructor(props) {
     super(props);
-    loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+    const {auth} = store.getState();
+    loggedUser = auth.userLogged;
 }
-  
+
   componentDidUpdate(e) {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
     this.refs.mainContent.scrollTop = 0;
   }
-  
 
   getRoutes = routes => {
     return routes.map((prop, key) => {
@@ -233,7 +233,6 @@ class Admin extends React.Component {
     }
     return "Brand";
   }
-
 
   render(props) {
     if (!loggedUser){ 

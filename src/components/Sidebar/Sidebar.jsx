@@ -6,7 +6,6 @@ import { PropTypes } from "prop-types";
 
 // reactstrap components
 import {
- 
   Collapse,
   DropdownMenu,
   DropdownItem,
@@ -22,27 +21,36 @@ import {
   Row,
   Col
 } from "reactstrap";
-import AuthService from '../../services/services'
+import {connect} from "react-redux";
+import {logoutUser} from '../../redux/actions/authAction'
+import {store} from "../../redux/store";
 
-const authService = new AuthService()
+let loggedUser
 
 class Sidebar extends React.Component {
-  handleLogout = () => {
-    authService
-      .logout()
-      .then(() => {
-        localStorage.removeItem('loggedUser')
-        this.props.history.push('/')
-      })
-      .catch(err => console.log(err))
+  constructor(props) {
+    super(props);
+    const {auth} = store.getState();
+    loggedUser = auth.userLogged
+    if (!loggedUser) return this.props.history.push('/auth/login')
+
+    this.activeRoute.bind(this);
   }
+
+  handleLogout = () => {
+    this.props.logoutUser()
+  }
+
   state = {
     collapseOpen: false
   };
-  constructor(props) {
-    super(props);
-    this.activeRoute.bind(this);
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if(!nextProps.userLogged){
+      return nextProps.history.push('/')
+    }
   }
+
   // verifies if routeName is the one active (in browser input)
   activeRoute(routeName) {
     return this.props.location.pathname.indexOf(routeName) > -1 ? "active" : "";
@@ -79,7 +87,6 @@ class Sidebar extends React.Component {
     });
   };
   render() {
-    const loggedUser = JSON.parse(localStorage.getItem('loggedUser'))
 
     const {  routes, logo,  } = this.props;
     // eslint-disable-next-line no-unused-vars
@@ -131,7 +138,7 @@ class Sidebar extends React.Component {
                   <Media className="align-items-center">
                     <Media className="ml-2 d-none d-lg-block">
                       <span className="mb-0 text-sm font-weight-bold">
-                        {loggedUser.name}
+                        {loggedUser? (loggedUser.name) : ''}
                       </span>
                     </Media>
                   </Media>
@@ -183,7 +190,7 @@ class Sidebar extends React.Component {
             <span>Logout</span>
             </Button> : null}
             {/* Divider */}
-            <h5 style={{marginTop:"15px"}}>V 2.4.3</h5>
+            <h5 style={{marginTop:"15px"}}>V 2.5.0</h5>
           </Collapse>
         </Container>
         
@@ -216,4 +223,8 @@ Sidebar.propTypes = {
   })
 };
 
-export default Sidebar;
+const mapStateToProps = state => ({
+  userLogged: state.auth.userLogged,
+})
+
+export default connect(mapStateToProps, {logoutUser})(Sidebar);

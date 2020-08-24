@@ -1,39 +1,48 @@
 import Index from "views/Index.jsx";
-import Login from "views/examples/Login.jsx";
-import Time from "views/examples/Time.jsx";
-import Estimates from "views/examples/Estimates.jsx";
-import Expenses from "views/examples/Expenses.jsx";
-import UpdateEstimate from "views/examples/UpdateEstimate.jsx";
-import UpdateJob from "views/examples/UpdateJob.jsx";
-import Invoices from "views/examples/Invoices.jsx";
-import Clients from "views/examples/Clients.jsx";
-import AddClient from "views/examples/AddClient.jsx";
-import Workers from "views/examples/Workers.jsx";
-import AddExpense from "views/examples/AddExpense.jsx";
-import AddExpenseByWorker from "views/examples/AddExpenseByWorker.jsx";
-import Jobs from "views/examples/Jobs.jsx";
-import AddJob from "views/examples/AddJob.jsx";
-import AddWorker from "views/examples/AddWorker.jsx";
-import AddWorkerJob from "views/examples/AddWorkerJob.jsx";
-import AddTime from "views/examples/AddTime.jsx";
-import UpdateTime from "views/examples/UpdateTime.jsx";
-import AddPM from "views/examples/AddProjectManager.jsx";
-import AddEstimate from "views/examples/AddEstimate.jsx";
-import Reports from "./views/examples/Reports";
-import AddReport from "./views/examples/AddReport";
-import UpdateWorker from "./views/examples/UpdateWorker.jsx";
-import UpdateClient from "./views/examples/UpdateClient.jsx"
-import AddEstimateByUser from './views/examples/AddEstimateByUser.jsx'
-import AddInvoice from './views/examples/AddInvoice.jsx'
-import AddInvoiceByEstimate from './views/examples/AddInvoiceByEstimate.jsx'
-import AddTimeAllUsers from "views/examples/AddTimeAllUsers";
-import PayInvoice from "views/examples/PayInvoice";
-import AddInvoiceByJob from "views/examples/AddInvoiceByJob";
-import Home from "views/examples/Home";
-import SendEstimate from "views/examples/SendEstimate";
-import UpdateExpense from "views/examples/UpdateExpense";
-import updateInvoice from "views/examples/UpdateInvoice";
-import SendInvoice from "views/examples/SendInvoice";
+import Home from "views/Home";
+import Login from "views/Login.jsx";
+
+import Estimates from "views/estimates/Estimates.jsx";
+import AddEstimateByUser from './views/estimates/AddEstimateByUser.jsx'
+import UpdateEstimate from "views/estimates/UpdateEstimate.jsx";
+import SendEstimate from "views/estimates/SendEstimate";
+import AddEstimate from "views/estimates/AddEstimate.jsx";
+
+import Jobs from "views/jobs/Jobs.jsx";
+import AddJob from "views/jobs/AddJob.jsx";
+import UpdateJob from "views/jobs/UpdateJob.jsx";
+import AddWorkerJob from "views/jobs/AddWorkerJob.jsx";
+import AddPM from "views/jobs/AddProjectManager.jsx";
+
+import Invoices from "views/invoices/Invoices.jsx";
+import AddInvoice from './views/invoices/AddInvoice.jsx'
+import AddInvoiceByEstimate from './views/invoices/AddInvoiceByEstimate.jsx'
+import PayInvoice from "views/invoices/PayInvoice";
+import AddInvoiceByJob from "views/invoices/AddInvoiceByJob";
+import UpdateInvoice from "views/invoices/UpdateInvoice";
+import SendInvoice from "views/invoices/SendInvoice";
+
+import Expenses from "views/expenses/Expenses.jsx";
+import AddExpense from "views/expenses/AddExpense.jsx";
+import UpdateExpense from "views/expenses/UpdateExpense";
+import AddExpenseByWorker from "views/expenses/AddExpenseByWorker.jsx";
+
+import Time from "views/times/Time.jsx";
+import AddTime from "views/times/AddTime.jsx";
+import UpdateTime from "views/times/UpdateTime.jsx";
+import AddTimeAllUsers from "views/times/AddTimeAllUsers";
+
+import Clients from "views/clients/Clients.jsx";
+import AddClient from "views/clients/AddClient.jsx";
+import UpdateClient from "./views/clients/UpdateClient.jsx"
+
+import Workers from "views/workers/Workers.jsx";
+import AddWorker from "views/workers/AddWorker.jsx";
+import UpdateWorker from "./views/workers/UpdateWorker.jsx";
+
+import Reports from "./views/reports/Reports";
+import AddReport from "./views/reports/AddReport";
+
 
 var routes = [
   {
@@ -149,7 +158,7 @@ var routes = [
     path: "/:estimateId/:invoiceId/update",
     name: "Update Invoice",
     icon: "ni ni-credit-card text-orange",
-    component: updateInvoice,
+    component: UpdateInvoice,
     layout: "/admin/invoices",
     invisible:true
   },
