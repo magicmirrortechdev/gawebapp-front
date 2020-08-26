@@ -169,4 +169,4 @@ class AddJob extends React.Component {
   }
 }
 
-export default connect({}, {addJob})(withRouter(AddJob));
+export default connect(null, {addJob})(withRouter(AddJob));
