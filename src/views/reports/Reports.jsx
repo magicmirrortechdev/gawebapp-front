@@ -44,7 +44,8 @@ class Reports extends React.Component {
         activeTab: '1',
         buttonActive: '1',
         modal: false,
-        extension: ''
+        extension: '',
+        loadFilter: false
     };
 
     toggleTab(tab) {
@@ -140,7 +141,6 @@ class Reports extends React.Component {
                     user.role ==="ADMIN"))
             }
         })
-        this.filterDate()
     }
 
     getOpen = () => {
@@ -186,11 +186,10 @@ class Reports extends React.Component {
                     this.setState(prevState => {
                         return {
                             ...prevState,
+                            loadFilter: true,
                             jobs: data.jobs,
                             workers: this.workersTransformer(data.workers)
                         }
-
-
                     })
                     console.log("State filtrado", this.state)
                 })
@@ -294,8 +293,14 @@ class Reports extends React.Component {
         return users;
     }
 
+    componentDidUpdate(){
+        if(!this.state.loadFilter ){
+            this.filterDate();
+        }
+    }
+
+
     render() {
-        console.log(this.state);
         if (!this.state) return <p>Loading</p>
         return (
             <>
