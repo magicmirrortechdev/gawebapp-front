@@ -11,6 +11,7 @@ export default {
             document.getElementById('spinner').style.visibility='hidden';
             return response;
         }, error => {
+            document.getElementById('spinner').style.visibility='hidden';
             console.log(error);
             if(error.response){
                 if (error.response.status === 401) {
@@ -18,7 +19,7 @@ export default {
                 }
 
                 if (error.response.status === 404) {
-                    history.Push('/not-found');
+                    history.push('/not-found');
                 }
             }
             return Promise.reject(error);

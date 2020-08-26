@@ -48,7 +48,7 @@ class ForgotPassword extends Component {
     } else {
       try {
         const response = await axios.post(
-          Global.url + '/forgotpassword',
+          Global.url + 'forgotpassword',
           {
             email,
           },
@@ -62,8 +62,8 @@ class ForgotPassword extends Component {
           });
         }
       } catch (error) {
-        console.error(error);
-        if (error.response.data === 'email not in db') {
+        console.log(error);
+        if (error.response && error.response.data === 'email not in db') {
           this.setState({
             showError: true,
             messageFromServer: '',
@@ -81,6 +81,18 @@ class ForgotPassword extends Component {
 
     return (
       <div>
+        <div id="spinner" style={{display:"flex",backgroundColor:"rgba(183,183,183,0.5)", alignContent:"center", justifyContent:"center",height:"100%", width:"100%", alignItems:"center", visibility:'hidden', position:"absolute", zIndex:"1" }}>
+          <div>
+            <div className="loadingio-spinner-eclipse-9uhm73z846u">
+              <div className="ldio-cv9d96mw3dl">
+                <div></div>
+              </div>
+            </div>
+            <p style={{"fontSize": "35px", "fontWeight": "bold"}}>
+              Please wait...
+            </p>
+          </div>
+        </div>
         <HeaderBar title={title} />
         <form className="profile-form" onSubmit={this.sendEmail}>
           <TextField
