@@ -48,7 +48,7 @@ class ForgotPassword extends Component {
     } else {
       try {
         const response = await axios.post(
-          Global.url + 'forgotpassword',
+          Global.url + '/forgotpassword',
           {
             email,
           },
@@ -62,7 +62,7 @@ class ForgotPassword extends Component {
           });
         }
       } catch (error) {
-        console.error(error.response.data);
+        console.error(error);
         if (error.response.data === 'email not in db') {
           this.setState({
             showError: true,
