@@ -34,6 +34,7 @@ import CustomNavigation from './Navigation';
 import {connect} from "react-redux";
 import {getUsers} from "../../redux/actions/userAction"
 import {getJobs} from "../../redux/actions/jobAction"
+import moment from "moment";
 
 let pdfFile;
 class Reports extends React.Component {
@@ -130,6 +131,8 @@ class Reports extends React.Component {
         this.setState(prevState => {
             return {
                 ...prevState,
+                startDate: moment().startOf('week').add('days', 1).format('YYYY-MM-DD'),
+                endDate: moment().startOf('week').add('days', 7).format('YYYY-MM-DD'),
                 jobs: this.props.jobs.filter(job => job.status === 'Approve'),
                 workers: this.workersTransformer(
                     this.props.users.filter(user => user.role === "WORKER" ||
@@ -137,6 +140,7 @@ class Reports extends React.Component {
                     user.role ==="ADMIN"))
             }
         })
+        this.filterDate()
     }
 
     getOpen = () => {
@@ -289,6 +293,7 @@ class Reports extends React.Component {
     }
 
     render() {
+        console.log(this.state);
         if (!this.state) return <p>Loading</p>
         return (
             <>
@@ -329,6 +334,7 @@ class Reports extends React.Component {
                                                     className="form-control-alternative"
                                                     type="date"
                                                     id="startDate"
+                                                    value={this.state.startDate}
                                                     onChange={this.handleInput}
                                                 />
                                             </FormGroup>
@@ -345,6 +351,7 @@ class Reports extends React.Component {
                                                     id="endDate"
                                                     className="form-control-alternative"
                                                     type="date"
+                                                    value={this.state.endDate}
                                                     onChange={this.handleInput}
                                                 />
 
