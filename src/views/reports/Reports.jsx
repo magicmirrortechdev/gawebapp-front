@@ -279,7 +279,7 @@ class Reports extends React.Component {
                     }
                 }
             });
-            user.proccessJobs.forEach((e, i) => {
+            user.jobs.forEach((e, i) => {
                 user.totalPayroll.push(e.payroll)
                 user.totalEffective.push(e.effective)
                 user.totalHours.push(e.hours)
