@@ -5,7 +5,6 @@ import localforage from 'localforage';
 import {authReducer} from "./reducers/authReducer";
 import {userReducer} from "./reducers/userReducer";
 import {clientReducer} from "./reducers/clientReducer";
-import {estimateReducer} from "./reducers/estimateReducer";
 import {jobReducer} from "./reducers/jobReducer";
 
 const authPersistConfig = {
@@ -24,11 +23,6 @@ const userPersistConfig = {
     storage: localforage,
 }
 
-const estimatesPersistConfig = {
-    key: 'ga:estimate',
-    storage: localforage,
-}
-
 const jobsPersistConfig = {
     key: 'ga:job',
     storage: localforage,
@@ -38,7 +32,6 @@ const reducer = combineReducers({
     auth: authReducer,
     user: persistReducer(userPersistConfig, userReducer),
     client: persistReducer(clientPersistConfig, clientReducer),
-    estimate: persistReducer(estimatesPersistConfig, estimateReducer),
     job: persistReducer(jobsPersistConfig, jobReducer)
 })
 
