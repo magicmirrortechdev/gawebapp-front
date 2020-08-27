@@ -103,10 +103,10 @@ class Estimates extends React.Component {
     window.addEventListener('resize', this.updateWindowDimensions)
 
     if(loggedUser.level <=1){
-      this.props.getEstimates(loggedUser._id)
+      this.props.getJobs(loggedUser._id)
     }
     else if(loggedUser.level >=2){
-      this.props.getEstimates()
+      this.props.getJobs()
     }
   }
 
