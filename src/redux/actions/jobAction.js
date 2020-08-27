@@ -80,7 +80,7 @@ export const decline = (id, item) => async dispatch => {
 }
 
 
-export const getJobs = (id = "") => async dispatch => {
+export const getJobs = (id = undefined) => async dispatch => {
     try{
         let response;
         if (id !== ""){

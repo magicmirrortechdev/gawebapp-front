@@ -213,7 +213,7 @@ class Estimates extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  estimates: state.job.jobs,
+  estimates: state.estimate.estimates,
 })
 
 export default connect(mapStateToProps, {getJobs, convertJob, decline, removeEstimate})(Estimates);
