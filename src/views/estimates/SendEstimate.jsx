@@ -1,6 +1,5 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
-import axios from 'axios'
 
 import {
   Card,
@@ -19,7 +18,6 @@ import { WithContext as ReactTags } from 'react-tag-input';
 
 // core components
 import Header from 'components/Headers/Header.jsx'
-import Global from "../../global";
 import {connect} from "react-redux";
 import {updateEstimate} from "../../redux/actions/jobAction";
 import AuthService from '../../services/services'

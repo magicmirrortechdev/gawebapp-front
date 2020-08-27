@@ -18,7 +18,7 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import {store} from "../../redux/store";
-import {getEstimates, convertJob, decline, removeEstimate} from "../../redux/actions/jobAction"
+import {getJobs, convertJob, decline, removeEstimate} from "../../redux/actions/jobAction"
 import {connect} from "react-redux";
 
 const authService = new AuthService()
@@ -216,4 +216,4 @@ const mapStateToProps = state => ({
   estimates: state.job.jobs,
 })
 
-export default connect(mapStateToProps, {getEstimates, convertJob, decline, removeEstimate})(Estimates);
+export default connect(mapStateToProps, {getJobs, convertJob, decline, removeEstimate})(Estimates);

@@ -80,9 +80,14 @@ export const decline = (id, item) => async dispatch => {
 }
 
 
-export const getJobs = () => async dispatch => {
+export const getJobs = (id = "") => async dispatch => {
     try{
-        const response = await authService.getJobs();
+        let response;
+        if (id !== ""){
+            response = await authService.getJobs();
+        }else{
+            response = await authService.getEstimates(id);
+        }
         dispatch({type: FETCH_JOB_SUCCESS, payload: response.data.jobs})
     } catch(err) {
         dispatch({type: FETCH_JOB_FAILURE, payload: err.message})
@@ -144,7 +149,7 @@ export const convertInvoice = (id, data) => async dispatch =>{
 export const addInvoice = (invoice) => async dispatch =>{
     try {
         const response = await authService.addInvoice(invoice)
-        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: id, data: response.data.estimate}})
+        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: response.data.estimate._id, data: response.data.estimate}})
     } catch (err){
         dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
         console.log(err)
@@ -183,7 +188,7 @@ export const payInvoice = (id, invoiceId, item) => async dispatch =>{
 
 export const sendInvoice = (invoice) => async dispatch =>{
     try {
-        const response = await authService.sendInvoice(invoice)
+        await authService.sendInvoice(invoice)
     } catch (err){
         dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
         console.log(err)

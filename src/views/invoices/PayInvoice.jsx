@@ -16,11 +16,9 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-import {store} from "../../redux/store";
 import {connect} from "react-redux";
 import {getJobs, payInvoice} from "../../redux/actions/jobAction";
 
-let loggedUser
 var fecha = new Date(); 
       var mes = fecha.getMonth()+1; 
       var dia = fecha.getDate(); 
@@ -40,8 +38,6 @@ class PayInvoice extends React.Component {
   constructor(props) {
     super(props);
     console.log("constructor!!!")
-    const {auth} = store.getState();
-    loggedUser = auth.userLogged
   }
 
   handleInput = e => {

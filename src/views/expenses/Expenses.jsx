@@ -101,7 +101,6 @@ class Expenses extends React.Component {
   render() {
     const {jobs} = this.props
     if (!this.state) return <p>Loading</p>
-    let estimateId =""
     let allExpenses=[]
     let userInEstimate 
     jobs.forEach((e,i) => {
@@ -111,8 +110,7 @@ class Expenses extends React.Component {
     })
     jobs.forEach((e,i) => {
       if(!e.workers)return <th scope="row">Worker Delete</th>
-      estimateId = e._id
-      userInEstimate =e.workers.length > 0 && e.workers.filter(wx =>{ 
+      userInEstimate =e.workers.length > 0 && e.workers.filter(wx =>{
         return (wx.workerId && wx.workerId._id  === loggedUser._id)
       }).length > 0
     })

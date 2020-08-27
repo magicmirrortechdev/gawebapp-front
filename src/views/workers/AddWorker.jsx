@@ -1,6 +1,5 @@
 import React from "react";
 import { withRouter } from 'react-router-dom'
-import AuthService from '../../services/services'
 import axios from 'axios'
 
 import {
@@ -21,7 +20,6 @@ import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 import {connect} from "react-redux";
 import {addUser} from "../../redux/actions/userAction";
-const authService = new AuthService()
 
 class AddWorker extends React.Component {
   state = {

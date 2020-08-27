@@ -19,8 +19,7 @@ import {connect} from "react-redux";
 import {addTime} from "../../redux/actions/jobAction"
 
 let loggedUser;
-let jobs;
-var fecha = new Date(); 
+var fecha = new Date();
       var mes = fecha.getMonth()+1; 
       var dia = fecha.getDate(); 
       var ano = fecha.getFullYear(); 
