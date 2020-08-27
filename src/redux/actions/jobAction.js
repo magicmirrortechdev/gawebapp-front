@@ -144,6 +144,7 @@ export const convertInvoice = (id, data) => async dispatch =>{
 export const addInvoice = (invoice) => async dispatch =>{
     try {
         const response = await authService.addInvoice(invoice)
+        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: id, data: response.data.estimate}})
     } catch (err){
         dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
         console.log(err)
