@@ -3,15 +3,13 @@ import {
     FETCH_JOB_FAILURE,
     FETCH_JOB_REMOVE_FAILURE,
     FETCH_JOB_ADD_FAILURE,
-    FETCH_JOB_UPDATE_FAILURE
-} from '../actions/jobAction'
-import {LOG_LOGOUT_USER} from '../actions/authAction'
-import {merger, adder, updater, remover} from './actionReducers'
-import {
+    FETCH_JOB_UPDATE_FAILURE,
     FETCH_ESTIMATE_ADD_SUCCESS,
     FETCH_ESTIMATE_REMOVE_SUCCESS, FETCH_ESTIMATE_SUCCESS,
     FETCH_ESTIMATE_UPDATE_SUCCESS
-} from "../actions/estimateAction";
+} from '../actions/jobAction'
+import {LOG_LOGOUT_USER} from '../actions/authAction'
+import {merger, adder, updater, remover} from './actionReducers'
 
 const initialState = {
     jobs: []
