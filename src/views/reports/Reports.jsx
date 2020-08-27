@@ -44,7 +44,8 @@ class Reports extends React.Component {
         activeTab: '1',
         buttonActive: '1',
         modal: false,
-        extension: ''
+        extension: '',
+        loadFilter: false
     };
 
     toggleTab(tab) {
@@ -140,7 +141,6 @@ class Reports extends React.Component {
                     user.role ==="ADMIN"))
             }
         })
-        this.filterDate()
     }
 
     getOpen = () => {
@@ -175,27 +175,28 @@ class Reports extends React.Component {
 
     filterDate = () => {
         let dates = {"startDate": this.state.startDate, "endDate": this.state.endDate}
-        console.log('los params', dates)
-        axios
-            .post(Global.url + `filterdate`, this.state)
-            .then(({data}) => {
+        if(this.state.startDate !== undefined && this.state.endDate !== undefined){
+            console.log('los params', dates)
+            axios
+                .post(Global.url + `filterdate`, this.state)
+                .then(({data}) => {
 
-                console.log(data);
+                    console.log(data);
 
-                this.setState(prevState => {
-                    return {
-                        ...prevState,
-                        jobs: data.jobs,
-                        workers: this.workersTransformer(data.workers)
-                    }
-
-
+                    this.setState(prevState => {
+                        return {
+                            ...prevState,
+                            loadFilter: true,
+                            jobs: data.jobs,
+                            workers: this.workersTransformer(data.workers)
+                        }
+                    })
+                    console.log("State filtrado", this.state)
                 })
-                console.log("State filtrado", this.state)
-            })
-            .catch(err => {
-                console.log(err)
-            })
+                .catch(err => {
+                    console.log(err)
+                })
+        }
     }
 
     clearFilter = () => {
@@ -292,8 +293,14 @@ class Reports extends React.Component {
         return users;
     }
 
+    componentDidUpdate(){
+        if(!this.state.loadFilter ){
+            this.filterDate();
+        }
+    }
+
+
     render() {
-        console.log(this.state);
         if (!this.state) return <p>Loading</p>
         return (
             <>
