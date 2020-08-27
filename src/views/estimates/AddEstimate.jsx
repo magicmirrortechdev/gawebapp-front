@@ -21,7 +21,7 @@ import {
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 import {connect} from "react-redux";
-import {addEstimate} from "../../redux/actions/estimateAction";
+import {addEstimate} from "../../redux/actions/jobAction";
 const authService = new AuthService()
 
 var fecha = new Date(); 

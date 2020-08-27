@@ -21,7 +21,7 @@ import { WithContext as ReactTags } from 'react-tag-input';
 import Header from 'components/Headers/Header.jsx'
 import Global from "../../global";
 import {connect} from "react-redux";
-import {updateEstimate} from "../../redux/actions/estimateAction";
+import {updateEstimate} from "../../redux/actions/jobAction";
 import AuthService from '../../services/services'
 const authService = new AuthService()
 
@@ -291,7 +291,7 @@ class SendEstimate extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  estimates: state.estimate.estimates,
+  estimates: state.job.jobs,
 })
 
 export default connect(mapStateToProps, {updateEstimate})(withRouter(SendEstimate));

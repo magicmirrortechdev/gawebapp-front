@@ -9,7 +9,7 @@ import {LOG_LOGOUT_USER} from '../actions/authAction'
 import {merger, adder, updater, remover} from './actionReducers'
 import {
     FETCH_ESTIMATE_ADD_SUCCESS,
-    FETCH_ESTIMATE_REMOVE_SUCCESS,
+    FETCH_ESTIMATE_REMOVE_SUCCESS, FETCH_ESTIMATE_SUCCESS,
     FETCH_ESTIMATE_UPDATE_SUCCESS
 } from "../actions/estimateAction";
 
@@ -22,6 +22,7 @@ export const jobReducer = (state = initialState, action) => {
         case LOG_LOGOUT_USER:
             state = initialState
             return state
+        case FETCH_ESTIMATE_SUCCESS:
         case FETCH_JOB_SUCCESS:
             return merger(state, {jobs: action.payload, jobsErr: undefined})
 

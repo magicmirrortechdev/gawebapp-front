@@ -441,7 +441,7 @@ class UpdateEstimate extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  estimates: state.estimate.estimates,
+  estimates: state.job.jobs,
 })
 
 export default connect(mapStateToProps, {updateEstimate})(withRouter(UpdateEstimate));
