@@ -17,12 +17,19 @@ import AuthService from '../services/services'
 import {connect} from "react-redux";
 import {getUsers} from "../redux/actions/userAction";
 import {getJobs} from "../redux/actions/jobAction";
+import {store} from "../redux/store";
 const authService = new AuthService()
 
 class Home extends React.Component {
 
   componentDidMount() {
-    this.props.getJobs();
+    const {auth} = store.getState();
+    const loggedUser = auth.userLogged
+    if(loggedUser.level <=1) {
+      this.props.getJobs(loggedUser._id)
+    }else{
+      this.props.getJobs();
+    }
     this.props.getUsers();
   }
 
