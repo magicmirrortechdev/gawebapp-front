@@ -86,7 +86,7 @@ const ButtonTwo = (props) => {
                 },
               },
             }}>
-          <DropdownItem to={`/admin/time/updatetime/${props.time.estimateId}/${props.time.worker}/${props.time.workerId._id}/${props.time.timeId}`} tag={Link}>Update Hours</DropdownItem>
+          <DropdownItem to={`/admin/time/updatetime/${props.item.estimateId}/${props.item.worker}/${props.item.workerId._id}/${props.item.timeId}`} tag={Link}>Update Hours</DropdownItem>
 
           {loggedUser.level >= 4 ?
               <DropdownItem onClick={() => {
