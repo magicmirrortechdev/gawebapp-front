@@ -83,10 +83,10 @@ export const decline = (id, item) => async dispatch => {
 export const getJobs = (id = undefined) => async dispatch => {
     try{
         let response;
-        if (id !== ""){
+        if (id === undefined){
             response = await authService.getJobs();
         }else{
-            response = await authService.getEstimates(id);
+            response = await authService.getJobs(id);
         }
         dispatch({type: FETCH_JOB_SUCCESS, payload: response.data.jobs})
     } catch(err) {
