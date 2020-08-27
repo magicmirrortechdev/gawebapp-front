@@ -84,11 +84,11 @@ export const getJobs = (id = undefined) => async dispatch => {
     try{
         let response;
         if (id === undefined){
-            response = await authService.getJobs();
+            response = await authService.getEstimates();
         }else{
-            response = await authService.getJobs(id);
+            response = await authService.getEstimates(id);
         }
-        dispatch({type: FETCH_JOB_SUCCESS, payload: response.data.jobs})
+        dispatch({type: FETCH_JOB_SUCCESS, payload: response.data.estimates})
     } catch(err) {
         dispatch({type: FETCH_JOB_FAILURE, payload: err.message})
         console.log(err)
