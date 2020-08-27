@@ -19,7 +19,7 @@ import {
 import Header from 'components/Headers/Header.jsx'
 import Global from "../../global";
 import {connect} from "react-redux";
-import {updateEstimate} from "../../redux/actions/estimateAction";
+import {updateEstimate} from "../../redux/actions/jobAction";
 
 class UpdateEstimate extends React.Component {
   state = {

@@ -1,6 +1,5 @@
 import React from "react";
 import {  withRouter } from 'react-router-dom'
-import AuthService from '../../services/services'
 import axios from 'axios'
 
 
@@ -22,7 +21,6 @@ import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 import {connect} from "react-redux";
 import {addEstimate} from "../../redux/actions/jobAction";
-const authService = new AuthService()
 
 var fecha = new Date(); 
       var mes = fecha.getMonth()+1; 
