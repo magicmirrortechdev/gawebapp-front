@@ -191,13 +191,13 @@ class Jobs extends React.Component {
     if (!this.state) return <p>Loading</p>
     switch(this.state.buttonActive){
       case '1':
-        jobsFilter = jobs.filter(job => job.status === 'Approve')
+        jobsFilter = jobs.filter(job => job.status === 'Approve' && job.isJob)
         break;
       case '2':
-        jobsFilter = jobs.filter(job => job.status === 'Closed')
+        jobsFilter = jobs.filter(job => job.status === 'Closed'  && job.isJob)
         break;
       default:
-        jobsFilter = jobs
+        jobsFilter = jobs.filter(job => job.isJob)
         break;
     }
     return (
