@@ -12,6 +12,10 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import {store} from "../redux/store";
+import {connect} from "react-redux";
+import {getUsers} from "../redux/actions/userAction";
+import {getJobs} from "../redux/actions/jobAction";
+import {getClients} from "../redux/actions/clientAction";
 
 class Index extends React.Component {
   state = {
@@ -39,7 +43,23 @@ class Index extends React.Component {
     const {auth} = store.getState();
     const loggedUser = auth.userLogged
     if (!loggedUser) return this.props.history.push('/auth/login')
+    this.loadInfo(loggedUser)
   }
+
+  async loadInfo(loggedUser) {
+      if(this.props.jobs.length == 0 && this.props.users.length == 0){
+          document.getElementById('spinner').style.visibility='visible';
+          if(loggedUser.level <=1) {
+              await this.props.getJobs(loggedUser._id)
+          }else{
+              await this.props.getJobs();
+              await this.props.getClients();
+          }
+          await this.props.getUsers();
+          document.getElementById('spinner').style.visibility='hidden';
+      }
+  }
+
   render() {
     return (
       <>
@@ -125,4 +145,9 @@ class Index extends React.Component {
   }
 }
 
-export default Index;
+const mapStateToProps = state => ({
+    users: state.user.users,
+    jobs: state.job.jobs
+})
+
+export default connect(mapStateToProps, {getUsers, getClients, getJobs})(Index);

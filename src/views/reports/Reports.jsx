@@ -132,8 +132,8 @@ class Reports extends React.Component {
         this.setState(prevState => {
             return {
                 ...prevState,
-                startDate: moment().startOf('week').add('days', 1).format('YYYY-MM-DD'),
-                endDate: moment().startOf('week').add('days', 7).format('YYYY-MM-DD'),
+                startDate: moment().startOf('week').add('days', -6).format('YYYY-MM-DD'),
+                endDate: moment().startOf('week').add('days', 0).format('YYYY-MM-DD'),
                 jobs: this.props.jobs.filter(job => job.status === 'Approve'),
                 workers: this.workersTransformer(
                     this.props.users.filter(user => user.role === "WORKER" ||

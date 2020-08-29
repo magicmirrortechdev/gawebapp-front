@@ -14,24 +14,9 @@ import {
   Col
 } from "reactstrap";
 import AuthService from '../services/services'
-import {connect} from "react-redux";
-import {getUsers} from "../redux/actions/userAction";
-import {getJobs} from "../redux/actions/jobAction";
-import {store} from "../redux/store";
 const authService = new AuthService()
 
 class Home extends React.Component {
-
-  componentDidMount() {
-    const {auth} = store.getState();
-    const loggedUser = auth.userLogged
-    if(loggedUser.level <=1) {
-      this.props.getJobs(loggedUser._id)
-    }else{
-      this.props.getJobs();
-    }
-    this.props.getUsers();
-  }
 
   handleInput = e => {
     e.persist()
@@ -123,9 +108,4 @@ class Home extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  users: state.user.users,
-  jobs: state.job.jobs
-})
-
-export default connect(mapStateToProps, {getUsers, getJobs})(Home);
+export default Home;
