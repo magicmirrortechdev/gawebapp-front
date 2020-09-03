@@ -16,7 +16,8 @@ import {
 import Header from "components/Headers/Header.jsx";
 import {connect} from "react-redux";
 import {updateInvoice, getJobs} from "../../redux/actions/jobAction";
-import {store} from "../../redux/store";
+import configureStore from "../../redux/store";
+const {store} = configureStore();
 
 let loggedUser;
 

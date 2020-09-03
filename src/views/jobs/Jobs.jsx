@@ -19,9 +19,10 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
-import {store} from "../../redux/store";
 import {connect} from "react-redux";
 import {getJobs, closeJob, removeJob, convertJob} from "../../redux/actions/jobAction";
+import configureStore from "../../redux/store";
+const {store} = configureStore();
 
 let loggedUser
 const ActionButton = (props) => {

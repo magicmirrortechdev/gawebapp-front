@@ -19,9 +19,10 @@ import {
   Button
 } from "reactstrap";
 
-import {store} from "../../redux/store";
 import {logoutUser} from '../../redux/actions/authAction'
 import {connect} from "react-redux";
+import configureStore from "../../redux/store";
+const {store} = configureStore();
 
 let loggedUser
 class AdminNavbar extends React.Component {

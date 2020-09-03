@@ -19,7 +19,8 @@ import ArgyleService from "../../services/argyleService";
 import moment from "moment";
 import {connect} from "react-redux";
 import {getJobs, sendInvoice} from "../../redux/actions/jobAction";
-import {store} from "../../redux/store";
+import configureStore from "../../redux/store";
+const {store} = configureStore();
 
 const argyleService = new ArgyleService()
 

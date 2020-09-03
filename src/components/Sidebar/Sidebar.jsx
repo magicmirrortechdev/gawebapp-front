@@ -23,7 +23,8 @@ import {
 } from "reactstrap";
 import {connect} from "react-redux";
 import {logoutUser} from '../../redux/actions/authAction'
-import {store} from "../../redux/store";
+import configureStore from "../../redux/store";
+const {store} = configureStore();
 
 let loggedUser
 

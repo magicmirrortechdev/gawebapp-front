@@ -1,11 +1,21 @@
 import axios from 'axios'
 import Global from "../global";
-
+import AxiosOffline from 'axios-offline'
+import LocalForage from "localforage"
 const baseURL = Global.url;
 
 class AuthService {
     constructor() {
+
+        let AxiosOfflineAdapter = AxiosOffline({
+            defaultAdapter: axios.defaults.adapter, //require, basic adapter
+            storageName: "axios-offline", //optional, default: "axios-stack"
+            storageDriver: LocalForage.LOCALSTORAGE //optional, default: LocalForage.LOCALSTORAGE
+        })
+
         this.service = axios.create({
+            timeout: 30000,
+            adapter: AxiosOfflineAdapter,
             baseURL,
             withCredentials: true
         })

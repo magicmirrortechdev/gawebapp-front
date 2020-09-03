@@ -19,9 +19,11 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-import {store} from "../../redux/store";
 import {connect} from "react-redux";
 import {getJobs, removeInvoice} from "../../redux/actions/jobAction";
+import configureStore from "../../redux/store";
+const {store} = configureStore();
+
 let loggedUser
 
 const ActionButton = (props) => {
@@ -256,6 +258,7 @@ class Invoices extends React.Component {
       jobName = e.jobName
       userInEstimate = e.workers.filter(wx => wx.workerId && wx.workerId._id === loggedUser._id).length > 0
       client = e.clientId
+      console.log(e.invoices);
       e.invoices.forEach(ex =>{
         allInvoices.push({invoice:ex, client, id, jobName, userInEstimate})
       })

@@ -17,9 +17,10 @@ import {
 import Header from "components/Headers/Header.jsx";
 import Global, {compareValues} from "../../global";
 import Moment from "react-moment";
-import {store} from "../../redux/store";
 import {connect} from "react-redux";
 import {getJobs, removeTime} from "../../redux/actions/jobAction";
+import configureStore from "../../redux/store";
+const {store} = configureStore();
 
 let loggedUser ;
 let times = [];
