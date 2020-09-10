@@ -103,8 +103,8 @@ class Sidebar extends React.Component {
         target: "_blank"
       };
     }
-    
-    
+
+
     return (
       <Navbar
         className="navbar-vertical fixed-left navbar-light bg-white"
@@ -180,9 +180,9 @@ class Sidebar extends React.Component {
             </div>
             {/* Navigation */}
             <Nav navbar>{this.createLinks(routes)}</Nav>
-            {this.state.collapseOpen ? 
-            <Button 
-            color="link" 
+            {this.state.collapseOpen ?
+            <Button
+            color="link"
             onClick={this.handleLogout}
             style={{marginTop:"15px", marginLeft:"-15px"}}
             >
@@ -191,12 +191,12 @@ class Sidebar extends React.Component {
             <span>Logout</span>
             </Button> : null}
             {/* Divider */}
-            <h5 style={{marginTop:"15px"}}>V 2.6.0</h5>
+            <h5 style={{marginTop:"15px"}}>V 2.6.1</h5>
           </Collapse>
         </Container>
-        
+
       </Navbar>
-      
+
     );
   }
 }
