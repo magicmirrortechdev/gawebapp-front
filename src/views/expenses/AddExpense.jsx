@@ -1,6 +1,5 @@
 import React from "react";
 import {  withRouter } from 'react-router-dom'
-import axios from 'axios'
 import {
   Card,
   CardHeader,
@@ -15,22 +14,26 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-import Global from "../../global";
 import {connect} from "react-redux";
 import {addExpense} from "../../redux/actions/jobAction";
 import configureStore from "../../redux/store";
+import AuthService from '../../services/services'
+import * as axios from "axios";
+import Global from "../../global";
+
 const {store} = configureStore();
+const authService = new AuthService()
 
 let loggedUser;
-var fecha = new Date(); 
-      var mes = fecha.getMonth()+1; 
-      var dia = fecha.getDate(); 
-      var ano = fecha.getFullYear(); 
+var fecha = new Date();
+      var mes = fecha.getMonth()+1;
+      var dia = fecha.getDate();
+      var ano = fecha.getFullYear();
       if(dia<10)
         dia='0'+dia; //agrega cero si es menor de 10
       if(mes<10)
         mes='0'+mes //agrega cero si es menor de 10
-        
+
 class AddExpense extends React.Component {
   state = {
     workerId: "",
@@ -63,10 +66,15 @@ class AddExpense extends React.Component {
     const file = new FormData()
     file.append('photo', e.target.files[0])
 
-    const {
-      data: { img }
-    } = await axios.post(Global.url + 'upload', file)
-    this.setState(prevState => ({ ...prevState, img }))
+    let img_ = null;
+    try {
+      const { data } = await axios.post(Global.url + 'upload', file)
+      img_ = data.img;
+    } catch (e){
+      img_ = 'notNet.png'
+    }
+
+    this.setState(prevState => ({ ...prevState, img : img_ }))
   }
 
   handleSubmit = async (e, props) => {
@@ -103,7 +111,7 @@ class AddExpense extends React.Component {
                     </div>
                   </Row>
                 </CardHeader>
-                <CardBody> 
+                <CardBody>
 
                   <Form onSubmit={this.handleSubmit} enctype="multipart/form-data">
                     <div className="pl-lg-4">
@@ -225,12 +233,12 @@ class AddExpense extends React.Component {
                           {this.state.img && <img width="100%" height="100%" src={this.state.img} alt="photo_url" />}
                         </Col>
                       </Row>
-                      
-                      
+
+
                       <Row>
                         <Col lg="6">
                           <FormGroup>
-                        
+
                             <Button
                               disabled={this.state.img ? false : true}
                               className="form-control-alternative"
@@ -245,7 +253,7 @@ class AddExpense extends React.Component {
                 </CardBody>
               </Card>
             </Col>
-            
+
           </Row>
         </Container>
       </>

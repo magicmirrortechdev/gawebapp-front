@@ -9,8 +9,8 @@ class AuthService {
 
         let AxiosOfflineAdapter = AxiosOffline({
             defaultAdapter: axios.defaults.adapter, //require, basic adapter
-            storageName: "axios-offline", //optional, default: "axios-stack"
-            storageDriver: LocalForage.LOCALSTORAGE //optional, default: LocalForage.LOCALSTORAGE
+            storageName: "axiosreply", //optional, default: "axios-stack"
+            storageDriver: LocalForage.WEBSQL //optional, default: LocalForage.LOCALSTORAGE
         })
 
         this.service = axios.create({
@@ -79,7 +79,6 @@ class AuthService {
     updateEstimate(id, data) {
         return this.service.patch('/estimateupdate/' + id, data)
     }
-
 
     invoiceDelete(id, invoiceId) {
         return this.service.patch(`/invoicedelete/${id}/${invoiceId}`)
@@ -152,7 +151,6 @@ class AuthService {
     removeExpense(id, expenseId) {
         return this.service.patch('/expensedelete/' + id + '/' + expenseId)
     }
-
 
 }
 
