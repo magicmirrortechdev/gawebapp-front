@@ -21,16 +21,11 @@ import {
 
 import {logoutUser} from '../../redux/actions/authAction'
 import {connect} from "react-redux";
-import configureStore from "../../redux/store";
-const {store} = configureStore();
 
-let loggedUser
 class AdminNavbar extends React.Component {
 
   constructor(props) {
     super(props);
-    const {auth} = store.getState();
-    loggedUser = auth.userLogged
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -49,7 +44,7 @@ class AdminNavbar extends React.Component {
         <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
           <Container fluid>
           <Button color="primary"
-              size="sm" 
+              size="sm"
               onClick={() => this.props.history.goBack()}>Go Back</Button> &nbsp;
             <Link
               className="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block"
@@ -75,7 +70,7 @@ class AdminNavbar extends React.Component {
                   <Media className="align-items-center">
                     <Media className="ml-2 d-none d-lg-block">
                       <span className="mb-0 text-sm font-weight-bold">
-                        {loggedUser? (loggedUser.name) : ''}
+                        {this.props.userLogged? (this.props.userLogged.name) : ''}
                       </span>
                     </Media>
                   </Media>
