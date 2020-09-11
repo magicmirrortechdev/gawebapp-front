@@ -36,9 +36,11 @@
     "dependencies": {
         "@material-ui/core": "^4.9.5",
         "@material-ui/lab": "^4.0.0-alpha.37",
+        "@redux-offline/redux-offline": "^2.6.0",
         "@reduxjs/toolkit": "^1.4.0",
         "@sentry/browser": "^5.17.0",
         "axios": "^0.19.0",
+        "axios-offline": "^1.5.2",
         "babel-polyfill": "^6.26.0",
         "chart.js": "2.7.3",
         "classnames": "2.2.6",
@@ -66,6 +68,7 @@
         "react-tag-input": "^6.2.1",
         "reactstrap": "8.4.0",
         "redux": "^4.0.5",
+        "redux-devtools-extension": "^2.13.8",
         "redux-persist": "^6.0.0",
         "redux-thunk": "^2.3.0",
         "replace-in-file": "^6.1.0"

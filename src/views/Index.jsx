@@ -11,11 +11,12 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-import {store} from "../redux/store";
 import {connect} from "react-redux";
 import {getUsers} from "../redux/actions/userAction";
 import {getJobs} from "../redux/actions/jobAction";
 import {getClients} from "../redux/actions/clientAction";
+import configureStore from "../redux/store";
+const {store} = configureStore();
 
 class Index extends React.Component {
   state = {

@@ -5,7 +5,8 @@ import Sidebar from "components/Sidebar/Sidebar.jsx";
 
 import routes from "routes.js";
 import routesWorker from 'routesWorker'
-import {store} from "../redux/store";
+import configureStore from "../redux/store";
+const {store} = configureStore();
 
 let loggedUser
 class Admin extends React.Component {

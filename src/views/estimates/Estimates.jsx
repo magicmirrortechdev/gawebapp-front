@@ -17,9 +17,10 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-import {store} from "../../redux/store";
 import {getJobs, convertJob, decline, removeEstimate} from "../../redux/actions/jobAction"
 import {connect} from "react-redux";
+import configureStore from "../../redux/store";
+const {store} = configureStore();
 
 const authService = new AuthService()
 let loggedUser

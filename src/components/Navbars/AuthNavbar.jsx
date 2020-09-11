@@ -6,7 +6,8 @@ import {
   Navbar,
   Container,
 } from "reactstrap";
-import {store} from "../../redux/store";
+import configureStore from "../../redux/store";
+const {store} = configureStore();
 
 let loggedUser
 class AdminNavbar extends React.Component {

@@ -23,18 +23,15 @@ import {
 } from "reactstrap";
 import {connect} from "react-redux";
 import {logoutUser} from '../../redux/actions/authAction'
-import {store} from "../../redux/store";
-
-let loggedUser
 
 class Sidebar extends React.Component {
   constructor(props) {
     super(props);
-    const {auth} = store.getState();
-    loggedUser = auth.userLogged
-    if (!loggedUser) return this.props.history.push('/auth/login')
-
     this.activeRoute.bind(this);
+  }
+
+  componentDidMount() {
+    if (!this.props.userLogged) return this.props.history.push('/auth/login')
   }
 
   handleLogout = () => {
@@ -88,7 +85,7 @@ class Sidebar extends React.Component {
   };
   render() {
 
-    const {  routes, logo,  } = this.props;
+    const {  routes, logo, userLogged } = this.props;
     // eslint-disable-next-line no-unused-vars
     let navbarBrandProps;
     if (logo && logo.innerLink) {
@@ -102,8 +99,8 @@ class Sidebar extends React.Component {
         target: "_blank"
       };
     }
-    
-    
+
+
     return (
       <Navbar
         className="navbar-vertical fixed-left navbar-light bg-white"
@@ -138,7 +135,7 @@ class Sidebar extends React.Component {
                   <Media className="align-items-center">
                     <Media className="ml-2 d-none d-lg-block">
                       <span className="mb-0 text-sm font-weight-bold">
-                        {loggedUser? (loggedUser.name) : ''}
+                        {userLogged? (userLogged.name) : ''}
                       </span>
                     </Media>
                   </Media>
@@ -160,9 +157,9 @@ class Sidebar extends React.Component {
             {/* Collapse header */}
             <div className="navbar-collapse-header d-md-none">
               <Row>
-                {loggedUser ? (
+                {userLogged ? (
                   <Col className="collapse-brand" xs="6">
-                    <h3>{loggedUser.name}</h3>
+                    <h3>{userLogged.name}</h3>
                   </Col>
                 ) : null}
                 <Col className="collapse-close" xs="6">
@@ -179,9 +176,9 @@ class Sidebar extends React.Component {
             </div>
             {/* Navigation */}
             <Nav navbar>{this.createLinks(routes)}</Nav>
-            {this.state.collapseOpen ? 
-            <Button 
-            color="link" 
+            {this.state.collapseOpen ?
+            <Button
+            color="link"
             onClick={this.handleLogout}
             style={{marginTop:"15px", marginLeft:"-15px"}}
             >
@@ -190,12 +187,12 @@ class Sidebar extends React.Component {
             <span>Logout</span>
             </Button> : null}
             {/* Divider */}
-            <h5 style={{marginTop:"15px"}}>V 2.5.1</h5>
+            <h5 style={{marginTop:"15px"}}>V 2.6.2</h5>
           </Collapse>
         </Container>
-        
+
       </Navbar>
-      
+
     );
   }
 }

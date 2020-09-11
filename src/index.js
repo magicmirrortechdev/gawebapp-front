@@ -16,10 +16,12 @@ import ResetPassword from "views/forgotpassword/ResetPassword";
 
 import httpService from './services/interceptors';
 import history from './services/history';
-import {persistor, store} from "./redux/store";
+import configureStore from "./redux/store";
 import "babel-polyfill";
 
 httpService.setupInterceptors(history);
+
+const {persistor, store} = configureStore();
 
 //Sentry.init({dsn: "https://93b92174eea24e52a0386666ca85a996@o411135.ingest.sentry.io/5285963"});
 

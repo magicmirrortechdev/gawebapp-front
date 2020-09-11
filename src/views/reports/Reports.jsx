@@ -79,7 +79,7 @@ class Reports extends React.Component {
     }
 
     handleOpenModal = (estimateId, expenseId) => {
-        const job = this.props.jobs.filter(item => item._id === this.props.match.params.estimateId)[0]
+        const job = this.props.jobs.filter(item => item._id === estimateId)[0]
         this.setState(prevState => {
             let img = '';
             const expenses = job.expenses
@@ -176,9 +176,7 @@ class Reports extends React.Component {
     filterDate = () => {
         let dates = {"startDate": this.state.startDate, "endDate": this.state.endDate}
         if(this.state.startDate !== undefined && this.state.endDate !== undefined){
-            console.log('los params', dates)
-            axios
-                .post(Global.url + `filterdate`, this.state)
+            axios.post(Global.url + `filterdate`, this.state)
                 .then(({data}) => {
 
                     console.log(data);
@@ -187,7 +185,7 @@ class Reports extends React.Component {
                         return {
                             ...prevState,
                             loadFilter: true,
-                            jobs: data.jobs,
+                            jobs: data.jobs.sort(compareValues('jobName', 'asc')),
                             workers: this.workersTransformer(data.workers)
                         }
                     })

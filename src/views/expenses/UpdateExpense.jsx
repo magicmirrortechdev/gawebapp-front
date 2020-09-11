@@ -17,9 +17,10 @@ import {
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 import moment from 'moment/min/moment-with-locales';
-import {store} from "../../redux/store";
 import {connect} from "react-redux";
 import {getJobs, updateExpense} from "../../redux/actions/jobAction";
+import configureStore from "../../redux/store";
+const {store} = configureStore();
 
 let loggedUser;
 
@@ -30,7 +31,7 @@ class UpdateExpense extends React.Component {
     img: '',
     date:'',
     vendor:'',
-    category: '',    
+    category: '',
     description: '',
     total: parseInt('')
   };
@@ -65,6 +66,11 @@ class UpdateExpense extends React.Component {
         }
         return {img, date, vendor, description, category, total}
       })
+
+      if(img.startsWith("http:")){
+        img.replace("http:", "https:")
+      }
+
       return {
         ...prevState,
         workerId: loggedUser._id,
@@ -91,10 +97,15 @@ class UpdateExpense extends React.Component {
     const file = new FormData()
     file.append('photo', e.target.files[0])
 
-    const {
-      data: { img }
-    } = await axios.post(Global.url + 'upload', file)
-    this.setState(prevState => ({ ...prevState, img }))
+    let img_ = null;
+    try {
+      const { data } = await axios.post(Global.url + 'upload', file)
+      img_ = data.img;
+    } catch (e){
+      img_ = 'notNet.png'
+    }
+
+    this.setState(prevState => ({ ...prevState, img : img_}))
   }
 
   handleSubmit = async (e, props) => {
@@ -122,7 +133,7 @@ class UpdateExpense extends React.Component {
                     </div>
                   </Row>
                 </CardHeader>
-                <CardBody> 
+                <CardBody>
 
                   <Form onSubmit={this.handleSubmit}>
                     <div className="pl-lg-4">
@@ -180,7 +191,7 @@ class UpdateExpense extends React.Component {
                             >
                             {categories.map((e,i)=>{
                               return(
-                                this.state.category === e.category ? <option selected key={i}>{this.state.category}</option>: 
+                                this.state.category === e.category ? <option selected key={i}>{this.state.category}</option>:
                                 <option key={i}>{e.category}</option>
                               )
                             })}
@@ -248,12 +259,12 @@ class UpdateExpense extends React.Component {
                            <img width="100%" height="100%" src={this.state.img} alt="photo_url" />}
                         </Col>
                       </Row>
-                      
-                      
+
+
                       <Row>
                         <Col lg="6">
                           <FormGroup>
-                        
+
                             <Button
                               className="form-control-alternative"
                               color="info"
@@ -267,7 +278,7 @@ class UpdateExpense extends React.Component {
                 </CardBody>
               </Card>
             </Col>
-            
+
           </Row>
         </Container>
       </>
