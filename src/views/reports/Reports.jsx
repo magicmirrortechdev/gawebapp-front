@@ -1,6 +1,5 @@
 import React from "react";
 import {Link} from 'react-router-dom'
-import axios from 'axios'
 import classnames from 'classnames';
 
 import {
@@ -134,16 +133,25 @@ class Reports extends React.Component {
                 ...prevState,
                 startDate: moment().startOf('week').add('days', -6).format('YYYY-MM-DD'),
                 endDate: moment().startOf('week').add('days', 0).format('YYYY-MM-DD'),
-                jobs: this.props.jobs.filter(job => job.status === 'Approve'),
                 workers: this.workersTransformer(
                     this.props.users.filter(user => user.role === "WORKER" ||
                     user.role ==="PROJECT MANAGER" ||
-                    user.role ==="ADMIN"))
+                    user.role ==="ADMIN"),
+                    moment().startOf('week').add('days', -6).format('YYYY-MM-DD'),
+                    moment().startOf('week').add('days', 0).format('YYYY-MM-DD'))
             }
         })
     }
 
     getOpen = () => {
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                jobs: [],
+            }
+        })
+        this.props.getJobs();
+
         this.setState(prevState => {
             return {
                 ...prevState,
@@ -157,6 +165,14 @@ class Reports extends React.Component {
         this.setState(prevState => {
             return {
                 ...prevState,
+                jobs: [],
+            }
+        })
+        this.props.getJobs();
+
+        this.setState(prevState => {
+            return {
+                ...prevState,
                 buttonActive: "2",
                 jobs: this.props.jobs.filter(job => job.status === 'Closed')
             }
@@ -167,6 +183,14 @@ class Reports extends React.Component {
         this.setState(prevState => {
             return {
                 ...prevState,
+                jobs: [],
+            }
+        })
+        this.props.getJobs();
+
+        this.setState(prevState => {
+            return {
+                ...prevState,
                 buttonActive: "3",
                 jobs: this.props.jobs
             }
@@ -174,27 +198,60 @@ class Reports extends React.Component {
      }
 
     filterDate = () => {
-        let dates = {"startDate": this.state.startDate, "endDate": this.state.endDate}
-        if(this.state.startDate !== undefined && this.state.endDate !== undefined){
-            axios.post(Global.url + `filterdate`, this.state)
-                .then(({data}) => {
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                jobs: [],
+                workers: [],
+            }
+        })
 
-                    console.log(data);
+        this.props.getJobs();
+        this.props.getUsers();
+        document.getElementById('spinner').style.visibility='visible';
 
-                    this.setState(prevState => {
-                        return {
-                            ...prevState,
-                            loadFilter: true,
-                            jobs: data.jobs.sort(compareValues('jobName', 'asc')),
-                            workers: this.workersTransformer(data.workers)
-                        }
+        setTimeout(function(){
+            let jobsFilter = this.props.jobs.filter(job => job.status === 'Approve');
+            jobsFilter.forEach(job =>{
+                if(job.expenses.length > 0){
+                    job.expenses = job.expenses.filter(expenses =>
+                        expenses.date >= this.state.startDate && expenses.date <= this.state.endDate
+                    )
+                }
+
+                if(job.invoices.length > 0){
+                    job.invoices = job.invoices.filter(invoices =>
+                        invoices.date >= this.state.startDate && invoices.date <= this.state.endDate
+                    )
+                }
+
+                if(job.workers.length > 0){
+                    job.workers.forEach(worker =>{
+                        worker.time = worker.time.filter(time =>
+                            time.date >= this.state.startDate && time.date <= this.state.endDate
+                        )
                     })
-                    console.log("State filtrado", this.state)
-                })
-                .catch(err => {
-                    console.log(err)
-                })
-        }
+                    job.workers = job.workers.filter(worker => worker.time.length > 0)
+                }
+            })
+
+            jobsFilter = jobsFilter.sort(compareValues('jobName', 'asc'));
+
+            let workers = this.props.users.filter(user => user.role === "WORKER" ||
+                user.role ==="PROJECT MANAGER" ||
+                user.role ==="ADMIN");
+
+
+            this.setState(prevState => {
+                return {
+                    ...prevState,
+                    loadFilter: true,
+                    jobs: jobsFilter,
+                    workers: this.workersTransformer(workers, this.state.startDate, this.state.endDate)
+                }
+            })
+            document.getElementById('spinner').style.visibility='hidden';
+        }, 2000)
     }
 
     clearFilter = () => {
@@ -208,7 +265,7 @@ class Reports extends React.Component {
                 workers: this.workersTransformer(
                     this.props.users.filter(user => user.role === "WORKER" ||
                         user.role ==="PROJECT MANAGER" ||
-                        user.role ==="ADMIN"))
+                        user.role ==="ADMIN"), null, null)
             }
         })
 
@@ -216,7 +273,7 @@ class Reports extends React.Component {
         document.getElementById("endDate").value = "";
     }
 
-    workersTransformer(users) {
+    workersTransformer(users, startDate, endDate) {
         users.sort(compareValues('name', 'asc'))
         users.forEach(user => {
             let hoursPerJob = []
@@ -226,7 +283,6 @@ class Reports extends React.Component {
             user.totalPayroll = []
             user.totalEffective = []
             user.totalHours = []
-
             user.proccessJobs = []
 
             user.works.sort(compareValues('date', 'desc')).forEach((work, i) => {
@@ -240,33 +296,23 @@ class Reports extends React.Component {
                     })
                 })
             })
-
             user.works.sort(compareValues('date', 'desc')).forEach(works => {
-                if (works.workId instanceof Array) { //search
-                    works.workId.sort(compareValues('date', 'desc')).forEach(work => {
-                        if (works.time.length > 0) {
+                if (works.workId && works.workId.workers) {
+                    works.workId.workers.sort(compareValues('date', 'desc')).forEach(worker => {
+                        if (worker.workerId && worker.workerId === user._id) {
                             hoursPerJob.forEach(hoursTime => {
-                                if (hoursTime.works === work._id) {
-                                    user.jobs.push({
-                                        date: hoursTime.date,
-                                        jobName: work.jobName,
-                                        hours: hoursTime.time,
-                                        hoursT: hoursTime.time,
-                                        payroll: user.payment * hoursTime.time,
-                                        effective: user.effective * hoursTime.time,
-                                    });
-
-                                }
-                            });
-                        }
-                    });
-
-                } else {
-                    if (works.workId && works.workId.workers) {
-                        works.workId.workers.sort(compareValues('date', 'desc')).forEach(worker => {
-                            if (worker.workerId && worker.workerId._id === user._id) {
-                                hoursPerJob.forEach(hoursTime => {
-                                    if ((hoursTime.works === works._id) || (works.workId && hoursTime.works === works.workId._id)) {
+                                if ((hoursTime.works === works._id) || (works.workId && hoursTime.works === works.workId._id)) {
+                                    if(hoursTime.date >= this.state.startDate &&
+                                        hoursTime.date <= this.state.endDate){
+                                        user.jobs.push({
+                                            date: hoursTime.date,
+                                            jobName: works.workId.jobName,
+                                            hours: hoursTime.time,
+                                            hoursT: hoursTime.time,
+                                            payroll: user.payment * hoursTime.time,
+                                            effective: user.effective * hoursTime.time,
+                                        });
+                                    } else if (startDate == null && endDate == null){
                                         user.jobs.push({
                                             date: hoursTime.date,
                                             jobName: works.workId.jobName,
@@ -276,10 +322,10 @@ class Reports extends React.Component {
                                             effective: user.effective * hoursTime.time,
                                         });
                                     }
-                                });
-                            }
-                        });
-                    }
+                                }
+                            });
+                        }
+                    });
                 }
             });
             user.jobs.forEach((e, i) => {
@@ -287,6 +333,12 @@ class Reports extends React.Component {
                 user.totalEffective.push(e.effective)
                 user.totalHours.push(e.hours)
             })
+
+            if(user.expenses.length > 0){
+                user.expenses = user.expenses.filter(expenses =>
+                    expenses.date >= this.state.startDate && expenses.date <= this.state.endDate
+                )
+            }
         })
         return users;
     }
@@ -296,7 +348,6 @@ class Reports extends React.Component {
             this.filterDate();
         }
     }
-
 
     render() {
         if (!this.state) return <p>Loading</p>
