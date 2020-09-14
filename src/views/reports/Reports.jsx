@@ -202,50 +202,56 @@ class Reports extends React.Component {
             return {
                 ...prevState,
                 jobs: [],
+                workers: [],
             }
         })
+
         this.props.getJobs();
         this.props.getUsers();
+        document.getElementById('spinner').style.visibility='visible';
 
-        let jobsFilter = this.props.jobs.filter(job => job.status === 'Approve');
-        jobsFilter.forEach(job =>{
-            if(job.expenses.length > 0){
-                job.expenses = job.expenses.filter(expenses =>
-                    expenses.date >= this.state.startDate && expenses.date <= this.state.endDate
-                )
-            }
-
-            if(job.invoices.length > 0){
-                job.invoices = job.invoices.filter(invoices =>
-                    invoices.date >= this.state.startDate && invoices.date <= this.state.endDate
-                )
-            }
-
-            if(job.workers.length > 0){
-                job.workers.forEach(worker =>{
-                    worker.time = worker.time.filter(time =>
-                        time.date >= this.state.startDate && time.date <= this.state.endDate
+        setTimeout(function(){
+            let jobsFilter = this.props.jobs.filter(job => job.status === 'Approve');
+            jobsFilter.forEach(job =>{
+                if(job.expenses.length > 0){
+                    job.expenses = job.expenses.filter(expenses =>
+                        expenses.date >= this.state.startDate && expenses.date <= this.state.endDate
                     )
-                })
-                job.workers = job.workers.filter(worker => worker.time.length > 0)
-            }
-        })
+                }
 
-        jobsFilter = jobsFilter.sort(compareValues('jobName', 'asc'));
+                if(job.invoices.length > 0){
+                    job.invoices = job.invoices.filter(invoices =>
+                        invoices.date >= this.state.startDate && invoices.date <= this.state.endDate
+                    )
+                }
 
-        let workers = this.props.users.filter(user => user.role === "WORKER" ||
-            user.role ==="PROJECT MANAGER" ||
-            user.role ==="ADMIN");
+                if(job.workers.length > 0){
+                    job.workers.forEach(worker =>{
+                        worker.time = worker.time.filter(time =>
+                            time.date >= this.state.startDate && time.date <= this.state.endDate
+                        )
+                    })
+                    job.workers = job.workers.filter(worker => worker.time.length > 0)
+                }
+            })
+
+            jobsFilter = jobsFilter.sort(compareValues('jobName', 'asc'));
+
+            let workers = this.props.users.filter(user => user.role === "WORKER" ||
+                user.role ==="PROJECT MANAGER" ||
+                user.role ==="ADMIN");
 
 
-        this.setState(prevState => {
-            return {
-                ...prevState,
-                loadFilter: true,
-                jobs: jobsFilter,
-                workers: this.workersTransformer(workers, this.state.startDate, this.state.endDate)
-            }
-        })
+            this.setState(prevState => {
+                return {
+                    ...prevState,
+                    loadFilter: true,
+                    jobs: jobsFilter,
+                    workers: this.workersTransformer(workers, this.state.startDate, this.state.endDate)
+                }
+            })
+            document.getElementById('spinner').style.visibility='hidden';
+        }, 2000)
     }
 
     clearFilter = () => {
