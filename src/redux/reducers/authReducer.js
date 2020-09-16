@@ -2,16 +2,19 @@ import {
     LOG_IN_SENT,
     LOG_IN_FULFILLED,
     LOG_IN_REJECTED,
-    LOG_LOGOUT_USER
+    LOG_LOGOUT_USER, SAVE_VERSION
 } from '../actions/authAction'
 import {merger} from './actionReducers'
 
 const initialState = {
-    userLogged : null
+    userLogged : null,
+    version: 0
 }
 
 export const authReducer = (state = initialState, action) => {
     switch (action.type) {
+        case SAVE_VERSION:
+            return merger(state, {version: action.payload})
         case LOG_IN_SENT:
             return state;
         case LOG_IN_FULFILLED:

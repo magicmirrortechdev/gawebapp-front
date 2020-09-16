@@ -3,6 +3,7 @@ import React from "react";
 
 // reactstrap components
 import { Container, Row, Col } from "reactstrap";
+import Global from "../../global";
 
 class Login extends React.Component {
   render() {
@@ -11,9 +12,9 @@ class Login extends React.Component {
         <footer className="py-5">
           <Container>
             <Row className="align-items-center justify-content-xl-between">
-              <Col xl="6">
-                <div className="copyright text-center text-xl-left text-muted">
-                  © 2019{" "}
+              <Col xl="12">
+                <div className="copyright text-center text-xl-center text-muted">
+                  © 2020{" "} Version {Global.version}
                   <a
                     className="font-weight-bold ml-1"
                     href="https://www.magicmirror.dev"

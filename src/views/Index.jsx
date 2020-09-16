@@ -15,15 +15,15 @@ import {connect} from "react-redux";
 import {getUsers} from "../redux/actions/userAction";
 import {getJobs} from "../redux/actions/jobAction";
 import {getClients} from "../redux/actions/clientAction";
-import configureStore from "../redux/store";
-const {store} = configureStore();
+import {logoutUser} from '../redux/actions/authAction'
+
+import Global from "../global";
 
 class Index extends React.Component {
   state = {
     activeNav: 1,
     chartExample1Data: "data1"
   };
-
 
   toggleNavs = (e, index) => {
     e.preventDefault();
@@ -41,14 +41,16 @@ class Index extends React.Component {
   };
 
   componentDidMount(props) {
-    const {auth} = store.getState();
-    const loggedUser = auth.userLogged
-    if (!loggedUser) return this.props.history.push('/auth/login')
-    this.loadInfo(loggedUser)
+    if (!this.props.userLogged || this.props.version !== Global.version) {
+        this.props.logoutUser()
+        this.props.history.push('/auth/login')
+    } else {
+        this.loadInfo(this.props.userLogged)
+    }
   }
 
   async loadInfo(loggedUser) {
-      if(this.props.jobs.length == 0 && this.props.users.length == 0){
+      if(this.props.jobs.length === 0 && this.props.users.length === 0){
           document.getElementById('spinner').style.visibility='visible';
           if(loggedUser.level <=1) {
               await this.props.getJobs(loggedUser._id)
@@ -74,7 +76,7 @@ class Index extends React.Component {
                   <Row className="align-items-center">
                     <div className="col">
                       <h3 className="mb-0">Actions</h3>
-                      
+
                     </div>
                     {/*
                     <div className="col text-right">
@@ -132,13 +134,13 @@ class Index extends React.Component {
                             >New Invoice
                       </Button>
                     </Col>
-                      
+
                     </Row>
-                    
+
                 </CardBody>
               </Card>
             </Col>
-            
+
           </Row>
         </Container>
       </>
@@ -147,8 +149,10 @@ class Index extends React.Component {
 }
 
 const mapStateToProps = state => ({
+    userLogged: state.auth.userLogged,
+    version: state.auth.version,
     users: state.user.users,
     jobs: state.job.jobs
 })
 
-export default connect(mapStateToProps, {getUsers, getClients, getJobs})(Index);
+export default connect(mapStateToProps, {getUsers, getClients, getJobs, logoutUser})(Index);

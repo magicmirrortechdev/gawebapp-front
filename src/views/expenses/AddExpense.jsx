@@ -17,12 +17,10 @@ import Header from "components/Headers/Header.jsx";
 import {connect} from "react-redux";
 import {addExpense} from "../../redux/actions/jobAction";
 import configureStore from "../../redux/store";
-import AuthService from '../../services/services'
 import * as axios from "axios";
 import Global from "../../global";
 
 const {store} = configureStore();
-const authService = new AuthService()
 
 let loggedUser;
 var fecha = new Date();
