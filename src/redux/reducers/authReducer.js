@@ -7,14 +7,14 @@ import {
 import {merger} from './actionReducers'
 
 const initialState = {
-    userLogged : null,
-    version: 0
+    userLogged : null
 }
 
 export const authReducer = (state = initialState, action) => {
     switch (action.type) {
         case SAVE_VERSION:
-            return merger(state, {version: action.payload})
+            localStorage.setItem("version", action.payload)
+            return state
         case LOG_IN_SENT:
             return state;
         case LOG_IN_FULFILLED:

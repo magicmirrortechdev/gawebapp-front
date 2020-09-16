@@ -90,8 +90,7 @@ class AdminNavbar extends React.Component {
   }
 }
 const mapStateToProps = state => ({
-  userLogged: state.auth.userLogged,
-  version: state.auth.version
+  userLogged: state.auth.userLogged
 })
 
 export default connect(mapStateToProps, {logoutUser})(AdminNavbar);

@@ -152,8 +152,7 @@ class Clients extends React.Component {
 
 const mapStateToProps = state => ({
   clients: state.client.clients,
-  userLogged: state.auth.userLogged,
-  version: state.auth.version
+  userLogged: state.auth.userLogged
 })
 
 export default connect(mapStateToProps, {getClients, removeClient})(Clients);

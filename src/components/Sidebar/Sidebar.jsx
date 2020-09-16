@@ -39,7 +39,7 @@ class Sidebar extends React.Component {
 
   componentDidMount() {
     if (!this.props.userLogged) return this.props.history.push('/auth/login')
-    if (this.props.version !== version) {
+    if (localStorage.getItem("version") !== version) {
       this.props.logoutUser()
       return this.props.history.push('/auth/login')
     }
@@ -228,8 +228,7 @@ Sidebar.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  userLogged: state.auth.userLogged,
-  version: state.auth.version
+  userLogged: state.auth.userLogged
 })
 
 export default connect(mapStateToProps, {logoutUser})(Sidebar);

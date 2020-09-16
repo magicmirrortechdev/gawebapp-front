@@ -41,7 +41,7 @@ class Index extends React.Component {
   };
 
   componentDidMount(props) {
-    if (!this.props.userLogged || this.props.version !== Global.version) {
+    if (!this.props.userLogged || localStorage.version !== Global.version) {
         this.props.logoutUser()
         this.props.history.push('/auth/login')
     } else {
@@ -150,7 +150,6 @@ class Index extends React.Component {
 
 const mapStateToProps = state => ({
     userLogged: state.auth.userLogged,
-    version: state.auth.version,
     users: state.user.users,
     jobs: state.job.jobs
 })

@@ -28,7 +28,7 @@ class Login extends React.Component {
   }
 
   componentDidMount(props) {
-    if(this.props.userLogged && this.props.version === Global.version){
+    if(this.props.userLogged && localStorage.version === Global.version){
       return this.props.history.push('/admin/index')
     }
   }

@@ -29,7 +29,7 @@ export const logInUser = (data) => async dispatch => {
 
 export const logoutUser = () => async dispatch => {
     dispatch({type: LOG_LOGOUT_USER})
-    authService.logout()
+    await authService.logout()
     .catch(err => {
         dispatch({type: LOG_LOGOUT_USER_REJECT, payload: err.message})
         console.log(err)
