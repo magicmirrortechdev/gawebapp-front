@@ -24,11 +24,7 @@ import {connect} from "react-redux";
 
 class AdminNavbar extends React.Component {
 
-  constructor(props) {
-    super(props);
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
+  static getDerivedStateFromProps(nextProps) {
     if(!nextProps.userLogged){
       return nextProps.history.push('/')
     }
@@ -94,7 +90,7 @@ class AdminNavbar extends React.Component {
   }
 }
 const mapStateToProps = state => ({
-  userLogged: state.auth.userLogged,
+  userLogged: state.auth.userLogged
 })
 
 export default connect(mapStateToProps, {logoutUser})(AdminNavbar);

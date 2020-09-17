@@ -17,8 +17,7 @@ import {
 import Header from "components/Headers/Header.jsx";
 import {connect} from "react-redux";
 import {getClients, removeClient} from "../../redux/actions/clientAction";
-import configureStore from "../../redux/store";
-const {store} = configureStore();
+import Global from "../../global";
 
 let loggedUser
 const ActionButton = (props) => {
@@ -48,8 +47,10 @@ const ActionButton = (props) => {
 class Clients extends React.Component {
   constructor(props) {
     super(props);
-    const {auth} = store.getState();
-    loggedUser = auth.userLogged
+    loggedUser = this.props.userLogged
+    if(Global.version !== this.props.version){
+      this.props.history.push("/");
+    }
   }
 
   updateWindowDimensions = () => {
@@ -140,7 +141,7 @@ class Clients extends React.Component {
                 </Table>
               </Card>
             </Col>
-            
+
           </Row>
         </Container>
       </>
@@ -151,6 +152,7 @@ class Clients extends React.Component {
 
 const mapStateToProps = state => ({
   clients: state.client.clients,
+  userLogged: state.auth.userLogged
 })
 
 export default connect(mapStateToProps, {getClients, removeClient})(Clients);

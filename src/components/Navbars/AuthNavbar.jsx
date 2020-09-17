@@ -6,17 +6,10 @@ import {
   Navbar,
   Container,
 } from "reactstrap";
-import configureStore from "../../redux/store";
-const {store} = configureStore();
+import {connect} from "react-redux";
+import {logoutUser} from "../../redux/actions/authAction";
 
-let loggedUser
 class AdminNavbar extends React.Component {
-
-  constructor(props) {
-    super(props);
-    const {auth} = store.getState();
-    loggedUser = auth.userLogged
-  }
 
   render() {
     return (
@@ -28,7 +21,7 @@ class AdminNavbar extends React.Component {
             <NavbarBrand to="/" tag={Link}>
               Green Acorn App
             </NavbarBrand>
-            {loggedUser ?
+            {this.props.userLogged ?
               (
                 <button className="navbar-toggler" id="navbar-collapse-main">
                   <span className="navbar-toggler-icon"/>
@@ -41,5 +34,8 @@ class AdminNavbar extends React.Component {
     );
   }
 }
+const mapStateToProps = state => ({
+  userLogged: state.auth.userLogged
+})
 
-export default AdminNavbar;
+export default connect(mapStateToProps, {logoutUser})(AdminNavbar);

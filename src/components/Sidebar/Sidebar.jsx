@@ -23,8 +23,15 @@ import {
 } from "reactstrap";
 import {connect} from "react-redux";
 import {logoutUser} from '../../redux/actions/authAction'
+import Global from "../../global";
+const version = Global.version;
 
 class Sidebar extends React.Component {
+  state = {
+    collapseOpen: false,
+    version
+  }
+
   constructor(props) {
     super(props);
     this.activeRoute.bind(this);
@@ -32,15 +39,15 @@ class Sidebar extends React.Component {
 
   componentDidMount() {
     if (!this.props.userLogged) return this.props.history.push('/auth/login')
+    if (localStorage.getItem("version") !== version) {
+      this.props.logoutUser()
+      return this.props.history.push('/auth/login')
+    }
   }
 
   handleLogout = () => {
     this.props.logoutUser()
   }
-
-  state = {
-    collapseOpen: false
-  };
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if(!nextProps.userLogged){
@@ -187,7 +194,7 @@ class Sidebar extends React.Component {
             <span>Logout</span>
             </Button> : null}
             {/* Divider */}
-            <h5 style={{marginTop:"15px"}}>V 2.6.3</h5>
+            <h5 style={{marginTop:"15px"}}>{this.state.version}</h5>
           </Collapse>
         </Container>
 
@@ -221,7 +228,7 @@ Sidebar.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  userLogged: state.auth.userLogged,
+  userLogged: state.auth.userLogged
 })
 
 export default connect(mapStateToProps, {logoutUser})(Sidebar);

@@ -19,6 +19,18 @@ class AuthService {
             baseURL,
             withCredentials: true
         })
+
+        this.service.interceptors.response.use(async (response) => {
+            if (response.headers.version !== Global.version) {
+                await LocalForage.clear()
+                return null;
+            }else{
+                return response;
+            }
+        }, (error) => {
+            return Promise.reject(error.message);
+        });
+
     }
     signup(data) {
         return this.service.post('/signup', data)

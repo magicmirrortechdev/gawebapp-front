@@ -6,6 +6,7 @@ import {
   Button,
   Card,
   CardBody,
+  CardFooter,
   FormGroup,
   Form,
   Input,
@@ -16,6 +17,7 @@ import {
 } from "reactstrap";
 import {connect} from "react-redux";
 import {logInUser} from "../redux/actions/authAction";
+import Global from "../global";
 
 class Login extends React.Component {
 
@@ -26,7 +28,7 @@ class Login extends React.Component {
   }
 
   componentDidMount(props) {
-    if(this.props.userLogged){
+    if(this.props.userLogged && localStorage.version === Global.version){
       return this.props.history.push('/admin/index')
     }
   }
@@ -35,7 +37,7 @@ class Login extends React.Component {
     e.preventDefault()
     this.props.logInUser(this.state)
   }
-  
+
   handleInput = e => {
     e.persist()
     this.setState(prevState => ({
@@ -45,11 +47,11 @@ class Login extends React.Component {
   }
 
   render() {
+    const err = this.props.err
     return (
       <>
         <Col lg="5" md="7">
           <Card className="bg-secondary shadow border-0">
-            
             <CardBody className="px-lg-5 py-lg-5">
               <div className="text-center text-muted mb-4">
                 <small>Sign in with credentials <i className="fas fa-key"></i></small>
@@ -87,15 +89,15 @@ class Login extends React.Component {
                   >
                     <span className="text-muted">Remember me</span>
                   </label>
-                  
+
                 </div>
-                
+
                 <div className="text-center">
                   <Button className="my-4" color="primary" type="button" onClick={this.handleSubmit} >
                     Sign in
                   </Button>
                   <br/>
-                  
+
                 </div>
                   <span>
                           Forgot Password?
@@ -105,6 +107,7 @@ class Login extends React.Component {
                   </span>
               </Form>
             </CardBody>
+            {err && <CardFooter><div className="text-center text-danger ">User or password wrong, please check your credentials</div></CardFooter>}
           </Card>
         </Col>
       </>
