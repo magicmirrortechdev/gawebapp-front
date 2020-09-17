@@ -45,13 +45,6 @@ const ActionButton = (props) => {
 }
 
 class Clients extends React.Component {
-  constructor(props) {
-    super(props);
-    loggedUser = this.props.userLogged
-    if(Global.version !== this.props.version){
-      this.props.history.push("/");
-    }
-  }
 
   updateWindowDimensions = () => {
     this.setState(prevState => {return {...prevState, isMobileVersion : (window.innerWidth < 1024) }})
@@ -62,6 +55,13 @@ class Clients extends React.Component {
   }
 
   componentDidMount() {
+    loggedUser = this.props.userLogged
+    if (!this.props.userLogged) return this.props.history.push('/auth/login')
+    if (localStorage.getItem("version") !== Global.version) {
+      this.props.logoutUser()
+      return this.props.history.push('/auth/login')
+    }
+
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
     this.props.getClients();
