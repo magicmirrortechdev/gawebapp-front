@@ -276,7 +276,6 @@ class Reports extends React.Component {
         users.sort(compareValues('name', 'asc'))
         users.forEach(user => {
             let hoursPerJob = []
-            let hoursFull = []
 
             user.jobs = []
             user.totalPayroll = []
@@ -286,15 +285,22 @@ class Reports extends React.Component {
 
             user.works.sort(compareValues('date', 'desc')).forEach((work, i) => {
                 work.time.sort(compareValues('date', 'desc')).forEach((time, i) => {
-                    hoursFull.push({hoursT: time.hours, date: time.date})
                     hoursPerJob.push({
+                        _id: time._id,
                         works: work._id ? work._id : work.workId._id,
                         time: time.hours,
                         date: time.date,
-                        hours: hoursFull
                     })
                 })
             })
+
+            hoursPerJob = hoursPerJob.filter((thing, index) => {
+                const _thing = JSON.stringify(thing);
+                return index === hoursPerJob.findIndex(obj => {
+                    return JSON.stringify(obj) === _thing;
+                });
+            });
+
             user.works.sort(compareValues('date', 'desc')).forEach(works => {
                 if (works.workId && works.workId.workers) {
                     works.workId.workers.sort(compareValues('date', 'desc')).forEach(worker => {
@@ -304,6 +310,7 @@ class Reports extends React.Component {
                                     if(hoursTime.date >= this.state.startDate &&
                                         hoursTime.date <= this.state.endDate){
                                         user.jobs.push({
+                                            _id:hoursTime._id,
                                             date: hoursTime.date,
                                             jobName: works.workId.jobName,
                                             hours: hoursTime.time,
@@ -313,6 +320,7 @@ class Reports extends React.Component {
                                         });
                                     } else if (startDate == null && endDate == null){
                                         user.jobs.push({
+                                            _id:hoursTime._id,
                                             date: hoursTime.date,
                                             jobName: works.workId.jobName,
                                             hours: hoursTime.time,
@@ -327,6 +335,14 @@ class Reports extends React.Component {
                     });
                 }
             });
+
+            user.jobs = user.jobs.filter((user__, index) => {
+                const _user = JSON.stringify(user__);
+                return index === user.jobs.findIndex(obj => {
+                    return JSON.stringify(obj) === _user;
+                });
+            });
+
             user.jobs.forEach((e, i) => {
                 user.totalPayroll.push(e.payroll)
                 user.totalEffective.push(e.effective)
