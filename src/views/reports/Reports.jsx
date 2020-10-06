@@ -38,6 +38,8 @@ import moment from "moment";
 let pdfFile;
 class Reports extends React.Component {
     state = {
+        startDate: moment().startOf('week').add('days', -6).format('YYYY-MM-DD'),
+        endDate: moment().startOf('week').add('days', 0).format('YYYY-MM-DD'),
         jobs: [],
         workers: [],
         activeTab: '1',
