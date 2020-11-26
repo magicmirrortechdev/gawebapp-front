@@ -43,7 +43,7 @@ class AuthService {
 
     //clients
     getClients() {
-        return this.service.get('/checkclients')
+        return this.service.get('/v2/client/checkclients')
     }
     addClient(data) {
         return this.service.post('/createclient', data)
@@ -54,13 +54,10 @@ class AuthService {
     deleteClient(data) {
         return this.service.delete(`/deleteclient/${data}`)
     }
+
     //users
     getUsers(idUser) {
-        return this.service.get('/getusers', {
-            headers: {
-                'token': idUser
-            }
-        })
+        return this.service.get('/v2/user/getusers')
     }
     addWorker(data) {
         return this.service.post('/addworker', data)
@@ -74,7 +71,7 @@ class AuthService {
 
     //estimates
     getEstimates(id = ""){
-        return this.service.get('/checkestimates/'+ id)
+        return this.service.get('/v2/job/checkestimates/'+ id)
     }
     getEstimate(id = ""){
         return this.service.get('/estimatedetail/'+ id)
