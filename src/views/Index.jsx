@@ -58,7 +58,7 @@ class Index extends React.Component {
               await this.props.getJobs();
               await this.props.getClients();
           }
-          await this.props.getUsers();
+          await this.props.getUsers(loggedUser._id);
           document.getElementById('spinner').style.visibility='hidden';
       }
   }

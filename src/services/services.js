@@ -6,7 +6,6 @@ const baseURL = Global.url;
 
 class AuthService {
     constructor() {
-
         let AxiosOfflineAdapter = AxiosOffline({
             defaultAdapter: axios.defaults.adapter, //require, basic adapter
             storageName: "axiosreply", //optional, default: "axios-stack"
@@ -33,13 +32,13 @@ class AuthService {
 
     }
     signup(data) {
-        return this.service.post('/signup', data)
+        return this.service.post('/v2/user/signup', data)
     }
     login(data) {
-        return this.service.post('/login', data)
+        return this.service.post('/v2/user/login', data)
     }
     logout() {
-        return this.service.get('/logout')
+        return this.service.get('/v2/user/logout')
     }
 
     //clients
@@ -56,8 +55,12 @@ class AuthService {
         return this.service.delete(`/deleteclient/${data}`)
     }
     //users
-    getUsers() {
-        return this.service.get('/getusers')
+    getUsers(idUser) {
+        return this.service.get('/getusers', {
+            headers: {
+                'token': idUser
+            }
+        })
     }
     addWorker(data) {
         return this.service.post('/addworker', data)
@@ -91,7 +94,14 @@ class AuthService {
     updateEstimate(id, data) {
         return this.service.patch('/estimateupdate/' + id, data)
     }
+    addWorkers(id, data) {
+        return this.service.patch('/addworkers/' + id, data)
+    }
+    addProjectManager (id, data) {
+        return this.service.patch('/addpm/' + id, data)
+    }
 
+    //invoices
     invoiceDelete(id, invoiceId) {
         return this.service.patch(`/invoicedelete/${id}/${invoiceId}`)
     }
@@ -119,12 +129,6 @@ class AuthService {
             return this.service.get('/checkjobs')
         }
     }
-    openJobs() {
-        return this.service.get('/openjobs')
-    }
-    closeJobs(){
-        return this.service.get('/closeJobs')
-    }
     addJob(data) {
         return this.service.post('/createjob', data)
     }
@@ -134,11 +138,10 @@ class AuthService {
     closeJob(data) {
         return this.service.patch(`/closejob/${data}`)
     }
-    addWorkers(id, data) {
-        return this.service.patch('/addworkers/' + id, data)
-    }
-    addProjectManager (id, data) {
-        return this.service.patch('/addpm/' + id, data)
+
+    //time
+    getTimes() {
+        return this.service.get('/gettimes/')
     }
     addTime (estimateId, workerId, data) {
         return this.service.patch('/addtime/' + estimateId + "/" + workerId, data )
@@ -148,9 +151,6 @@ class AuthService {
     }
     removeTime (estimateId, workerId, timeId){
         return this.service.patch('/deletetime/' + estimateId + "/" + workerId + "/" + timeId)
-    }
-    pullWorker(data) {
-        return this.service.patch(`/pullworker/${data}`)
     }
 
     //expense
