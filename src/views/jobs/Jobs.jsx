@@ -21,6 +21,7 @@ import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 import {connect} from "react-redux";
 import {getJobs, closeJob, removeJob, convertJob} from "../../redux/actions/jobAction";
+import {getUsers} from "../../redux/actions/userAction";
 import configureStore from "../../redux/store";
 const {store} = configureStore();
 
@@ -145,6 +146,7 @@ class Jobs extends React.Component {
   componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
+    this.props.getUsers()
     if(loggedUser.level <=1) {
       this.props.getJobs(loggedUser._id)
     }else{
@@ -187,7 +189,7 @@ class Jobs extends React.Component {
   }
 
   render() {
-    const {jobs} = this.props;
+    const {jobs, users} = this.props;
     let jobsFilter = [];
     if (!this.state) return <p>Loading</p>
     switch(this.state.buttonActive){
@@ -219,7 +221,7 @@ class Jobs extends React.Component {
                       <p color="primary" size="sm" >
                         Create Job
                       </p>
-                    </Link>                      
+                    </Link>
                     </div>
                   </Row>
                 </CardHeader>
@@ -279,9 +281,9 @@ class Jobs extends React.Component {
                     :
                     jobsFilter.map((e,i)=>{
                       let subtotal = e.items ? (e.items.reduce((acc, current, i) => acc + current.subtotal, 0)) : 0 ;
-                      let tax = parseInt(e.tax) * subtotal / 100
-                      let discount = e.discount
-                      let paid = e.paid
+                      let tax = parseInt(e.estimateTax) * subtotal / 100
+                      let discount = e.estimateDiscount
+                      let paid = e.estimatePaid
                       let total = subtotal + tax - paid - discount
                       return(
                         <>
@@ -292,13 +294,13 @@ class Jobs extends React.Component {
                                 <td>
                                   <ActionButton item={e} props={this.props} ></ActionButton>
                                 </td>
-                                <td>{e.jobName}</td>
+                                <td>{e.jobName} - {e.jobAddress} </td>
                                 <td>Closed</td>
                               </>
                               :
                               <>
                                 <td>
-                                  {e.jobName}<br/>
+                                  {e.jobName} - {e.jobAddress}<br/>
                                   Closed<br/>
                                   <div className="buttonfloat-right buttonfloat-right-estimates">
                                     <ActionButton item={e} props={this.props} ></ActionButton>
@@ -314,13 +316,14 @@ class Jobs extends React.Component {
                                 <td>
                                   <ActionButton2 item={e} props={this.props}></ActionButton2>
                                 </td>
-                                <td>{e.jobName}</td>
+                                <td>{e.jobName} - {e.jobAddress}</td>
                                 <td>{e.dateStart === "Update this field" ? "Update this field" : <Moment format={"MMM D, YY"}>{e.dateStart}</Moment>}</td>
                                 <td>{e.dateEnd === "Update this field" ? "Update this field" : <Moment format={"MMM D, YY"}>{e.dateEnd}</Moment>}</td>
                                 <td>{e.workers.map((e,i)=>{
+                                  const user = users.filter(user => user._id === e.workerId )
                                   return(
                                     !e.workerId ? <p style={{fontSize:"10px"}} key={i}>Worker Delete</p> :
-                                        <p style={{fontSize:"10px"}} key={i}>{e.workerId.name}</p>
+                                        <p style={{fontSize:"10px"}} key={i}>{user[0].name}</p>
                                   )
                                   })}
                                 </td>
@@ -330,11 +333,12 @@ class Jobs extends React.Component {
                               <>
                                 <td>
                                   {e.dateStart === "Update this field" ? "Update " : <Moment format={"MMM D, YY"}>{e.dateStart}</Moment>} - {e.dateEnd === "Update this field" ? "Update " : <Moment format={"MMM D, YY"}>{e.dateEnd}</Moment>}<br/>
-                                  <small>{e.jobName}</small><br/>
+                                  <small>{e.jobName} - {e.jobAddress}</small><br/>
                                   {e.workers.map((worker,i)=>{
+                                    const user = users.filter(user => user._id === e.workerId )
                                     return(
                                         !worker.workerId ? <span>Worker Delete</span> :
-                                            <span> {worker.workerId.name}{i === e.workers.length-1? '': ','}  </span>
+                                            <span> {user[0].name} {i === e.workers.length-1? '': ','}  </span>
                                     )
                                   })}<br/>
                                   <b>${isNaN(parseFloat(Math.round(total * 100) / 100).toFixed(2))?'Check your quantities and figures in your estimate please':parseFloat(Math.round(total * 100) / 100).toFixed(2)}</b><br/>
@@ -364,6 +368,7 @@ class Jobs extends React.Component {
 
 const mapStateToProps = state => ({
   jobs: state.job.jobs,
+  users: state.user.users
 })
 
-export default connect(mapStateToProps, {getJobs, closeJob, removeJob, convertJob})(Jobs);
+export default connect(mapStateToProps, {getUsers, getJobs, closeJob, removeJob, convertJob})(Jobs);

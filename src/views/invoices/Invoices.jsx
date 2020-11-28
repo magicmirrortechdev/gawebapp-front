@@ -20,7 +20,9 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import {connect} from "react-redux";
-import {getJobs, removeInvoice} from "../../redux/actions/jobAction";
+import {getJobs} from "../../redux/actions/jobAction";
+import {getInvoices, removeInvoice} from "../../redux/actions/invoiceAction";
+import {getClients} from "../../redux/actions/clientAction";
 import configureStore from "../../redux/store";
 const {store} = configureStore();
 
@@ -35,31 +37,31 @@ const ActionButton = (props) => {
         </DropdownToggle>
         <DropdownMenu>
         {
-          props.item.invoice.total - props.paid === 0 ?
-            <DropdownItem disabled to={`/admin/invoices/${props.item.id}/${props.item.invoice._id}`}
+          props.item.total - props.paid === 0 ?
+            <DropdownItem disabled to={`/admin/invoices/${props.item._id}`}
                           tag={Link}>Accept Payment</DropdownItem> :
-            <DropdownItem to={`/admin/invoices/${props.item.id}/${props.item.invoice._id}`} tag={Link}>
+            <DropdownItem to={`/admin/invoices/${props.item._id}`} tag={Link}>
               Accept Payment</DropdownItem>
         }
         {
           loggedUser.level >= 3 ?
-            <DropdownItem to={`/admin/invoices/${props.item.id}/${props.item.invoice._id}/update`}
+            <DropdownItem to={`/admin/invoices/${props.item._id}/update`}
                           tag={Link}>Update</DropdownItem> :
             loggedUser.level === 2 && props.userInEstimate ?
               <DropdownItem
-                to={`/admin/invoices/${props.item.id}/${props.item.invoice._id}/update`}
+                to={`/admin/invoices/${props.item._id}/update`}
                 tag={Link}>Update</DropdownItem> :
               <DropdownItem disabled
-                to={`/admin/invoices/${props.item.id}/${props.item.invoice._id}/update`}
+                to={`/admin/invoices/${props.item._id}/update`}
                 tag={Link}>Update</DropdownItem>
         }
 
-        <DropdownItem to={`/admin/invoices/${props.item.id}/${props.item.invoice._id}/email`}
+        <DropdownItem to={`/admin/invoices/${props.item._id}/email`}
           tag={Link}>Send by email</DropdownItem>
         {
           loggedUser.level >= 4 ?
             <DropdownItem onClick={() => {
-              props.props.removeInvoice(props.item.id, props.item.invoice._id)
+              props.props.removeInvoice(props.item._id)
               alert('Invoice Delete ')
             }}>
               <span className="text-danger">Delete</span>
@@ -75,7 +77,7 @@ const ActionButton = (props) => {
 
 const ActionDropDown = (props) => {
   return (
-    <UncontrolledCollapse toggler={"#toggle" + props.item.invoice._id}>
+    <UncontrolledCollapse toggler={"#toggle" + props.item._id}>
       {!props.isMobileVersion ?
         <Card>
           <CardBody>
@@ -93,16 +95,17 @@ const ActionDropDown = (props) => {
               </tr>
               </thead>
               <tbody>
-              {props.item.invoice.payment.length === 0 ? <tr>
+              {props.item.payments.length === 0 ? <tr>
                     <td>No payments register</td>
                   </tr>
-                  : props.item.invoice.payment.map((e, i) => {
+                  : props.item.payments.map((e, i) => {
                     const paymentIndex = i + 1
+                    console.log("data> ", e)
                     return (
                         <tr key={i}>
                           <td>Payment # {paymentIndex}</td>
-                          <td><Moment format={"MMM D, YY"}>{e.date}</Moment></td>
-                          <td align="right">$ {isNaN(parseFloat(Math.round(props.paid * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(props.paid * 100) / 100).toFixed(2)}</td>
+                          <td><Moment format={"MMM D, YY"}>{e.paidDate}</Moment></td>
+                          <td align="right">$ {isNaN(parseFloat(Math.round(e.paidAmount * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(e.paidAmount * 100) / 100).toFixed(2)}</td>
                           <td align="right">$ {parseFloat(Math.round((props.total2 - props.paidOk[i]) * 100) / 100).toFixed(2)}</td>
                         </tr>
                     )
@@ -123,18 +126,18 @@ const ActionDropDown = (props) => {
               </tr>
             </thead>
             <tbody>
-              {props.item.invoice.payment.length === 0 ?
+              {props.item.payments.length === 0 ?
                 <tr>
                   <td>No payments register</td>
                 </tr>
-                : props.item.invoice.payment.map((e, i) => {
+                : props.item.payments.map((e, i) => {
                   const paymentIndex = i + 1
                   return (
                     <tr key={i}>
                       <td>
                         Payment # {paymentIndex}<br/>
-                        <b><Moment format={"MMM D, YY"}>{e.item.date}</Moment></b> <br/>
-                        Total: <b>$ {isNaN(parseFloat(Math.round(props.paid * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(props.paid * 100) / 100).toFixed(2)}</b>,
+                        <b><Moment format={"MMM D, YY"}>{e.paidDate}</Moment></b> <br/>
+                        Total: <b>$ {isNaN(parseFloat(Math.round(e.paidAmount * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(e.paidAmount * 100) / 100).toFixed(2)}</b>,
                         Balance: <b>$ {parseFloat(Math.round((props.total2 - props.paidOk[i]) * 100) / 100).toFixed(2)}</b>
                       </td>
                     </tr>
@@ -159,14 +162,14 @@ const RowInvoice = (props) =>{
               <ActionButton {...props}></ActionButton>
             </td>
             <td>
-              <Button id={"toggle" + props.item.invoice._id} color="primary">
+              <Button id={"toggle" + props.item._id} color="primary">
                 <i className="ni ni-bold-down"></i>
               </Button>
             </td>
             <td>{!props.nameClient ? 'Client Delete' : props.nameClient}</td>
-            <td><Moment format={"MMM D, YY"}>{props.item.date}</Moment></td>
-            <td>{props.total - props.paid === 0 ? 'Paid' : props.item.invoice.status}</td>
-            <td>${parseFloat(Math.round(props.item.invoice.total * 100) / 100).toFixed(2)}</td>
+            <td><Moment format={"MMM D, YY"}>{props.item.invoiceDate}</Moment></td>
+            <td>{props.total - props.paid === 0 ? 'Paid' : props.item.invoiceStatus}</td>
+            <td>${parseFloat(Math.round(props.item.invoiceTotal * 100) / 100).toFixed(2)}</td>
             <td>${parseFloat(Math.round(props.total * 100) / 100).toFixed(2)}</td>
           </tr>
           <tr>
@@ -179,18 +182,17 @@ const RowInvoice = (props) =>{
         <>
           <tr>
             <td>
-              <Moment format={"MMM D, YY"}>{props.item.date}</Moment><br/>
-              {!props.item.nameClient ? 'Client Delete' : props.item.nameClient}<br/>
-              Status: <b>{props.item.invoice.total - props.paid === 0 ? 'Paid' : props.item.invoice.status}</b><br/>
-              Total: <b>${parseFloat(Math.round(props.item.invoice.total * 100) / 100).toFixed(2)}</b><br/>
+              <Moment format={"MMM D, YY"}>{props.item.invoiceDate}</Moment><br/>
+              {!props.nameClient ? 'Client Delete' : props.nameClient}<br/>
+              Status: <b>{props.total - props.paid === 0 ? 'Paid' : props.item.invoiceStatus}</b><br/>
+              Total: <b>${parseFloat(Math.round(props.item.invoiceTotal * 100) / 100).toFixed(2)}</b><br/>
               Balance: <b>${parseFloat(Math.round(props.total * 100) / 100).toFixed(2)}</b><br/>
               <div className="buttonfloat-right buttonfloat-right-estimates">
                 <ActionButton {...props}></ActionButton>
               </div>
-              <Button id={"toggle" + props.item.invoice._id} color="primary">
+              <Button id={"toggle" + props.item._id} color="primary">
                 <i className="ni ni-bold-down"></i>
               </Button>
-
             </td>
           </tr>
           <tr>
@@ -228,8 +230,9 @@ class Invoices extends React.Component {
   componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-    if(this.props.jobs.length === 0)
-      this.props.getJobs()
+    this.props.getJobs()
+    this.props.getClients()
+    this.props.getInvoices(loggedUser._id)
   }
 
   sum(array) {
@@ -246,33 +249,14 @@ class Invoices extends React.Component {
   }
 
   render() {
-    const {jobs} = this.props
-    if (!this.state) return <p>Loading</p>
-    let allInvoices=[]
-    let userInEstimate 
-    let client
-    let id
-    let jobName
-    jobs.forEach((e,i)=>{
-      id = e._id
-      jobName = e.jobName
-      userInEstimate = e.workers.filter(wx => wx.workerId && wx.workerId._id === loggedUser._id).length > 0
-      client = e.clientId
-      console.log(e.invoices);
-      e.invoices.forEach(ex =>{
-        allInvoices.push({invoice:ex, client, id, jobName, userInEstimate})
-      })
-    })
-    jobs.forEach((e,i)=>{
-      if(!e.clientId) return <th>Client Delete</th>
-      if(!e.workers)return <th scope="row">Worker Delete</th>
-    })
+    const {invoices, clients, jobs} = this.props
+    if (!this.state || clients.length === 0 || jobs.length === 0) return <p>Loading</p>
     return (
       <>
         <Header />
         {/* Page content */}
         <Container className="mt--7" fluid>
-                      
+
           <Row className="mt-5">
             <Col className="mb-5 mb-xl-0" xl="12">
               <Card className="shadow">
@@ -313,22 +297,24 @@ class Invoices extends React.Component {
                   </thead>
                   <tbody>
                   {
-                    allInvoices.length === 0 ?<tr><td>No invoices register</td></tr> : allInvoices.map((e,i) =>{
-                      let nameClient = e.client === null || e.client.name === undefined || !e.client.name ? <p>Client Delete</p>: e.client.name
-
+                    invoices.length === 0 ?<tr><td>No invoices register</td></tr> : invoices.map((e,i) =>{
+                      const job_ = jobs.filter(job => job._id === e.jobId)
+                      const client = clients.filter(client => client._id === job_[0].clientId )
+                      let nameClient = client[0].firstName + ' ' + client[0].lastName
                       const invoiceIndex = i + 1
-                      const paid = e.invoice.payment.reduce((acc, current, i) => acc + isNaN(current.paid) ? 0 : current.paid, 0)
-                      const total = e.invoice.total - paid
-                      const total2 = e.invoice.total
-
-                      const paidAcc = e.invoice.payment.map((e,i)=>{
+                      const paid = e.payments.reduce((acc, current, i) => acc + isNaN(current.paidAmount) ? 0 : current.paidAmount, 0)
+                      const total = e.invoiceTotal - paid
+                      const total2 = e.invoiceTotal
+                      const paidAcc = e.payments.map((e,i)=>{
                         let sum = 0
-                        sum += e.paid||0
+                        sum += e.paidAmount || 0
                         return sum
                       })
                       const paidOk = this.sum(paidAcc)
+                      e.jobName = job_[0].jobName + ' - ' + job_[0].jobAddress
                       return(
-                        <RowInvoice key={i} item={e}
+                        <RowInvoice key={i}
+                          item={e}
                           isMobileVersion={this.state.isMobileVersion}
                           paid={paid}
                           invoiceIndex={invoiceIndex}
@@ -344,7 +330,7 @@ class Invoices extends React.Component {
                 </Table>
               </Card>
             </Col>
-            
+
           </Row>
         </Container>
       </>
@@ -354,6 +340,8 @@ class Invoices extends React.Component {
 
 const mapStateToProps = state => ({
   jobs: state.job.jobs,
+  clients: state.client.clients,
+  invoices: state.invoice.invoices
 })
 
-export default connect(mapStateToProps, {getJobs, removeInvoice})(Invoices);
+export default connect(mapStateToProps, {getInvoices, getClients, getJobs, removeInvoice})(Invoices);

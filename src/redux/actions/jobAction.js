@@ -149,46 +149,17 @@ export const convertInvoice = (id, data) => async dispatch =>{
 export const addInvoice = (invoice) => async dispatch =>{
     try {
         const response = await authService.addInvoice(invoice)
-        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: response.data.estimate._id, data: response.data.estimate}})
+        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: response.data.invoice._id, data: response.data.invoice}})
     } catch (err){
         dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
         console.log(err)
     }
 }
 
-export const removeInvoice = (id, invoiceId) => async dispatch =>{
+export const payInvoice = (id, item) => async dispatch =>{
     try {
-        const response = await authService.invoiceDelete(id, invoiceId)
-        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: id, data: response.data.estimate}})
-    } catch (err){
-        dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
-        console.log(err)
-    }
-}
-
-export const updateInvoice = (id, invoiceId, item) => async dispatch =>{
-    try {
-        const response = await authService.updateInvoice(id, invoiceId, item)
-        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: id, data: response.data.estimate}})
-    } catch (err){
-        dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
-        console.log(err)
-    }
-}
-
-export const payInvoice = (id, invoiceId, item) => async dispatch =>{
-    try {
-        const response = await authService.payInvoice(id, invoiceId, item)
-        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: id, data: response.data.estimate}})
-    } catch (err){
-        dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
-        console.log(err)
-    }
-}
-
-export const sendInvoice = (invoice) => async dispatch =>{
-    try {
-        await authService.sendInvoice(invoice)
+        const response = await authService.payInvoice(id, item)
+        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: id, data: response.data.invoice}})
     } catch (err){
         dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
         console.log(err)

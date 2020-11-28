@@ -14,7 +14,7 @@
     ],
     "homepage": "/",
     "scripts": {
-        "start": "react-app-env start --env-file=.env",
+        "start": "PORT=3001 react-app-env start --env-file=.env",
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",

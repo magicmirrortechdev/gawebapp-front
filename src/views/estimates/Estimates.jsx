@@ -112,8 +112,7 @@ class Estimates extends React.Component {
     }
   }
 
-  convertInvoice = (_id)=>{
-    authService.convertInvoice(_id)
+  convertInvoice = (_id)=>{ authService.convertInvoice(_id)
     .then(response => {
       this.props.history.push(`estimates`)
     }).catch(err => {
@@ -170,12 +169,12 @@ class Estimates extends React.Component {
                     {estimates.length === 0 ? <tr><td>No estimates register</td></tr>
                       :
                        estimates.map((e,i)=>{
-                        let client =  clients.filter(client => client._id === e.clientId )
-                        let nameEstimate = e.jobName
-                        let subtotal = e.items.reduce((acc, current, i) => acc + current.subtotal, 0)
-                        let tax = parseInt(e.estimateTax) * subtotal / 100
-                        let discount = e.estimateDiscount
-                        let total = !subtotal ? 0 : subtotal + tax  - discount
+                        const client =  clients.filter(client => client._id === e.clientId )
+                        const nameEstimate = e.jobName
+                        const subtotal = e.items.reduce((acc, current, i) => acc + current.subtotal, 0)
+                        const tax = parseInt(e.estimateTax) * subtotal / 100
+                        const discount = e.estimateDiscount
+                        const total = !subtotal ? 0 : subtotal + tax  - discount
                         return(
                           <tr key={i}>
                             {!this.state.isMobileVersion ?
