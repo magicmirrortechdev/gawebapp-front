@@ -100,7 +100,6 @@ const ActionDropDown = (props) => {
                   </tr>
                   : props.item.payments.map((e, i) => {
                     const paymentIndex = i + 1
-                    console.log("data> ", e)
                     return (
                         <tr key={i}>
                           <td>Payment # {paymentIndex}</td>
