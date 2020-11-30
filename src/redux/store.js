@@ -46,6 +46,8 @@ const jobsPersistConfig = {
 const timesPersistConfig = {
     key: 'ga:time',
     storage: localforage
+}
+
 const invoicesPersistConfig = {
     key: 'ga:invoice',
     storage: localforage,
@@ -67,7 +69,7 @@ const reducer = combineReducers({
     user: persistReducer(userPersistConfig, userReducer),
     client: persistReducer(clientPersistConfig, clientReducer),
     job: persistReducer(jobsPersistConfig, jobReducer),
-    time: persistReducer(timesPersistConfig, timeReducer)
+    time: persistReducer(timesPersistConfig, timeReducer),
     invoice: persistReducer(invoicesPersistConfig, invoiceReducer)
 })
 
