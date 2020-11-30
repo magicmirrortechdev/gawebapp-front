@@ -20,6 +20,7 @@ import Moment from "react-moment";
 import {connect} from "react-redux";
 import {getTimes, removeTime} from "../../redux/actions/timeAction";
 import configureStore from "../../redux/store";
+import {getJobs} from "../../redux/actions/jobAction";
 const {store} = configureStore();
 
 let loggedUser ;
@@ -193,6 +194,7 @@ class Time extends React.Component {
                   </thead>
                   {times.length === 0 ?  <tbody><tr><td>No workers register</td></tr></tbody>:
                    times.map((e,i)=>{
+
                        return(
                         loggedUser.level >= 2 ?
                         <tbody key={i}>
@@ -289,4 +291,4 @@ const mapStateToProps = state => ({
   times: state.time.times,
 })
 
-export default connect(mapStateToProps, {getTimes, removeTime})(Time);
+export default connect(mapStateToProps, {getTimes, getJobs, removeTime})(Time);
