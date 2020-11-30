@@ -20,10 +20,10 @@ import configureStore from "../../redux/store";
 const {store} = configureStore();
 
 let loggedUser;
-var fecha = new Date(); 
-      var mes = fecha.getMonth()+1; 
-      var dia = fecha.getDate(); 
-      var ano = fecha.getFullYear(); 
+var fecha = new Date();
+      var mes = fecha.getMonth()+1;
+      var dia = fecha.getDate();
+      var ano = fecha.getFullYear();
       if(dia<10)
         dia='0'+dia; //agrega cero si es menor de 10
       if(mes<10)
@@ -74,7 +74,7 @@ class AddInvoice extends React.Component {
         discount: job.discount,
         paid: job.paid,
         comments: job.comments,
-        jobName: job.jobName,
+        jobName: job.jobName +' - '+ job.jobAddress,
         items: job.items,
         total:  parseInt(subtotal + tax - discount - paid)
       }
@@ -95,7 +95,7 @@ class AddInvoice extends React.Component {
     this.props.history.push(`/admin/invoices`)
   }
 
-  render() {    
+  render() {
     console.log(this.state)
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
     return (
@@ -113,7 +113,7 @@ class AddInvoice extends React.Component {
                     </div>
                   </Row>
                 </CardHeader>
-                <CardBody> 
+                <CardBody>
 
                   <Form onSubmit={this.handleSubmit}>
                     <div className="pl-lg-4">
@@ -122,8 +122,7 @@ class AddInvoice extends React.Component {
                           <FormGroup>
                             <label
                             className="form-control-label d-inline-block"
-                            htmlFor="input-jobName"
-                            >
+                            htmlFor="input-jobName">
                             Job Name
                             </label>
                             <Input
@@ -151,7 +150,7 @@ class AddInvoice extends React.Component {
                               onChange={this.handleInput}
                             />
                           </FormGroup>
-                        
+
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -185,16 +184,12 @@ class AddInvoice extends React.Component {
                           </FormGroup>
                         </Col>
                       </Row>
-                      
-                      
                       <Row>
                         <Col lg="6">
                           <FormGroup>
-                        
                             <Button
                               className="form-control-alternative"
                               color="info"
-
                             >Save</Button>
                           </FormGroup>
                         </Col>
@@ -204,7 +199,7 @@ class AddInvoice extends React.Component {
                 </CardBody>
               </Card>
             </Col>
-            
+
           </Row>
         </Container>
       </>

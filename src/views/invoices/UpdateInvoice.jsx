@@ -15,7 +15,8 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import {connect} from "react-redux";
-import {updateInvoice, getJobs} from "../../redux/actions/jobAction";
+import moment from 'moment'
+import {getInvoices, updateInvoice} from "../../redux/actions/invoiceAction";
 import configureStore from "../../redux/store";
 const {store} = configureStore();
 
@@ -24,43 +25,30 @@ let loggedUser;
 class UpdateInvoice extends React.Component {
   state = {
     workerId: "",
-    date:'',
-    description: '',
-    total: parseInt(''),
+    invoiceDate:'',
+    invoiceDescription: '',
+    invoiceTotal: parseInt(''),
     jobName: '',
   };
 
   constructor(props) {
     super(props);
-    console.log("constructor!!!")
     const {auth} = store.getState();
     loggedUser = auth.userLogged
   }
 
   componentDidMount() {
-
-    if (this.props.jobs.length === 0) this.props.history.push(`/admin/jobs`)
-    const job = this.props.jobs.filter(item => item._id === this.props.match.params.estimateId)[0]
+    if (this.props.invoices.length === 0) this.props.history.push(`/admin/invoices`)
+    const invoice = this.props.invoices.filter(item => item._id === this.props.match.params.invoiceId)[0]
     this.setState(prevState => {
-      let date = ''
-      let description = ''
-      let total
-      const invoices = job.invoices
-          invoices.map((e,i)=>{
-            if(e._id === this.props.match.params.invoiceId){
-              date = e.date
-              description = e.description
-              total = e.total
-            }
-            return {date,description,total}
-          })
+      const job = this.props.jobs.filter(job => job._id === invoice.jobId)[0]
       return {
         ...prevState,
         workerId: loggedUser._id,
-        jobName: job.jobName,
-        date: date,
-        description: description,
-        total: total
+        jobName: job.jobName + ' - ' + (job.jobAddress? job.jobAddress: '' ),
+        invoiceDate: moment(invoice.invoiceDate).format("YYYY-MM-DD"),
+        invoiceDescription: invoice.invoiceDescription,
+        invoiceTotal: invoice.invoiceTotal
       }
     })
   }
@@ -73,17 +61,13 @@ class UpdateInvoice extends React.Component {
     }))
   }
 
-
   handleSubmit = async (e, props) => {
-    this.props.updateInvoice(this.props.match.params.estimateId, this.props.match.params.invoiceId, this.state)
+    this.props.updateInvoice(this.props.match.params.invoiceId, this.state)
     this.props.history.push(`/admin/invoices`)
   }
 
-  render() {    
-    console.log(this.state)
+  render() {
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
-    
-
     return (
       <>
         <Header forms={true}/>
@@ -99,7 +83,7 @@ class UpdateInvoice extends React.Component {
                     </div>
                   </Row>
                 </CardHeader>
-                <CardBody> 
+                <CardBody>
 
                   <Form onSubmit={this.handleSubmit}>
                     <div className="pl-lg-4">
@@ -131,40 +115,37 @@ class UpdateInvoice extends React.Component {
                             <Input
                               className="form-control-alternative"
                               placeholder="Select a date"
-                              id="date"
-                              value={this.state.date}
-                              name="date"
+                              value={this.state.invoiceDate}
+                              name="invoiceDate"
                               type="date"
                               onChange={this.handleInput}
                             />
                           </FormGroup>
-                        
+
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-merchant"
-                            >
+                              htmlFor="input-merchant">
                               Total Invoice
                             </label>
                             <Input
-                              name="total"
+                              name="invoiceTotal"
                               className="form-control-alternative"
                               type="number"
                               onChange={this.handleInput}
-                              value={this.state.total}
+                              value={this.state.invoiceTotal}
                               step="any"
                             />
                           </FormGroup>
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-first-name"
-                            >
+                              htmlFor="input-first-name">
                               Description
                             </label>
                             <Input
-                              defaultValue={this.state.description}
-                              name="description"
+                              defaultValue={this.state.invoiceDescription}
+                              name="invoiceDescription"
                               className="form-control-alternative"
                               placeholder="This is an invoice generated with the items of an estimate"
                               type="text"
@@ -173,17 +154,12 @@ class UpdateInvoice extends React.Component {
                           </FormGroup>
                         </Col>
                       </Row>
-                      
-                      
                       <Row>
                         <Col lg="6">
                           <FormGroup>
-                        
                             <Button
                               className="form-control-alternative"
-                              color="info"
-
-                            >Save</Button>
+                              color="info">Save</Button>
                           </FormGroup>
                         </Col>
                       </Row>
@@ -192,7 +168,7 @@ class UpdateInvoice extends React.Component {
                 </CardBody>
               </Card>
             </Col>
-            
+
           </Row>
         </Container>
       </>
@@ -201,7 +177,8 @@ class UpdateInvoice extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  jobs: state.job.jobs,
+  invoices: state.invoice.invoices,
+  jobs: state.job.jobs
 })
 
-export default connect(mapStateToProps, {getJobs, updateInvoice})(withRouter(UpdateInvoice));
+export default connect(mapStateToProps, {getInvoices, updateInvoice})(withRouter(UpdateInvoice));

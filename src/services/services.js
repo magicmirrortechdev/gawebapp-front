@@ -99,23 +99,26 @@ class AuthService {
     }
 
     //invoices
-    invoiceDelete(id, invoiceId) {
-        return this.service.patch(`/invoicedelete/${id}/${invoiceId}`)
+    getInvoices(id) {
+        return this.service.get('/v2/invoice/getInvoices/' + id)
+    }
+    invoiceDelete(id) {
+        return this.service.patch('/v2/invoice/invoicedelete/' + id)
     }
     paidInvoice(data) {
-        return this.service.patch(`/paidinvoice/${data}`)
+        return this.service.patch(`/v2/invoice/paidinvoice/${data}`)
     }
     convertInvoice(id, data) {
-        return this.service.patch('/convertinvoice/' + id, data)
+        return this.service.patch('/v2/invoice/convertinvoice/' + id, data)
     }
-    updateInvoice(id, invoiceId, data) {
-        return this.service.patch('/invoiceupdate/' + id + '/' + invoiceId, data)
+    updateInvoice(id, data) {
+        return this.service.patch('/v2/invoice/invoiceupdate/' + id, data)
     }
-    payInvoice(id, invoiceId, data) {
-        return this.service.patch('/pay-invoice/' + id + '/' + invoiceId, data)
+    payInvoice(id, data) {
+        return this.service.patch('/v2/invoice/pay-invoice/' + id, data)
     }
     sendInvoice(data) {
-        return this.service.post('/sendinvoice/', data)
+        return this.service.post('/v2/invoice/sendinvoice/', data)
     }
 
     //jobs
