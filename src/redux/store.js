@@ -6,20 +6,12 @@ import { createOffline } from '@redux-offline/redux-offline';
 import offlineConfig from '@redux-offline/redux-offline/lib/defaults/index';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-<<<<<<< HEAD
 import { authReducer } from "./reducers/authReducer";
 import { userReducer } from "./reducers/userReducer";
 import { clientReducer } from "./reducers/clientReducer";
 import { jobReducer } from "./reducers/jobReducer";
 import { timeReducer } from "./reducers/timeReducer";
-
-=======
-import {authReducer} from "./reducers/authReducer";
-import {userReducer} from "./reducers/userReducer";
-import {clientReducer} from "./reducers/clientReducer";
-import {jobReducer} from "./reducers/jobReducer";
 import {invoiceReducer} from "./reducers/invoiceReducer";
->>>>>>> 3cff3d4a32e35c965e3a3ae068e431e078866479
 import axios from "axios";
 
 const effect = (effect, _action) => axios(effect);

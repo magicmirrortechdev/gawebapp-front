@@ -205,7 +205,7 @@ class Time extends React.Component {
                                 <td><Moment add={{days:1}} format={"MMM D, YY"}>{e.date}</Moment></td>
                                 <td>{e.userId.name}</td>
                                 <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px", display:"flex", flexDirection:"column", alignItems:"baseline", alignContent:"center"}}>
-                                  {e.hours ? e.hours : e.hours.$numberDouble}
+                                  {e.hours}
                                   </td>
                                 <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px"}} >
                                   <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
