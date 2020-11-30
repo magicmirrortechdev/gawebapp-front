@@ -19,11 +19,11 @@ class AuthService {
             withCredentials: true
         })
 
-        this.service.interceptors.response.use(async (response) => {
+        this.service.interceptors.response.use(async(response) => {
             if (response.headers.version !== Global.version) {
                 await LocalForage.clear()
                 return null;
-            }else{
+            } else {
                 return response;
             }
         }, (error) => {
@@ -70,11 +70,11 @@ class AuthService {
     }
 
     //estimates
-    getEstimates(id = ""){
-        return this.service.get('/v2/job/checkestimates/'+ id)
+    getEstimates(id = "") {
+        return this.service.get('/v2/job/checkestimates/' + id)
     }
-    getEstimate(id = ""){
-        return this.service.get('/estimatedetail/'+ id)
+    getEstimate(id = "") {
+        return this.service.get('/estimatedetail/' + id)
     }
     addEstimate(data) {
         return this.service.post('/addestimate', data)
@@ -85,7 +85,7 @@ class AuthService {
     deleteEstimate(data) {
         return this.service.delete(`/estimatedelete/${data}`)
     }
-    sendEstimates(data){
+    sendEstimates(data) {
         return this.service.post('/sendestimate', data)
     }
     updateEstimate(id, data) {
@@ -94,7 +94,7 @@ class AuthService {
     addWorkers(id, data) {
         return this.service.patch('/addworkers/' + id, data)
     }
-    addProjectManager (id, data) {
+    addProjectManager(id, data) {
         return this.service.patch('/addpm/' + id, data)
     }
 
@@ -106,13 +106,13 @@ class AuthService {
         return this.service.patch(`/paidinvoice/${data}`)
     }
     convertInvoice(id, data) {
-        return this.service.patch('/convertinvoice/'+ id, data)
+        return this.service.patch('/convertinvoice/' + id, data)
     }
     updateInvoice(id, invoiceId, data) {
-        return this.service.patch('/invoiceupdate/'+ id +'/' + invoiceId, data)
+        return this.service.patch('/invoiceupdate/' + id + '/' + invoiceId, data)
     }
     payInvoice(id, invoiceId, data) {
-        return this.service.patch('/pay-invoice/'+ id +'/' + invoiceId, data)
+        return this.service.patch('/pay-invoice/' + id + '/' + invoiceId, data)
     }
     sendInvoice(data) {
         return this.service.post('/sendinvoice/', data)
@@ -120,9 +120,9 @@ class AuthService {
 
     //jobs
     getJobs(id) {
-        if (id){
+        if (id) {
             return this.service.get('/checkjobs/' + id)
-        }else {
+        } else {
             return this.service.get('/checkjobs')
         }
     }
@@ -137,16 +137,20 @@ class AuthService {
     }
 
     //time
-    getTimes() {
-        return this.service.get('/gettimes/')
+    getTimes(id) {
+        if (id) {
+            return this.service.get('/v2/time/gettimes/' + id)
+        } else {
+            return this.service.get('/v2/time/gettimes/')
+        }
     }
-    addTime (estimateId, workerId, data) {
-        return this.service.patch('/addtime/' + estimateId + "/" + workerId, data )
+    addTime(estimateId, workerId, data) {
+        return this.service.patch('/addtime/' + estimateId + "/" + workerId, data)
     }
-    updateTime (estimateId, workerId, timeId, data) {
-        return this.service.patch('/updatetime/' + estimateId + "/" + workerId + "/" + timeId, data )
+    updateTime(estimateId, workerId, timeId, data) {
+        return this.service.patch('/updatetime/' + estimateId + "/" + workerId + "/" + timeId, data)
     }
-    removeTime (estimateId, workerId, timeId){
+    removeTime(estimateId, workerId, timeId) {
         return this.service.patch('/deletetime/' + estimateId + "/" + workerId + "/" + timeId)
     }
 
