@@ -119,14 +119,14 @@ class Clients extends React.Component {
                             <td>
                               <ActionButton {...e} removeClient={this.props.removeClient}></ActionButton>
                             </td>
-                            <td>{e.name}</td>
+                            <td>{e.firstName} {e.lastName}</td>
                             <td>{e.email}</td>
                             <td>{e.phone}</td>
                           </>
                           :
                           <>
                             <td>
-                              {e.name}<br/>
+                              {e.firstName} {e.lastName}<br/>
                               <small>{e.email} {!e.phone ? '' : ' - ' + e.phone }</small>
                               <div className="buttonfloat-right buttonfloat-right-clients">
                                 <ActionButton {...e} removeClient={this.props.removeClient}></ActionButton>

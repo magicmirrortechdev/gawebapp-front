@@ -19,7 +19,8 @@ import {connect} from "react-redux";
 
 class UpdateClient extends React.Component {
   state = {
-    name:'',
+    firstName:'',
+    lastName:'',
     email:'',
     address:'',
     contact:'',
@@ -36,16 +37,17 @@ class UpdateClient extends React.Component {
     this.setState(prevState => {
       return {
         ...prevState,
-        name: client.name,
+        firstName: client.firstName,
+        lastName: client.lastName,
         email: client.email,
         address: client.address,
-        contact: client.contactName,
+        contact: client.contact,
         phone: client.phone,
         mobile: client.mobile,
         website: client.website,
         tax: client.tax,
         customPayment: client.customPayment,
-        notes:client.note,
+        notes:client.notes,
         ...client,
       }
     })
@@ -83,7 +85,7 @@ class UpdateClient extends React.Component {
                     </div>
                   </Row>
                 </CardHeader>
-                <CardBody> 
+                <CardBody>
                   <Form onSubmit={this.handleSubmit}>
                     <div className="pl-lg-4">
                       <Row>
@@ -91,16 +93,15 @@ class UpdateClient extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label d-inline-block"
-                              htmlFor="input-username"
-                            >
-                              Client Name
+                              htmlFor="input-username">
+                              Client First Name
                             </label>
                             <Input
                               className="form-control-alternative"
                               id="input-username"
-                              defaultValue={client.name}
-                              placeholder="Enter a name"
-                              name="name"
+                              defaultValue={client.firstName}
+                              placeholder="Enter a first name"
+                              name="firstName"
                               type="text"
                               onChange={this.handleInput}
                             />
@@ -109,9 +110,26 @@ class UpdateClient extends React.Component {
                         <Col lg="6">
                           <FormGroup>
                             <label
+                                className="form-control-label d-inline-block"
+                                htmlFor="input-username">
+                              Client Last Name
+                            </label>
+                            <Input
+                                className="form-control-alternative"
+                                id="input-username"
+                                defaultValue={client.lastName}
+                                placeholder="Enter a last name"
+                                name="lastName"
+                                type="text"
+                                onChange={this.handleInput}
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col lg="6">
+                          <FormGroup>
+                            <label
                               className="form-control-label"
-                              htmlFor="input-email"
-                            >
+                              htmlFor="input-email">
                               Email address
                             </label>
                             <Input
@@ -125,14 +143,11 @@ class UpdateClient extends React.Component {
                             />
                           </FormGroup>
                         </Col>
-                      </Row>
-                      <Row>
                         <Col lg="6">
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-first-name"
-                            >
+                              htmlFor="input-first-name">
                               Billing Address
                             </label>
                             <Input
@@ -149,8 +164,7 @@ class UpdateClient extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-last-name"
-                            >
+                              htmlFor="input-last-name">
                               Contact Name
                             </label>
                             <Input
@@ -163,14 +177,11 @@ class UpdateClient extends React.Component {
                             />
                           </FormGroup>
                         </Col>
-                      </Row>
-                      <Row>
                         <Col lg="6">
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-first-name"
-                            >
+                              htmlFor="input-first-name">
                               Phone
                             </label>
                             <Input
@@ -187,8 +198,7 @@ class UpdateClient extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-last-name"
-                            >
+                              htmlFor="input-last-name">
                               Mobile
                             </label>
                             <Input
@@ -201,14 +211,11 @@ class UpdateClient extends React.Component {
                             />
                           </FormGroup>
                         </Col>
-                      </Row>
-                      <Row>
                         <Col lg="6">
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-first-name"
-                            >
+                              htmlFor="input-first-name">
                               Website
                             </label>
                             <Input
@@ -225,8 +232,7 @@ class UpdateClient extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-last-name"
-                            >
+                              htmlFor="input-last-name">
                               Tax Number
                             </label>
                             <Input
@@ -240,14 +246,11 @@ class UpdateClient extends React.Component {
                             />
                           </FormGroup>
                         </Col>
-                      </Row>
-                      <Row>
                         <Col lg="6">
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-first-name"
-                            >
+                              htmlFor="input-first-name">
                               Custom Payment Terms
                             </label>
                             <Input
@@ -256,8 +259,7 @@ class UpdateClient extends React.Component {
                               className="form-control-alternative"
                               placeholder="Select one"
                               type="select"
-                              onChange={this.handleInput}
-                            >
+                              onChange={this.handleInput}>
                             <option value="None">None</option>
                             <option value="7 days">7 days</option>
                             <option value="14 days">14 days</option>
@@ -270,20 +272,21 @@ class UpdateClient extends React.Component {
                             </Input>
                           </FormGroup>
                         </Col>
-                        <Col lg="6">
+                      </Row>
+                      <Row>
+                        <Col lg="12">
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-last-name"
-                            >
+                              htmlFor="input-last-name">
                               Notes
                             </label>
                             <Input
-                            defaultValue={client.notes}
+                              value={client.notes}
                               name="notes"
                               className="form-control-alternative"
                               placeholder="Enter your notes"
-                              type="text"
+                              type="textarea"
                               onChange={this.handleInput}
                             />
                           </FormGroup>
@@ -292,12 +295,10 @@ class UpdateClient extends React.Component {
                       <Row>
                         <Col lg="6">
                           <FormGroup>
-                        
                             <Button
                               className="form-control-alternative"
-                              color="info"
-
-                            >Save</Button>
+                              color="info">
+                              Save</Button>
                           </FormGroup>
                         </Col>
                       </Row>
@@ -306,7 +307,7 @@ class UpdateClient extends React.Component {
                 </CardBody>
               </Card>
             </Col>
-            
+
           </Row>
         </Container>
       </>

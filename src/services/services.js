@@ -46,13 +46,13 @@ class AuthService {
         return this.service.get('/v2/client/checkclients')
     }
     addClient(data) {
-        return this.service.post('/createclient', data)
+        return this.service.post('/v2/client/createclient', data)
     }
     updateClient(id, data) {
-        return this.service.patch('updateclient/' + id, data)
+        return this.service.patch('/v2/client/updateclient/' + id, data)
     }
     deleteClient(data) {
-        return this.service.delete(`/deleteclient/${data}`)
+        return this.service.delete(`/v2/client/deleteclient/${data}`)
     }
 
     //users
