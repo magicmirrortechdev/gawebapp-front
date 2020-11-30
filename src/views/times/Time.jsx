@@ -47,10 +47,10 @@ const ButtonOne = (props) => {
               },
             },
           }}>
-        <DropdownItem to={`/admin/time/updatetime/${props.item.estimateId}/${props.item.worker}/${props.item.timeId}`} tag={Link}>Update Hours</DropdownItem>
+        <DropdownItem to={`/admin/time/updatetime/${props.item._id}`} tag={Link}>Update Hours</DropdownItem>
         { loggedUser.level >= 4 ?
             <DropdownItem onClick={()=>{
-              props.props.removeTime(props.item.estimateId, props.item.timeId)
+              props.props.removeTime(props.item._id)
               alert("Time was removed");
             }}><span
                 className="text-danger">Delete</span>
@@ -86,7 +86,7 @@ const ButtonTwo = (props) => {
                 },
               },
             }}>
-          <DropdownItem to={`/admin/time/updatetime/${props.item.estimateId}/${props.item.worker}/${props.item.timeId}`} tag={Link}>Update Hours</DropdownItem>
+          <DropdownItem to={`/admin/time/updatetime/${props.item.id}`} tag={Link}>Update Hours</DropdownItem>
 
           {loggedUser.level >= 4 ?
               <DropdownItem onClick={() => {
@@ -101,7 +101,7 @@ const ButtonTwo = (props) => {
         </DropdownMenu>
       </UncontrolledDropdown>
   )
-} 
+}
 
 class Time extends React.Component {
 
@@ -132,22 +132,18 @@ class Time extends React.Component {
   }
 
   loadTime() {
-    if(this.props.times.length === 0){
-      if(loggedUser.level <=1) {
-        this.props.getTimes(loggedUser._id)
-      }else{
-        this.props.getTimes();
-      }
+    if(loggedUser.level <=1) {
+      this.props.getTimes(loggedUser._id)
+    }else{
+      this.props.getTimes();
     }
   }
-  
+
   render() {
     let {times} = this.props
-    console.log(times)
     if (!this.state) return <p>Loading</p>
-
     times = times.sort(compareValues('date','desc'));
-    
+
     return (
       <>
         <Header />
@@ -169,7 +165,7 @@ class Time extends React.Component {
                         Add Time
                       </p>
                     </Link>
-                      
+
                     </div>
                     :null
                     }
@@ -199,13 +195,13 @@ class Time extends React.Component {
                           <tr>
                             {!this.state.isMobileVersion ?
                               <>
-                                <td >
+                                <td>
                                   <ButtonOne item={e} props={this.props}></ButtonOne>
                                 </td>
                                 <td><Moment add={{days:1}} format={"MMM D, YY"}>{e.date}</Moment></td>
                                 <td>{e.userId.name}</td>
                                 <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px", display:"flex", flexDirection:"column", alignItems:"baseline", alignContent:"center"}}>
-                                  {e.hours}
+                                  {e.hours? e.hours : '-'}
                                   </td>
                                 <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px"}} >
                                   <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
@@ -215,7 +211,7 @@ class Time extends React.Component {
                               <>
                                 <td>
                                   <Moment add={{days:1}} format={"MMM D, YY"}>{e.date}</Moment><br/>
-                                  {e.userId.name} - {e.hours.$numberDouble ? e.hours.$numberDouble : 0}<br/>
+                                  {e.userId.name} - {e.hours? e.hours : '-'}<br/>
                                   <small>{e.jobId.name}</small> <br/>
                                   <div className="buttonfloat-right buttonfloat-right-times">
                                     <ButtonOne item={e} props={this.props}></ButtonOne>
@@ -226,7 +222,7 @@ class Time extends React.Component {
                           </tr>
                         </tbody>
                          : null
-                     )  
+                     )
                     })}
                   {//nuevo bloque
                     loggedUser.level <= 1 ?
@@ -277,7 +273,7 @@ class Time extends React.Component {
                 </Table>
               </Card>
             </Col>
-            
+
           </Row>
         </Container>
       </>
