@@ -194,7 +194,11 @@ class Time extends React.Component {
                   </thead>
                   {times.length === 0 ?  <tbody><tr><td>No workers register</td></tr></tbody>:
                    times.map((e,i)=>{
-
+                    if(typeof e.hours === 'object' ){
+                      console.log(e.hours.$numberDouble ? e.hours.$numberDouble : 0)
+                    }else{
+                      console.log(e.hours)
+                    }
                        return(
                         loggedUser.level >= 2 ?
                         <tbody key={i}>
@@ -207,7 +211,7 @@ class Time extends React.Component {
                                 <td><Moment add={{days:1}} format={"MMM D, YY"}>{e.date}</Moment></td>
                                 <td>{e.userId.name}</td>
                                 <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px", display:"flex", flexDirection:"column", alignItems:"baseline", alignContent:"center"}}>
-                                  {e.hours.$numberDouble}
+                                  { e.hours.$numberDouble === null || e.hours.$numberDouble === undefined ? e.hours : e.hours.$numberDouble}
                                   </td>
                                 <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px"}} >
                                   <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
