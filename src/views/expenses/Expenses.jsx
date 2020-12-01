@@ -94,10 +94,9 @@ class Expenses extends React.Component {
   }
 
   render() {
-    let {users, expenses} = this.props
-    if (!this.state) return <p>Loading</p>
-    let userInEstimate
-    console.log(expenses)
+   let {users, expenses} = this.props
+   if (!this.state) return <p>Loading</p>
+   let userInEstimate
 
    expenses = expenses.length > 0 ? expenses.sort(compareValues('date', 'desc')) : expenses
     return (
