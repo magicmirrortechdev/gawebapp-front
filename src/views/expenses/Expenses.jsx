@@ -47,14 +47,14 @@ const ActionButton = (props) => {
           },
         }}>
           {
-           loggedUser.level >= 2 ? <DropdownItem to={`/admin/expenses/${props.item.estimateId}/${props.item.expense._id}/update`} tag={Link}>Update</DropdownItem> :
-               loggedUser.level === 1 && props.userInEstimate ? <DropdownItem to={`/admin/expenses/${props.item.estimateId}/${props.item.expense._id}/update`} tag={Link}>Update</DropdownItem> :
-                   <DropdownItem disabled to={`/admin/expenses/${props.item.estimateId}/${props.item.expense._id}/update`} tag={Link}>Update</DropdownItem>
+           loggedUser.level >= 2 ? <DropdownItem to={`/admin/expenses/${props.item._id}/update`} tag={Link}>Update</DropdownItem> :
+               loggedUser.level === 1 && props.userInEstimate ? <DropdownItem to={`/admin/expenses/${props.item._id}/update`} tag={Link}>Update</DropdownItem> :
+                   <DropdownItem disabled to={`/admin/expenses/${props.item._id}/update`} tag={Link}>Update</DropdownItem>
           }
           {
             loggedUser.level >= 4 ?
               <DropdownItem onClick={()=>{
-                props.props.removeExpense(props.item.estimateId, props.item.expense._id)
+                props.props.removeExpense(props.item._id)
                 alert('Expense Delete')
               }}><span
                   className="text-danger">Delete</span>
@@ -77,7 +77,6 @@ class Expenses extends React.Component {
     super(props);
     const {auth} = store.getState();
     loggedUser = auth.userLogged;
-    this.loadTime = this.loadTime.bind(this)
   }
 
   updateWindowDimensions = () => {
@@ -91,23 +90,13 @@ class Expenses extends React.Component {
   componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-    this.loadTime()
-
-  }
-
-  loadTime() {
-    if(loggedUser.level <=1) {
-      this.props.getExpenses(loggedUser._id)
-    }else{
-      this.props.getExpenses();
-    }
+    this.props.getExpenses(loggedUser._id)
   }
 
   render() {
-    let {expenses} = this.props
+    let {users, expenses} = this.props
     if (!this.state) return <p>Loading</p>
-    let allExpenses=[]
-    let userInEstimate 
+    let userInEstimate
     console.log(expenses)
 
    expenses = expenses.length > 0 ? expenses.sort(compareValues('date', 'desc')) : expenses
@@ -130,7 +119,7 @@ class Expenses extends React.Component {
                         Add an Expense
                       </p>
                     </Link>
-                      
+
                     </div>
                   </Row>
                 </CardHeader>
@@ -154,6 +143,7 @@ class Expenses extends React.Component {
                   <tbody>
                     {expenses.length === 0 ?  <tbody><tr><td>No expenses register</td></tr></tbody>:
                       expenses.map((e,i)=>{
+                      let user = users.filter(user => user._id === e.userId)[0]
                       return(
                         <tr>
                           {!this.state.isMobileVersion ?
@@ -164,7 +154,7 @@ class Expenses extends React.Component {
                               <td>
                                 <Moment add={{days: 1}} date={new Date(e.date)}  format={"MMM D, YY"} />
                               </td>
-                              <td>{e.userId && e.userId.name}</td>
+                              <td>{user.name}</td>
                               <td>{e.description}</td>
                               <td>{e.category}</td>
                               <td>$ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}</td>
@@ -190,7 +180,7 @@ class Expenses extends React.Component {
                 </Table>
               </Card>
             </Col>
-            
+
           </Row>
         </Container>
       </>
@@ -199,7 +189,8 @@ class Expenses extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  jobs: state.job.jobs,
+  expenses: state.expense.expenses,
+  users: state.user.users
 })
 
 export default connect(mapStateToProps, {getExpenses, removeExpense})(Expenses);

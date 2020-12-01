@@ -45,14 +45,9 @@ export const removeExpense = (id) => async dispatch => {
     }
 }
 
-export const getExpenses = (id = undefined) => async dispatch => {
+export const getExpenses = (id) => async dispatch => {
     try {
-        let response;
-        if (id === undefined) {
-            response = await authService.getExpenses();
-        } else {
-            response = await authService.getExpenses(id);
-        }
+        let response = await authService.getExpenses(id);
         dispatch({ type: FETCH_EXPENSE_SUCCESS, payload: response.data.expenses })
     } catch (err) {
         dispatch({ type: FETCH_EXPENSE_FAILURE, payload: err.message })

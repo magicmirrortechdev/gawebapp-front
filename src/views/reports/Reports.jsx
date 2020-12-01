@@ -33,9 +33,15 @@ import CustomNavigation from './Navigation';
 import {connect} from "react-redux";
 import {getUsers} from "../../redux/actions/userAction"
 import {getJobs} from "../../redux/actions/jobAction"
-import moment from "moment";
+import {getInvoices} from "../../redux/actions/invoiceAction"
+import {getTimes} from "../../redux/actions/timeAction"
+import {getExpenses} from "../../redux/actions/expenseAction"
+import moment from "moment"
+import configureStore from "../../redux/store";
+const {store} = configureStore();
 
 let pdfFile;
+let loggedUser
 class Reports extends React.Component {
     state = {
         startDate: moment().startOf('week').add('days', -6).format('YYYY-MM-DD'),
@@ -48,6 +54,12 @@ class Reports extends React.Component {
         extension: '',
         loadFilter: false
     };
+
+    constructor(props) {
+        super(props);
+        const {auth} = store.getState();
+        loggedUser = auth.userLogged
+    }
 
     toggleTab(tab) {
         if (this.state.activeTab !== tab) {
@@ -124,11 +136,15 @@ class Reports extends React.Component {
     }
 
     componentDidMount(props) {
+        console.log("loggedUser>>> ", loggedUser)
+        this.props.getJobs()
+        this.props.getUsers()
+        this.props.getTimes()
+        this.props.getInvoices(loggedUser._id)
+        this.props.getExpenses()
+
         this.updateWindowDimensions()
         window.addEventListener('resize', this.updateWindowDimensions)
-
-        if (this.props.jobs.length === 0) this.props.getJobs()
-        if (this.props.users.length === 0 ) this.props.getUsers()
 
         this.setState(prevState => {
             return {
@@ -207,27 +223,39 @@ class Reports extends React.Component {
                 workers: [],
             }
         })
-
-        this.props.getJobs();
-        this.props.getUsers();
         document.getElementById('spinner').style.visibility='visible';
 
+        let workers = [];
         let jobsFilter = this.props.jobs.filter(job => job.status === 'Approve');
         jobsFilter.forEach(job =>{
+            console.log(job)
+            job.invoices = []
+            job.expenses = []
+            /*
+            this.props.expenses
+
             if(job.expenses.length > 0){
                 job.expenses = job.expenses.filter(expenses =>
                     expenses.date >= this.state.startDate && expenses.date <= this.state.endDate
                 )
             }
-
-            if(job.invoices.length > 0){
-                job.invoices = job.invoices.filter(invoices =>
-                    invoices.date >= this.state.startDate && invoices.date <= this.state.endDate
-                )
-            }
+            */
+            this.props.invoices.forEach(invoice => {
+                if(invoice.jobId === job._id){
+                    job.invoices.push(invoice)
+                }
+            })
 
             if(job.workers.length > 0){
-                job.workers.forEach(worker =>{
+                job.workers.forEach(worker => {
+                    worker.time = []
+                    this.props.times.forEach(time => {
+                        if(time.userId === worker.workerId && time.jobId === job._id){
+                            worker.time.push(time)
+                            worker.user = this.props.users.filter(user => user._id === worker.workerId )[0]
+                            workers.push(this.props.users.filter(user => user._id === worker.workerId ))
+                        }
+                    })
                     worker.time = worker.time.filter(time =>
                         time.date >= this.state.startDate && time.date <= this.state.endDate
                     )
@@ -236,12 +264,8 @@ class Reports extends React.Component {
             }
         })
 
+        jobsFilter = jobsFilter.filter(job => job.invoices.length > 0 && job.expenses > 0 && job.workers.length > 0)
         jobsFilter = jobsFilter.sort(compareValues('jobName', 'asc'));
-
-        let workers = this.props.users.filter(user => user.role === "WORKER" ||
-            user.role ==="PROJECT MANAGER" ||
-            user.role ==="ADMIN");
-
 
         this.setState(prevState => {
             return {
@@ -285,6 +309,7 @@ class Reports extends React.Component {
             user.totalHours = []
             user.proccessJobs = []
 
+            /*
             user.works.sort(compareValues('date', 'desc')).forEach((work, i) => {
                 work.time.sort(compareValues('date', 'desc')).forEach((time, i) => {
                     hoursPerJob.push({
@@ -356,6 +381,7 @@ class Reports extends React.Component {
                     expenses.date >= this.state.startDate && expenses.date <= this.state.endDate
                 )
             }
+            */
         })
         return users;
     }
@@ -384,7 +410,7 @@ class Reports extends React.Component {
                                         <div className="col text-right">
                                             <Link to="addreport">
                                                 <p color="primary"
-                                                   size="sm">
+                                                   size="sm" style={{display : 'none'}}>
                                                     Create a Report
                                                 </p>
                                             </Link>
@@ -568,7 +594,10 @@ class Reports extends React.Component {
 
 const mapStateToProps = state => ({
     users: state.user.users,
-    jobs: state.job.jobs
+    jobs: state.job.jobs,
+    expenses: state.expense.expenses,
+    invoices: state.invoice.invoices,
+    times: state.time.times
 })
 
-export default connect(mapStateToProps, {getUsers, getJobs})(Reports);
+export default connect(mapStateToProps, {getUsers, getJobs, getExpenses, getInvoices, getTimes})(Reports);
