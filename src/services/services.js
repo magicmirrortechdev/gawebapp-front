@@ -158,6 +158,13 @@ class AuthService {
     }
 
     //expense
+    getExpenses(id) {
+        if (id) {
+            return this.service.get('/v2/time/getexpenses/' + id)
+        } else {
+            return this.service.get('/v2/time/getexpenses/')
+        }
+    }
     addExpense(id, data) {
         return this.service.patch('/addexpense/' + id, data)
     }

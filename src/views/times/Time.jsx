@@ -190,7 +190,7 @@ class Time extends React.Component {
                   </thead>
                   {times.length === 0 ?  <tbody><tr><td>No workers register</td></tr></tbody>:
                    times.map((e,i)=>{
-                    console.log(typeof e.hours)
+              
                        return(
                         loggedUser.level >= 2 ?
                         <tbody key={i}>
@@ -203,7 +203,7 @@ class Time extends React.Component {
                                 <td><Moment add={{days:1}} format={"MMM D, YY"}>{e.date}</Moment></td>
                                 <td>{e.userId.name}</td>
                                 <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px", display:"flex", flexDirection:"column", alignItems:"baseline", alignContent:"center"}}>
-                                  {typeof e.hours === 'object' ? e.hours.$numberDouble : e.hours}
+                                  {e.hours? e.hours : '-'}
                                   </td>
                                 <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px"}} >
                                   <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
@@ -249,7 +249,7 @@ class Time extends React.Component {
                                         alignItems: "baseline",
                                         alignContent: "center"
                                       }}>
-                                  {e.hours.$numberDouble ? e.hours.$numberDouble : 0}</td>
+                                  {e.hours ? e.hours : '-'}</td>
                                   <td style={{height: "100%", paddingTop: "35px", paddingLeft: "60px"}}>
                                     {e.jobId.name}
                                   </td>
@@ -258,7 +258,7 @@ class Time extends React.Component {
                                   <>
                                     <td>
                                       <Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment><br/>
-                                      {e.userId.name} - {e.hours.$numberDouble ? e.hours.$numberDouble : 0}<br/>
+                                      {e.userId.name} - {e.hours ? e.hours : '-'}<br/>
                                       <small>{e.jobId.name}</small><br/>
                                       <div className="buttonfloat-right buttonfloat-right-times">
                                         <ButtonTwo item={e} props={this.props}></ButtonTwo>

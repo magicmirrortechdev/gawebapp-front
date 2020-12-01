@@ -12,6 +12,7 @@ import { clientReducer } from "./reducers/clientReducer";
 import { jobReducer } from "./reducers/jobReducer";
 import { timeReducer } from "./reducers/timeReducer";
 import {invoiceReducer} from "./reducers/invoiceReducer";
+import {expenseReducer} from './reducers/expenseReducer'
 import axios from "axios";
 
 const effect = (effect, _action) => axios(effect);
@@ -53,6 +54,11 @@ const invoicesPersistConfig = {
     storage: localforage,
 }
 
+const expensesPersistConfig = {
+    key: 'ga:expense',
+    storage: localforage,
+}
+
 const {
     middleware: offlineMiddleware,
     enhanceReducer: offlineEnhanceReducer,
@@ -70,7 +76,8 @@ const reducer = combineReducers({
     client: persistReducer(clientPersistConfig, clientReducer),
     job: persistReducer(jobsPersistConfig, jobReducer),
     time: persistReducer(timesPersistConfig, timeReducer),
-    invoice: persistReducer(invoicesPersistConfig, invoiceReducer)
+    invoice: persistReducer(invoicesPersistConfig, invoiceReducer),
+    expense: persistReducer(expensesPersistConfig, expenseReducer)
 })
 
 const persistedReducer = persistReducer(authPersistConfig, offlineEnhanceReducer(reducer))

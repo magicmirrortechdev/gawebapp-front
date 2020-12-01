@@ -13,10 +13,10 @@ export const FETCH_EXPENSE_UPDATE_FAILURE = 'FETCH_EXPENSE_UPDATE_FAILURE'
 export const FETCH_EXPENSE_REMOVE_SUCCESS = 'FETCH_EXPENSE_REMOVE_SUCCESS'
 export const FETCH_EXPENSE_REMOVE_FAILURE = 'FETCH_EXPENSE_REMOVE_FAILURE'
 
-export const addEXPENSE = (data) => async dispatch => {
+export const addExpense = (data) => async dispatch => {
     try {
-        const response = await authService.addEXPENSE(data);
-        const response2 = await authService.getEXPENSE(response.data.expense._id)
+        const response = await authService.addExpense(data);
+        const response2 = await authService.getExpense(response.data.expense._id)
 
         dispatch({ type: FETCH_EXPENSE_ADD_SUCCESS, payload: response2.data.expense })
     } catch (err) {
@@ -25,7 +25,7 @@ export const addEXPENSE = (data) => async dispatch => {
     }
 }
 
-export const updateEXPENSE = (id, data) => async dispatch => {
+export const updateExpense = (id, data) => async dispatch => {
     try {
         const response = await authService.updateEXPENSE(id, data)
         dispatch({ type: FETCH_EXPENSE_UPDATE_SUCCESS, payload: { id: id, data: response.data.expense } })
@@ -35,7 +35,7 @@ export const updateEXPENSE = (id, data) => async dispatch => {
     }
 }
 
-export const removeEXPENSE = (id) => async dispatch => {
+export const removeExpense = (id) => async dispatch => {
     try {
         await authService.deleteExpense(id)
         dispatch({ type: FETCH_EXPENSE_REMOVE_SUCCESS, payload: { id: id } })

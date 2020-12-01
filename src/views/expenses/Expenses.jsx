@@ -18,7 +18,7 @@ import {
 import Header from "components/Headers/Header.jsx";
 import Global, {compareValues} from "../../global";
 import {connect} from "react-redux";
-import {getJobs, removeExpense} from "../../redux/actions/jobAction";
+import {getExpenses, removeExpense} from "../../redux/actions/expenseAction";
 import configureStore from "../../redux/store";
 const {store} = configureStore();
 
@@ -69,14 +69,15 @@ const ActionButton = (props) => {
 
 class Expenses extends React.Component {
   state = {
-    jobs:[],
+    expenses:[],
     isMobileVersion: false
   };
 
   constructor(props) {
     super(props);
     const {auth} = store.getState();
-    loggedUser = auth.userLogged
+    loggedUser = auth.userLogged;
+    this.loadTime = this.loadTime.bind(this)
   }
 
   updateWindowDimensions = () => {
@@ -90,33 +91,26 @@ class Expenses extends React.Component {
   componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
+    this.loadTime()
 
-    if(loggedUser.level <= 1){
-      this.props.getJobs(loggedUser._id)
-    }
-    if(loggedUser.level >= 2){
-      this.props.getJobs();
+  }
+
+  loadTime() {
+    if(loggedUser.level <=1) {
+      this.props.getExpenses(loggedUser._id)
+    }else{
+      this.props.getExpenses();
     }
   }
 
   render() {
-    const {jobs} = this.props
+    let {expenses} = this.props
     if (!this.state) return <p>Loading</p>
     let allExpenses=[]
     let userInEstimate 
-    jobs.forEach((e,i) => {
-      e.expenses.forEach(ex =>{
-        allExpenses.push({estimateId: e._id, expense:ex, date:ex.date})
-      })
-    })
-    jobs.forEach((e,i) => {
-      if(!e.workers)return <th scope="row">Worker Delete</th>
-      userInEstimate =e.workers.length > 0 && e.workers.filter(wx =>{
-        return (wx.workerId && wx.workerId._id  === loggedUser._id)
-      }).length > 0
-    })
+    console.log(expenses)
 
-    allExpenses = allExpenses.sort(compareValues('date', 'desc'))
+   expenses = expenses.length > 0 ? expenses.sort(compareValues('date', 'desc')) : expenses
     return (
       <>
         <Header />
@@ -158,8 +152,8 @@ class Expenses extends React.Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {allExpenses.length === 0 ?  <tbody><tr><td>No expenses register</td></tr></tbody>:
-                      allExpenses.map((e,i)=>{
+                    {expenses.length === 0 ?  <tbody><tr><td>No expenses register</td></tr></tbody>:
+                      expenses.map((e,i)=>{
                       return(
                         <tr>
                           {!this.state.isMobileVersion ?
@@ -168,21 +162,21 @@ class Expenses extends React.Component {
                                 <ActionButton item={e} userInEstimate={userInEstimate} props={this.props}></ActionButton>
                               </td>
                               <td>
-                                <Moment add={{days: 1}} date={new Date(e.expense.date)}  format={"MMM D, YY"} />
+                                <Moment add={{days: 1}} date={new Date(e.date)}  format={"MMM D, YY"} />
                               </td>
-                              <td>{e.expense.workerId && e.expense.workerId.name}</td>
-                              <td>{e.expense.description}</td>
-                              <td>{e.expense.category}</td>
-                              <td>$ {parseFloat(Math.round(e.expense.total * 100) / 100).toFixed(2)}</td>
+                              <td>{e.userId && e.userId.name}</td>
+                              <td>{e.description}</td>
+                              <td>{e.category}</td>
+                              <td>$ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}</td>
                             </>
                             :
                             <>
                               <td>
                                 <Moment add={{days: 1}} date={new Date(e.expense.date)}  format={"MMM D, YY"} /><br/>
-                                {e.expense.workerId && e.expense.workerId.name}<br/>
-                                {e.expense.description}<br/>
-                                {e.expense.category}<br/>
-                                $ {parseFloat(Math.round(e.expense.total * 100) / 100).toFixed(2)}
+                                {e.userId && e.userId.name}<br/>
+                                {e.description}<br/>
+                                {e.category}<br/>
+                                $ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}
                                 <div className="buttonfloat-right buttonfloat-right-estimates">
                                   <ActionButton item={e} userInEstimate={userInEstimate} props={this.props}></ActionButton>
                                 </div>
@@ -208,4 +202,4 @@ const mapStateToProps = state => ({
   jobs: state.job.jobs,
 })
 
-export default connect(mapStateToProps, {getJobs, removeExpense})(Expenses);
+export default connect(mapStateToProps, {getExpenses, removeExpense})(Expenses);

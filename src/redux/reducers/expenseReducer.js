@@ -15,7 +15,7 @@ const initialState = {
     expenses: []
 }
 
-export const EXPENSEReducer = (state = initialState, action) => {
+export const expenseReducer = (state = initialState, action) => {
     switch (action.type) {
         case LOG_LOGOUT_USER:
             state = initialState
@@ -28,7 +28,7 @@ export const EXPENSEReducer = (state = initialState, action) => {
 
         case FETCH_EXPENSE_UPDATE_SUCCESS:
             try {
-                let index = state.EXPENSEs.findIndex(u => u._id === action.payload.id)
+                let index = state.expenses.findIndex(u => u._id === action.payload.id)
                 return {...state, expenses: updater(state.expenses, action.payload.data, index) }
             } catch (e) {
                 return state
