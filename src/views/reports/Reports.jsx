@@ -141,7 +141,7 @@ class Reports extends React.Component {
         this.props.getUsers()
         this.props.getTimes()
         this.props.getInvoices(loggedUser._id)
-        this.props.getExpenses()
+        this.props.getExpenses(loggedUser._id)
 
         this.updateWindowDimensions()
         window.addEventListener('resize', this.updateWindowDimensions)
@@ -225,35 +225,30 @@ class Reports extends React.Component {
         })
         document.getElementById('spinner').style.visibility='visible';
 
-        let workers = [];
+
+        let workers_ = [];
         let jobsFilter = this.props.jobs.filter(job => job.status === 'Approve');
-        jobsFilter.forEach(job =>{
-            console.log(job)
+        jobsFilter.forEach(job => {
             job.invoices = []
             job.expenses = []
-            /*
-            this.props.expenses
 
-            if(job.expenses.length > 0){
-                job.expenses = job.expenses.filter(expenses =>
-                    expenses.date >= this.state.startDate && expenses.date <= this.state.endDate
-                )
-            }
-            */
-            this.props.invoices.forEach(invoice => {
-                if(invoice.jobId === job._id){
-                    job.invoices.push(invoice)
-                }
-            })
-
-            if(job.workers.length > 0){
+            if(job.workers.length > 0) {
                 job.workers.forEach(worker => {
                     worker.time = []
                     this.props.times.forEach(time => {
                         if(time.userId === worker.workerId && time.jobId === job._id){
                             worker.time.push(time)
                             worker.user = this.props.users.filter(user => user._id === worker.workerId )[0]
-                            workers.push(this.props.users.filter(user => user._id === worker.workerId ))
+                            workers_[worker.user._id] = worker.user
+                            if(!workers_[worker.user._id].times){
+                                workers_[worker.user._id].times = []
+                            }
+                            workers_[worker.user._id].times.push(time)
+
+                            if(!workers_[worker.user._id].jobs_){
+                                workers_[worker.user._id].jobs_ = []
+                            }
+                            workers_[worker.user._id].jobs_[job._id] = job
                         }
                     })
                     worker.time = worker.time.filter(time =>
@@ -262,9 +257,50 @@ class Reports extends React.Component {
                 })
                 job.workers = job.workers.filter(worker => worker.time.length > 0)
             }
+
+            let expenses = this.props.expenses.filter(expense =>
+                expense.jobId === job._id && expense.date >= this.state.startDate && expense.date <= this.state.endDate
+            )
+            if(expenses.length > 0){
+                expenses.forEach(expense => {
+                    if(!workers_[expense.userId]){
+                        workers_[expense.userId] = this.props.users.filter(user => user._id === expense.userId )[0]
+                        workers_[expense.userId].expenses = []
+                        workers_[expense.userId].jobs = []
+                    }
+
+                    if(!workers_[expense.userId].expenses){
+                        workers_[expense.userId].expenses = []
+                    }
+
+                    if(expense.userId === workers_[expense.userId]._id &&
+                        expense.jobId === job._id &&
+                        expense.date >= this.state.startDate && expense.date <= this.state.endDate){
+                        workers_[expense.userId].expenses.push(expense)
+                    }
+
+                    job.expenses.push(expense)
+                })
+            }
+
+            this.props.invoices.forEach(invoice => {
+                if(invoice.jobId === job._id &&
+                    invoice.invoiceDate >= this.state.startDate && invoice.invoiceDate <= this.state.endDate){
+                    job.invoices.push(invoice)
+                }
+            })
         })
 
-        jobsFilter = jobsFilter.filter(job => job.invoices.length > 0 && job.expenses > 0 && job.workers.length > 0)
+        let workers = []
+        for(let key in workers_ ){
+            workers_[key].jobs = []
+            for(let keyJob in workers_[key].jobs_ ){
+                workers_[key].jobs.push(workers_[key].jobs_[keyJob])
+            }
+            workers.push(workers_[key])
+        }
+
+        jobsFilter = jobsFilter.filter(job => job.invoices.length > 0 || job.expenses > 0 || job.workers.length > 0)
         jobsFilter = jobsFilter.sort(compareValues('jobName', 'asc'));
 
         this.setState(prevState => {
@@ -272,7 +308,7 @@ class Reports extends React.Component {
                 ...prevState,
                 loadFilter: true,
                 jobs: jobsFilter,
-                workers: this.workersTransformer(workers, this.state.startDate, this.state.endDate)
+                workers: this.workersTransformer(workers)
             }
         })
         document.getElementById('spinner').style.visibility='hidden';
@@ -298,90 +334,36 @@ class Reports extends React.Component {
         document.getElementById("endDate").value = "";
     }
 
-    workersTransformer(users, startDate, endDate) {
+    workersTransformer(users) {
+        users = users.filter(user => user.expenses || user.jobs)
         users.sort(compareValues('name', 'asc'))
         users.forEach(user => {
             let hoursPerJob = []
-
-            user.jobs = []
             user.totalPayroll = []
             user.totalEffective = []
             user.totalHours = []
-            user.proccessJobs = []
 
-            /*
-            user.works.sort(compareValues('date', 'desc')).forEach((work, i) => {
-                work.time.sort(compareValues('date', 'desc')).forEach((time, i) => {
-                    hoursPerJob.push({
-                        _id: time._id,
-                        works: work._id ? work._id : work.workId._id,
-                        time: time.hours,
-                        date: time.date,
-                    })
+            user.jobs.sort(compareValues('date', 'desc'))
+            if(user.times){
+                user.times.forEach(time => {
+                    if(time.date >= this.state.startDate && time.date <= this.state.endDate){
+                        hoursPerJob.push({
+                            _id: time._id,
+                            works: time.jobId,
+                            jobName: this.props.jobs.filter(job=> job._id === time.jobId)[0].jobName,
+                            hours: time.hours,
+                            date: time.date,
+                            payroll: user.payRate * time.hours,
+                            effective: user.effectiveRate * time.hours,
+                        })
+
+                        user.totalPayroll.push(user.payRate * time.hours)
+                        user.totalEffective.push(user.effectiveRate * time.hours)
+                        user.totalHours.push(time.hours)
+                    }
                 })
-            })
-
-            hoursPerJob = hoursPerJob.filter((thing, index) => {
-                const _thing = JSON.stringify(thing);
-                return index === hoursPerJob.findIndex(obj => {
-                    return JSON.stringify(obj) === _thing;
-                });
-            });
-
-            user.works.sort(compareValues('date', 'desc')).forEach(works => {
-                if (works.workId && works.workId.workers) {
-                    works.workId.workers.sort(compareValues('date', 'desc')).forEach(worker => {
-                        if (worker.workerId && worker.workerId === user._id) {
-                            hoursPerJob.forEach(hoursTime => {
-                                if ((hoursTime.works === works._id) || (works.workId && hoursTime.works === works.workId._id)) {
-                                    if(hoursTime.date >= this.state.startDate &&
-                                        hoursTime.date <= this.state.endDate){
-                                        user.jobs.push({
-                                            _id:hoursTime._id,
-                                            date: hoursTime.date,
-                                            jobName: works.workId.jobName,
-                                            hours: hoursTime.time,
-                                            hoursT: hoursTime.time,
-                                            payroll: user.payment * hoursTime.time,
-                                            effective: user.effective * hoursTime.time,
-                                        });
-                                    } else if (startDate == null && endDate == null){
-                                        user.jobs.push({
-                                            _id:hoursTime._id,
-                                            date: hoursTime.date,
-                                            jobName: works.workId.jobName,
-                                            hours: hoursTime.time,
-                                            hoursT: hoursTime.time,
-                                            payroll: user.payment * hoursTime.time,
-                                            effective: user.effective * hoursTime.time,
-                                        });
-                                    }
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-
-            user.jobs = user.jobs.filter((user__, index) => {
-                const _user = JSON.stringify(user__);
-                return index === user.jobs.findIndex(obj => {
-                    return JSON.stringify(obj) === _user;
-                });
-            });
-
-            user.jobs.forEach((e, i) => {
-                user.totalPayroll.push(e.payroll)
-                user.totalEffective.push(e.effective)
-                user.totalHours.push(e.hours)
-            })
-
-            if(user.expenses.length > 0){
-                user.expenses = user.expenses.filter(expenses =>
-                    expenses.date >= this.state.startDate && expenses.date <= this.state.endDate
-                )
             }
-            */
+            user.jobs = hoursPerJob
         })
         return users;
     }

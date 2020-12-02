@@ -88,14 +88,16 @@ class ReportJobs extends React.Component{
                     this.props.jobs.map((e, i) => {
                         if(!e.clientId) return <th>Client Delete</th>
                         let totalEstimate = e.items.reduce((acc, cv, i)=> acc +cv.subtotal,0)
-                        let totalExpenses = e.expenses ? (e.expenses.reduce((acc, current, i) => acc + current.total, 0)) : 0;
+                        let totalExpenses = e.expenses ? (e.expenses.reduce((acc, current) => acc + current.total, 0)) : 0;
                         let clientName = e.clientId.name
-                        let totalInvoices = e.invoices ? e.invoices.reduce((acc,cv,i)=> acc + cv.total,0) : 0
+                        let totalInvoices = e.invoices ? e.invoices.reduce((acc,cv)=> acc + cv.invoiceTotal,0) : 0
                         let time = []
                         let payment = []
                         let effective = []
                         let effectiveTotal = []
                         let timeTotal = []
+
+                        console.log("job>>>> ", e.expenses, " >>>> ", totalExpenses)
 
                         let totalTime = 0
                         let totalEffective = 0
@@ -196,12 +198,13 @@ class ReportJobs extends React.Component{
                                                             {   !e.invoices ?<tr><td>No invoices register</td></tr>:
                                                                 e.invoices.length === 0 ? <tr><td>No invoices register</td></tr>
                                                                     : e.invoices.map((e, i)=>{
-                                                                    const paid = e.payment.reduce((acc, current, i) => acc + current.paid, 0)
+                                                                        console.log("payment>>> ", e)
+                                                                    const paid = e.payments.reduce((acc, current, i) => acc + current.paidAmount, 0)
                                                                     return(
                                                                         <tr key={i}>
                                                                             <td><Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment></td>
                                                                             <td>{clientName ? clientName : nameClient}</td>
-                                                                            <td align="right">$ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}</td>
+                                                                            <td align="right">$ {parseFloat(Math.round(e.invoiceTotal * 100) / 100).toFixed(2)}</td>
                                                                             <td>{ e.total-paid === 0 ? 'Paid' : e.status}</td>
                                                                         </tr>
                                                                     )
@@ -232,7 +235,6 @@ class ReportJobs extends React.Component{
                                                         <tbody>
                                                         {e.workers.length === 0 ? <tr><td>No workers</td></tr>
                                                             : e.workers.sort(compareValues('date','asc')).map((wx, i) => {
-                                                                console.log(wx)
                                                                 if(!wx.workerId)return <tr><td>Worker Delete</td></tr>
                                                                 let time = wx.time ? (wx.time.reduce((acc, current, i) => acc + current.hours, 0)) : 0;
                                                                 let effective = wx.user.effectiveRate ? wx.user.effectiveRate : 0;
@@ -302,7 +304,7 @@ class ReportJobs extends React.Component{
                                                         }
                                                     )}
                                                     <tr>
-                                                        <td></td>
+                                                        <td colSpan={2}></td>
                                                         <td>Total:</td>
                                                         <td align="right">$ {!totalExpenses ? 0 :  parseFloat(Math.round(totalExpenses * 100) / 100).toFixed(2)}</td>
                                                     </tr>
@@ -431,4 +433,4 @@ class ReportJobs extends React.Component{
     }
 }
 
-export default ReportJobs;
+export default ReportJobs

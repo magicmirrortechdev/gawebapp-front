@@ -162,7 +162,7 @@ class Expenses extends React.Component {
                             <>
                               <td>
                                 <Moment add={{days: 1}} date={new Date(e.expense.date)}  format={"MMM D, YY"} /><br/>
-                                {e.userId && e.userId.name}<br/>
+                                {user.name}<br/>
                                 {e.description}<br/>
                                 {e.category}<br/>
                                 $ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}

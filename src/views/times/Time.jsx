@@ -115,6 +115,7 @@ class Time extends React.Component {
     super(props);
     const {auth} = store.getState();
     loggedUser = auth.userLogged
+    console.log("loggedUser>>>> ", loggedUser)
     this.loadTime = this.loadTime.bind(this)
   }
 
@@ -133,17 +134,18 @@ class Time extends React.Component {
   }
 
   loadTime() {
-    if(loggedUser.level <=1) {
-      this.props.getTimes(loggedUser._id)
-    }else{
-      this.props.getTimes();
-    }
+    this.props.getTimes(loggedUser._id)
   }
 
   render() {
-    let {times} = this.props
+    let {times, users, jobs} = this.props
     if (!this.state) return <p>Loading</p>
-    times = times.sort(compareValues('date','desc'));
+
+    if(times){
+      times = times.sort(compareValues('date','desc'));
+    }else{
+      times = []
+    }
 
     return (
       <>
@@ -190,8 +192,9 @@ class Time extends React.Component {
                   </thead>
                   {times.length === 0 ?  <tbody><tr><td>No workers register</td></tr></tbody>:
                    times.map((e,i)=>{
-              
-                       return(
+                     const user = users.filter(user => user._id === e.userId)[0]
+                     const job = jobs.filter(job => job._id === e.jobId)[0]
+                     return(
                         loggedUser.level >= 2 ?
                         <tbody key={i}>
                           <tr>
@@ -201,20 +204,20 @@ class Time extends React.Component {
                                   <ButtonOne item={e} props={this.props}></ButtonOne>
                                 </td>
                                 <td><Moment add={{days:1}} format={"MMM D, YY"}>{e.date}</Moment></td>
-                                <td>{e.userId.name}</td>
+                                <td>{user.name}</td>
                                 <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px", display:"flex", flexDirection:"column", alignItems:"baseline", alignContent:"center"}}>
                                   {e.hours? e.hours : '-'}
                                   </td>
                                 <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px"}} >
-                                  <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
+                                  <p style={{fontSize:"10px"}} key={i}>{job.jobName}</p>
                                 </td>
                               </>
                               :
                               <>
                                 <td>
                                   <Moment add={{days:1}} format={"MMM D, YY"}>{e.date}</Moment><br/>
-                                  {e.userId.name} - {e.hours? e.hours : '-'}<br/>
-                                  <small>{e.jobId.name}</small> <br/>
+                                  {user.name} - {e.hours? e.hours : '-'}<br/>
+                                  <small>{job.jobName}</small> <br/>
                                   <div className="buttonfloat-right buttonfloat-right-times">
                                     <ButtonOne item={e} props={this.props}></ButtonOne>
                                   </div>
@@ -229,6 +232,8 @@ class Time extends React.Component {
                   {//nuevo bloque
                     loggedUser.level <= 1 ?
                         times.map((e, i) => {
+                          const user = users.filter(user => user._id === e.userId)[0]
+                          const job = jobs.filter(job => job._id === e.jobId)[0]
                           if (!e.userId) return <th scope="row">Worker Delete</th>
                           return (
                             <tbody key={i}>
@@ -239,7 +244,7 @@ class Time extends React.Component {
                                     <ButtonTwo item={e} props={this.props}></ButtonTwo>
                                   </td>
                                   <td><Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment></td>
-                                  <td>{e.userId.name}</td>
+                                  <td>{user.name}</td>
                                   <td style={{
                                         height: "100%",
                                         paddingTop: "35px",
@@ -251,7 +256,7 @@ class Time extends React.Component {
                                       }}>
                                   {e.hours ? e.hours : '-'}</td>
                                   <td style={{height: "100%", paddingTop: "35px", paddingLeft: "60px"}}>
-                                    {e.jobId.name}
+                                    {job.jobName}
                                   </td>
                                  </>
                                   :
@@ -284,7 +289,9 @@ class Time extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  jobs: state.job.jobs,
   times: state.time.times,
+  users: state.user.users
 })
 
 export default connect(mapStateToProps, {getTimes, getJobs, removeTime})(Time);

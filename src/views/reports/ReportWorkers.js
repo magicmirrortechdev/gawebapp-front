@@ -71,21 +71,20 @@ const DropDownExpense = (props) =>{
                                 </thead>
                                 <tbody>
                                 {
-                                    !props.e.expenses ? <p>Loading</p> :
-                                        props.e.expenses.sort(compareValues('date','desc')).map((ex, i) => {
-                                                return (
-                                                    <tr key={i}>
-                                                        <td><Button onClick={props.handleModal(ex.img)}><i className="fas fa-receipt"></i> View</Button> </td>
-                                                        <td><Moment add={{days:1}} format={"MMM D, YY"}>{ex.date}</Moment></td>
-                                                        <td>{ex.category}</td>
-                                                        <td align="right">$ {ex.total}</td>
-                                                        <td>{ex.vendor}</td>
-                                                        <td>{ex.jobName}</td>
-                                                        <td>{ex.description}</td>
-                                                    </tr>
-                                                )
-                                            }
-                                        )}
+                                    !props.e.expenses ? <tr><td colSpan={7}></td></tr> :
+                                    props.e.expenses.sort(compareValues('date','desc')).map((ex, i) => {
+                                        return (
+                                            <tr key={i}>
+                                                <td><Button onClick={props.handleModal(ex.img)}><i className="fas fa-receipt"></i> View</Button> </td>
+                                                <td><Moment add={{days:1}} format={"MMM D, YY"}>{ex.date}</Moment></td>
+                                                <td>{ex.category}</td>
+                                                <td align="right">$ {ex.total}</td>
+                                                <td>{ex.vendor}</td>
+                                                <td>{ex.jobName}</td>
+                                                <td>{ex.description}</td>
+                                            </tr>
+                                        )
+                                    })}
                                 </tbody>
                             </Table>
                         </div>
@@ -134,7 +133,7 @@ const DropDownExpense = (props) =>{
                         </thead>
                         <tbody>
                         {
-                            !props.e.expenses ? <p>Loading</p> :
+                            !props.e.expenses ? <tr><td></td></tr> :
                                 props.e.expenses.sort(compareValues('date','desc')).map((ex, i) => {
                                     return (
                                         <tr key={i}>

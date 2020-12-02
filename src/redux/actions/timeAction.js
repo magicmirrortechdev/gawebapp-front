@@ -47,12 +47,7 @@ export const removeTime = (id) => async dispatch => {
 
 export const getTimes = (id = undefined) => async dispatch => {
     try {
-        let response;
-        if (id === undefined) {
-            response = await authService.getTimes();
-        } else {
-            response = await authService.getTimes(id);
-        }
+        let response = await authService.getTimes(id);
         dispatch({ type: FETCH_TIME_SUCCESS, payload: response.data.times })
     } catch (err) {
         dispatch({ type: FETCH_TIME_FAILURE, payload: err.message })
