@@ -163,7 +163,7 @@ var routes = [
     invisible:true
   },
   {
-    path: "/:estimateId/:expenseId/update",
+    path: "/expenseId/update",
     name: "Update Expense",
     icon: "ni ni-credit-card text-orange",
     component: UpdateExpense,

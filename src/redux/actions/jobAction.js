@@ -186,16 +186,6 @@ export const addProjectManager = (id, data) => async dispatch => {
     }
 }
 
-export const addExpense = (id, data) => async dispatch =>{
-    try {
-        const response = await authService.addExpense(id, data)
-        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: id, data: response.data.estimate}})
-    } catch (err){
-        dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
-        console.log(err)
-    }
-}
-
 export const removeExpense = (id, expenseId) => async dispatch =>{
     try {
         const response = await authService.removeExpense(id, expenseId)

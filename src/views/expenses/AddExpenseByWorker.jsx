@@ -15,7 +15,7 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import {connect} from "react-redux";
-import {addExpense} from "../../redux/actions/jobAction";
+import {addExpense} from "../../redux/actions/expenseAction";
 import configureStore from "../../redux/store";
 import Global from "../../global";
 import * as axios from "axios";
@@ -32,7 +32,8 @@ var fecha = new Date();
         mes='0'+mes //agrega cero si es menor de 10
 class AddExpense extends React.Component {
   state = {
-    workerId: "",
+    jobId: "",
+    userId: "",
     date: ano+"-"+mes+"-"+dia,
     colorError: false
   };
@@ -46,9 +47,8 @@ class AddExpense extends React.Component {
 
   componentDidMount() {
     this.setState({
-      workerId: loggedUser._id,
+      userId: loggedUser._id,
       jobs: this.props.jobs.filter(job => job.status === 'Approve'),
-      _id: '',
       category: '',
     })
   }
@@ -67,7 +67,7 @@ class AddExpense extends React.Component {
 
     let img_ = null;
     try {
-      const { data } = await axios.post(Global.url + 'upload', file)
+      const { data } = await axios.post(Global.url + 'v2/upload', file)
       img_ = data.img;
     }catch (e){
       console.log(e);
@@ -81,7 +81,7 @@ class AddExpense extends React.Component {
     const total =  this.state.total
 
     e.preventDefault()
-    if (this.state._id==='') {
+    if (this.state.jobId==='') {
       alert('Select a Job to continue');
     }
     else if (this.state.category==='') {
@@ -92,7 +92,7 @@ class AddExpense extends React.Component {
     }
     else {
       this.setState({ colorError: false });
-      this.props.addExpense(this.state._id, this.state)
+      this.props.addExpense(this.state)
       this.props.history.push('/admin/expenses')
     }
 
@@ -100,7 +100,7 @@ class AddExpense extends React.Component {
 
   render() {
     console.log(this.state)
-    if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
+    if(!this.state.userId || this.state.userId==='') return <p>Loading</p>
     return (
       <>
         <Header forms={true}/>
@@ -125,32 +125,27 @@ class AddExpense extends React.Component {
                           <FormGroup>
                           <label
                               className="form-control-label d-inline-block"
-                              htmlFor="input-date"
-                            >
+                              htmlFor="input-date">
                               Job Name *
                             </label>
                             <Input
                               ref={this.selectRef}
-                              name="_id"
+                              name="jobId"
                               className="form-control-alternative"
                               type="select"
-                              onChange={this.handleInput}
-                            >
+                              onChange={this.handleInput}>
                             <option selected disabled>Select Job to Add Expense</option>
                             {this.state.jobs.map((e,i)=>{
                               return(
                                 <option key={i} value={`${e._id}`}>{e.jobName}</option>)
                             })
                             }
-
-
                             </Input>
                           </FormGroup>
                           <FormGroup>
                             <label
                               className="form-control-label d-inline-block"
-                              htmlFor="input-date"
-                            >
+                              htmlFor="input-date">
                               Expense Date *
                             </label>
                             <Input

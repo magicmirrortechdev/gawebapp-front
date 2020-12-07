@@ -15,7 +15,7 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import {connect} from "react-redux";
-import {addExpense} from "../../redux/actions/jobAction";
+import {addExpense} from "../../redux/actions/expenseAction";
 import configureStore from "../../redux/store";
 import * as axios from "axios";
 import Global from "../../global";
@@ -34,9 +34,9 @@ var fecha = new Date();
 
 class AddExpense extends React.Component {
   state = {
-    workerId: "",
+    userId: "",
     date: ano+"-"+mes+"-"+dia,
-    _id: '',
+    jobId: this.props.match.params.id,
     category: '',
   };
 
@@ -48,7 +48,7 @@ class AddExpense extends React.Component {
 
   componentDidMount() {
     this.setState({
-      workerId: loggedUser._id
+      userId: loggedUser._id
     })
   }
 
@@ -66,7 +66,7 @@ class AddExpense extends React.Component {
 
     let img_ = null;
     try {
-      const { data } = await axios.post(Global.url + 'upload', file)
+      const { data } = await axios.post(Global.url + 'v2/upload', file)
       img_ = data.img;
     } catch (e){
       img_ = 'notNet.png'
@@ -86,7 +86,7 @@ class AddExpense extends React.Component {
       alert('Total quantity not valid')
     }
     else{
-      this.props.addExpense(this.props.match.params.id, this.state)
+      this.props.addExpense(this.state)
       this.props.history.push('/admin/jobs')
     }
   }

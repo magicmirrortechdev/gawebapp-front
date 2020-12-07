@@ -161,14 +161,14 @@ class AuthService {
     getExpenses(id) {
         return this.service.get('/v2/expense/getexpenses/' + id)
     }
-    addExpense(id, data) {
-        return this.service.patch('/addexpense/' + id, data)
+    addExpense(data) {
+        return this.service.patch('/v2/expense/addexpense/', data)
     }
-    updateExpense(id, expenseId, data) {
-        return this.service.patch('/expenseupdate/' + id + '/' + expenseId, data)
+    updateExpense( id, data) {
+        return this.service.patch('/v2/expense/expenseupdate/' + id, data)
     }
-    removeExpense(id, expenseId) {
-        return this.service.patch('/expensedelete/' + id + '/' + expenseId)
+    removeExpense(id) {
+        return this.service.patch('/v2/expense/expensedelete/' + id)
     }
 
 }

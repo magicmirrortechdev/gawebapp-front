@@ -46,7 +46,8 @@ class UpdateExpense extends React.Component {
   componentDidMount() {
     console.log(loggedUser);
     if (this.props.jobs.length === 0) this.props.history.push(`/admin/expenses`)
-    const job = this.props.jobs.filter(item => item._id === this.props.match.params.estimateId)[0]
+    const expense = this.props.jobs.filter(item => item._id === this.props.match.params.expenseId)[0]
+    const job = this.props.jobs.filter(item => item._id === expense.jobId)[0]
     this.setState(prevState => {
       let img = ''
       let date = ''
@@ -99,7 +100,7 @@ class UpdateExpense extends React.Component {
 
     let img_ = null;
     try {
-      const { data } = await axios.post(Global.url + 'upload', file)
+      const { data } = await axios.post(Global.url + 'v2/upload', file)
       img_ = data.img;
     } catch (e){
       img_ = 'notNet.png'
