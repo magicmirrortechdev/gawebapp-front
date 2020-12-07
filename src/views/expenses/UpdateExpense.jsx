@@ -18,7 +18,7 @@ import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 import moment from 'moment/min/moment-with-locales';
 import {connect} from "react-redux";
-import {getJobs, updateExpense} from "../../redux/actions/jobAction";
+import {getExpenses, updateExpense} from "../../redux/actions/expenseAction";
 import configureStore from "../../redux/store";
 const {store} = configureStore();
 
@@ -28,7 +28,7 @@ class UpdateExpense extends React.Component {
   state = {
     workerId: "",
     expenses:[],
-    img: '',
+    image: '',
     date:'',
     vendor:'',
     category: '',
@@ -38,37 +38,23 @@ class UpdateExpense extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log("constructor!!!")
     const {auth} = store.getState();
     loggedUser = auth.userLogged
   }
 
   componentDidMount() {
-    console.log(loggedUser);
-    if (this.props.jobs.length === 0) this.props.history.push(`/admin/expenses`)
-    const expense = this.props.jobs.filter(item => item._id === this.props.match.params.expenseId)[0]
+    if (this.props.expenses.length === 0) this.props.history.push(`/admin/expenses`)
+    const expense = this.props.expenses.filter(item => item._id === this.props.match.params.expenseId)[0]
     const job = this.props.jobs.filter(item => item._id === expense.jobId)[0]
     this.setState(prevState => {
-      let img = ''
-      let date = ''
-      let vendor = ''
-      let category = ''
-      let description = ''
-      let total
-      const expenses = job.expenses
-      expenses.map((e,i)=>{
-        if(e._id === this.props.match.params.expenseId){
-          img = e.img
-          date = moment(e.date).format("YYYY-MM-DD")
-          vendor = e.vendor
-          category = e.category
-          description = e.description
-          total = e.total
-        }
-        return {img, date, vendor, description, category, total}
-      })
+      let img = expense.image
+      let date = moment(expense.date).format("YYYY-MM-DD")
+      let vendor = expense.vendor
+      let category = expense.category
+      let description = expense.description
+      let total = expense.total
 
-      if(img.startsWith("http:")){
+      if(img && img.startsWith("http:")){
         img.replace("http:", "https:")
       }
 
@@ -76,7 +62,7 @@ class UpdateExpense extends React.Component {
         ...prevState,
         workerId: loggedUser._id,
         expenses: job.expenses,
-        img: img,
+        image: img,
         date: date,
         vendor: vendor,
         category: category,
@@ -106,17 +92,15 @@ class UpdateExpense extends React.Component {
       img_ = 'notNet.png'
     }
 
-    this.setState(prevState => ({ ...prevState, img : img_}))
+    this.setState(prevState => ({ ...prevState, image : img_}))
   }
 
   handleSubmit = async (e, props) => {
-    this.props.updateExpense(this.props.match.params.estimateId, this.props.match.params.expenseId, this.state);
+    this.props.updateExpense(this.props.match.params.expenseId, this.state);
     this.props.history.push(`/admin/expenses`)
   }
 
   render() {
-    console.log(this.state)
-
     const categories = [{category: 'Job Materials'}, {category: 'Gas'}, {category:'Supplies'}, {category:'Sub Contractors'}]
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
     return (
@@ -256,8 +240,8 @@ class UpdateExpense extends React.Component {
                             >
                               Image Preview
                             </label>
-                          {!this.state.img  ? <img width="100%" height="100%" src={this.state.img} alt="photo_url" /> :
-                           <img width="100%" height="100%" src={this.state.img} alt="photo_url" />}
+                          {!this.state.img  ? <img width="100%" height="100%" src={this.state.image} alt="photo_url" /> :
+                           <img width="100%" height="100%" src={this.state.image} alt="photo_url" />}
                         </Col>
                       </Row>
 
@@ -288,7 +272,8 @@ class UpdateExpense extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  expenses: state.expense.expenses,
   jobs: state.job.jobs,
 })
 
-export default connect(mapStateToProps, {getJobs, updateExpense})(withRouter(UpdateExpense));
+export default connect(mapStateToProps, {getExpenses, updateExpense})(withRouter(UpdateExpense));

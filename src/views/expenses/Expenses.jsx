@@ -90,7 +90,6 @@ class Expenses extends React.Component {
   componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-    console.log("loggedUser._id>>>> ", loggedUser._id)
     if(loggedUser._id !== 'undefined'){
       this.props.getExpenses(loggedUser._id)
     }

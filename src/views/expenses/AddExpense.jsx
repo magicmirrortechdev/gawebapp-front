@@ -72,7 +72,7 @@ class AddExpense extends React.Component {
       img_ = 'notNet.png'
     }
 
-    this.setState(prevState => ({ ...prevState, img : img_ }))
+    this.setState(prevState => ({ ...prevState, image : img_ }))
   }
 
   handleSubmit = async (e, props) => {

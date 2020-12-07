@@ -74,7 +74,7 @@ class AddExpense extends React.Component {
       img_ = 'notNet.png'
     }
 
-    this.setState(prevState => ({ ...prevState, img:img_ }))
+    this.setState(prevState => ({ ...prevState, image:img_ }))
   }
 
   handleSubmit = async (e, props) => {
@@ -99,7 +99,6 @@ class AddExpense extends React.Component {
   }
 
   render() {
-    console.log(this.state)
     if(!this.state.userId || this.state.userId==='') return <p>Loading</p>
     return (
       <>
