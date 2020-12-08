@@ -66,7 +66,7 @@ class AddExpense extends React.Component {
 
     let img_ = null;
     try {
-      const { data } = await axios.post(Global.url + 'v2/upload', file)
+      const {data} = await axios.post(Global.url + 'v2/upload', file)
       img_ = data.img;
     } catch (e){
       img_ = 'notNet.png'
@@ -228,7 +228,7 @@ class AddExpense extends React.Component {
                             >
                               Image Preview
                             </label>
-                          {this.state.img && <img width="100%" height="100%" src={this.state.img} alt="photo_url" />}
+                          {this.state.image && <img width="100%" height="100%" src={this.state.image} alt="photo_url" />}
                         </Col>
                       </Row>
 
@@ -238,7 +238,7 @@ class AddExpense extends React.Component {
                           <FormGroup>
 
                             <Button
-                              disabled={this.state.img ? false : true}
+                              disabled={this.state.image ? false : true}
                               className="form-control-alternative"
                               color="info"
 

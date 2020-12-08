@@ -73,9 +73,6 @@ class AuthService {
     getEstimates(id = "") {
         return this.service.get('/v2/job/checkestimates/' + id)
     }
-    getEstimate(id = "") {
-        return this.service.get('/estimatedetail/' + id)
-    }
     addEstimate(data) {
         return this.service.post('/v2/job/addestimate', data)
     }
@@ -86,7 +83,7 @@ class AuthService {
         return this.service.delete(`/v2/job/estimatedelete/${id}`)
     }
     sendEstimates(data) {
-        return this.service.post('/sendestimate', data)
+        return this.service.post('/v2/job/sendestimate', data)
     }
     updateEstimate(id, data) {
         return this.service.patch('/v2/job/estimateupdate/' + id, data)

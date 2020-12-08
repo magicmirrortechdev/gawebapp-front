@@ -204,16 +204,6 @@ export const updateExpense = (id, expenseId, item) => async dispatch =>{
     }
 }
 
-export const addTime = (estimateId, workerId, data) => async dispatch =>{
-    try {
-        const response = await authService.addTime(estimateId, workerId, data)
-        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: data._id, data: response.data.estimate}})
-    } catch (err){
-        dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
-        console.log(err)
-    }
-}
-
 export const updateTime = (estimateId, workerId, timeId, data) => async dispatch => {
     try {
         const response = await authService.updateTime(estimateId, workerId, timeId, data)
