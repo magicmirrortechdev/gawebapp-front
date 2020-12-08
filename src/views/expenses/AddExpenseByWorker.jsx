@@ -68,10 +68,8 @@ class AddExpense extends React.Component {
     let img_ = null;
     try {
       const {data} = await axios.post(Global.url + 'v2/upload', file)
-      console.log("data>>> ", data)
       img_ = data.img;
     }catch (e){
-      console.log(e);
       img_ = 'notNet.png'
     }
 
@@ -96,11 +94,9 @@ class AddExpense extends React.Component {
       this.props.addExpense(this.state)
       this.props.history.push('/admin/expenses')
     }
-
   }
 
   render() {
-    console.log(this.state)
     if(!this.state.userId || this.state.userId==='') return <p>Loading</p>
     return (
       <>

@@ -16,9 +16,7 @@ export const FETCH_EXPENSE_REMOVE_FAILURE = 'FETCH_EXPENSE_REMOVE_FAILURE'
 export const addExpense = (data) => async dispatch => {
     try {
         const response = await authService.addExpense(data);
-        const response2 = await authService.getExpense(response.data.expense._id)
-
-        dispatch({ type: FETCH_EXPENSE_ADD_SUCCESS, payload: response2.data.expense })
+        dispatch({ type: FETCH_EXPENSE_ADD_SUCCESS, payload: response.data.expense })
     } catch (err) {
         dispatch({ type: FETCH_EXPENSE_ADD_FAILURE, payload: err.message })
         console.log(err)
