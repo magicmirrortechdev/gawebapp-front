@@ -37,7 +37,7 @@ export const updateTime = (id, data) => async dispatch => {
 
 export const removeTime = (id) => async dispatch => {
     try {
-        await authService.deleteTime(id)
+        await authService.removeTime(id)
         dispatch({ type: FETCH_TIME_REMOVE_SUCCESS, payload: { id: id } })
     } catch (err) {
         dispatch({ type: FETCH_TIME_REMOVE_FAILURE, payload: err })

@@ -147,14 +147,14 @@ class AuthService {
             return this.service.get('/v2/time/gettimes/')
         }
     }
-    addTime(estimateId, workerId, data) {
-        return this.service.patch('/addtime/' + estimateId + "/" + workerId, data)
+    addTime(data) {
+        return this.service.patch('/v2/time/addtime/', data)
     }
-    updateTime(estimateId, workerId, timeId, data) {
-        return this.service.patch('/updatetime/' + estimateId + "/" + workerId + "/" + timeId, data)
+    updateTime(timeId, data) {
+        return this.service.patch('/v2/time/updatetime/' + timeId, data)
     }
-    removeTime(estimateId, workerId, timeId) {
-        return this.service.patch('/deletetime/' + estimateId + "/" + workerId + "/" + timeId)
+    removeTime(timeId) {
+        return this.service.patch('/v2/time/deletetime/'+ timeId)
     }
 
     //expense

@@ -15,15 +15,15 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import {connect} from "react-redux";
-import {addTime} from "../../redux/actions/jobAction"
+import {addTime} from "../../redux/actions/timeAction"
 import configureStore from "../../redux/store";
 const {store} = configureStore();
 
 let loggedUser;
 var fecha = new Date();
-      var mes = fecha.getMonth()+1; 
-      var dia = fecha.getDate(); 
-      var ano = fecha.getFullYear(); 
+      var mes = fecha.getMonth()+1;
+      var dia = fecha.getDate();
+      var ano = fecha.getFullYear();
       if(dia<10)
         dia='0'+dia; //agrega cero si es menor de 10
       if(mes<10)
@@ -34,7 +34,7 @@ class AddTime extends React.Component {
     nameWorker:'',
     workers:[],
     value: false,
-    time: parseInt(''),
+    hours: parseInt(''),
     date: ano+"-"+mes+"-"+dia,
     spinner: false
   };
@@ -52,26 +52,32 @@ class AddTime extends React.Component {
     }))
     this.setState(({ value }) => ({ value: !value }))
 
-    if(e.target.name === '_id'){
+    if(e.target.name === 'jobId'){
         this.state.jobs.forEach((item) => {
             if(item._id === e.target.value){
                 let user = null;
+                let user_ = null;
+                let users = []
                 item.workers.forEach((worker) => {
-                    if(worker.workerId && worker.workerId._id === loggedUser._id){
-                        user = worker;
+                    if(worker.workerId && worker.workerId === loggedUser._id){
+                        user = this.props.users.filter(item => item._id === worker.workerId)[0]
+                        users.push(user)
+                    }else{
+                        user_ = this.props.users.filter(item => item._id === worker.workerId)[0]
+                        users.push(user_)
                     }
                 });
 
                 if(user !== null){
                     this.setState(prevState => ({
                         ...prevState,
-                        workers: item.workers,
-                        worker_id: user._id+'.'+ user.workerId._id,
+                        workers: users,
+                        userId: user._id,
                     }))
                 }else{
                     this.setState(prevState => ({
                         ...prevState,
-                        workers: item.workers
+                        workers: users
                     }))
                 }
             }
@@ -91,18 +97,17 @@ class AddTime extends React.Component {
   handleSubmit = (e, props) => {
     e.preventDefault()
 
-    const id = this.state.worker_id ? this.state.worker_id.split(".")[0] : undefined
-    const workerId = this.state.worker_id ? this.state.worker_id.split(".")[1] : undefined
     this.setState(prevState =>{
       return{
         spinner: true
       }
     })
-    this.props.addTime(id, workerId, this.state)
+    this.props.addTime(this.state)
     this.props.history.push(`/admin/time`)
   }
 
   render() {
+      console.log(">>>>", this.state)
     return (
       <>
         <Header />
@@ -119,54 +124,45 @@ class AddTime extends React.Component {
                   </Row>
                 </CardHeader>
                 <CardBody>
-                  
+
                   <Form onSubmit={this.handleSubmit}>
                     <div className="pl-lg-4">
                       <Row>
                         <Col lg="8">
                         <FormGroup>
                             <Input
-                              name="_id"
+                              name="jobId"
                               className="form-control-alternative"
                               type="select"
-                              onChange={this.handleInput}
-
-                            >
+                              onChange={this.handleInput}>
                             <option>Select Job to Add Time</option>
                             {this.state.jobs.map((e,i)=>{
                               return(
                                 <option key={i} value={`${e._id}`}>{e.jobName}</option>)
                             })
                             }
-
-
                             </Input>
                         </FormGroup>
                         <FormGroup>
                             <Input
-                              name="worker_id"
+                              name="userId"
                               className="form-control-alternative"
                               type="select"
-                              onChange={this.handleInput}
-                              
-                            >
+                              onChange={this.handleInput}>
                             <option>Select worker</option>
                             { this.state.workers.map((e,i)=>{
-                              if(!e.workerId)return <option>Worker Delete</option>
+                              if(!e._id)return <option>Worker Delete</option>
                               return(
-                                loggedUser._id === e.workerId._id ?  <option selected key={i} value={ `${e._id}.${e.workerId._id}`}>{e.workerId.name}</option> :
-                                 <option  key={i} value={`${e._id}.${e.workerId._id}`}>{e.workerId.name}</option>)
+                                loggedUser._id === e._id ?  <option selected key={i} value={ `${e._id}`}>{e.name}</option> :
+                                 <option key={i} value={`${e._id}`}>{e.name}</option>)
                             })
                             }
-                            
-                            
                             </Input>
                         </FormGroup>
                         <FormGroup>
                             <label
                               className="form-control-label d-inline-block"
-                              htmlFor="input-date"
-                            >
+                              htmlFor="input-date">
                              Date
                             </label>
                             <Input
@@ -183,32 +179,26 @@ class AddTime extends React.Component {
                         <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-hours"
-                            >
+                              htmlFor="input-hours">
                               Hours
                             </label>
                             <Input
-                              name="time"
+                              name="hours"
                               className="form-control-alternative"
                               type="number"
                               onChange={this.handleInput}
                               step="any"
                             />
                           </FormGroup>
-                          
                         </Col>
                       </Row>
-                      
-                      
+
                       <Row>
                         <Col lg="6">
                           <FormGroup>
-                        
                             <Button
                               className="form-control-alternative"
-                              color="info"
-
-                            >Add Hours</Button>
+                              color="info">Add Hours</Button>
                           </FormGroup>
                         </Col>
                       </Row>
@@ -217,7 +207,7 @@ class AddTime extends React.Component {
                 </CardBody>
               </Card>
             </Col>
-            
+
           </Row>
         </Container>
       </>

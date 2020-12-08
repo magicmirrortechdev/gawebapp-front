@@ -16,7 +16,7 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import {connect} from "react-redux";
-import {updateTime} from "../../redux/actions/jobAction";
+import {updateTime} from "../../redux/actions/timeAction";
 
 var fecha = new Date();
       var mes = fecha.getMonth()+1;
@@ -43,25 +43,16 @@ class UpdateTime extends React.Component {
   }
 
   componentDidMount() {
-    const job = this.props.jobs.filter(item => item._id === this.props.match.params.estimateId)[0]
-    const user = this.props.users.filter(item => item._id === this.props.match.params.workerId)[0]
-    job.workers.forEach((worker, i)=>{
-      if(worker._id === this.props.match.params.id){
-        worker.time.forEach((timeU, j) =>{
-          if(timeU._id === this.props.match.params.timeId){
-            this.setState(prevState => {
-              return {
-                ...prevState,
-                date: timeU.date.substring(0, 10),
-                time: timeU.hours,
-                jobName: job.jobName,
-                nameWorker: user.name,
-                ...job,
-                ...user
-              }
-            })
-          }
-        })
+    const time = this.props.times.filter(item => item._id === this.props.match.params.id)[0]
+    const job = this.props.jobs.filter(item => item._id === time.jobId)[0]
+    const user = this.props.users.filter(item => item._id === time.userId)[0]
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        date: time.date.substring(0, 10),
+        hours: time.hours,
+        jobName: job.jobName,
+        nameWorker: user.name,
       }
     })
   }
@@ -73,7 +64,7 @@ class UpdateTime extends React.Component {
         spinner: true
       }
     })
-    this.props.updateTime(this.props.match.params.estimateId, this.props.match.params.workerId, this.props.match.params.timeId, this.state)
+    this.props.updateTime(this.props.match.params.id, this.state)
     this.props.history.push(`/admin/time`)
   }
 
@@ -104,8 +95,7 @@ class UpdateTime extends React.Component {
                         <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-hours"
-                            >
+                              htmlFor="input-hours">
                               Job Name
                             </label>
                             <Input
@@ -120,8 +110,7 @@ class UpdateTime extends React.Component {
                         <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-hours"
-                            >
+                              htmlFor="input-hours">
                               Worker Name
                             </label>
                             <Input
@@ -136,8 +125,7 @@ class UpdateTime extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label d-inline-block"
-                              htmlFor="input-date"
-                            >
+                              htmlFor="input-date">
                              Date
                             </label>
                             <Input
@@ -154,25 +142,21 @@ class UpdateTime extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-hours"
-                            >
+                              htmlFor="input-hours">
                               Hours
                             </label>
                             <Input
-                              name="time"
+                              name="hours"
                               className="form-control-alternative"
                               placeholder="0"
                               type="number"
-                              value={this.state.time}
+                              value={this.state.hours}
                               onChange={this.handleInput}
                               step="any"
                             />
                           </FormGroup>
-
                         </Col>
                       </Row>
-
-
                       <Row>
                         <Col lg="6">
                           <FormGroup>
@@ -195,7 +179,8 @@ class UpdateTime extends React.Component {
 
 const mapStateToProps = state => ({
   jobs: state.job.jobs,
-  users: state.user.users
+  users: state.user.users,
+  times: state.time.times
 })
 
 export default connect(mapStateToProps, {updateTime})(withRouter(UpdateTime));

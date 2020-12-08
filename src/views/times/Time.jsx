@@ -21,6 +21,7 @@ import {connect} from "react-redux";
 import {getTimes, removeTime} from "../../redux/actions/timeAction";
 import configureStore from "../../redux/store";
 import {getJobs} from "../../redux/actions/jobAction";
+import {getUsers} from "../../redux/actions/userAction";
 const {store} = configureStore();
 
 let loggedUser ;
@@ -91,7 +92,7 @@ const ButtonTwo = (props) => {
 
           {loggedUser.level >= 4 ?
               <DropdownItem onClick={() => {
-                props.props.removeTime(props.item.estimateId, props.item.timeId)
+                props.props.removeTime(props.item.id)
                 alert("Time was removed");
               }}><span
                   className="text-danger">Delete</span>
@@ -115,7 +116,6 @@ class Time extends React.Component {
     super(props);
     const {auth} = store.getState();
     loggedUser = auth.userLogged
-    console.log("loggedUser>>>> ", loggedUser)
     this.loadTime = this.loadTime.bind(this)
   }
 
@@ -294,4 +294,4 @@ const mapStateToProps = state => ({
   users: state.user.users
 })
 
-export default connect(mapStateToProps, {getTimes, getJobs, removeTime})(Time);
+export default connect(mapStateToProps, {getUsers, getTimes, getJobs, removeTime})(Time);

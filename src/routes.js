@@ -201,7 +201,7 @@ var routes = [
     invisible:true
   },
   {
-    path: "/updatetime/:estimateId/:id/:workerId/:timeId",
+    path: "/updatetime/:id",
     name: "Update Time",
     icon: "ni ni-ruler-pencil text-blue",
     component: UpdateTime,
