@@ -77,19 +77,19 @@ class AuthService {
         return this.service.get('/estimatedetail/' + id)
     }
     addEstimate(data) {
-        return this.service.post('/addestimate', data)
+        return this.service.post('/v2/job/addestimate', data)
     }
     decline(data) {
         return this.service.patch(`/estimatedecline/${data}`)
     }
-    deleteEstimate(data) {
-        return this.service.delete(`/estimatedelete/${data}`)
+    deleteEstimate(id) {
+        return this.service.delete(`/v2/job/estimatedelete/${id}`)
     }
     sendEstimates(data) {
         return this.service.post('/sendestimate', data)
     }
     updateEstimate(id, data) {
-        return this.service.patch('/estimateupdate/' + id, data)
+        return this.service.patch('/v2/job/estimateupdate/' + id, data)
     }
     addWorkers(id, data) {
         return this.service.patch('/addworkers/' + id, data)

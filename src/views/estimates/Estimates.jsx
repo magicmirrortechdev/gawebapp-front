@@ -156,6 +156,7 @@ class Estimates extends React.Component {
                           <>
                             <th scope="col"></th>
                             <th scope="col">Client</th>
+                            <th scope="col">Date created</th>
                             <th scope="col">Date</th>
                             <th scope="col">Status</th>
                             <th scope="col">Total</th>
@@ -183,6 +184,7 @@ class Estimates extends React.Component {
                                     <ActionButton item={e} props={this.props} ></ActionButton>
                                   </td>
                                   <td>{nameEstimate ? nameEstimate : client[0].firstName + ' ' + client[0].lastName}</td>
+                                  <td><Moment format={"MMM D, YY"}>{e.createdAt}</Moment></td>
                                   <td><Moment format={"MMM D, YY"}>{e.dateCreate}</Moment></td>
                                   <td>{e.status === "Approve" ? "Approved" : e.status}</td>
                                   <td>${parseFloat(Math.round(total * 100) / 100).toFixed(2)}</td>

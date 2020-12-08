@@ -75,7 +75,7 @@ const DropDownExpense = (props) =>{
                                     props.e.expenses.sort(compareValues('date','desc')).map((ex, i) => {
                                         return (
                                             <tr key={i}>
-                                                <td><Button onClick={props.handleModal(ex.img)}><i className="fas fa-receipt"></i> View</Button> </td>
+                                                <td><Button onClick={props.handleModal(ex.image)}><i className="fas fa-receipt"></i> View</Button> </td>
                                                 <td><Moment add={{days:1}} format={"MMM D, YY"}>{ex.date}</Moment></td>
                                                 <td>{ex.category}</td>
                                                 <td align="right">$ {ex.total}</td>
@@ -147,7 +147,7 @@ const DropDownExpense = (props) =>{
                                                 {ex.jobName}<br/>
                                                 {ex.description}<br/>
                                                 <div className="buttonfloat-right buttonfloat-right-times">
-                                                    <Button onClick={props.handleModal(ex.img)}><i className="fas fa-receipt"></i> View</Button>
+                                                    <Button onClick={props.handleModal(ex.image)}><i className="fas fa-receipt"></i> View</Button>
                                                 </div>
                                             </td>
                                         </tr>

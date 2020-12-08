@@ -27,9 +27,7 @@ export const FETCH_JOB_REMOVE_FAILURE = 'FETCH_JOB_REMOVE_FAILURE'
 export const addEstimate = (data) => async dispatch => {
     try{
         const response = await authService.addEstimate(data);
-        const response2 = await authService.getEstimate(response.data.estimate._id)
-
-        dispatch({type: FETCH_ESTIMATE_ADD_SUCCESS, payload: response2.data.estimate})
+        dispatch({type: FETCH_ESTIMATE_ADD_SUCCESS, payload: response.data.job})
     } catch(err) {
         dispatch({type: FETCH_ESTIMATE_ADD_FAILURE, payload: err.message})
         console.log(err)
@@ -39,7 +37,7 @@ export const addEstimate = (data) => async dispatch => {
 export const updateEstimate = (id, data) => async dispatch => {
     try{
         const response = await authService.updateEstimate(id, data)
-        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: id, data: response.data.estimate}})
+        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: id, data: response.data.job}})
     } catch(err) {
         dispatch({type: FETCH_ESTIMATE_UPDATE_FAILURE, payload: err.message})
         console.log(err)

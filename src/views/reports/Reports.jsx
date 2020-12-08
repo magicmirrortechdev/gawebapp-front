@@ -76,6 +76,7 @@ class Reports extends React.Component {
     };
 
     handleExpenseOpenModal = (url) => {
+        console.log("url>>>>>>>>>>> ", url)
         this.setState(prevState => {
             let img = url;
             if (img !== '') {
@@ -91,17 +92,11 @@ class Reports extends React.Component {
         })
     }
 
-    handleOpenModal = (estimateId, expenseId) => {
-        const job = this.props.jobs.filter(item => item._id === estimateId)[0]
+    handleOpenModal = (expenseId) => {
+        console.log(">>>>>>>>< ", expenseId)
+        const expense = this.props.expenses.filter(item => item._id === expenseId)[0]
         this.setState(prevState => {
-            let img = '';
-            const expenses = job.expenses
-            expenses.map((e, i) => {
-                if (e._id === expenseId) {
-                    img = e.img
-                }
-                return {img}
-            })
+            let img = expense.image;
             if (img !== '') {
                 img = img.replace("http", "https");
                 pdfFile = img
@@ -114,7 +109,6 @@ class Reports extends React.Component {
                 extension: img === '' ? '' : img.substring(img.length - 3, img.length).toLowerCase()
             }
         });
-
     }
 
     handleInput = e => {
@@ -136,10 +130,9 @@ class Reports extends React.Component {
     }
 
     componentDidMount(props) {
-        console.log("loggedUser>>> ", loggedUser)
         this.props.getJobs()
         this.props.getUsers()
-        this.props.getTimes()
+        this.props.getTimes(loggedUser._id)
         this.props.getInvoices(loggedUser._id)
         this.props.getExpenses(loggedUser._id)
 
@@ -224,7 +217,6 @@ class Reports extends React.Component {
             }
         })
         document.getElementById('spinner').style.visibility='visible';
-
 
         let workers_ = [];
         let jobsFilter = this.props.jobs.filter(job => job.status === 'Approve');

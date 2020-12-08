@@ -54,8 +54,8 @@ const DropDownExpense = (props) =>{
 
 class ReportJobs extends React.Component{
 
-    handleModal = (estimateId, expenseId ) => (e) =>{
-        this.props.openModal(estimateId, expenseId)
+    handleModal = ( expenseId ) => (e) =>{
+        this.props.openModal( expenseId)
     }
 
     render() {
@@ -96,8 +96,6 @@ class ReportJobs extends React.Component{
                         let effective = []
                         let effectiveTotal = []
                         let timeTotal = []
-
-                        console.log("job>>>> ", e.expenses, " >>>> ", totalExpenses)
 
                         let totalTime = 0
                         let totalEffective = 0
@@ -198,7 +196,6 @@ class ReportJobs extends React.Component{
                                                             {   !e.invoices ?<tr><td>No invoices register</td></tr>:
                                                                 e.invoices.length === 0 ? <tr><td>No invoices register</td></tr>
                                                                     : e.invoices.map((e, i)=>{
-                                                                        console.log("payment>>> ", e)
                                                                     const paid = e.payments.reduce((acc, current, i) => acc + current.paidAmount, 0)
                                                                     return(
                                                                         <tr key={i}>
@@ -289,7 +286,7 @@ class ReportJobs extends React.Component{
                                                         : e.expenses.map((ex, ix) => {
                                                             return (
                                                                 <tr key={ix}>
-                                                                    <td><Button onClick={this.handleModal(e._id, ex._id)}><i className="fas fa-receipt"></i> View</Button> </td>
+                                                                    <td><Button onClick={this.handleModal(ex._id)}><i className="fas fa-receipt"></i> View</Button> </td>
                                                                     <td>
                                                                         <Moment add={{days: 1}} format={"MMM D, YY"}>
                                                                             {ex.date}
@@ -410,7 +407,7 @@ class ReportJobs extends React.Component{
                                                                         {ex.vendor}<br/>
                                                                         {ex.description}<br/>
                                                                         <div className="buttonfloat-right buttonfloat-right-times">
-                                                                            <Button onClick={this.handleModal(e._id, ex._id)}><i className="fas fa-receipt"></i> View</Button>
+                                                                            <Button onClick={this.handleModal(ex._id)}><i className="fas fa-receipt"></i> View</Button>
                                                                         </div>
                                                                     </td>
                                                                 </tr>
