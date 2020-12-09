@@ -80,12 +80,12 @@ class ReportJobs extends React.Component{
                 </tr>
                 </thead>
                 <tbody>
-                    {this.props.jobs.length === 0 ?
+                    {this.props.jobsFilter.length === 0 ?
                     <tr>
                         <td>No Jobs register</td>
                     </tr>
                     :
-                    this.props.jobs.map((e, i) => {
+                    this.props.jobsFilter.map((e, i) => {
                         if(!e.clientId) return <th>Client Delete</th>
                         let totalEstimate = e.items.reduce((acc, cv, i)=> acc +cv.subtotal,0)
                         let totalExpenses = e.expenses ? (e.expenses.reduce((acc, current) => acc + current.total, 0)) : 0;

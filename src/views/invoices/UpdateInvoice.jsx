@@ -45,7 +45,7 @@ class UpdateInvoice extends React.Component {
       return {
         ...prevState,
         workerId: loggedUser._id,
-        jobName: job.jobName + ' - ' + (job.jobAddress? job.jobAddress: '' ),
+        jobName: job.jobName ,
         invoiceDate: moment(invoice.invoiceDate).format("YYYY-MM-DD"),
         invoiceDescription: invoice.invoiceDescription,
         invoiceTotal: invoice.invoiceTotal

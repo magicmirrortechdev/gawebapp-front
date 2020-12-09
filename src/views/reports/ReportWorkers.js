@@ -169,7 +169,7 @@ class ReportWorkers extends React.Component{
     }
 
     render() {
-        if(!this.props.workers) return <p>Loading</p>
+        if(!this.props.workersFilter) return <p>Loading</p>
         return (
             <div className="div_workers">
                 <Table className="align-items-center table-flush table-striped" responsive>
@@ -189,12 +189,12 @@ class ReportWorkers extends React.Component{
                     </thead>
 
                     <tbody>
-                    {this.props.workers.length === 0 ?
+                    {this.props.workersFilter.length === 0 ?
                         <tr>
                             <td>No workers register</td>
                         </tr>
                         :
-                        this.props.workers.map((e, i) =>
+                        this.props.workersFilter.map((e, i) =>
                             <React.Fragment key={i}>
                             {!this.props.isMobileVersion?
                                 <React.Fragment key={i}>

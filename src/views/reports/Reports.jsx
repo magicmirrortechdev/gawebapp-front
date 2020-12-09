@@ -128,11 +128,11 @@ class Reports extends React.Component {
     }
 
     componentDidMount(props) {
-        if(this.props.jobs.length === 0) this.props.getJobs()
-        if(this.props.users.length === 0) this.props.getUsers()
-        if(this.props.times.length === 0) this.props.getTimes()
-        if(this.props.invoices.length === 0) this.props.getInvoices(loggedUser._id)
-        if(this.props.expenses.length === 0) this.props.getExpenses(loggedUser._id)
+        this.props.getJobs()
+        this.props.getUsers()
+        this.props.getTimes(loggedUser._id)
+        this.props.getInvoices(loggedUser._id)
+        this.props.getExpenses(loggedUser._id)
 
         this.updateWindowDimensions()
         window.addEventListener('resize', this.updateWindowDimensions)
@@ -174,7 +174,7 @@ class Reports extends React.Component {
         this.setState(prevState => {
             return {
                 ...prevState,
-                jobs: [],
+                jobsFilter: [],
             }
         })
         this.props.getJobs();
@@ -219,15 +219,15 @@ class Reports extends React.Component {
 
         let workers_ = [];
         let jobsFilter_ = this.props.jobs.filter(job => job.status === 'Approve');
-        jobsFilter_.forEach(job => {
-            job.invoices = []
-            job.expenses = []
+        jobsFilter_.forEach(job_ => {
+            job_.invoices = []
+            job_.expenses = []
 
-            if(job.workers.length > 0) {
-                job.workers.forEach(worker => {
+            if(job_.workers.length > 0) {
+                job_.workers.forEach(worker => {
                     worker.time = []
                     this.props.times.forEach(time => {
-                        if(time.userId === worker.workerId && time.jobId === job._id){
+                        if(time.userId === worker.workerId && time.jobId === job_._id){
                             worker.time.push(time)
                             worker.user = this.props.users.filter(user => user._id === worker.workerId )[0]
                             workers_[worker.user._id] = worker.user
@@ -239,18 +239,18 @@ class Reports extends React.Component {
                             if(!workers_[worker.user._id].jobs_){
                                 workers_[worker.user._id].jobs_ = []
                             }
-                            workers_[worker.user._id].jobs_[job._id] = job
+                            workers_[worker.user._id].jobs_[job_._id] = job_
                         }
                     })
                     worker.time = worker.time.filter(time_ =>
                         time_.date >= this.state.startDate && time_.date <= this.state.endDate
                     )
                 })
-                job.workers = job.workers.filter(worker => worker.time.length > 0)
+                job_.workers = job_.workers.filter(worker => worker.time.length > 0)
             }
 
             let expenses = this.props.expenses.filter(expense =>
-                expense.jobId === job._id && expense.date >= this.state.startDate && expense.date <= this.state.endDate
+                expense.jobId === job_._id && expense.date >= this.state.startDate && expense.date <= this.state.endDate
             )
             if(expenses.length > 0){
                 expenses.forEach(expense => {
@@ -265,33 +265,33 @@ class Reports extends React.Component {
                     }
 
                     if(expense.userId === workers_[expense.userId]._id &&
-                        expense.jobId === job._id &&
+                        expense.jobId === job_._id &&
                         expense.date >= this.state.startDate && expense.date <= this.state.endDate){
                         workers_[expense.userId].expenses.push(expense)
                     }
 
-                    job.expenses.push(expense)
+                    job_.expenses.push(expense)
                 })
             }
 
             this.props.invoices.forEach(invoice => {
-                if(invoice.jobId === job._id &&
+                if(invoice.jobId === job_._id &&
                     invoice.invoiceDate >= this.state.startDate && invoice.invoiceDate <= this.state.endDate){
-                    job.invoices.push(invoice)
+                    job_.invoices.push(invoice)
                 }
             })
         })
 
-        let workers = []
+        let workers__ = []
         for(let key in workers_ ){
             workers_[key].jobs = []
             for(let keyJob in workers_[key].jobs_ ){
                 workers_[key].jobs.push(workers_[key].jobs_[keyJob])
             }
-            workers.push(workers_[key])
+            workers__.push(workers_[key])
         }
 
-        jobsFilter_ = jobsFilter_.filter(job => job.invoices.length > 0 || job.expenses > 0 || job.workers.length > 0)
+        jobsFilter_ = jobsFilter_.filter(job_ => job_.invoices.length > 0 || job_.expenses > 0 || job_.workers.length > 0)
             .sort(compareValues('jobName', 'asc'));
 
         this.setState(prevState => {
@@ -299,7 +299,7 @@ class Reports extends React.Component {
                 ...prevState,
                 loadFilter: true,
                 jobsFilter: jobsFilter_,
-                workersFilter: this.workersTransformer(workers)
+                workersFilter: this.workersTransformer(workers__)
             }
         })
         document.getElementById('spinner').style.visibility='hidden';
@@ -313,8 +313,8 @@ class Reports extends React.Component {
                 ...prevState,
                 buttonActive: "1",
                 activeTab: "1",
-                jobs: this.props.jobs.filter(job => job.status === 'Approve'),
-                workers: this.workersTransformer(
+                jobsFilter: this.props.jobs.filter(job => job.status === 'Approve'),
+                workersFilter: this.workersTransformer(
                     this.props.users.filter(user => user.role === "WORKER" ||
                         user.role ==="PROJECT MANAGER" ||
                         user.role ==="ADMIN"), null, null)
@@ -523,11 +523,11 @@ class Reports extends React.Component {
 
                                 <TabContent activeTab={this.state.activeTab}>
                                     <TabPane tabId="1">
-                                        <ReportJobs jobs={this.state.jobsFilter} openModal={this.handleOpenModal}
+                                        <ReportJobs jobsFilter={this.state.jobsFilter} openModal={this.handleOpenModal}
                                                     isMobileVersion={this.state.isMobileVersion}/>
                                     </TabPane>
                                     <TabPane tabId="2">
-                                        <ReportWorkers workers={this.state.workersFilter}
+                                        <ReportWorkers workersFilter={this.state.workersFilter}
                                                        openModal={this.handleExpenseOpenModal}
                                                        isMobileVersion={this.state.isMobileVersion}/>
                                     </TabPane>

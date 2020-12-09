@@ -67,8 +67,7 @@ class AddInvoice extends React.Component {
   }
 
   render() {
-    console.log(this.state)
-    if(!this.state.jobName||this.state.jobName==='') return <p>Loading</p>
+    if(!this.state.jobName || this.state.jobName==='') return <p>Loading</p>
     return (
       <>
         <Header forms={true}/>

@@ -248,8 +248,8 @@ class Invoices extends React.Component {
   }
 
   render() {
-    const {invoices, clients, jobs} = this.props
-    if (!this.state || clients.length === 0 || jobs.length === 0) return <p>Loading</p>
+    const {invoices, users, jobs} = this.props
+    if (!this.state || users.length === 0 || jobs.length === 0) return <p>Loading</p>
     return (
       <>
         <Header />
@@ -281,7 +281,7 @@ class Invoices extends React.Component {
                           <th scope="col"></th>
                           <th scope="col"></th>
 
-                          <th scope="col">Client</th>
+                          <th scope="col">User</th>
                           <th scope="col">Date</th>
                           <th scope="col">Status</th>
                           <th scope="col">Total</th>
@@ -298,8 +298,8 @@ class Invoices extends React.Component {
                   {
                     invoices.length === 0 ?<tr><td>No invoices register</td></tr> : invoices.map((e,i) =>{
                       const job_ = jobs.filter(job => job._id === e.jobId)
-                      const client = clients.filter(client => client._id === job_[0].clientId )
-                      let nameClient = client[0].firstName + ' ' + client[0].lastName
+                      const client = users.filter(user => user._id === e.userId )
+                      let nameClient = client[0].name
                       const invoiceIndex = i + 1
                       const paid = e.payments.reduce((acc, current, i) => acc + isNaN(current.paidAmount) ? 0 : current.paidAmount, 0)
                       const total = e.invoiceTotal - paid
@@ -310,7 +310,7 @@ class Invoices extends React.Component {
                         return sum
                       })
                       const paidOk = this.sum(paidAcc)
-                      e.jobName = job_[0].jobName + ' - ' + job_[0].jobAddress
+                      e.jobName = job_[0].jobName
                       return(
                         <RowInvoice key={i}
                           item={e}
@@ -339,7 +339,7 @@ class Invoices extends React.Component {
 
 const mapStateToProps = state => ({
   jobs: state.job.jobs,
-  clients: state.client.clients,
+  users: state.user.users,
   invoices: state.invoice.invoices
 })
 

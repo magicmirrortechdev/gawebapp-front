@@ -31,6 +31,10 @@ var fecha = new Date();
 class AddInvoice extends React.Component {
   state = {
     date:ano+"-"+mes+"-"+dia,
+    description: '',
+    estimateTotal: 0,
+    jobName: '',
+    clientId: ''
   };
 
   constructor(props) {
@@ -40,27 +44,11 @@ class AddInvoice extends React.Component {
   }
 
   componentDidMount() {
-
-    if (this.props.jobs.length === 0) this.props.history.push(`/admin/invoices`)
-
     const job = this.props.jobs.filter(item => item._id === this.props.match.params.id)[0]
-    let subtotal = job.items.reduce((acc, current, i) => acc + current.subtotal, 0)
-    let tax = (parseInt(job.estimateTax) * subtotal) / 100
-    let discount = parseInt(job.estimateDiscount)
-    let paid = parseInt(job.estimatePaid)
-
-    this.setState(prevState => {
-      return {
-        ...prevState,
-        workerId: loggedUser._id,
-        estimateTax: job.estimateTax,
-        estimateDiscount: job.estimateDiscount,
-        estimatePaid: job.estimatePaid,
-        comments: job.comments,
-        jobName: job.jobName,
-        estimateTotal:  parseInt(subtotal + tax - discount - paid),
-        ...job,
-      }
+    this.setState({
+      jobName: job.jobName + ' - ' + job.address,
+      ...job,
+      userId: loggedUser._id
     })
   }
 
@@ -72,7 +60,6 @@ class AddInvoice extends React.Component {
     }))
   }
 
-
   handleSubmit = async (e, props) => {
     e.preventDefault()
     this.props.convertInvoice(this.props.match.params.id, this.state)
@@ -80,8 +67,7 @@ class AddInvoice extends React.Component {
   }
 
   render() {
-    console.log(this.state)
-    if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
+    if(!this.state.jobName || this.state.jobName==='') return <p>Loading</p>
     return (
       <>
         <Header forms={true}/>
@@ -146,6 +132,7 @@ class AddInvoice extends React.Component {
                               type="number"
                               onChange={this.handleInput}
                               placeholder="0"
+                              value={this.state.estimateTotal}
                               step="any"
                             />
                           </FormGroup>
@@ -165,16 +152,12 @@ class AddInvoice extends React.Component {
                           </FormGroup>
                         </Col>
                       </Row>
-
-
                       <Row>
                         <Col lg="6">
                           <FormGroup>
-
                             <Button
                               className="form-control-alternative"
                               color="info"
-
                             >Save</Button>
                           </FormGroup>
                         </Col>
