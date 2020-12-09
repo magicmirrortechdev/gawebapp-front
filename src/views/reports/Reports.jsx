@@ -46,8 +46,8 @@ class Reports extends React.Component {
     state = {
         startDate: moment().startOf('week').add('days', -6).format('YYYY-MM-DD'),
         endDate: moment().startOf('week').add('days', 0).format('YYYY-MM-DD'),
-        jobs: [],
-        workers: [],
+        jobsFilter: [],
+        workersFilter: [],
         activeTab: '1',
         buttonActive: '1',
         modal: false,
@@ -76,7 +76,6 @@ class Reports extends React.Component {
     };
 
     handleExpenseOpenModal = (url) => {
-        console.log("url>>>>>>>>>>> ", url)
         this.setState(prevState => {
             let img = url;
             if (img !== '') {
@@ -93,7 +92,6 @@ class Reports extends React.Component {
     }
 
     handleOpenModal = (expenseId) => {
-        console.log(">>>>>>>>< ", expenseId)
         const expense = this.props.expenses.filter(item => item._id === expenseId)[0]
         this.setState(prevState => {
             let img = expense.image;
@@ -130,11 +128,11 @@ class Reports extends React.Component {
     }
 
     componentDidMount(props) {
-        this.props.getJobs()
-        this.props.getUsers()
-        this.props.getTimes(loggedUser._id)
-        this.props.getInvoices(loggedUser._id)
-        this.props.getExpenses(loggedUser._id)
+        if(this.props.jobs.length === 0) this.props.getJobs()
+        if(this.props.users.length === 0) this.props.getUsers()
+        if(this.props.times.length === 0) this.props.getTimes()
+        if(this.props.invoices.length === 0) this.props.getInvoices(loggedUser._id)
+        if(this.props.expenses.length === 0) this.props.getExpenses(loggedUser._id)
 
         this.updateWindowDimensions()
         window.addEventListener('resize', this.updateWindowDimensions)
@@ -144,7 +142,7 @@ class Reports extends React.Component {
                 ...prevState,
                 startDate: moment().startOf('week').add('days', -6).format('YYYY-MM-DD'),
                 endDate: moment().startOf('week').add('days', 0).format('YYYY-MM-DD'),
-                workers: this.workersTransformer(
+                workersFilter: this.workersTransformer(
                     this.props.users.filter(user => user.role === "WORKER" ||
                     user.role ==="PROJECT MANAGER" ||
                     user.role ==="ADMIN"),
@@ -158,7 +156,7 @@ class Reports extends React.Component {
         this.setState(prevState => {
             return {
                 ...prevState,
-                jobs: [],
+                jobsFilter: [],
             }
         })
         this.props.getJobs();
@@ -167,7 +165,7 @@ class Reports extends React.Component {
             return {
                 ...prevState,
                 buttonActive: "1",
-                jobs: this.props.jobs.filter(job => job.status === 'Approve')
+                jobsFilter: this.props.jobs.filter(job => job.status === 'Approve')
             }
         })
     }
@@ -185,7 +183,7 @@ class Reports extends React.Component {
             return {
                 ...prevState,
                 buttonActive: "2",
-                jobs: this.props.jobs.filter(job => job.status === 'Closed')
+                jobsFilter: this.props.jobs.filter(job => job.status === 'Closed')
             }
         })
     }
@@ -194,7 +192,7 @@ class Reports extends React.Component {
         this.setState(prevState => {
             return {
                 ...prevState,
-                jobs: [],
+                jobsFilter: [],
             }
         })
         this.props.getJobs();
@@ -203,24 +201,25 @@ class Reports extends React.Component {
             return {
                 ...prevState,
                 buttonActive: "3",
-                jobs: this.props.jobs
+                jobsFilter: this.props.jobs
             }
         })
      }
 
     filterDate = () => {
+        console.log("filtrando?", this.props.jobs)
         this.setState(prevState => {
             return {
                 ...prevState,
-                jobs: [],
-                workers: [],
+                jobsFilter: [],
+                workersFilter: [],
             }
         })
         document.getElementById('spinner').style.visibility='visible';
 
         let workers_ = [];
-        let jobsFilter = this.props.jobs.filter(job => job.status === 'Approve');
-        jobsFilter.forEach(job => {
+        let jobsFilter_ = this.props.jobs.filter(job => job.status === 'Approve');
+        jobsFilter_.forEach(job => {
             job.invoices = []
             job.expenses = []
 
@@ -243,8 +242,8 @@ class Reports extends React.Component {
                             workers_[worker.user._id].jobs_[job._id] = job
                         }
                     })
-                    worker.time = worker.time.filter(time =>
-                        time.date >= this.state.startDate && time.date <= this.state.endDate
+                    worker.time = worker.time.filter(time_ =>
+                        time_.date >= this.state.startDate && time_.date <= this.state.endDate
                     )
                 })
                 job.workers = job.workers.filter(worker => worker.time.length > 0)
@@ -292,15 +291,15 @@ class Reports extends React.Component {
             workers.push(workers_[key])
         }
 
-        jobsFilter = jobsFilter.filter(job => job.invoices.length > 0 || job.expenses > 0 || job.workers.length > 0)
-        jobsFilter = jobsFilter.sort(compareValues('jobName', 'asc'));
+        jobsFilter_ = jobsFilter_.filter(job => job.invoices.length > 0 || job.expenses > 0 || job.workers.length > 0)
+            .sort(compareValues('jobName', 'asc'));
 
         this.setState(prevState => {
             return {
                 ...prevState,
                 loadFilter: true,
-                jobs: jobsFilter,
-                workers: this.workersTransformer(workers)
+                jobsFilter: jobsFilter_,
+                workersFilter: this.workersTransformer(workers)
             }
         })
         document.getElementById('spinner').style.visibility='hidden';
@@ -524,11 +523,11 @@ class Reports extends React.Component {
 
                                 <TabContent activeTab={this.state.activeTab}>
                                     <TabPane tabId="1">
-                                        <ReportJobs jobs={this.state.jobs} openModal={this.handleOpenModal}
+                                        <ReportJobs jobs={this.state.jobsFilter} openModal={this.handleOpenModal}
                                                     isMobileVersion={this.state.isMobileVersion}/>
                                     </TabPane>
                                     <TabPane tabId="2">
-                                        <ReportWorkers workers={this.state.workers}
+                                        <ReportWorkers workers={this.state.workersFilter}
                                                        openModal={this.handleExpenseOpenModal}
                                                        isMobileVersion={this.state.isMobileVersion}/>
                                     </TabPane>

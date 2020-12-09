@@ -175,7 +175,8 @@ class Estimates extends React.Component {
                         const subtotal = e.items.reduce((acc, current, i) => acc + current.subtotal, 0)
                         const tax = parseInt(e.estimateTax) * subtotal / 100
                         const discount = e.estimateDiscount
-                        const total = !subtotal ? 0 : subtotal + tax  - discount
+                        const paid = e.estimatePaid
+                        const total = !subtotal ? 0 : subtotal + tax  - discount - paid
                         return(
                           <tr key={i}>
                             {!this.state.isMobileVersion ?

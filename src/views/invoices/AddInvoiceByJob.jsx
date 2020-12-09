@@ -15,42 +15,26 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import {connect} from "react-redux";
-import {getJobs, convertInvoice} from "../../redux/actions/jobAction";
+import {convertInvoice} from "../../redux/actions/invoiceAction";
 import configureStore from "../../redux/store";
 const {store} = configureStore();
 
 let loggedUser;
-var fecha = new Date(); 
-      var mes = fecha.getMonth()+1; 
-      var dia = fecha.getDate(); 
-      var ano = fecha.getFullYear(); 
+var fecha = new Date();
+      var mes = fecha.getMonth()+1;
+      var dia = fecha.getDate();
+      var ano = fecha.getFullYear();
       if(dia<10)
         dia='0'+dia; //agrega cero si es menor de 10
       if(mes<10)
         mes='0'+mes //agrega cero si es menor de 10
 class AddInvoice extends React.Component {
   state = {
-    workerId: "",
     date:ano+"-"+mes+"-"+dia,
-    name: '',
-      email: '',
-      address: '',
-      items: [],
-      itemName: '',
-      description: '',
-      comments: '',
-      subtotal: parseInt(''),
-      tax: parseInt(''),
-      discount: parseInt(''),
-      paid: parseInt(''),
-      total: 0,
-      dateCreate: '',
-      jobName: '',
   };
 
   constructor(props) {
     super(props);
-    console.log("constructor!!!")
     const {auth} = store.getState();
     loggedUser = auth.userLogged
   }
@@ -61,23 +45,20 @@ class AddInvoice extends React.Component {
 
     const job = this.props.jobs.filter(item => item._id === this.props.match.params.id)[0]
     let subtotal = job.items.reduce((acc, current, i) => acc + current.subtotal, 0)
-    let tax = (parseInt(job.tax) * subtotal) / 100
-    let discount = parseInt(job.discount)
-    let paid = parseInt(job.paid)
+    let tax = (parseInt(job.estimateTax) * subtotal) / 100
+    let discount = parseInt(job.estimateDiscount)
+    let paid = parseInt(job.estimatePaid)
 
     this.setState(prevState => {
       return {
         ...prevState,
         workerId: loggedUser._id,
-        name: job.clientId.name,
-        email: job.clientId.email,
-        address: job.clientId.address,
-        tax: job.tax,
-        discount: job.discount,
-        paid: job.paid,
+        estimateTax: job.estimateTax,
+        estimateDiscount: job.estimateDiscount,
+        estimatePaid: job.estimatePaid,
         comments: job.comments,
         jobName: job.jobName,
-        total:  parseInt(subtotal + tax - discount - paid),
+        estimateTotal:  parseInt(subtotal + tax - discount - paid),
         ...job,
       }
     })
@@ -98,7 +79,7 @@ class AddInvoice extends React.Component {
     this.props.history.push(`/admin/invoices`)
   }
 
-  render() {    
+  render() {
     console.log(this.state)
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
     return (
@@ -116,7 +97,7 @@ class AddInvoice extends React.Component {
                     </div>
                   </Row>
                 </CardHeader>
-                <CardBody> 
+                <CardBody>
 
                   <Form onSubmit={this.handleSubmit}>
                     <div className="pl-lg-4">
@@ -125,8 +106,7 @@ class AddInvoice extends React.Component {
                           <FormGroup>
                             <label
                             className="form-control-label d-inline-block"
-                            htmlFor="input-jobName"
-                            >
+                            htmlFor="input-jobName">
                             Job Name
                             </label>
                             <Input
@@ -140,8 +120,7 @@ class AddInvoice extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label d-inline-block"
-                              htmlFor="input-date"
-                            >
+                              htmlFor="input-date">
                               Invoice Date
                             </label>
                             <Input
@@ -154,16 +133,15 @@ class AddInvoice extends React.Component {
                               onChange={this.handleInput}
                             />
                           </FormGroup>
-                        
+
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-merchant"
-                            >
+                              htmlFor="input-merchant">
                               Total Invoice
                             </label>
                             <Input
-                              name="total"
+                              name="estimateTotal"
                               className="form-control-alternative"
                               type="number"
                               onChange={this.handleInput}
@@ -174,8 +152,7 @@ class AddInvoice extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-first-name"
-                            >
+                              htmlFor="input-first-name">
                               Description
                             </label>
                             <Input
@@ -188,12 +165,12 @@ class AddInvoice extends React.Component {
                           </FormGroup>
                         </Col>
                       </Row>
-                      
-                      
+
+
                       <Row>
                         <Col lg="6">
                           <FormGroup>
-                        
+
                             <Button
                               className="form-control-alternative"
                               color="info"
@@ -207,7 +184,7 @@ class AddInvoice extends React.Component {
                 </CardBody>
               </Card>
             </Col>
-            
+
           </Row>
         </Container>
       </>
@@ -219,4 +196,4 @@ const mapStateToProps = state => ({
   jobs: state.job.jobs,
 })
 
-export default connect(mapStateToProps, {getJobs, convertInvoice})(withRouter(AddInvoice));
+export default connect(mapStateToProps, {convertInvoice})(withRouter(AddInvoice));

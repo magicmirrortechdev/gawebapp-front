@@ -16,9 +16,7 @@ export const FETCH_TIME_REMOVE_FAILURE = 'FETCH_TIME_REMOVE_FAILURE'
 export const addTime = (data) => async dispatch => {
     try {
         const response = await authService.addTime(data);
-        const response2 = await authService.getTime(response.data.time._id)
-
-        dispatch({ type: FETCH_TIME_ADD_SUCCESS, payload: response2.data.time })
+        dispatch({ type: FETCH_TIME_ADD_SUCCESS, payload: response.data.time })
     } catch (err) {
         dispatch({ type: FETCH_TIME_ADD_FAILURE, payload: err.message })
         console.log(err)

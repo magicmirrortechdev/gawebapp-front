@@ -77,7 +77,7 @@ class AuthService {
         return this.service.post('/v2/job/addestimate', data)
     }
     decline(data) {
-        return this.service.patch(`/estimatedecline/${data}`)
+        return this.service.patch(`/v2/job/estimatedecline/${data}`)
     }
     deleteEstimate(id) {
         return this.service.delete(`/v2/job/estimatedelete/${id}`)
@@ -130,7 +130,7 @@ class AuthService {
         return this.service.post('/createjob', data)
     }
     convertJob(data) {
-        return this.service.get(`/convertjob/${data}`)
+        return this.service.get(`/v2/job/convertjob/${data}`)
     }
     closeJob(data) {
         return this.service.patch(`/closejob/${data}`)

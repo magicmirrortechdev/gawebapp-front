@@ -116,7 +116,6 @@ class Time extends React.Component {
     super(props);
     const {auth} = store.getState();
     loggedUser = auth.userLogged
-    this.loadTime = this.loadTime.bind(this)
   }
 
   updateWindowDimensions = () => {
@@ -130,10 +129,6 @@ class Time extends React.Component {
   componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-    this.loadTime()
-  }
-
-  loadTime() {
     this.props.getTimes(loggedUser._id)
   }
 

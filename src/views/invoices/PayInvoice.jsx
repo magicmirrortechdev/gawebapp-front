@@ -17,7 +17,7 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import {connect} from "react-redux";
-import {getJobs, payInvoice} from "../../redux/actions/jobAction";
+import {payInvoice} from "../../redux/actions/invoiceAction";
 
 var fecha = new Date();
       var mes = fecha.getMonth()+1;

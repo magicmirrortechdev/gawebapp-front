@@ -17,6 +17,7 @@ import Header from "components/Headers/Header.jsx";
 import {connect} from "react-redux";
 import {addTime} from "../../redux/actions/timeAction"
 import configureStore from "../../redux/store";
+import {compareValues} from "../../global";
 const {store} = configureStore();
 
 let loggedUser;
@@ -30,7 +31,7 @@ var fecha = new Date();
         mes='0'+mes //agrega cero si es menor de 10
 class AddTime extends React.Component {
   state = {
-    jobs: [],
+    jobsFilter: [],
     nameWorker:'',
     workers:[],
     value: false,
@@ -53,35 +54,31 @@ class AddTime extends React.Component {
     this.setState(({ value }) => ({ value: !value }))
 
     if(e.target.name === 'jobId'){
-        this.state.jobs.forEach((item) => {
-            if(item._id === e.target.value){
-                let user = null;
-                let user_ = null;
-                let users = []
-                item.workers.forEach((worker) => {
-                    if(worker.workerId && worker.workerId === loggedUser._id){
-                        user = this.props.users.filter(item => item._id === worker.workerId)[0]
-                        users.push(user)
-                    }else{
-                        user_ = this.props.users.filter(item => item._id === worker.workerId)[0]
-                        users.push(user_)
-                    }
-                });
-
-                if(user !== null){
-                    this.setState(prevState => ({
-                        ...prevState,
-                        workers: users,
-                        userId: user._id,
-                    }))
-                }else{
-                    this.setState(prevState => ({
-                        ...prevState,
-                        workers: users
-                    }))
-                }
+        const item = this.props.jobs.filter(item => item._id === e.target.value)[0]
+        let user = null
+        let users = []
+        console.log(item)
+        item.workers.forEach((worker) => {
+            if(worker.workerId && worker.workerId === loggedUser._id){
+                user = this.props.users.filter(item => item._id === worker.workerId)[0]
+                users.push(user)
+            }else{
+                users.push(this.props.users.filter(item => item._id === worker.workerId)[0])
             }
-        })
+        });
+
+        if(user !== null){
+            this.setState(prevState => ({
+                ...prevState,
+                workers: users,
+                userId: user._id,
+            }))
+        }else{
+            this.setState(prevState => ({
+                ...prevState,
+                workers: users
+            }))
+        }
     }
   }
 
@@ -89,7 +86,8 @@ class AddTime extends React.Component {
     this.setState(prevState => {
         return {
             ...prevState,
-            jobs : this.props.jobs.filter(item => item.status === "Approve")
+            jobsFilter : this.props.jobs.filter(item => item.status === "Approve" && item.workers.length > 0)
+                .sort(compareValues('jobName', 'asc'))
         }
      })
   }
@@ -107,7 +105,6 @@ class AddTime extends React.Component {
   }
 
   render() {
-      console.log(">>>>", this.state)
     return (
       <>
         <Header />
@@ -136,7 +133,7 @@ class AddTime extends React.Component {
                               type="select"
                               onChange={this.handleInput}>
                             <option>Select Job to Add Time</option>
-                            {this.state.jobs.map((e,i)=>{
+                            {this.state.jobsFilter.map((e,i)=>{
                               return(
                                 <option key={i} value={`${e._id}`}>{e.jobName}</option>)
                             })
