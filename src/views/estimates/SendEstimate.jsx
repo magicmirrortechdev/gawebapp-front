@@ -46,19 +46,18 @@ class SendEstimate extends React.Component {
   componentDidMount() {
     if (this.props.estimates.length === 0) this.props.history.push(`/admin/estimates`)
     const estimate = this.props.estimates.filter(item => item._id === this.props.match.params.id)[0]
+    const client = this.props.clients.filter(item => item._id === estimate.clientId)[0]
     this.setState(prevState => {
       let total
       total = estimate.items.reduce((acc, current, i) => acc + current.subtotal, 0)
-      console.log('el sb', total)
       return {
         ...prevState,
-        name: estimate.nameEstimate ? estimate.nameEstimate : estimate.clientId.name,
-        email: estimate.clientId.email,
-        addressEstimate: estimate.addressEstimate,
+        name: client.firstName + ' ' + client.lastName,
+        email: client.email,
         total: total,
-        address: estimate.addressEstimate ? estimate.addressEstimate : estimate.clientId.address,
+        address: estimate.jobAddress,
         items: estimate.items,
-        tags: [{id: estimate.clientId.email, text: estimate.clientId.email}]
+        tags: [{id: client.email, text: client.email}]
       }
     })
   }
@@ -115,7 +114,6 @@ class SendEstimate extends React.Component {
 
   render() {
     let address = this.state.address
-    let addressEstimate = this.state.addressEstimate
     if (!this.state) return <p> Loading </p>
     return (
       <>
@@ -160,7 +158,7 @@ class SendEstimate extends React.Component {
                               Address
                             </label>
                             <Input
-                              defaultValue={`${addressEstimate ? addressEstimate : address}`}
+                              defaultValue={address}
                               className="form-control-alternative"
                               placeholder="Enter the address client"
                               name="address"
@@ -171,8 +169,7 @@ class SendEstimate extends React.Component {
                             <FormGroup>
                             <label
                               className="form-control-label d-inline-block"
-                              htmlFor="input-name"
-                            >
+                              htmlFor="input-name">
                               Emails
                             </label>
                             <br/>
@@ -190,7 +187,6 @@ class SendEstimate extends React.Component {
                             <label className="form-control-label" htmlFor="input-merchant">
                               Items
                             </label>
-
                             <Table className="align-items-center table-flush" responsive>
                               <thead className="thead-light">
                                 <tr>
@@ -240,8 +236,7 @@ class SendEstimate extends React.Component {
                             <label
                               className="form-control-label"
                               htmlFor="input-first-name"
-                              style={{ display: 'inline-flex', alignItems: 'center' }}
-                            >
+                              style={{ display: 'inline-flex', alignItems: 'center' }}>
                               Total
                             </label>
                             <Input
@@ -255,8 +250,7 @@ class SendEstimate extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-first-name"
-                            >
+                              htmlFor="input-first-name">
                               Comments
                             </label>
                             <Input
@@ -273,7 +267,7 @@ class SendEstimate extends React.Component {
                                   Send{' '}
                                 </Button>{' '}
                           </FormGroup>
-                          
+
                         </Col>
                       </Row>
                     </div>{' '}
@@ -290,6 +284,7 @@ class SendEstimate extends React.Component {
 
 const mapStateToProps = state => ({
   estimates: state.job.jobs,
+  clients: state.client.clients
 })
 
 export default connect(mapStateToProps, {updateEstimate})(withRouter(SendEstimate));
