@@ -38,6 +38,10 @@ class AddExpense extends React.Component {
     date: ano+"-"+mes+"-"+dia,
     jobId: this.props.match.params.id,
     category: '',
+    vendor:'',
+    description:'',
+    total: 0,
+    image: ''
   };
 
   constructor(props) {
@@ -93,7 +97,7 @@ class AddExpense extends React.Component {
 
   render() {
     console.log(this.state)
-    if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
+    if(!this.state.userId || this.state.userId==='') return <p>Loading</p>
     return (
       <>
         <Header forms={true}/>
@@ -118,8 +122,7 @@ class AddExpense extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label d-inline-block"
-                              htmlFor="input-date"
-                            >
+                              htmlFor="input-date">
                               Expense Date *
                             </label>
                             <Input
@@ -136,8 +139,7 @@ class AddExpense extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-merchant"
-                            >
+                              htmlFor="input-merchant">
                               Vendor
                             </label>
                             <Input

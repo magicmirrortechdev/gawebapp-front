@@ -159,8 +159,7 @@ class AddExpense extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-merchant"
-                            >
+                              htmlFor="input-merchant">
                               Vendor
                             </label>
                             <Input
