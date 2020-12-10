@@ -60,13 +60,13 @@ class AuthService {
         return this.service.get('/v2/user/getusers')
     }
     addWorker(data) {
-        return this.service.post('/addworker', data)
+        return this.service.post('/v2/user/addworker', data)
     }
     updateWorker(id, data) {
-        return this.service.patch('updateworker/' + id, data)
+        return this.service.patch('/v2/user/updateworker/' + id, data)
     }
     deleteWorker(data) {
-        return this.service.delete(`/deleteworker/${data}`)
+        return this.service.delete(`/v2/user/deleteworker/${data}`)
     }
 
     //estimates
@@ -89,10 +89,10 @@ class AuthService {
         return this.service.patch('/v2/job/estimateupdate/' + id, data)
     }
     addWorkers(id, data) {
-        return this.service.patch('/addworkers/' + id, data)
+        return this.service.patch('/v2/job/addworkers/' + id, data)
     }
     addProjectManager(id, data) {
-        return this.service.patch('/addpm/' + id, data)
+        return this.service.patch('/v2/job/addpm/' + id, data)
     }
 
     //invoices
@@ -119,21 +119,11 @@ class AuthService {
     }
 
     //jobs
-    getJobs(id) {
-        if (id) {
-            return this.service.get('/checkjobs/' + id)
-        } else {
-            return this.service.get('/checkjobs')
-        }
-    }
-    addJob(data) {
-        return this.service.post('/createjob', data)
-    }
     convertJob(data) {
         return this.service.get(`/v2/job/convertjob/${data}`)
     }
     closeJob(data) {
-        return this.service.patch(`/closejob/${data}`)
+        return this.service.patch(`/v2/job/closejob/${data}`)
     }
 
     //time
