@@ -299,7 +299,7 @@ class Invoices extends React.Component {
                     invoices.length === 0 ?<tr><td>No invoices register</td></tr> : invoices.map((e,i) =>{
                       const job_ = jobs.filter(job => job._id === e.jobId)
                       const client = users.filter(user => user._id === e.userId )
-                      let nameClient = client[0].name
+                      let nameClient = (client[0])? client[0].name : ''
                       const invoiceIndex = i + 1
                       const paid = e.payments.reduce((acc, current, i) => acc + isNaN(current.paidAmount) ? 0 : current.paidAmount, 0)
                       const total = e.invoiceTotal - paid
