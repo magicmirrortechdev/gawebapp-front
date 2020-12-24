@@ -18,7 +18,7 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.jsx";
-import Global from "../../global";
+import Global, {compareValues} from "../../global";
 import {connect} from "react-redux";
 import {getJobs, closeJob, removeJob, convertJob} from "../../redux/actions/jobAction";
 import {getUsers} from "../../redux/actions/userAction";
@@ -203,6 +203,8 @@ class Jobs extends React.Component {
         jobsFilter = jobs.filter(job => job.isJob)
         break;
     }
+    jobs.sort(compareValues('createdAt', 'asc'));
+
     return (
       <>
         <Header />
@@ -322,7 +324,7 @@ class Jobs extends React.Component {
                                 <td>{e.workers.map((e,i)=>{
                                   const user = users.filter(user => user._id === e.workerId )
                                   return(
-                                    !e.workerId ? <p style={{fontSize:"10px"}} key={i}>Worker Delete</p> :
+                                    !user[0] ? <p style={{fontSize:"10px"}} key={i}>Worker Delete</p> :
                                         <p style={{fontSize:"10px"}} key={i}>{user[0].name}</p>
                                   )
                                   })}
