@@ -203,7 +203,7 @@ class Jobs extends React.Component {
         jobsFilter = jobs.filter(job => job.isJob)
         break;
     }
-    jobs.sort(compareValues('createdAt', 'asc'));
+    jobs.sort(compareValues('createdAt', 'desc'));
 
     return (
       <>
@@ -339,7 +339,7 @@ class Jobs extends React.Component {
                                   {e.workers.map((worker,i)=>{
                                     const user = users.filter(user => user._id === e.workerId )
                                     return(
-                                        !worker.workerId ? <span>Worker Delete</span> :
+                                        !user[0] ? <span>Worker Delete</span> :
                                             <span> {user[0].name} {i === e.workers.length-1? '': ','}  </span>
                                     )
                                   })}<br/>
