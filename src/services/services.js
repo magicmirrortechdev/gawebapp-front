@@ -119,6 +119,9 @@ class AuthService {
     }
 
     //jobs
+    addJob(data){
+        return this.service.post('/v2/job/createJob/', data)
+    }
     convertJob(data) {
         return this.service.get(`/v2/job/convertjob/${data}`)
     }
