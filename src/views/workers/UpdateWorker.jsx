@@ -307,7 +307,7 @@ class UpdateWorker extends React.Component {
                               Payment Rate *
                             </label>
                             <Input
-                              name="payment"
+                              name="payRate"
                               defaultValue={user.payRate}
                               className="form-control-alternative"
                               type="number"
@@ -325,7 +325,7 @@ class UpdateWorker extends React.Component {
                             </label>
                             <Input
                               defaultValue={user.effectiveRate}
-                              name="effective"
+                              name="effectiveRate"
                               className="form-control-alternative"
                               type="number"
                               placeholder="$0.00"

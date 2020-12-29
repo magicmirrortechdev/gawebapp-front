@@ -185,7 +185,7 @@ class Time extends React.Component {
                       }
                     </tr>
                   </thead>
-                  {times.length === 0 ?  <tbody><tr><td>No workers register</td></tr></tbody>:
+                  {times.length === 0 ?  <tbody><tr><td>No times register</td></tr></tbody>:
                    times.map((e,i)=>{
                      const user = users.filter(user => user._id === e.userId)[0]
                      const job = jobs.filter(job => job._id === e.jobId)[0]
