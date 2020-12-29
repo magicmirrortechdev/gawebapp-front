@@ -17,7 +17,7 @@ import {
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 import {connect} from "react-redux";
-import {addInvoice} from "../../redux/actions/invoiceAction";
+import {addInvoice, getInvoices} from "../../redux/actions/invoiceAction";
 import configureStore from "../../redux/store";
 const {store} = configureStore();
 
@@ -77,7 +77,6 @@ class AddInvoice extends React.Component {
   }
 
   render() {
-    console.log(this.state)
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
     return (
       <>
@@ -200,4 +199,4 @@ const mapStateToProps = state => ({
   jobs: state.job.jobs,
 })
 
-export default connect(mapStateToProps, {addInvoice})(withRouter(AddInvoice));
+export default connect(mapStateToProps, {addInvoice, getInvoices})(withRouter(AddInvoice));

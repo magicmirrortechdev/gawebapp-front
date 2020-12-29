@@ -19,7 +19,6 @@ import {connect} from "react-redux";
 import {addUser, getUsers} from '../../redux/actions/userAction'
 import {addWorkers} from '../../redux/actions/jobAction'
 
-let estimate
 class AddWorkerJob extends React.Component {
   handleInput = e => {
     e.persist()
@@ -31,27 +30,20 @@ class AddWorkerJob extends React.Component {
 
   componentDidMount() {
     if(this.props.users.length === 0) this.props.getUsers()
-    estimate = this.props.jobs.filter(item => item._id === this.props.match.params.id)[0]
+    this.setState(prevState =>({
+      estimate : this.props.jobs.filter(item => item._id === this.props.match.params.id)[0]
+    }))
   }
 
   handleSubmit = async (e, props) => {
     e.preventDefault()
-    const workerIn =[]
-    estimate.workers.forEach(e =>{
-      if(e.workerId)
-        workerIn.push(e.workerId._id)
-    })
-    if(workerIn.includes(this.state._id)){
-      alert('This worker already exists in this job')
-    }
-    else {
-      this.props.addWorkers(this.props.match.params.id, {id2: this.state._id})
-      this.props.history.push(`/admin/jobs`)
-    }
+    this.props.addWorkers(this.props.match.params.id, {id2: this.state._id})
+    this.props.history.push(`/admin/jobs`)
   }
 
   render() {
     const {users} = this.props
+    if (!this.state || users.length === 0) return <p>Loading</p>
     return (
       <>
         <Header />
@@ -78,15 +70,21 @@ class AddWorkerJob extends React.Component {
                               name="_id"
                               className="form-control-alternative"
                               type="select"
-                              onChange={this.handleInput}
-                              
-                            >
+                              onChange={this.handleInput}>
                             <option>Select worker</option>
                             {users.map((e,i)=>{
+                              let bandera = true
+                              this.state.estimate.workers.forEach(worker =>{
+                                if(worker.workerId === e._id){
+                                  bandera = false
+                                }
+                              })
+
                               return(
+                                !bandera ? null :
                                 e.role === 'PROJECT MANAGER' ? <option key={i} value={`${e._id}`}>{e.name} (Project Manager)</option> :
                                 e.role === 'WORKER' ? <option key={i} value={`${e._id}`}>{e.name} (Worker)</option> :
-                                e.role === 'ADMIN' ? <option key={i} value={`${e._id}`}>{e.name} (Admin)</option> : null
+                                e.role === 'ADMIN' ? <option key={i} value={`${e._id}`}>{e.name} (Admin)</option> :  null
                                 )
                             })
                             }

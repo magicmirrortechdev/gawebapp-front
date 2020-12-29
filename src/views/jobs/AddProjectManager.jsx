@@ -19,7 +19,6 @@ import {connect} from "react-redux";
 import {getUsers} from "../../redux/actions/userAction";
 import {addProjectManager} from "../../redux/actions/jobAction";
 
-let estimate
 class AddWorkerJob extends React.Component {
   state = {
     users:[]
@@ -35,10 +34,10 @@ class AddWorkerJob extends React.Component {
 
   componentDidMount() {
     if(this.props.users.length === 0) this.props.getUsers()
-    estimate = this.props.jobs.filter(item => item._id === this.props.match.params.id)[0]
     this.setState(prevState => {
       return {
         ...prevState,
+        estimate : this.props.jobs.filter(item => item._id === this.props.match.params.id)[0],
         users: this.props.users.filter(user => user.role === "PROJECT MANAGER")
       }
     })
@@ -47,21 +46,12 @@ class AddWorkerJob extends React.Component {
 
   handleSubmit = (e, props) => {
     e.preventDefault()
-    const workerIn =[]
-    estimate.projectManager.map(e =>{
-      return workerIn.push(e.projectId._id) 
-    })
-    if(workerIn.includes(this.state._id)){
-      alert('This PM already exists in this job')
-    }
-    else {
-      this.props.addProjectManager(this.props.match.params.id, {id2: this.state._id})
-      this.props.history.push(`/admin/jobs`)
-    }
+    this.props.addProjectManager(this.props.match.params.id, {id2: this.state._id})
+    this.props.history.push(`/admin/jobs`)
   }
 
   render() {
-    console.log(this.state)
+    if (!this.state) return <p>Loading</p>
     return (
       <>
         <Header />
@@ -91,8 +81,15 @@ class AddWorkerJob extends React.Component {
                               onChange={this.handleInput}>
                             <option>Select project manager</option>
                             {this.state.users.map((e,i)=>{
-                                return(
-                                  <option key={i} value={`${e._id}`}>{e.name}</option>)
+                              let bandera = true
+                              this.state.estimate.workers.forEach(worker =>{
+                                if(worker.workerId === e._id){
+                                  bandera = false
+                                }
+                              })
+
+                              return(
+                                !bandera ? null : <option key={i} value={`${e._id}`}>{e.name}</option>)
                               })
                             }
                             </Input>

@@ -95,7 +95,7 @@ const ActionDropDown = (props) => {
               </tr>
               </thead>
               <tbody>
-              {props.item.payments.length === 0 ? <tr>
+              { (!props.item.payments || props.item.payments.length === 0) ? <tr>
                     <td>No payments register</td>
                   </tr>
                   : props.item.payments.map((e, i) => {
@@ -125,7 +125,7 @@ const ActionDropDown = (props) => {
               </tr>
             </thead>
             <tbody>
-              {props.item.payments.length === 0 ?
+              {!props.item.payments && props.item.payments.length === 0 ?
                 <tr>
                   <td>No payments register</td>
                 </tr>
@@ -229,8 +229,8 @@ class Invoices extends React.Component {
   componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-    this.props.getJobs()
-    this.props.getClients()
+    //this.props.getJobs()
+    //this.props.getClients()
     this.props.getInvoices(loggedUser._id)
   }
 
@@ -301,16 +301,24 @@ class Invoices extends React.Component {
                       const client = users.filter(user => user._id === e.userId )
                       let nameClient = (client[0])? client[0].name : ''
                       const invoiceIndex = i + 1
-                      const paid = e.payments.reduce((acc, current, i) => acc + isNaN(current.paidAmount) ? 0 : current.paidAmount, 0)
+
+                      let paid = 0
+                      if(e.payments && e.payments.length > 0){
+                        paid = e.payments.reduce((acc, current, i) => acc + isNaN(current.paidAmount) ? 0 : current.paidAmount, 0)
+                      }
                       const total = e.invoiceTotal - paid
                       const total2 = e.invoiceTotal
-                      const paidAcc = e.payments.map((e,i)=>{
-                        let sum = 0
-                        sum += e.paidAmount || 0
-                        return sum
-                      })
+
+                      let paidAcc = []
+                      if(e.payments && e.payments.length > 0){
+                        paidAcc = e.payments.map((e,i)=>{
+                          let sum = 0
+                          sum += e.paidAmount || 0
+                          return sum
+                        })
+                      }
                       const paidOk = this.sum(paidAcc)
-                      e.jobName = job_[0].jobName
+                      e.jobName = (job_[0])? job_[0].jobName : ''
                       return(
                         <RowInvoice key={i}
                           item={e}

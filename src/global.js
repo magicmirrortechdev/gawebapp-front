@@ -4,7 +4,7 @@ let Global = {
     urlArgyle: process.env.REACT_APP_URLARGYLE,
     merchantId: process.env.REACT_APP_MERCHANTID,
     mobileWidth: 1024,
-    version: "V 2.7.0"
+    version: "V 2.7.1"
 };
 
 export function compareValues(key, order = 'asc') {
