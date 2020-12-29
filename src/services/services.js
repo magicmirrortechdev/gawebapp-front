@@ -96,6 +96,9 @@ class AuthService {
     }
 
     //invoices
+    addInvoice(data) {
+        return this.service('/v2/invoice/addinvoice/', data)
+    }
     getInvoices(id) {
         return this.service.get('/v2/invoice/getInvoices/' + id)
     }
