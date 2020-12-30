@@ -62,7 +62,7 @@ class AddInvoice extends React.Component {
 
   handleSubmit = async (e, props) => {
     e.preventDefault()
-    this.props.convertInvoice(this.props.match.params.id, this.state)
+    await this.props.convertInvoice(this.props.match.params.id, this.state)
     this.props.history.push(`/admin/invoices`)
   }
 

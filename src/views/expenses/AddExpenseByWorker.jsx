@@ -91,7 +91,7 @@ class AddExpense extends React.Component {
     }
     else {
       this.setState({ colorError: false });
-      this.props.addExpense(this.state)
+      await this.props.addExpense(this.state)
       this.props.history.push('/admin/expenses')
     }
   }

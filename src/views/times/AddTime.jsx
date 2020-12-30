@@ -57,9 +57,9 @@ class AddTime extends React.Component {
     })
   }
 
-  handleSubmit = (e, props) => {
+  handleSubmit = async (e, props) => {
     e.preventDefault()
-    this.props.addTime(this.props.match.params.id, this.props.match.params.workerId, this.state)
+    await this.props.addTime(this.props.match.params.id, this.props.match.params.workerId, this.state)
     this.props.history.push(`/admin/time`)
   }
 

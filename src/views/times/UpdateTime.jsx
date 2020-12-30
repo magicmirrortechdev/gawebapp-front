@@ -57,14 +57,14 @@ class UpdateTime extends React.Component {
     })
   }
 
-  handleSubmit = (e, props) => {
+  handleSubmit = async (e, props) => {
     e.preventDefault()
     this.setState(prevState =>{
       return{
         spinner: true
       }
     })
-    this.props.updateTime(this.props.match.params.id, this.state)
+    await this.props.updateTime(this.props.match.params.id, this.state)
     this.props.history.push(`/admin/time`)
   }
 

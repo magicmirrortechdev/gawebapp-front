@@ -40,9 +40,9 @@ class AddClient extends React.Component {
     }))
   }
 
-  handleSubmit = (e, props) => {
+  handleSubmit = async (e, props) => {
     e.preventDefault()
-    this.props.addClient(this.state)
+    await this.props.addClient(this.state)
     this.props.history.push(`clients`)
   }
 

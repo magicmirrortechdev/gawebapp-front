@@ -87,11 +87,11 @@ class Expenses extends React.Component {
     window.removeEventListener('resize', this.updateWindowDimensions)
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
     if(loggedUser._id !== 'undefined'){
-      this.props.getExpenses(loggedUser._id)
+      await this.props.getExpenses(loggedUser._id)
     }
   }
 

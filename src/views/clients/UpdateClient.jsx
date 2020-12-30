@@ -61,9 +61,9 @@ class UpdateClient extends React.Component {
     }))
   }
 
-  handleSubmit = (e, props) => {
+  handleSubmit = async (e, props) => {
     e.preventDefault()
-    this.props.updateClient(this.props.match.params.id, this.state);
+    await this.props.updateClient(this.props.match.params.id, this.state);
     this.props.history.push(`/admin/clients`)
   }
 

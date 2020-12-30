@@ -60,10 +60,10 @@ class Workers extends React.Component {
     window.removeEventListener('resize', this.updateWindowDimensions)
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-    this.props.getUsers();
+    await this.props.getUsers();
   }
 
   render() {

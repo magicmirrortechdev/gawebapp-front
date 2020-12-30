@@ -72,7 +72,7 @@ class AddInvoice extends React.Component {
 
   handleSubmit = async (e, props) => {
     e.preventDefault()
-    this.props.addInvoice(this.state)
+    await this.props.addInvoice(this.state)
     this.props.history.push(`/admin/invoices`)
   }
 

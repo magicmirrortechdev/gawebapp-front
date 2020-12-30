@@ -67,9 +67,9 @@ class UpdateJob extends React.Component {
   }
   
 
-  handleSubmit = (e, props) => {
+  handleSubmit = async (e, props) => {
     e.preventDefault()
-    this.props.updateJob(this.props.match.params.id, this.state)
+    await this.props.updateJob(this.props.match.params.id, this.state)
     this.props.history.push(`/admin/jobs`)
   }
 

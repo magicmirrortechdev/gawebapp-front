@@ -143,14 +143,14 @@ class Jobs extends React.Component {
     window.removeEventListener('resize', this.updateWindowDimensions)
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-    this.props.getUsers()
+    await this.props.getUsers()
     if(loggedUser.level <=1) {
-      this.props.getJobs(loggedUser._id)
+      await this.props.getJobs(loggedUser._id)
     }else{
-      this.props.getJobs();
+      await this.props.getJobs();
     }
   }
 

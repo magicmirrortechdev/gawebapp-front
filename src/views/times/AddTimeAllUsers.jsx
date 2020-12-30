@@ -92,7 +92,7 @@ class AddTime extends React.Component {
      })
   }
 
-  handleSubmit = (e, props) => {
+  handleSubmit = async (e, props) => {
     e.preventDefault()
 
     this.setState(prevState =>{
@@ -100,7 +100,7 @@ class AddTime extends React.Component {
         spinner: true
       }
     })
-    this.props.addTime(this.state)
+    await this.props.addTime(this.state)
     this.props.history.push(`/admin/time`)
   }
 

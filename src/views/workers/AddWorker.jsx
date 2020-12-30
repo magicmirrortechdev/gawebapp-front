@@ -43,9 +43,9 @@ class AddWorker extends React.Component {
     this.setState(prevState => ({ ...prevState, img }))
   }
 
-  handleSubmit = (e, props) => {
+  handleSubmit = async (e, props) => {
     e.preventDefault()
-    this.props.addUser(this.state)
+    await this.props.addUser(this.state)
     this.props.history.push(`workers`)
   }
 

@@ -63,9 +63,9 @@ class PayInvoice extends React.Component {
     })
   }
 
-  handleSubmit = (e, props) => {
+  handleSubmit = async (e, props) => {
     e.preventDefault()
-    this.props.payInvoice(this.props.match.params.invoiceId, this.state)
+    await this.props.payInvoice(this.props.match.params.invoiceId, this.state)
     this.props.history.push(`/admin/invoices`)
   }
 

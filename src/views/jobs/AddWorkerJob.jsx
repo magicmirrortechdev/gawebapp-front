@@ -37,7 +37,7 @@ class AddWorkerJob extends React.Component {
 
   handleSubmit = async (e, props) => {
     e.preventDefault()
-    this.props.addWorkers(this.props.match.params.id, {id2: this.state._id})
+    await this.props.addWorkers(this.props.match.params.id, {id2: this.state._id})
     this.props.history.push(`/admin/jobs`)
   }
 

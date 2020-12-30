@@ -54,17 +54,17 @@ class Clients extends React.Component {
     window.removeEventListener('resize', this.updateWindowDimensions)
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     loggedUser = this.props.userLogged
     if (!this.props.userLogged) return this.props.history.push('/auth/login')
     if (localStorage.getItem("version") !== Global.version) {
-      this.props.logoutUser()
+      await this.props.logoutUser()
       return this.props.history.push('/auth/login')
     }
 
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-    this.props.getClients();
+    await this.props.getClients();
   }
 
   render() {

@@ -80,9 +80,9 @@ class UpdateEstimate extends React.Component {
     this.setState(prevState => ({ ...prevState, img }))
   }
 
-  handleSubmit = (e, props) => {
+  handleSubmit = async (e, props) => {
     e.preventDefault()
-    this.props.updateEstimate(this.props.match.params.id, this.state)
+    await this.props.updateEstimate(this.props.match.params.id, this.state)
     this.props.history.push(`/admin/estimates`)
   }
 

@@ -96,7 +96,7 @@ class UpdateExpense extends React.Component {
   }
 
   handleSubmit = async (e, props) => {
-    this.props.updateExpense(this.props.match.params.expenseId, this.state);
+    await this.props.updateExpense(this.props.match.params.expenseId, this.state);
     this.props.history.push(`/admin/expenses`)
   }
 

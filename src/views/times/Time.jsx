@@ -126,10 +126,10 @@ class Time extends React.Component {
     window.removeEventListener('resize', this.updateWindowDimensions)
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-    this.props.getTimes(loggedUser._id)
+    await this.props.getTimes(loggedUser._id)
   }
 
   render() {

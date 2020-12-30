@@ -87,13 +87,14 @@ class UpdateWorker extends React.Component {
     this.setState(prevState => ({ ...prevState, img }))
   }
 
-  handleSubmit = (e, props) => {
+  handleSubmit = async (e, props) => {
     e.preventDefault()
-    this.props.updateUser(this.props.match.params.id, this.state);
+    await this.props.updateUser(this.props.match.params.id, this.state);
     this.props.history.push(`/admin/workers`)
   }
 
   render() {
+    console.log(this.state)
     const user = this.state
     if (!this.state) return <p>Loading</p>
     const typeUser = user.type

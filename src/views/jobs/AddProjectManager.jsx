@@ -44,9 +44,9 @@ class AddWorkerJob extends React.Component {
 
   }
 
-  handleSubmit = (e, props) => {
+  handleSubmit = async (e, props) => {
     e.preventDefault()
-    this.props.addProjectManager(this.props.match.params.id, {id2: this.state._id})
+    await this.props.addProjectManager(this.props.match.params.id, {id2: this.state._id})
     this.props.history.push(`/admin/jobs`)
   }
 

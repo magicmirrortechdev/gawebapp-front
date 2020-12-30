@@ -90,13 +90,12 @@ class AddExpense extends React.Component {
       alert('Total quantity not valid')
     }
     else{
-      this.props.addExpense(this.state)
+      await this.props.addExpense(this.state)
       this.props.history.push('/admin/jobs')
     }
   }
 
   render() {
-    console.log(this.state)
     if(!this.state.userId || this.state.userId==='') return <p>Loading</p>
     return (
       <>

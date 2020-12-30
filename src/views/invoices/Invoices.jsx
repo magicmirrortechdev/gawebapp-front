@@ -226,12 +226,12 @@ class Invoices extends React.Component {
     window.removeEventListener('resize', this.updateWindowDimensions)
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-    //this.props.getJobs()
-    //this.props.getClients()
-    this.props.getInvoices(loggedUser._id)
+    await this.props.getJobs()
+    await this.props.getClients()
+    await this.props.getInvoices(loggedUser._id)
   }
 
   sum(array) {

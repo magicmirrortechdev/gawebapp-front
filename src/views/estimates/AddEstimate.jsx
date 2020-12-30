@@ -88,9 +88,9 @@ class AddEstimate extends React.Component {
     this.setState(prevState => ({ ...prevState, img }))
   }
 
-  handleSubmit = (e, props) => {
+  handleSubmit = async (e, props) => {
     e.preventDefault()
-    this.props.addEstimate(this.state)
+    await this.props.addEstimate(this.state)
     this.props.history.push(`estimates`)
   }
 

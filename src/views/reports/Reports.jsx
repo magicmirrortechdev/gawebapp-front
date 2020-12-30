@@ -144,12 +144,12 @@ class Reports extends React.Component {
         window.removeEventListener('resize', this.updateWindowDimensions)
     }
 
-    componentDidMount(props) {
-        this.props.getJobs()
-        this.props.getUsers()
-        this.props.getTimes(loggedUser._id)
-        this.props.getInvoices(loggedUser._id)
-        this.props.getExpenses(loggedUser._id)
+    async componentDidMount(props) {
+        await this.props.getJobs()
+        await this.props.getUsers()
+        await this.props.getTimes(loggedUser._id)
+        await this.props.getInvoices(loggedUser._id)
+        await this.props.getExpenses(loggedUser._id)
 
         this.updateWindowDimensions()
         window.addEventListener('resize', this.updateWindowDimensions)
@@ -293,6 +293,7 @@ class Reports extends React.Component {
             }
 
             this.props.invoices.forEach(invoice => {
+                console.log("invoice", invoice)
                 if(invoice.jobId === job_._id &&
                     invoice.invoiceDate >= this.state.startDate && invoice.invoiceDate <= this.state.endDate){
                     job_.invoices.push(invoice)
