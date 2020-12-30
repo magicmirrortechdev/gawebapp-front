@@ -5,6 +5,15 @@ import Moment from "react-moment";
 import {compareValues} from  "../../global";
 
 const DropDownExpense = (props) =>{
+    let totalPayroll = 0;
+    let totalEffective = 0;
+    let totalHours = 0;
+    props.e.jobs.forEach(item => {
+        totalPayroll += item.payroll
+        totalEffective += item.effective
+        totalHours += item.hours
+    })
+
     return (
         <UncontrolledCollapse key={props.id} toggler={"#toggle" + props.i}>
             {!props.isMobileVersion?
@@ -28,28 +37,26 @@ const DropDownExpense = (props) =>{
                                 </thead>
                                 <tbody>
                                 {props.e.jobs.sort(compareValues('date','desc')).map((wx, i) => {
-                                        return (
-                                            <React.Fragment key={i}>
-                                                <tr>
-                                                    <td><Moment add={{days:1}} format={"MMM D, YY"}>{wx.date}</Moment></td>
-                                                    <td>{wx.jobName}</td>
-                                                    <td align="right">$ {isNaN(parseFloat(Math.round(wx.payroll * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.payroll * 100) / 100).toFixed(2)}  </td>
-                                                    <td align="right">$ {isNaN(parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)} </td>
-                                                    <td align="right">{isNaN(parseFloat(Math.round(wx.hours * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.hours * 100) / 100).toFixed(2)} </td>
-                                                </tr>
-                                            </React.Fragment>
-                                        )
-                                    }
-                                )}
+                                    return (
+                                        <React.Fragment key={i}>
+                                            <tr>
+                                                <td><Moment add={{days:1}} format={"MMM D, YY"}>{wx.date}</Moment></td>
+                                                <td>{wx.jobName}</td>
+                                                <td align="right">$ {isNaN(parseFloat(Math.round(wx.payroll * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.payroll * 100) / 100).toFixed(2)}  </td>
+                                                <td align="right">$ {isNaN(parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)} </td>
+                                                <td align="right">{isNaN(parseFloat(Math.round(wx.hours * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.hours * 100) / 100).toFixed(2)} </td>
+                                            </tr>
+                                        </React.Fragment>
+                                    )
+                                })}
                                 <tr>
                                     <td></td>
                                     <td align="right">Total:</td>
-                                    <td align="right">$ {isNaN(parseFloat(Math.round(props.e.totalPayroll.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)) ? 0 :
-                                        parseFloat(Math.round(props.e.totalPayroll.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)}</td>
-                                    <td align="right">$ {isNaN(parseFloat(Math.round(props.e.totalEffective.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)) ? 0 :
-                                        parseFloat(Math.round(props.e.totalEffective.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)}</td>
-                                    <td align="right">{isNaN(props.e.totalHours.reduce((ac,cv)=> ac+cv,0)) ? 0.00 :
-                                        props.e.totalHours.reduce((ac,cv)=> ac+cv,0).toFixed(2)}</td>
+                                    <td align="right">$ {isNaN(parseFloat(Math.round(totalPayroll * 100) / 100).toFixed(2)) ? 0 :
+                                        parseFloat(Math.round(totalPayroll * 100) / 100).toFixed(2)}</td>
+                                    <td align="right">$ {isNaN(parseFloat(Math.round(totalEffective * 100) / 100).toFixed(2)) ? 0 :
+                                        parseFloat(Math.round(totalEffective* 100) / 100).toFixed(2)}</td>
+                                    <td align="right">{isNaN(totalHours )? 0.00 : totalHours.toFixed(2)}</td>
                                 </tr>
                                 </tbody>
                             </Table>

@@ -1,6 +1,7 @@
 import React from "react";
 import {Link} from 'react-router-dom'
 import classnames from 'classnames';
+import _ from 'lodash';
 
 import {
     Card,
@@ -44,8 +45,10 @@ let pdfFile;
 let loggedUser
 class Reports extends React.Component {
     state = {
-        startDate: moment().startOf('week').add('days', -6).format('YYYY-MM-DD'),
-        endDate: moment().startOf('week').add('days', 0).format('YYYY-MM-DD'),
+        startDateLbl: moment().startOf('week').add('days', -6).format('YYYY-MM-DD'),
+        endDateLbl: moment().startOf('week').add('days', 0).format('YYYY-MM-DD'),
+        startDate: moment().startOf('week').add('days', -7).format('YYYY-MM-DD'),
+        endDate: moment().startOf('week').add('days', 1).format('YYYY-MM-DD'),
         jobsFilter: [],
         workersFilter: [],
         activeTab: '1',
@@ -115,6 +118,20 @@ class Reports extends React.Component {
             ...prevState,
             [e.target.name]: e.target.value
         }))
+
+        if(e.target.name === "startDateLbl"){
+            this.setState(prevState => ({
+                ...prevState,
+                "startDate": moment(e.target.value).add('days', -1).format('YYYY-MM-DD')
+            }))
+        }
+
+        if(e.target.name === "endDateLbl"){
+            this.setState(prevState => ({
+                ...prevState,
+                "endDate": moment(e.target.value).add('days', +1).format('YYYY-MM-DD')
+            }))
+        }
     }
 
     updateWindowDimensions = () => {
@@ -140,8 +157,10 @@ class Reports extends React.Component {
         this.setState(prevState => {
             return {
                 ...prevState,
-                startDate: moment().startOf('week').add('days', -6).format('YYYY-MM-DD'),
-                endDate: moment().startOf('week').add('days', 0).format('YYYY-MM-DD'),
+                startDateLbl: moment().startOf('week').add('days', -6).format('YYYY-MM-DD'),
+                endDateLbl: moment().startOf('week').add('days', 0).format('YYYY-MM-DD'),
+                startDate: moment().startOf('week').add('days', -7).format('YYYY-MM-DD'),
+                endDate: moment().startOf('week').add('days', 1).format('YYYY-MM-DD'),
                 workersFilter: this.workersTransformer(
                     this.props.users.filter(user => user.role === "WORKER" ||
                     user.role ==="PROJECT MANAGER" ||
@@ -207,7 +226,6 @@ class Reports extends React.Component {
      }
 
     filterDate = () => {
-        console.log("filtrando?", this.props.jobs)
         this.setState(prevState => {
             return {
                 ...prevState,
@@ -236,10 +254,10 @@ class Reports extends React.Component {
                             }
                             workers_[worker.user._id].times.push(time)
 
-                            if(!workers_[worker.user._id].jobs_){
-                                workers_[worker.user._id].jobs_ = []
+                            if(!workers_[worker.user._id].ajobs){
+                                workers_[worker.user._id].ajobs = []
                             }
-                            workers_[worker.user._id].jobs_[job_._id] = job_
+                            workers_[worker.user._id].ajobs[job_._id] = job_
                         }
                     })
                     worker.time = worker.time.filter(time_ =>
@@ -285,8 +303,8 @@ class Reports extends React.Component {
         let workers__ = []
         for(let key in workers_ ){
             workers_[key].jobs = []
-            for(let keyJob in workers_[key].jobs_ ){
-                workers_[key].jobs.push(workers_[key].jobs_[keyJob])
+            for(let keyJob in workers_[key].ajobs ){
+                workers_[key].jobs.push(workers_[key].ajobs[keyJob])
             }
             workers__.push(workers_[key])
         }
@@ -326,18 +344,15 @@ class Reports extends React.Component {
     }
 
     workersTransformer(users) {
-        users = users.filter(user => user.expenses || user.jobs)
+        users = users.filter(user => (user.expenses && user.expenses.length > 0) || (user.jobs && user.jobs.length > 0))
         users.sort(compareValues('name', 'asc'))
         users.forEach(user => {
             let hoursPerJob = []
-            user.totalPayroll = []
-            user.totalEffective = []
-            user.totalHours = []
+            delete user.jobs
 
-            user.jobs.sort(compareValues('date', 'desc'))
             if(user.times){
                 user.times.forEach(time => {
-                    if(time.date >= this.state.startDate && time.date <= this.state.endDate){
+                    if(time.date >= this.state.startDate && time.date <= this.state.endDate ){
                         hoursPerJob.push({
                             _id: time._id,
                             works: time.jobId,
@@ -347,15 +362,12 @@ class Reports extends React.Component {
                             payroll: user.payRate * time.hours,
                             effective: user.effectiveRate * time.hours,
                         })
-
-                        user.totalPayroll.push(user.payRate * time.hours)
-                        user.totalEffective.push(user.effectiveRate * time.hours)
-                        user.totalHours.push(time.hours)
                     }
                 })
             }
-            user.jobs = hoursPerJob
+            user.jobs = _.uniqBy(hoursPerJob, "_id")
         })
+        users = users.filter(user => (user.expenses && user.expenses.length > 0) || (user.jobs && user.jobs.length > 0))
         return users;
     }
 
@@ -402,11 +414,11 @@ class Reports extends React.Component {
                                                     From Date
                                                 </label>
                                                 <Input
-                                                    name="startDate"
+                                                    name="startDateLbl"
                                                     className="form-control-alternative"
                                                     type="date"
                                                     id="startDate"
-                                                    value={this.state.startDate}
+                                                    value={this.state.startDateLbl}
                                                     onChange={this.handleInput}
                                                 />
                                             </FormGroup>
@@ -419,11 +431,11 @@ class Reports extends React.Component {
                                                     Up to Date
                                                 </label>
                                                 <Input
-                                                    name="endDate"
+                                                    name="endDateLbl"
                                                     id="endDate"
                                                     className="form-control-alternative"
                                                     type="date"
-                                                    value={this.state.endDate}
+                                                    value={this.state.endDateLbl}
                                                     onChange={this.handleInput}
                                                 />
 
