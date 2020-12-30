@@ -93,7 +93,7 @@ export const getJobs = (id = undefined) => async dispatch => {
     }
 }
 
-export const addJob = (data) => async dispatch => {
+export const addJobs = (data) => async dispatch => {
     try{
         const response = await authService.addJob(data);
         dispatch({type: FETCH_ESTIMATE_ADD_SUCCESS, payload: response.data.estimate})
