@@ -203,7 +203,6 @@ class Jobs extends React.Component {
         jobsFilter = jobs.filter(job => job.isJob)
         break;
     }
-    jobs.sort(compareValues('createdAt', 'desc'));
 
     return (
       <>
