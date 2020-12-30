@@ -282,7 +282,7 @@ class ReportJobs extends React.Component{
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    {e.expenses && e.expenses.length === 0 ? <tr><td>No expenses register</td></tr>
+                                                    {!e.expenses && e.expenses.length === 0 ? <tr><td>No expenses register</td></tr>
                                                         : e.expenses.map((ex, ix) => {
                                                             return (
                                                                 <tr key={ix}>
