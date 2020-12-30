@@ -12,6 +12,9 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import {connect} from "react-redux";
+import {getInvoices} from "../redux/actions/invoiceAction";
+import {getExpenses} from "../redux/actions/expenseAction";
+import {getTimes} from "../redux/actions/timeAction";
 import {getUsers} from "../redux/actions/userAction";
 import {getJobs} from "../redux/actions/jobAction";
 import {getClients} from "../redux/actions/clientAction";
@@ -58,7 +61,10 @@ class Index extends React.Component {
               await this.props.getJobs();
               await this.props.getClients();
           }
-          await this.props.getUsers(loggedUser._id);
+          await this.props.getExpenses(loggedUser._id)
+          await this.props.getInvoices(loggedUser._id)
+          await this.props.getTimes(loggedUser._id)
+          await this.props.getUsers(loggedUser._id)
           document.getElementById('spinner').style.visibility='hidden';
       }
   }
@@ -154,4 +160,4 @@ const mapStateToProps = state => ({
     jobs: state.job.jobs
 })
 
-export default connect(mapStateToProps, {getUsers, getClients, getJobs, logoutUser})(Index);
+export default connect(mapStateToProps, {getUsers, getClients, getJobs, logoutUser, getTimes, getExpenses, getInvoices})(Index);

@@ -220,7 +220,11 @@ class Reports extends React.Component {
             return {
                 ...prevState,
                 buttonActive: "3",
-                jobsFilter: this.props.jobs
+                jobsFilter: this.props.jobs,
+                workersFilter: this.workersTransformer(
+                    this.props.users.filter(user => user.role === "WORKER" ||
+                        user.role ==="PROJECT MANAGER" ||
+                        user.role ==="ADMIN"), null, null)
             }
         })
      }
@@ -293,7 +297,6 @@ class Reports extends React.Component {
             }
 
             this.props.invoices.forEach(invoice => {
-                console.log("invoice", invoice)
                 if(invoice.jobId === job_._id &&
                     invoice.invoiceDate >= this.state.startDate && invoice.invoiceDate <= this.state.endDate){
                     job_.invoices.push(invoice)
@@ -322,7 +325,6 @@ class Reports extends React.Component {
             }
         })
         document.getElementById('spinner').style.visibility='hidden';
-
     }
 
     clearFilter = () => {
