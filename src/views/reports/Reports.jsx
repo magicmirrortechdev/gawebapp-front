@@ -189,47 +189,55 @@ class Reports extends React.Component {
         })
     }
 
-    getClose = () => {
+    getClose = async () => {
+        document.getElementById('spinner').style.visibility='visible';
         this.setState(prevState => {
             return {
                 ...prevState,
                 jobsFilter: [],
             }
         })
-        this.props.getJobs();
-
+        await this.props.getJobs();
+        const data = this.filterJobs(this.props.jobs.filter(job => job.status === 'Closed'), [])
         this.setState(prevState => {
             return {
                 ...prevState,
                 buttonActive: "2",
-                jobsFilter: this.props.jobs.filter(job => job.status === 'Closed')
+                jobsFilter: data[0],
+                workersFilter: this.workersTransformer(data[1])
             }
         })
+        document.getElementById('spinner').style.visibility='hidden';
     }
 
-    getAll = () => {
+    getAll = async () => {
+        document.getElementById('spinner').style.visibility='visible';
+
         this.setState(prevState => {
             return {
                 ...prevState,
                 jobsFilter: [],
             }
         })
-        this.props.getJobs();
+        await this.props.getJobs();
+
+        const data = this.filterJobs(this.props.jobs, [])
 
         this.setState(prevState => {
             return {
                 ...prevState,
                 buttonActive: "3",
-                jobsFilter: this.props.jobs,
-                workersFilter: this.workersTransformer(
-                    this.props.users.filter(user => user.role === "WORKER" ||
-                        user.role ==="PROJECT MANAGER" ||
-                        user.role ==="ADMIN"), null, null)
+                activeTab: "1",
+                loadFilter: true,
+                jobsFilter: data[0],
+                workersFilter: this.workersTransformer(data[1])
             }
         })
+
+        document.getElementById('spinner').style.visibility='hidden';
      }
 
-    filterDate = () => {
+    filterDate = async () => {
         this.setState(prevState => {
             return {
                 ...prevState,
@@ -237,58 +245,72 @@ class Reports extends React.Component {
                 workersFilter: [],
             }
         })
-        document.getElementById('spinner').style.visibility='visible';
+        await this.props.getJobs();
 
-        let workers_ = [];
-        let jobsFilter_ = this.props.jobs.filter(job => job.status === 'Approve');
+        document.getElementById('spinner').style.visibility='visible';
+        const data = this.filterJobs(this.props.jobs.filter(job => job.status === 'Approve'), [])
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                buttonActive: "1",
+                loadFilter: true,
+                jobsFilter: data[0],
+                workersFilter: this.workersTransformer(data[1])
+            }
+        })
+        document.getElementById('spinner').style.visibility='hidden';
+    }
+
+    filterJobs = (jobsFilter_, workers_) => {
+
         jobsFilter_.forEach(job_ => {
             job_.invoices = []
             job_.expenses = []
 
-            if(job_.workers.length > 0) {
+            if (job_.workers.length > 0) {
                 job_.workers.forEach(worker => {
                     worker.time = []
                     this.props.times.forEach(time => {
-                        if(time.userId === worker.workerId && time.jobId === job_._id){
+                        if (time.userId === worker.workerId && time.jobId === job_._id) {
                             worker.time.push(time)
-                            worker.user = this.props.users.filter(user => user._id === worker.workerId )[0]
+                            worker.user = this.props.users.filter(user => user._id === worker.workerId)[0]
                             workers_[worker.user._id] = worker.user
-                            if(!workers_[worker.user._id].times){
+                            if (!workers_[worker.user._id].times) {
                                 workers_[worker.user._id].times = []
                             }
                             workers_[worker.user._id].times.push(time)
 
-                            if(!workers_[worker.user._id].ajobs){
+                            if (!workers_[worker.user._id].ajobs) {
                                 workers_[worker.user._id].ajobs = []
                             }
                             workers_[worker.user._id].ajobs[job_._id] = job_
                         }
                     })
                     worker.time = worker.time.filter(time_ =>
-                        time_.date >= this.state.startDate && time_.date <= this.state.endDate
+                        time_.date >= this.state.startDateLbl && time_.date <= this.state.endDate
                     )
                 })
                 job_.workers = job_.workers.filter(worker => worker.time.length > 0)
             }
 
             let expenses = this.props.expenses.filter(expense =>
-                expense.jobId === job_._id && expense.date >= this.state.startDate && expense.date <= this.state.endDate
+                expense.jobId === job_._id && expense.date >= this.state.startDateLbl && expense.date <= this.state.endDate
             )
-            if(expenses.length > 0){
+            if (expenses.length > 0) {
                 expenses.forEach(expense => {
-                    if(!workers_[expense.userId]){
-                        workers_[expense.userId] = this.props.users.filter(user => user._id === expense.userId )[0]
+                    if (!workers_[expense.userId]) {
+                        workers_[expense.userId] = this.props.users.filter(user => user._id === expense.userId)[0]
                         workers_[expense.userId].expenses = []
                         workers_[expense.userId].jobs = []
                     }
 
-                    if(!workers_[expense.userId].expenses){
+                    if (!workers_[expense.userId].expenses) {
                         workers_[expense.userId].expenses = []
                     }
 
-                    if(expense.userId === workers_[expense.userId]._id &&
+                    if (expense.userId === workers_[expense.userId]._id &&
                         expense.jobId === job_._id &&
-                        expense.date >= this.state.startDate && expense.date <= this.state.endDate){
+                        expense.date >= this.state.startDateLbl && expense.date <= this.state.endDate) {
                         workers_[expense.userId].expenses.push(expense)
                     }
 
@@ -297,8 +319,8 @@ class Reports extends React.Component {
             }
 
             this.props.invoices.forEach(invoice => {
-                if(invoice.jobId === job_._id &&
-                    invoice.invoiceDate >= this.state.startDate && invoice.invoiceDate <= this.state.endDate){
+                if (invoice.jobId === job_._id &&
+                    invoice.invoiceDate >= this.state.startDateLbl && invoice.invoiceDate <= this.state.endDate) {
                     job_.invoices.push(invoice)
                 }
             })
@@ -316,67 +338,57 @@ class Reports extends React.Component {
         jobsFilter_ = jobsFilter_.filter(job_ => job_.invoices.length > 0 || job_.expenses > 0 || job_.workers.length > 0)
             .sort(compareValues('jobName', 'asc'));
 
-        this.setState(prevState => {
-            return {
-                ...prevState,
-                loadFilter: true,
-                jobsFilter: jobsFilter_,
-                workersFilter: this.workersTransformer(workers__)
-            }
-        })
-        document.getElementById('spinner').style.visibility='hidden';
+        return [jobsFilter_, workers__]
     }
 
     clearFilter = () => {
-
         this.setState(prevState => {
             return {
                 ...prevState,
-                buttonActive: "1",
-                activeTab: "1",
-                jobsFilter: this.props.jobs.filter(job => job.status === 'Approve'),
-                workersFilter: this.workersTransformer(
-                    this.props.users.filter(user => user.role === "WORKER" ||
-                        user.role ==="PROJECT MANAGER" ||
-                        user.role ==="ADMIN"), null, null)
+                startDateLbl: moment().startOf('week').add('days', -6).format('YYYY-MM-DD'),
+                endDateLbl: moment().startOf('week').add('days', 0).format('YYYY-MM-DD'),
+                startDate: moment().startOf('week').add('days', -7).format('YYYY-MM-DD'),
+                endDate: moment().startOf('week').add('days', 1).format('YYYY-MM-DD'),
+                jobsFilter: [],
+                workersFilter: [],
             }
         })
+        document.getElementById('spinner').style.visibility='visible';
 
-        document.getElementById("startDate").value = "";
-        document.getElementById("endDate").value = "";
+        document.getElementById('spinner').style.visibility='hidden';
     }
 
-    workersTransformer(users) {
-        users = users.filter(user => (user.expenses && user.expenses.length > 0) || (user.jobs && user.jobs.length > 0))
+    workersTransformer(users, filter = true) {
+        users = users.filter(user => user.expenses || user.jobs )
         users.sort(compareValues('name', 'asc'))
         users.forEach(user => {
             let hoursPerJob = []
 
             if(user.times){
                 user.times.forEach(time => {
-                    if(time.date >= this.state.startDate && time.date <= this.state.endDate ){
-                        hoursPerJob.push({
-                            _id: time._id,
-                            works: time.jobId,
-                            jobName: this.props.jobs.filter(job=> job._id === time.jobId)[0].jobName,
-                            hours: time.hours,
-                            date: time.date,
-                            payroll: user.payRate * time.hours,
-                            effective: user.effectiveRate * time.hours,
-                        })
-                    }
+                    hoursPerJob.push({
+                        _id: time._id,
+                        works: time.jobId,
+                        jobName: this.props.jobs.filter(job=> job._id === time.jobId)[0].jobName,
+                        hours: time.hours,
+                        date: time.date,
+                        payroll: user.payRate * time.hours,
+                        effective: user.effectiveRate * time.hours,
+                    })
                 })
             }
             user.jobs = _.uniqBy(hoursPerJob, "_id")
+            if (filter){
+                user.jobs = user.jobs.filter(job => job.date >= this.state.startDateLbl &&
+                    job.date <= this.state.endDate )
+                if (user.expenses){
+                    user.expenses = user.expenses.filter(expense => expense.date >= this.state.startDateLbl &&
+                        expense.date <= this.state.endDate )
+                }
+            }
         })
         users = users.filter(user => (user.expenses && user.expenses.length > 0) || (user.jobs && user.jobs.length > 0))
         return users;
-    }
-
-    componentDidUpdate(){
-        if(!this.state.loadFilter ){
-            this.filterDate();
-        }
     }
 
     render() {
