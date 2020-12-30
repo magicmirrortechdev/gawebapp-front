@@ -195,6 +195,7 @@ class Reports extends React.Component {
             return {
                 ...prevState,
                 jobsFilter: [],
+                workersFilter: []
             }
         })
         await this.props.getJobs();
@@ -217,6 +218,7 @@ class Reports extends React.Component {
             return {
                 ...prevState,
                 jobsFilter: [],
+                workersFilter: []
             }
         })
         await this.props.getJobs();
@@ -342,6 +344,7 @@ class Reports extends React.Component {
     }
 
     clearFilter = () => {
+        document.getElementById('spinner').style.visibility='visible';
         this.setState(prevState => {
             return {
                 ...prevState,
@@ -353,7 +356,6 @@ class Reports extends React.Component {
                 workersFilter: [],
             }
         })
-        document.getElementById('spinner').style.visibility='visible';
 
         document.getElementById('spinner').style.visibility='hidden';
     }
