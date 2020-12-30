@@ -202,7 +202,7 @@ class ReportJobs extends React.Component{
                                                                             <td><Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment></td>
                                                                             <td>{clientName ? clientName : nameClient}</td>
                                                                             <td align="right">$ {parseFloat(Math.round(e.invoiceTotal * 100) / 100).toFixed(2)}</td>
-                                                                            <td>{ e.total-paid === 0 ? 'Paid' : e.status}</td>
+                                                                            <td>{ e.total-paid === 0 ? 'Paid' : e.invoiceStatus}</td>
                                                                         </tr>
                                                                     )
                                                                 })
