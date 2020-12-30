@@ -171,22 +171,26 @@ class Reports extends React.Component {
         })
     }
 
-    getOpen = () => {
+    getOpen = async () => {
+        document.getElementById('spinner').style.visibility='visible';
         this.setState(prevState => {
             return {
                 ...prevState,
                 jobsFilter: [],
+                workersFilter: []
             }
         })
-        this.props.getJobs();
-
+        await this.props.getJobs();
+        const data = this.filterJobs(this.props.jobs.filter(job => job.status === 'Approve'), [])
         this.setState(prevState => {
             return {
                 ...prevState,
                 buttonActive: "1",
-                jobsFilter: this.props.jobs.filter(job => job.status === 'Approve')
+                jobsFilter: data[0],
+                workersFilter: this.workersTransformer(data[1])
             }
         })
+        document.getElementById('spinner').style.visibility='hidden';
     }
 
     getClose = async () => {
@@ -264,7 +268,7 @@ class Reports extends React.Component {
     }
 
     filterJobs = (jobsFilter_, workers_) => {
-
+        workers_ = []
         jobsFilter_.forEach(job_ => {
             job_.invoices = []
             job_.expenses = []
@@ -328,6 +332,7 @@ class Reports extends React.Component {
             })
         })
 
+        console.log(workers_);
         let workers__ = []
         for(let key in workers_ ){
             workers_[key].jobs = []
