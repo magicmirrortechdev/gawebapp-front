@@ -349,7 +349,6 @@ class Reports extends React.Component {
         users.sort(compareValues('name', 'asc'))
         users.forEach(user => {
             let hoursPerJob = []
-            delete user.jobs
 
             if(user.times){
                 user.times.forEach(time => {
