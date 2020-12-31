@@ -18,12 +18,13 @@ import Header from "components/Headers/Header.jsx";
 import Global, {compareValues} from "../../global";
 import Moment from "react-moment";
 import {connect} from "react-redux";
-import {getJobs, removeTime} from "../../redux/actions/jobAction";
+import {getTimes, removeTime} from "../../redux/actions/timeAction";
 import configureStore from "../../redux/store";
+import {getJobs} from "../../redux/actions/jobAction";
+import {getUsers} from "../../redux/actions/userAction";
 const {store} = configureStore();
 
 let loggedUser ;
-let times = [];
 
 const ButtonOne = (props) => {
   return (
@@ -48,10 +49,10 @@ const ButtonOne = (props) => {
               },
             },
           }}>
-        <DropdownItem to={`/admin/time/updatetime/${props.item.estimateId}/${props.item.worker}/${props.item.workerId._id}/${props.item.timeId}`} tag={Link}>Update Hours</DropdownItem>
+        <DropdownItem to={`/admin/time/updatetime/${props.item._id}`} tag={Link}>Update Hours</DropdownItem>
         { loggedUser.level >= 4 ?
             <DropdownItem onClick={()=>{
-              props.props.removeTime(props.item.estimateId, props.item.workerId._id, props.item.timeId)
+              props.props.removeTime(props.item._id)
               alert("Time was removed");
             }}><span
                 className="text-danger">Delete</span>
@@ -87,11 +88,11 @@ const ButtonTwo = (props) => {
                 },
               },
             }}>
-          <DropdownItem to={`/admin/time/updatetime/${props.item.estimateId}/${props.item.worker}/${props.item.workerId._id}/${props.item.timeId}`} tag={Link}>Update Hours</DropdownItem>
+          <DropdownItem to={`/admin/time/updatetime/${props.item.id}`} tag={Link}>Update Hours</DropdownItem>
 
           {loggedUser.level >= 4 ?
               <DropdownItem onClick={() => {
-                props.props.removeTime(props.item.estimateId, props.item.workerId._id, props.item.timeId)
+                props.props.removeTime(props.item.id)
                 alert("Time was removed");
               }}><span
                   className="text-danger">Delete</span>
@@ -107,7 +108,7 @@ const ButtonTwo = (props) => {
 class Time extends React.Component {
 
   state = {
-    jobs:[],
+    times:[],
     isMobileVersion: false
   };
 
@@ -115,7 +116,6 @@ class Time extends React.Component {
     super(props);
     const {auth} = store.getState();
     loggedUser = auth.userLogged
-    this.loadTime = this.loadTime.bind(this)
   }
 
   updateWindowDimensions = () => {
@@ -126,62 +126,22 @@ class Time extends React.Component {
     window.removeEventListener('resize', this.updateWindowDimensions)
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-    this.loadTime()
-  }
-
-  loadTime() {
-    if(this.props.jobs.length === 0){
-      if(loggedUser.level <=1) {
-        this.props.getJobs(loggedUser._id)
-      }else{
-        this.props.getJobs();
-      }
-    }
+    await this.props.getTimes(loggedUser._id)
   }
 
   render() {
-    const {jobs} = this.props
+    let {times, users, jobs} = this.props
     if (!this.state) return <p>Loading</p>
-    else {
-      times = [];
-      jobs.forEach((e) => {
-        let projectManager = e.projectManager.map((e,i)=> !projectManager ? <p style={{fontSize:"10px"}}>Project Manager Delete</p> : <p style={{fontSize:"10px"}} key={i}>{e.projectId.name}</p>)
-        if(e.workers.length > 0){
-          e.workers.forEach((worker) => {
-            worker.time.forEach((time) => {
-              let band = false;
-              if(loggedUser.level <= 1) {
-                if(worker.workerId._id === loggedUser._id) {
-                  band = true
-                }
-              } else{
-                band = true
-              }
 
-              if(band){
-                times.push({
-                  timeId: time._id,
-                  date: time.date,
-                  time: time.hours,
-                  jobName: e.jobName,
-                  worker: worker._id,
-                  name: worker.workerId.name,
-                  projectManager: projectManager,
-                  estimateId: e._id,
-                  workerId: worker.workerId,
-                  workers: e.workers
-                });
-              }
-            });
-          })
-        }
-      });
-
+    if(times){
       times = times.sort(compareValues('date','desc'));
+    }else{
+      times = []
     }
+
     return (
       <>
         <Header />
@@ -203,7 +163,7 @@ class Time extends React.Component {
                         Add Time
                       </p>
                     </Link>
-                      
+
                     </div>
                     :null
                     }
@@ -225,31 +185,34 @@ class Time extends React.Component {
                       }
                     </tr>
                   </thead>
-                  {times.length === 0 ?  <tbody><tr><td>No workers register</td></tr></tbody>:
+                  {times.length === 0 ?  <tbody><tr><td>No times register</td></tr></tbody>:
                    times.map((e,i)=>{
-                       return(
+                     const user = users.filter(user => user._id === e.userId)[0]
+                     const job = jobs.filter(job => job._id === e.jobId)[0]
+                     return(
                         loggedUser.level >= 2 ?
                         <tbody key={i}>
                           <tr>
                             {!this.state.isMobileVersion ?
                               <>
-                                <td >
+                                <td>
                                   <ButtonOne item={e} props={this.props}></ButtonOne>
                                 </td>
                                 <td><Moment add={{days:1}} format={"MMM D, YY"}>{e.date}</Moment></td>
-                                <td>{e.name}</td>
+                                <td>{user.name}</td>
                                 <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px", display:"flex", flexDirection:"column", alignItems:"baseline", alignContent:"center"}}>
-                                  {e.time}</td>
+                                  {e.hours? e.hours : '-'}
+                                  </td>
                                 <td style={{height:"100%",paddingTop:"35px", paddingLeft:"60px"}} >
-                                  <p style={{fontSize:"10px"}} key={i}>{e.jobName}</p>
+                                  <p style={{fontSize:"10px"}} key={i}>{job.jobName}</p>
                                 </td>
                               </>
                               :
                               <>
                                 <td>
                                   <Moment add={{days:1}} format={"MMM D, YY"}>{e.date}</Moment><br/>
-                                  {e.name} - {e.time}<br/>
-                                  <small>{e.jobName}</small> <br/>
+                                  {user.name} - {e.hours? e.hours : '-'}<br/>
+                                  <small>{job.jobName}</small> <br/>
                                   <div className="buttonfloat-right buttonfloat-right-times">
                                     <ButtonOne item={e} props={this.props}></ButtonOne>
                                   </div>
@@ -259,12 +222,14 @@ class Time extends React.Component {
                           </tr>
                         </tbody>
                          : null
-                     )  
+                     )
                     })}
                   {//nuevo bloque
                     loggedUser.level <= 1 ?
                         times.map((e, i) => {
-                          if (!e.workerId) return <th scope="row">Worker Delete</th>
+                          const user = users.filter(user => user._id === e.userId)[0]
+                          const job = jobs.filter(job => job._id === e.jobId)[0]
+                          if (!e.userId) return <th scope="row">Worker Delete</th>
                           return (
                             <tbody key={i}>
                               <tr>
@@ -274,7 +239,7 @@ class Time extends React.Component {
                                     <ButtonTwo item={e} props={this.props}></ButtonTwo>
                                   </td>
                                   <td><Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment></td>
-                                  <td>{e.name}</td>
+                                  <td>{user.name}</td>
                                   <td style={{
                                         height: "100%",
                                         paddingTop: "35px",
@@ -284,17 +249,17 @@ class Time extends React.Component {
                                         alignItems: "baseline",
                                         alignContent: "center"
                                       }}>
-                                  {e.time}</td>
+                                  {e.hours ? e.hours : '-'}</td>
                                   <td style={{height: "100%", paddingTop: "35px", paddingLeft: "60px"}}>
-                                    {e.jobName}
+                                    {job.jobName}
                                   </td>
                                  </>
                                   :
                                   <>
                                     <td>
                                       <Moment add={{days: 1}} format={"MMM D, YY"}>{e.date}</Moment><br/>
-                                      {e.name} - {e.time}<br/>
-                                      <small>{e.jobName}</small><br/>
+                                      {e.userId.name} - {e.hours ? e.hours : '-'}<br/>
+                                      <small>{e.jobId.name}</small><br/>
                                       <div className="buttonfloat-right buttonfloat-right-times">
                                         <ButtonTwo item={e} props={this.props}></ButtonTwo>
                                       </div>
@@ -310,7 +275,7 @@ class Time extends React.Component {
                 </Table>
               </Card>
             </Col>
-            
+
           </Row>
         </Container>
       </>
@@ -320,6 +285,8 @@ class Time extends React.Component {
 
 const mapStateToProps = state => ({
   jobs: state.job.jobs,
+  times: state.time.times,
+  users: state.user.users
 })
 
-export default connect(mapStateToProps, {getJobs, removeTime})(Time);
+export default connect(mapStateToProps, {getUsers, getTimes, getJobs, removeTime})(Time);

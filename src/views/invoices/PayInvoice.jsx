@@ -17,12 +17,12 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import {connect} from "react-redux";
-import {getJobs, payInvoice} from "../../redux/actions/jobAction";
+import {payInvoice} from "../../redux/actions/invoiceAction";
 
-var fecha = new Date(); 
-      var mes = fecha.getMonth()+1; 
-      var dia = fecha.getDate(); 
-      var ano = fecha.getFullYear(); 
+var fecha = new Date();
+      var mes = fecha.getMonth()+1;
+      var dia = fecha.getDate();
+      var ano = fecha.getFullYear();
       if(dia<10)
         dia='0'+dia; //agrega cero si es menor de 10
       if(mes<10)
@@ -49,26 +49,27 @@ class PayInvoice extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.jobs.length === 0) this.props.history.push(`/admin/jobs`)
-    const job = this.props.jobs.filter(item => item._id === this.props.match.params.id)[0]
+    if (this.props.invoices.length === 0) this.props.history.push(`/admin/invoices`)
+    const invoice = this.props.invoices.filter(item => item._id === this.props.match.params.invoiceId)[0]
     this.setState(prevState => {
+      const job = this.props.jobs.filter(job => job._id === invoice.jobId)[0]
+      const client = this.props.clients.filter(client => client._id === job.clientId)[0]
       return {
         ...prevState,
-        clientName: job.clientId.name,
-        jobName: job.jobName,
-        ...job
+        clientName: client.firstName +' ' + client.lastName,
+        jobName: job.jobName + ' - ' + (job.jobAddress? job.jobAddress: '' ),
+        ...invoice
       }
     })
   }
 
-  handleSubmit = (e, props) => {
+  handleSubmit = async (e, props) => {
     e.preventDefault()
-    this.props.payInvoice(this.props.match.params.id, this.props.match.params.invoiceId, this.state)
+    await this.props.payInvoice(this.props.match.params.invoiceId, this.state)
     this.props.history.push(`/admin/invoices`)
   }
 
   render() {
-    
     console.log(this.state)
     const clientName = this.state.clientName
     const jobName = this.state.jobName
@@ -88,7 +89,7 @@ class PayInvoice extends React.Component {
                   </Row>
                 </CardHeader>
                 <CardBody>
-                  
+
                   <Form onSubmit={this.handleSubmit}>
                     <div className="pl-lg-4">
                       <Row>
@@ -96,8 +97,7 @@ class PayInvoice extends React.Component {
                         <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-hours"
-                            >
+                              htmlFor="input-hours">
                               Client Name
                             </label>
                             <Input
@@ -112,8 +112,7 @@ class PayInvoice extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-hours"
-                            >
+                              htmlFor="input-hours">
                               Job Name
                             </label>
                             <Input
@@ -128,8 +127,7 @@ class PayInvoice extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label d-inline-block"
-                              htmlFor="input-date"
-                            >
+                              htmlFor="input-date">
                               Pay Date
                             </label>
                             <Input
@@ -145,9 +143,7 @@ class PayInvoice extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-hours"
-                            >
-                            Amount paid
+                              htmlFor="input-hours">Amount paid
                             </label>
                             <Input
                               name="paid"
@@ -158,20 +154,14 @@ class PayInvoice extends React.Component {
                               step="any"
                             />
                           </FormGroup>
-                          
                         </Col>
                       </Row>
-                      
-                      
                       <Row>
                         <Col lg="6">
                           <FormGroup>
-                        
                             <Button
                               className="form-control-alternative"
-                              color="info"
-
-                            >Pay</Button>
+                              color="info">Pay</Button>
                           </FormGroup>
                         </Col>
                       </Row>
@@ -180,7 +170,6 @@ class PayInvoice extends React.Component {
                 </CardBody>
               </Card>
             </Col>
-            
           </Row>
         </Container>
       </>
@@ -190,6 +179,8 @@ class PayInvoice extends React.Component {
 
 const mapStateToProps = state => ({
   jobs: state.job.jobs,
+  invoices: state.invoice.invoices,
+  clients: state.client.clients
 })
 
-export default connect(mapStateToProps, {getJobs, payInvoice})(withRouter(PayInvoice));
+export default connect(mapStateToProps, {payInvoice})(withRouter(PayInvoice));

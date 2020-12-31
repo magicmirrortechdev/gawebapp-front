@@ -17,12 +17,12 @@ import {
 import Header from "components/Headers/Header.jsx";
 import Global from "../../global";
 import {connect} from "react-redux";
-import {addInvoice, convertInvoice} from "../../redux/actions/jobAction";
+import {addInvoice, getInvoices} from "../../redux/actions/invoiceAction";
 import configureStore from "../../redux/store";
 const {store} = configureStore();
 
 let loggedUser;
-var fecha = new Date(); 
+var fecha = new Date();
 var mes = fecha.getMonth()+1;
 var dia = fecha.getDate();
 var ano = fecha.getFullYear();
@@ -72,12 +72,11 @@ class AddInvoice extends React.Component {
 
   handleSubmit = async (e, props) => {
     e.preventDefault()
-    this.props.convertInvoice(this.state._id, this.state)
+    await this.props.addInvoice(this.state)
     this.props.history.push(`/admin/invoices`)
   }
 
   render() {
-    console.log(this.state)
     if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
     return (
       <>
@@ -94,7 +93,7 @@ class AddInvoice extends React.Component {
                     </div>
                   </Row>
                 </CardHeader>
-                <CardBody> 
+                <CardBody>
 
                   <Form onSubmit={this.handleSubmit}>
                     <div className="pl-lg-4">
@@ -106,7 +105,7 @@ class AddInvoice extends React.Component {
                               className="form-control-alternative"
                               type="select"
                               onChange={this.handleInput}
-                              
+
                             >
                             <option>Select Job to Create a Invoice</option>
                             {this.state.jobs.map((e,i)=>{
@@ -114,8 +113,8 @@ class AddInvoice extends React.Component {
                                 <option key={i} value={`${e._id}`}>{e.jobName}</option>)
                             })
                             }
-                            
-                            
+
+
                             </Input>
                           </FormGroup>
                           <FormGroup>
@@ -135,7 +134,7 @@ class AddInvoice extends React.Component {
                               onChange={this.handleInput}
                             />
                           </FormGroup>
-                        
+
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -169,12 +168,12 @@ class AddInvoice extends React.Component {
                           </FormGroup>
                         </Col>
                       </Row>
-                      
-                      
+
+
                       <Row>
                         <Col lg="6">
                           <FormGroup>
-                        
+
                             <Button
                               className="form-control-alternative"
                               color="info"
@@ -188,7 +187,7 @@ class AddInvoice extends React.Component {
                 </CardBody>
               </Card>
             </Col>
-            
+
           </Row>
         </Container>
       </>
@@ -200,4 +199,4 @@ const mapStateToProps = state => ({
   jobs: state.job.jobs,
 })
 
-export default connect(mapStateToProps, {addInvoice, convertInvoice})(withRouter(AddInvoice));
+export default connect(mapStateToProps, {addInvoice, getInvoices})(withRouter(AddInvoice));

@@ -5,6 +5,15 @@ import Moment from "react-moment";
 import {compareValues} from  "../../global";
 
 const DropDownExpense = (props) =>{
+    let totalPayroll = 0;
+    let totalEffective = 0;
+    let totalHours = 0;
+    props.e.jobs.forEach(item => {
+        totalPayroll += item.payroll
+        totalEffective += item.effective
+        totalHours += item.hours
+    })
+
     return (
         <UncontrolledCollapse key={props.id} toggler={"#toggle" + props.i}>
             {!props.isMobileVersion?
@@ -28,28 +37,26 @@ const DropDownExpense = (props) =>{
                                 </thead>
                                 <tbody>
                                 {props.e.jobs.sort(compareValues('date','desc')).map((wx, i) => {
-                                        return (
-                                            <React.Fragment key={i}>
-                                                <tr>
-                                                    <td><Moment add={{days:1}} format={"MMM D, YY"}>{wx.date}</Moment></td>
-                                                    <td>{wx.jobName}</td>
-                                                    <td align="right">$ {isNaN(parseFloat(Math.round(wx.payroll * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.payroll * 100) / 100).toFixed(2)}  </td>
-                                                    <td align="right">$ {isNaN(parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)} </td>
-                                                    <td align="right">{isNaN(parseFloat(Math.round(wx.hours * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.hours * 100) / 100).toFixed(2)} </td>
-                                                </tr>
-                                            </React.Fragment>
-                                        )
-                                    }
-                                )}
+                                    return (
+                                        <React.Fragment key={i}>
+                                            <tr>
+                                                <td><Moment add={{days:1}} format={"MMM D, YY"}>{wx.date}</Moment></td>
+                                                <td>{wx.jobName}</td>
+                                                <td align="right">$ {isNaN(parseFloat(Math.round(wx.payroll * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.payroll * 100) / 100).toFixed(2)}  </td>
+                                                <td align="right">$ {isNaN(parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.effective * 100) / 100).toFixed(2)} </td>
+                                                <td align="right">{isNaN(parseFloat(Math.round(wx.hours * 100) / 100).toFixed(2)) ? 0 : parseFloat(Math.round(wx.hours * 100) / 100).toFixed(2)} </td>
+                                            </tr>
+                                        </React.Fragment>
+                                    )
+                                })}
                                 <tr>
                                     <td></td>
                                     <td align="right">Total:</td>
-                                    <td align="right">$ {isNaN(parseFloat(Math.round(props.e.totalPayroll.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)) ? 0 :
-                                        parseFloat(Math.round(props.e.totalPayroll.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)}</td>
-                                    <td align="right">$ {isNaN(parseFloat(Math.round(props.e.totalEffective.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)) ? 0 :
-                                        parseFloat(Math.round(props.e.totalEffective.reduce((ac,cv)=> ac+cv,0) * 100) / 100).toFixed(2)}</td>
-                                    <td align="right">{isNaN(props.e.totalHours.reduce((ac,cv)=> ac+cv,0)) ? 0.00 :
-                                        props.e.totalHours.reduce((ac,cv)=> ac+cv,0).toFixed(2)}</td>
+                                    <td align="right">$ {isNaN(parseFloat(Math.round(totalPayroll * 100) / 100).toFixed(2)) ? 0 :
+                                        parseFloat(Math.round(totalPayroll * 100) / 100).toFixed(2)}</td>
+                                    <td align="right">$ {isNaN(parseFloat(Math.round(totalEffective * 100) / 100).toFixed(2)) ? 0 :
+                                        parseFloat(Math.round(totalEffective* 100) / 100).toFixed(2)}</td>
+                                    <td align="right">{isNaN(totalHours )? 0.00 : totalHours.toFixed(2)}</td>
                                 </tr>
                                 </tbody>
                             </Table>
@@ -71,21 +78,20 @@ const DropDownExpense = (props) =>{
                                 </thead>
                                 <tbody>
                                 {
-                                    !props.e.expenses ? <p>Loading</p> :
-                                        props.e.expenses.sort(compareValues('date','desc')).map((ex, i) => {
-                                                return (
-                                                    <tr key={i}>
-                                                        <td><Button onClick={props.handleModal(ex.img)}><i className="fas fa-receipt"></i> View</Button> </td>
-                                                        <td><Moment add={{days:1}} format={"MMM D, YY"}>{ex.date}</Moment></td>
-                                                        <td>{ex.category}</td>
-                                                        <td align="right">$ {ex.total}</td>
-                                                        <td>{ex.vendor}</td>
-                                                        <td>{ex.jobName}</td>
-                                                        <td>{ex.description}</td>
-                                                    </tr>
-                                                )
-                                            }
-                                        )}
+                                    !props.e.expenses ? <tr><td colSpan={7}></td></tr> :
+                                    props.e.expenses.sort(compareValues('date','desc')).map((ex, i) => {
+                                        return (
+                                            <tr key={i}>
+                                                <td><Button onClick={props.handleModal(ex.image)}><i className="fas fa-receipt"></i> View</Button> </td>
+                                                <td><Moment add={{days:1}} format={"MMM D, YY"}>{ex.date}</Moment></td>
+                                                <td>{ex.category}</td>
+                                                <td align="right">$ {ex.total}</td>
+                                                <td>{ex.vendor}</td>
+                                                <td>{ex.jobName}</td>
+                                                <td>{ex.description}</td>
+                                            </tr>
+                                        )
+                                    })}
                                 </tbody>
                             </Table>
                         </div>
@@ -134,7 +140,7 @@ const DropDownExpense = (props) =>{
                         </thead>
                         <tbody>
                         {
-                            !props.e.expenses ? <p>Loading</p> :
+                            !props.e.expenses ? <tr><td></td></tr> :
                                 props.e.expenses.sort(compareValues('date','desc')).map((ex, i) => {
                                     return (
                                         <tr key={i}>
@@ -148,7 +154,7 @@ const DropDownExpense = (props) =>{
                                                 {ex.jobName}<br/>
                                                 {ex.description}<br/>
                                                 <div className="buttonfloat-right buttonfloat-right-times">
-                                                    <Button onClick={props.handleModal(ex.img)}><i className="fas fa-receipt"></i> View</Button>
+                                                    <Button onClick={props.handleModal(ex.image)}><i className="fas fa-receipt"></i> View</Button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -170,7 +176,7 @@ class ReportWorkers extends React.Component{
     }
 
     render() {
-        if(!this.props.workers) return <p>Loading</p>
+        if(!this.props.workersFilter) return <p>Loading</p>
         return (
             <div className="div_workers">
                 <Table className="align-items-center table-flush table-striped" responsive>
@@ -190,12 +196,12 @@ class ReportWorkers extends React.Component{
                     </thead>
 
                     <tbody>
-                    {this.props.workers.length === 0 ?
+                    {this.props.workersFilter.length === 0 ?
                         <tr>
                             <td>No workers register</td>
                         </tr>
                         :
-                        this.props.workers.map((e, i) =>
+                        this.props.workersFilter.map((e, i) =>
                             <React.Fragment key={i}>
                             {!this.props.isMobileVersion?
                                 <React.Fragment key={i}>

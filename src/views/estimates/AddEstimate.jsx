@@ -22,19 +22,18 @@ import Global from "../../global";
 import {connect} from "react-redux";
 import {addEstimate} from "../../redux/actions/jobAction";
 
-var fecha = new Date(); 
-      var mes = fecha.getMonth()+1; 
-      var dia = fecha.getDate(); 
-      var ano = fecha.getFullYear(); 
+var fecha = new Date();
+      var mes = fecha.getMonth()+1;
+      var dia = fecha.getDate();
+      var ano = fecha.getFullYear();
       if(dia<10)
         dia='0'+dia; //agrega cero si es menor de 10
       if(mes<10)
         mes='0'+mes //agrega cero si es menor de 10
 
 class AddEstimate extends React.Component {
-  
+
   state = {
-    
     name:'',
     address:'',
     items:[],
@@ -43,11 +42,11 @@ class AddEstimate extends React.Component {
     photo:[],
     quantity: '',
     rate: '',
-    subtotal: 0,
-    tax: 0,
-    discount: 0,
-    paid: 0,
-    total: 0,
+    estimateSubtotal: 0,
+    estimateTax: 0,
+    estimateDiscount: 0,
+    estimatePaid: 0,
+    estimateTotal: 0,
     dateCreate: ano+"-"+mes+"-"+dia,
     jobName:''
   };
@@ -62,7 +61,7 @@ class AddEstimate extends React.Component {
     }
     else if( this.state.rate === ''){
       alert('The field rate is required to add item')
-    } 
+    }
     else{
       document.getElementById("itemName").value = "";
       document.getElementById("description").value = "";
@@ -85,40 +84,38 @@ class AddEstimate extends React.Component {
 
     const {
       data: { img }
-    } = await axios.post(Global.url + 'upload', file)
+    } = await axios.post(Global.url + 'v2/upload', file)
     this.setState(prevState => ({ ...prevState, img }))
   }
 
-  handleSubmit = (e, props) => {
+  handleSubmit = async (e, props) => {
     e.preventDefault()
-    this.props.addEstimate(this.state)
+    await this.props.addEstimate(this.state)
     this.props.history.push(`estimates`)
   }
 
   render() {
     let date = new Date()
-
     let day = date.getDate()
     let month = date.getMonth() + 1
     let year = date.getFullYear()
 
-  let product={
-    itemName: this.state.itemName,
-    description: this.state.description,
-    quantity: parseInt(this.state.quantity),
-    rate: parseInt(this.state.rate),
-    subtotal: parseInt(this.state.quantity * this.state.rate),
-  }
+    let product =  {
+      itemName: this.state.itemName,
+      description: this.state.description,
+      quantity: parseInt(this.state.quantity),
+      rate: parseInt(this.state.rate),
+      subtotal: parseInt(this.state.quantity * this.state.rate),
+    }
 
-  let subtotal = this.state.items.reduce((acc, current, i) => acc + current.subtotal, 0)
-  let tax = parseInt(this.state.tax) * subtotal / 100
-  let discount = parseInt(this.state.discount)
-  let paid = parseInt(this.state.paid)
-  let clientName = this.state.clientName
-  let address = this.state.address
-
-  let total = subtotal + tax - discount - paid
-  let jobName = address+clientName
+    let subtotal = this.state.items.reduce((acc, current, i) => acc + current.subtotal, 0)
+    let tax = parseInt(this.state.estimateTax) * subtotal / 100
+    let discount = parseInt(this.state.estimateDiscount)
+    let paid = parseInt(this.state.estimatePaid)
+    let clientName = this.state.clientName
+    let address = this.state.address
+    let estimateTotal = subtotal + tax - discount - paid
+    let jobName = address + clientName
 
     return (
       <>
@@ -135,7 +132,7 @@ class AddEstimate extends React.Component {
                     </div>
                   </Row>
                 </CardHeader>
-                <CardBody> 
+                <CardBody>
 
                   <Form onSubmit={this.handleSubmit}>
                     <div className="pl-lg-4">
@@ -144,8 +141,7 @@ class AddEstimate extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label d-inline-block"
-                              htmlFor="input-name"
-                            >
+                              htmlFor="input-name" >
                               Client Name *
                             </label>
                             <Input
@@ -154,13 +150,11 @@ class AddEstimate extends React.Component {
                               name="name"
                               required
                               type="text"
-                              onChange={this.handleInput}
-                            />
+                              onChange={this.handleInput}  />
                             <br/>
                             <label
                               className="form-control-label d-inline-block"
-                              htmlFor="input-name"
-                            >
+                              htmlFor="input-name" >
                               Client Email *
                             </label>
                             <Input
@@ -174,28 +168,24 @@ class AddEstimate extends React.Component {
                             <br/>
                             <label
                               className="form-control-label d-inline-block"
-                              htmlFor="input-name"
-                            >
+                              htmlFor="input-name" >
                               Address Estimate *
-                            </label> 
+                            </label>
                             <Input
                               className="form-control-alternative"
                               placeholder="Enter the client Address"
                               name="address"
                               required
                               type="text"
-                              onChange={this.handleInput}
-                            />
+                              onChange={this.handleInput}/>
                           </FormGroup>
-                        
+
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-merchant"
-                            >
+                              htmlFor="input-merchant">
                               Items
                             </label>
-                            
                             <Table className="align-items-center table-flush" responsive>
                               <thead className="thead-light">
                               <tr>
@@ -214,33 +204,27 @@ class AddEstimate extends React.Component {
                                    {el.itemName}
                                   </td>
                                 <td>
-                                {el.description}
+                                  {el.description}
                                 </td>
                                 <td>
-                                {el.quantity}
+                                  {el.quantity}
                                 </td>
                                 <td>
-                                ${el.rate}
+                                  ${el.rate}
                                 </td>
                                 <td>
                                   $ {el.subtotal}
                                 </td>
                                 <td>
-                                <Button
-                                onClick={e =>
-                  
-                                this.setState(prevState => {
-                                var filter = this.state.items.filter(e => e !== this.state.items[i])
-                                    this.setState({items: filter})
-                                })
-                                }
-                                style={{width:'100px', height:'20px', fontSize:'10px', paddingTop:'0'}}
-                                className="btn icon-btn btn-danger"
-                                >
-                
+                                <Button onClick={e =>
+                                    this.setState(prevState => {
+                                      var filter = this.state.items.filter(e => e !== this.state.items[i])
+                                      this.setState({items: filter})
+                                    })
+                                  }
+                                style={{width:'100px', height:'20px', fontSize:'10px', paddingTop:'0'}} className="btn icon-btn btn-danger">
                                 <i className="nc-icon nc-simple-remove" />
                                   Delete
-               
                                   </Button>
                                 </td>
                                </tr>
@@ -255,8 +239,7 @@ class AddEstimate extends React.Component {
                               placeholder="Enter a name of item"
                               type="text"
                               id="itemName"
-                              onChange={this.handleInput}
-                            />
+                              onChange={this.handleInput}/>
                             <br/>
                             <label className="form-control-label" htmlFor="input-merchant">Description</label>
                             <Input
@@ -265,8 +248,7 @@ class AddEstimate extends React.Component {
                               placeholder="Enter a description of item"
                               type="text"
                               id="description"
-                              onChange={this.handleInput}
-                            />
+                              onChange={this.handleInput}/>
                             <br/>
                             <label className="form-control-label" htmlFor="input-merchant">Quantity *</label>
                             <Input
@@ -275,8 +257,7 @@ class AddEstimate extends React.Component {
                               placeholder="Enter a quantity of item"
                               type="number"
                               id="quantity"
-                              onChange={this.handleInput}
-                            />
+                              onChange={this.handleInput}/>
                             <br/>
                             <label className="form-control-label" htmlFor="input-merchant">Rate *</label>
                             <Input
@@ -285,22 +266,19 @@ class AddEstimate extends React.Component {
                               placeholder="Enter a rate of item"
                               type="number"
                               id="rate"
-                              onChange={this.handleInput}
-                            />
+                              onChange={this.handleInput}/>
                             <br/>
                             <Button
                               type="button"
                               color="info"
-                              onClick={(e) => this.addToCart(product)}
-                            >
+                              onClick={(e) => this.addToCart(product)}>
                               Add Item
                             </Button>
                             </FormGroup>
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-last-name"
-                            >
+                              htmlFor="input-last-name">
                               Image
                             </label>
                             <Input
@@ -309,24 +287,19 @@ class AddEstimate extends React.Component {
                               className="form-control-alternative"
                               placeholder="Select a photo"
                               type="file"
-                              onChange={this.uploadPhoto}
-                            />
+                              onChange={this.uploadPhoto}/>
                             <br/>
-
                             <label
                               className="form-control-label"
-                              htmlFor="input-first-name"
-                            >
+                              htmlFor="input-first-name">
                               Image Preview
                             </label>
                           {this.state.img && <img width="100%" height="400px" src={this.state.img} alt="photo_url" />}
                           </FormGroup>
-
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-first-name"
-                            >
+                              htmlFor="input-first-name">
                               Comments
                             </label>
                             <Input
@@ -338,8 +311,6 @@ class AddEstimate extends React.Component {
                               onChange={this.handleInput}
                             />
                           </FormGroup>
-
-                          
                         </Col>
                         <Col lg="4">
                             <h4>
@@ -349,12 +320,10 @@ class AddEstimate extends React.Component {
                             <label
                               className="form-control-label"
                               htmlFor="input-first-name"
-                              style={{display:"inline-flex", alignItems:"center", }}
-                            >
-                              Date 
+                              style={{display:"inline-flex", alignItems:"center", }}>
+                              Date
                             </label>
                             <Input
-                              
                               name="dateCreate"
                               value={month<10 ? (`${day}-0${month}-${year}`):(`${day}-${month}-${year}`)}
                               className="form-control-alternative"
@@ -362,21 +331,17 @@ class AddEstimate extends React.Component {
                               onChange={this.handleInput}
                               disabled
                               width="50%"
-                              
                             />
-                            
                           </FormGroup>
                           <FormGroup>
                             <label
                               className="form-control-label"
                               htmlFor="input-first-name"
-                              style={{display:"inline-flex", alignItems:"center", }}
-                            >
-                              Subtotal 
+                              style={{display:"inline-flex", alignItems:"center", }}>
+                              Subtotal
                             </label>
                             <Input
-                              
-                              name="subtotal"
+                              name="estimateSubtotal"
                               value={ parseInt(subtotal) }
                               className="form-control-alternative"
                               type="number"
@@ -384,88 +349,67 @@ class AddEstimate extends React.Component {
                               disabled
                               step="any"
                             />
-                            
                           </FormGroup>
                           <FormGroup>
                             <label
                               className="form-control-label"
                               htmlFor="input-tax"
-                              style={{display:"inline-flex", alignItems:"center", }}
-                            >
-                              Tax 
+                              style={{display:"inline-flex", alignItems:"center", }}>
+                              Tax
                             </label>
                             <Input
-                              
-                              name="tax"
+                              name="estimateTax"
                               defaultValue="0"
                               className="form-control-alternative"
                               type="number"
-                              onChange={this.handleInput}
-
-                              
-                            />
-                            
+                              onChange={this.handleInput}/>
                           </FormGroup>
                           <FormGroup>
                             <label
                               className="form-control-label"
                               htmlFor="input-first-name"
-                              style={{display:"inline-flex", alignItems:"center", }}
-                            >
-                              Discount 
+                              style={{display:"inline-flex", alignItems:"center", }}>
+                              Discount
                             </label>
                             <Input
-                              
-                              name="discount"
+                              name="estimateDiscount"
                               defaultValue="0"
                               className="form-control-alternative"
                               type="number"
-                              onChange={this.handleInput}
-
-                              
-                            />
-                            
+                              onChange={this.handleInput}/>
                           </FormGroup>
                           <FormGroup>
                             <label
                               className="form-control-label"
                               htmlFor="input-first-name"
-                              style={{display:"inline-flex", alignItems:"center", }}
-                            >
-                              Paid 
+                              style={{display:"inline-flex", alignItems:"center", }}>
+                              Paid
                             </label>
                             <Input
-                              
-                              name="paid"
+                              name="estimatePaid"
                               defaultValue="0"
                               className="form-control-alternative"
                               type="number"
-                              onChange={this.handleInput}
-                            />
-                            
+                              onChange={this.handleInput}/>
                           </FormGroup>
                           <FormGroup>
                             <label
                               className="form-control-label"
                               htmlFor="input-total"
-                              style={{display:"inline-flex", alignItems:"center", }}
-                            >
-                              Total 
+                              style={{display:"inline-flex", alignItems:"center", }}>
+                              Total
                             </label>
                             <Input
                               disabled
-                              name="total"
-                              value={total}
+                              name="estimateTotal"
+                              value={estimateTotal}
                               className="form-control-alternative"
                               type="number"
                               onChange={this.handleInput}
-                              step="any"
-                            />
-                            
+                              step="any"/>
                           </FormGroup>
                           <FormGroup>
                             <Input
-                              
                               name="jobName"
                               value={jobName}
                               className="form-control-alternative"
@@ -474,14 +418,11 @@ class AddEstimate extends React.Component {
                               disabled
                               width="50%"
                               hidden
-                              
                             />
-                            
                           </FormGroup>
                           <Row>
                         <Col lg="6">
                           <FormGroup>
-                        
                             <Button
                               className="form-control-alternative"
                               color="info"
@@ -491,15 +432,11 @@ class AddEstimate extends React.Component {
                       </Row>
                         </Col>
                       </Row>
-                      
-                      
-                      
                     </div>
                   </Form>
                 </CardBody>
               </Card>
             </Col>
-            
           </Row>
         </Container>
       </>

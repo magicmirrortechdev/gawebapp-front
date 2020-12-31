@@ -18,6 +18,7 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import {getJobs, convertJob, decline, removeEstimate} from "../../redux/actions/jobAction"
+import {getClients} from "../../redux/actions/clientAction"
 import {connect} from "react-redux";
 import configureStore from "../../redux/store";
 const {store} = configureStore();
@@ -99,20 +100,18 @@ class Estimates extends React.Component {
     window.removeEventListener('resize', this.updateWindowDimensions)
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-
+    await this.props.getClients()
     if(loggedUser.level <=1){
-      this.props.getJobs(loggedUser._id)
-    }
-    else if(loggedUser.level >=2){
-      this.props.getJobs()
+      await this.props.getJobs(loggedUser._id)
+    } else if(loggedUser.level >=2){
+      await this.props.getJobs()
     }
   }
 
-  convertInvoice = (_id)=>{
-    authService.convertInvoice(_id)
+  convertInvoice = (_id)=>{ authService.convertInvoice(_id)
     .then(response => {
       this.props.history.push(`estimates`)
     }).catch(err => {
@@ -121,7 +120,7 @@ class Estimates extends React.Component {
   }
 
   render() {
-    const {estimates} = this.props
+    const {estimates, clients} = this.props
     if (!this.state) return <p>Loading</p>
     return (
       <>
@@ -156,6 +155,7 @@ class Estimates extends React.Component {
                           <>
                             <th scope="col"></th>
                             <th scope="col">Client</th>
+                            <th scope="col">Date created</th>
                             <th scope="col">Date</th>
                             <th scope="col">Status</th>
                             <th scope="col">Total</th>
@@ -169,11 +169,13 @@ class Estimates extends React.Component {
                     {estimates.length === 0 ? <tr><td>No estimates register</td></tr>
                       :
                        estimates.map((e,i)=>{
-                        let nameEstimate = e.nameEstimate
-                        let subtotal = e.items.reduce((acc, current, i) => acc + current.subtotal, 0)
-                        let tax = parseInt(e.tax) * subtotal / 100
-                        let discount = e.discount
-                        let total = !subtotal ? 0 : subtotal + tax  - discount
+                        const client =  clients.filter(client => client._id === e.clientId )
+                        const nameEstimate = e.jobName
+                        const subtotal = e.items.reduce((acc, current, i) => acc + current.subtotal, 0)
+                        const tax = parseInt(e.estimateTax) * subtotal / 100
+                        const discount = e.estimateDiscount
+                        const paid = e.estimatePaid
+                        const total = !subtotal ? 0 : subtotal + tax  - discount - paid
                         return(
                           <tr key={i}>
                             {!this.state.isMobileVersion ?
@@ -181,7 +183,8 @@ class Estimates extends React.Component {
                                   <td>
                                     <ActionButton item={e} props={this.props} ></ActionButton>
                                   </td>
-                                  <td>{nameEstimate ? nameEstimate : e.clientId.name}</td>
+                                  <td>{nameEstimate ? nameEstimate : client[0].firstName + ' ' + client[0].lastName}</td>
+                                  <td><Moment format={"MMM D, YY"}>{e.createdAt}</Moment></td>
                                   <td><Moment format={"MMM D, YY"}>{e.dateCreate}</Moment></td>
                                   <td>{e.status === "Approve" ? "Approved" : e.status}</td>
                                   <td>${parseFloat(Math.round(total * 100) / 100).toFixed(2)}</td>
@@ -189,7 +192,7 @@ class Estimates extends React.Component {
                                 :
                                 <>
                                   <td>
-                                    {nameEstimate ? nameEstimate : e.clientId.name}<br/>
+                                    {nameEstimate ? nameEstimate : client[0].firstName + ' ' + client[0].lastName}<br/>
                                     <Moment format={"MMM D, YY"}>{e.dateCreate}</Moment><br/>
                                     {e.status === "Approve" ? "Approved" : e.status}<br/>
                                     ${parseFloat(Math.round(total * 100) / 100).toFixed(2)}<br/>
@@ -215,6 +218,7 @@ class Estimates extends React.Component {
 
 const mapStateToProps = state => ({
   estimates: state.job.jobs,
+  clients: state.client.clients
 })
 
-export default connect(mapStateToProps, {getJobs, convertJob, decline, removeEstimate})(Estimates);
+export default connect(mapStateToProps, {getClients, getJobs, convertJob, decline, removeEstimate})(Estimates);

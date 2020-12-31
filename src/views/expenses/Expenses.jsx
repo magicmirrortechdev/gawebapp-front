@@ -18,7 +18,7 @@ import {
 import Header from "components/Headers/Header.jsx";
 import Global, {compareValues} from "../../global";
 import {connect} from "react-redux";
-import {getJobs, removeExpense} from "../../redux/actions/jobAction";
+import {getExpenses, removeExpense} from "../../redux/actions/expenseAction";
 import configureStore from "../../redux/store";
 const {store} = configureStore();
 
@@ -47,14 +47,14 @@ const ActionButton = (props) => {
           },
         }}>
           {
-           loggedUser.level >= 2 ? <DropdownItem to={`/admin/expenses/${props.item.estimateId}/${props.item.expense._id}/update`} tag={Link}>Update</DropdownItem> :
-               loggedUser.level === 1 && props.userInEstimate ? <DropdownItem to={`/admin/expenses/${props.item.estimateId}/${props.item.expense._id}/update`} tag={Link}>Update</DropdownItem> :
-                   <DropdownItem disabled to={`/admin/expenses/${props.item.estimateId}/${props.item.expense._id}/update`} tag={Link}>Update</DropdownItem>
+           loggedUser.level >= 2 ? <DropdownItem to={`/admin/expenses/${props.item._id}/update`} tag={Link}>Update</DropdownItem> :
+               loggedUser.level === 1 && props.userInEstimate ? <DropdownItem to={`/admin/expenses/${props.item._id}/update`} tag={Link}>Update</DropdownItem> :
+                   <DropdownItem disabled to={`/admin/expenses/${props.item._id}/update`} tag={Link}>Update</DropdownItem>
           }
           {
             loggedUser.level >= 4 ?
               <DropdownItem onClick={()=>{
-                props.props.removeExpense(props.item.estimateId, props.item.expense._id)
+                props.props.removeExpense(props.item._id)
                 alert('Expense Delete')
               }}><span
                   className="text-danger">Delete</span>
@@ -69,14 +69,14 @@ const ActionButton = (props) => {
 
 class Expenses extends React.Component {
   state = {
-    jobs:[],
+    expenses:[],
     isMobileVersion: false
   };
 
   constructor(props) {
     super(props);
     const {auth} = store.getState();
-    loggedUser = auth.userLogged
+    loggedUser = auth.userLogged;
   }
 
   updateWindowDimensions = () => {
@@ -87,36 +87,20 @@ class Expenses extends React.Component {
     window.removeEventListener('resize', this.updateWindowDimensions)
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-
-    if(loggedUser.level <= 1){
-      this.props.getJobs(loggedUser._id)
-    }
-    if(loggedUser.level >= 2){
-      this.props.getJobs();
+    if(loggedUser._id !== 'undefined'){
+      await this.props.getExpenses(loggedUser._id)
     }
   }
 
   render() {
-    const {jobs} = this.props
-    if (!this.state) return <p>Loading</p>
-    let allExpenses=[]
-    let userInEstimate 
-    jobs.forEach((e,i) => {
-      e.expenses.forEach(ex =>{
-        allExpenses.push({estimateId: e._id, expense:ex, date:ex.date})
-      })
-    })
-    jobs.forEach((e,i) => {
-      if(!e.workers)return <th scope="row">Worker Delete</th>
-      userInEstimate =e.workers.length > 0 && e.workers.filter(wx =>{
-        return (wx.workerId && wx.workerId._id  === loggedUser._id)
-      }).length > 0
-    })
+   let {users, expenses} = this.props
+   if (!this.state) return <p>Loading</p>
+   let userInEstimate
 
-    allExpenses = allExpenses.sort(compareValues('date', 'desc'))
+   expenses = expenses.length > 0 ? expenses.sort(compareValues('date', 'desc')) : expenses
     return (
       <>
         <Header />
@@ -136,7 +120,7 @@ class Expenses extends React.Component {
                         Add an Expense
                       </p>
                     </Link>
-                      
+
                     </div>
                   </Row>
                 </CardHeader>
@@ -158,8 +142,9 @@ class Expenses extends React.Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {allExpenses.length === 0 ?  <tbody><tr><td>No expenses register</td></tr></tbody>:
-                      allExpenses.map((e,i)=>{
+                    {expenses.length === 0 ?  <tbody><tr><td>No expenses register</td></tr></tbody>:
+                      expenses.map((e,i)=>{
+                      let user = users.filter(user => user._id === e.userId)[0]
                       return(
                         <tr>
                           {!this.state.isMobileVersion ?
@@ -168,21 +153,21 @@ class Expenses extends React.Component {
                                 <ActionButton item={e} userInEstimate={userInEstimate} props={this.props}></ActionButton>
                               </td>
                               <td>
-                                <Moment add={{days: 1}} date={new Date(e.expense.date)}  format={"MMM D, YY"} />
+                                <Moment add={{days: 1}} date={new Date(e.date)}  format={"MMM D, YY"} />
                               </td>
-                              <td>{e.expense.workerId && e.expense.workerId.name}</td>
-                              <td>{e.expense.description}</td>
-                              <td>{e.expense.category}</td>
-                              <td>$ {parseFloat(Math.round(e.expense.total * 100) / 100).toFixed(2)}</td>
+                              <td>{user.name}</td>
+                              <td>{e.description}</td>
+                              <td>{e.category}</td>
+                              <td>$ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}</td>
                             </>
                             :
                             <>
                               <td>
                                 <Moment add={{days: 1}} date={new Date(e.expense.date)}  format={"MMM D, YY"} /><br/>
-                                {e.expense.workerId && e.expense.workerId.name}<br/>
-                                {e.expense.description}<br/>
-                                {e.expense.category}<br/>
-                                $ {parseFloat(Math.round(e.expense.total * 100) / 100).toFixed(2)}
+                                {user.name}<br/>
+                                {e.description}<br/>
+                                {e.category}<br/>
+                                $ {parseFloat(Math.round(e.total * 100) / 100).toFixed(2)}
                                 <div className="buttonfloat-right buttonfloat-right-estimates">
                                   <ActionButton item={e} userInEstimate={userInEstimate} props={this.props}></ActionButton>
                                 </div>
@@ -196,7 +181,7 @@ class Expenses extends React.Component {
                 </Table>
               </Card>
             </Col>
-            
+
           </Row>
         </Container>
       </>
@@ -205,7 +190,8 @@ class Expenses extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  jobs: state.job.jobs,
+  expenses: state.expense.expenses,
+  users: state.user.users
 })
 
-export default connect(mapStateToProps, {getJobs, removeExpense})(Expenses);
+export default connect(mapStateToProps, {getExpenses, removeExpense})(Expenses);

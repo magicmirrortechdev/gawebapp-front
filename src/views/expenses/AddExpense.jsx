@@ -15,7 +15,7 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import {connect} from "react-redux";
-import {addExpense} from "../../redux/actions/jobAction";
+import {addExpense} from "../../redux/actions/expenseAction";
 import configureStore from "../../redux/store";
 import * as axios from "axios";
 import Global from "../../global";
@@ -34,10 +34,14 @@ var fecha = new Date();
 
 class AddExpense extends React.Component {
   state = {
-    workerId: "",
+    userId: "",
     date: ano+"-"+mes+"-"+dia,
-    _id: '',
+    jobId: this.props.match.params.id,
     category: '',
+    vendor:'',
+    description:'',
+    total: 0,
+    image: ''
   };
 
   constructor(props) {
@@ -48,7 +52,7 @@ class AddExpense extends React.Component {
 
   componentDidMount() {
     this.setState({
-      workerId: loggedUser._id
+      userId: loggedUser._id
     })
   }
 
@@ -66,13 +70,13 @@ class AddExpense extends React.Component {
 
     let img_ = null;
     try {
-      const { data } = await axios.post(Global.url + 'upload', file)
+      const {data} = await axios.post(Global.url + 'v2/upload', file)
       img_ = data.img;
     } catch (e){
       img_ = 'notNet.png'
     }
 
-    this.setState(prevState => ({ ...prevState, img : img_ }))
+    this.setState(prevState => ({ ...prevState, image : img_ }))
   }
 
   handleSubmit = async (e, props) => {
@@ -86,14 +90,13 @@ class AddExpense extends React.Component {
       alert('Total quantity not valid')
     }
     else{
-      this.props.addExpense(this.props.match.params.id, this.state)
+      await this.props.addExpense(this.state)
       this.props.history.push('/admin/jobs')
     }
   }
 
   render() {
-    console.log(this.state)
-    if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
+    if(!this.state.userId || this.state.userId==='') return <p>Loading</p>
     return (
       <>
         <Header forms={true}/>
@@ -118,8 +121,7 @@ class AddExpense extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label d-inline-block"
-                              htmlFor="input-date"
-                            >
+                              htmlFor="input-date">
                               Expense Date *
                             </label>
                             <Input
@@ -136,8 +138,7 @@ class AddExpense extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-merchant"
-                            >
+                              htmlFor="input-merchant">
                               Vendor
                             </label>
                             <Input
@@ -228,7 +229,7 @@ class AddExpense extends React.Component {
                             >
                               Image Preview
                             </label>
-                          {this.state.img && <img width="100%" height="100%" src={this.state.img} alt="photo_url" />}
+                          {this.state.image && <img width="100%" height="100%" src={this.state.image} alt="photo_url" />}
                         </Col>
                       </Row>
 
@@ -238,7 +239,7 @@ class AddExpense extends React.Component {
                           <FormGroup>
 
                             <Button
-                              disabled={this.state.img ? false : true}
+                              disabled={this.state.image ? false : true}
                               className="form-control-alternative"
                               color="info"
 

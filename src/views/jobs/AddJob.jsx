@@ -16,7 +16,7 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import {connect} from "react-redux";
-import {addJob} from "../../redux/actions/jobAction";
+import {addJobs} from "../../redux/actions/jobAction";
 
 let date = new Date()
 let day = date.getDate()
@@ -36,9 +36,9 @@ class AddJob extends React.Component {
     }))
   }
 
-  handleSubmit = (e, props) => {
+  handleSubmit = async (e, props) => {
     e.preventDefault()
-    this.props.addJob(this.state)
+    await this.props.addJobs(this.state)
     this.props.history.push(`jobs`)
   }
 
@@ -169,4 +169,4 @@ class AddJob extends React.Component {
   }
 }
 
-export default connect(null, {addJob})(withRouter(AddJob));
+export default connect(null, {addJobs})(withRouter(AddJob));

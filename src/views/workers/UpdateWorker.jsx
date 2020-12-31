@@ -32,7 +32,7 @@ class UpdateWorker extends React.Component {
     mobile:'',
     activity:'',
     type:'',
-    payment:'',
+    payRate:'',
     effective:'',
 
   };
@@ -63,8 +63,8 @@ class UpdateWorker extends React.Component {
         mobile:user.mobile,
         activity:user.activity,
         type:user.type,
-        payment:user.payment,
-        effective:user.effective,
+        payRate:user.payRate,
+        effectiveRate:user.effectiveRate,
       }
     })
   }
@@ -87,13 +87,14 @@ class UpdateWorker extends React.Component {
     this.setState(prevState => ({ ...prevState, img }))
   }
 
-  handleSubmit = (e, props) => {
+  handleSubmit = async (e, props) => {
     e.preventDefault()
-    this.props.updateUser(this.props.match.params.id, this.state);
+    await this.props.updateUser(this.props.match.params.id, this.state);
     this.props.history.push(`/admin/workers`)
   }
 
   render() {
+    console.log(this.state)
     const user = this.state
     if (!this.state) return <p>Loading</p>
     const typeUser = user.type
@@ -114,7 +115,7 @@ class UpdateWorker extends React.Component {
                     </div>
                   </Row>
                 </CardHeader>
-                <CardBody> 
+                <CardBody>
 
                   <Form onSubmit={this.handleSubmit}>
                     <div className="pl-lg-4">
@@ -151,13 +152,13 @@ class UpdateWorker extends React.Component {
                             >
                             {roles.map((e,i)=>{
                               return(
-                                user.role === e.role ? <option selected key={i}>{user.role}</option>: 
+                                user.role === e.role ? <option selected key={i}>{user.role}</option>:
                                 <option>{e.role}</option>
                               )
                             })}
                             </Input>
                           </FormGroup>
-                        
+
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -235,7 +236,7 @@ class UpdateWorker extends React.Component {
                             </label>
                             <Input
                               name="mobile"
-                              defaultValue={user.mobile}                      
+                              defaultValue={user.mobile}
                               className="form-control-alternative"
                               placeholder="Enter the mobile number"
                               type="number"
@@ -277,7 +278,7 @@ class UpdateWorker extends React.Component {
                             >
                             {types.map((e,i)=>{
                               return(
-                                user.type === e.type ? <option selected key={i}>{user.type}</option>: 
+                                user.type === e.type ? <option selected key={i}>{user.type}</option>:
                                 <option>{e.type}</option>
                               )
                             })}
@@ -307,8 +308,8 @@ class UpdateWorker extends React.Component {
                               Payment Rate *
                             </label>
                             <Input
-                              name="payment"
-                              defaultValue={user.payment}
+                              name="payRate"
+                              defaultValue={user.payRate}
                               className="form-control-alternative"
                               type="number"
                               placeholder="$0.00"
@@ -321,11 +322,11 @@ class UpdateWorker extends React.Component {
                               className="form-control-label"
                               htmlFor="input-first-name"
                             >
-                              Effective Rate * 
+                              Effective Rate *
                             </label>
                             <Input
-                              defaultValue={user.effective}
-                              name="effective"
+                              defaultValue={user.effectiveRate}
+                              name="effectiveRate"
                               className="form-control-alternative"
                               type="number"
                               placeholder="$0.00"
@@ -335,12 +336,12 @@ class UpdateWorker extends React.Component {
                           </FormGroup>
                         </Col>
                       </Row>
-                      
-                      
+
+
                       <Row>
                         <Col lg="6">
                           <FormGroup>
-                        
+
                             <Button
                               className="form-control-alternative"
                               color="info"
@@ -354,7 +355,7 @@ class UpdateWorker extends React.Component {
                 </CardBody>
               </Card>
             </Col>
-            
+
           </Row>
         </Container>
       </>

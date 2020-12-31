@@ -18,17 +18,16 @@ import { WithContext as ReactTags } from 'react-tag-input';
 import ArgyleService from "../../services/argyleService";
 import moment from "moment";
 import {connect} from "react-redux";
-import {getJobs, sendInvoice} from "../../redux/actions/jobAction";
+import {sendInvoice} from "../../redux/actions/invoiceAction";
 import configureStore from "../../redux/store";
 const {store} = configureStore();
-
 const argyleService = new ArgyleService()
 
 let loggedUser;
-var fecha = new Date(); 
-      var mes = fecha.getMonth()+1; 
-      var dia = fecha.getDate(); 
-      var ano = fecha.getFullYear(); 
+var fecha = new Date();
+      var mes = fecha.getMonth()+1;
+      var dia = fecha.getDate();
+      var ano = fecha.getFullYear();
       if(dia<10)
         dia='0'+dia; //agrega cero si es menor de 10
       if(mes<10)
@@ -40,10 +39,10 @@ class SendInvoice extends React.Component {
     date:ano+"-"+mes+"-"+dia,
     name: '',
     email: '',
-    total: 0,
     jobName: '',
     tags : [],
-    description: '',
+    invoiceDescription: '',
+    invoiceTotal: 0,
     urlPay: '',
   };
 
@@ -57,33 +56,24 @@ class SendInvoice extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.jobs.length === 0) this.props.history.push(`/admin/invoices`)
-    const job = this.props.jobs.filter(item => item._id === this.props.match.params.id)[0]
+    if (this.props.invoices.length === 0) this.props.history.push(`/admin/invoices`)
+    const invoice = this.props.invoices.filter(item => item._id === this.props.match.params.invoiceId)[0]
     this.setState(prevState => {
-      let date = ''
-      let description = ''
-      let total
-      const invoices = job.invoices
-      invoices.map((e,i)=>{
-        if(e._id === this.props.match.params.invoiceId){
-          description = e.description
-          total = e.total
-        }
-        return {date,description,total}
-      })
+      const job = this.props.jobs.filter(job => job._id === invoice.jobId)[0]
+      const client = this.props.clients.filter(client => client._id === job.clientId)[0]
       return {
         ...prevState,
         workerId: loggedUser._id,
         invoiceId: this.props.match.params.invoiceId,
         jobId: job._id,
-        name: job.clientId.name,
-        email: job.clientId.email,
-        jobName: job.jobName,
-        description,
-        total,
+        name: client.firstName +' ' + client.lastName,
+        email: client.email,
+        jobName: job.jobName + ' - ' + job.jobAddress,
+        invoiceDescription: invoice.invoiceDescription,
+        invoiceTotal: invoice.invoiceTotal,
         tags: [{
-          id: job.clientId.email,
-          text: job.clientId.email}]
+          id: client.email,
+          text: client.email}]
       }
     })
 
@@ -103,11 +93,11 @@ class SendInvoice extends React.Component {
 
     let data = {
       date: moment(this.state.date),
-      total: this.state.total,
-      description: this.state.description,
+      invoiceTotal: this.state.invoiceTotal,
+      invoiceDescription: this.state.invoiceDescription,
       extraData: {
-        description: this.state.description,
-        total: this.state.total,
+        description: this.state.invoiceDescription,
+        total: this.state.invoiceTotal,
         date: this.state.date,
         jobId: this.state.jobId,
         invoiceId: this.state.invoiceId,
@@ -116,7 +106,6 @@ class SendInvoice extends React.Component {
     };
 
     //mandarlo al primer correo con el primer nombre nada mas
-    console.log(this.state.tags[0]);
     argyleService.checkArgyleUser(this.state.tags[0].text, this.state.name).then(
       result =>{
         argyleService.addCharge(data).then(
@@ -186,7 +175,7 @@ class SendInvoice extends React.Component {
                     </div>
                   </Row>
                 </CardHeader>
-                <CardBody> 
+                <CardBody>
 
                   <Form onSubmit={this.handleSubmit}>
                     <div className="pl-lg-4">
@@ -195,8 +184,7 @@ class SendInvoice extends React.Component {
                         <FormGroup>
                         <label
                           className="form-control-label d-inline-block"
-                          htmlFor="input-name"
-                        >
+                          htmlFor="input-name">
                           Client Name
                         </label>
                         <Input
@@ -211,8 +199,7 @@ class SendInvoice extends React.Component {
                         <FormGroup>
                             <label
                               className="form-control-label d-inline-block"
-                              htmlFor="input-name"
-                            >
+                              htmlFor="input-name">
                               Emails
                             </label>
                             <div>
@@ -228,8 +215,7 @@ class SendInvoice extends React.Component {
                           <FormGroup>
                             <label
                             className="form-control-label d-inline-block"
-                            htmlFor="input-jobName"
-                            >
+                            htmlFor="input-jobName">
                             Job Name
                             </label>
                             <Input
@@ -243,8 +229,7 @@ class SendInvoice extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label d-inline-block"
-                              htmlFor="input-date"
-                            >
+                              htmlFor="input-date">
                               Invoice Date
                             </label>
                             <Input
@@ -257,12 +242,11 @@ class SendInvoice extends React.Component {
                               onChange={this.handleInput}
                             />
                           </FormGroup>
-                        
+
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-merchant"
-                            >
+                              htmlFor="input-merchant">
                               Total Invoice
                             </label>
                             <Input
@@ -270,14 +254,13 @@ class SendInvoice extends React.Component {
                               className="form-control-alternative"
                               type="number"
                               onChange={this.handleInput}
-                              value={this.state.total}
+                              value={this.state.invoiceTotal}
                             />
                           </FormGroup>
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-first-name"
-                            >
+                              htmlFor="input-first-name">
                               Description
                             </label>
                             <Input
@@ -286,22 +269,18 @@ class SendInvoice extends React.Component {
                               placeholder="This is an invoice generated with the items of an estimate"
                               type="text"
                               onChange={this.handleInput}
-                              value={this.state.description}
+                              value={this.state.invoiceDescription}
                             />
                           </FormGroup>
                         </Col>
                       </Row>
-                      
-                      
                       <Row>
                         <Col lg="6">
                           <FormGroup>
-                        
                             <Button
                               className="form-control-alternative"
-                              color="info"
-
-                            >Send</Button>
+                              color="info">
+                              Send</Button>
                           </FormGroup>
                         </Col>
                       </Row>
@@ -310,7 +289,6 @@ class SendInvoice extends React.Component {
                 </CardBody>
               </Card>
             </Col>
-            
           </Row>
         </Container>
       </>
@@ -320,6 +298,8 @@ class SendInvoice extends React.Component {
 
 const mapStateToProps = state => ({
   jobs: state.job.jobs,
+  invoices: state.invoice.invoices,
+  clients: state.client.clients
 })
 
-export default connect(mapStateToProps, {getJobs, sendInvoice})(withRouter(SendInvoice));
+export default connect(mapStateToProps, {sendInvoice})(withRouter(SendInvoice));

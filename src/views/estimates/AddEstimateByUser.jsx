@@ -18,6 +18,8 @@ import {
 // core components
 import Header from 'components/Headers/Header.jsx'
 import Global from "../../global";
+import {connect} from "react-redux";
+import {addEstimate} from "../../redux/actions/jobAction";
 
 let date = new Date()
 let day = date.getDate()
@@ -101,19 +103,10 @@ class AddEstimateByUser extends React.Component {
     this.setState(prevState => ({ ...prevState, img }))
   }
 
-  handleSubmit = (e, props) => {
+  handleSubmit = async (e, props) => {
     e.preventDefault()
-    axios
-      .post(
-        Global.url + `addestimate`,
-        this.state
-      )
-      .then(response => {
-        this.props.history.push(`/admin/estimates`)
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    await this.props.addEstimate(this.state)
+    this.props.history.push(`/admin/estimates`)
   }
 
   render() {
@@ -481,4 +474,4 @@ class AddEstimateByUser extends React.Component {
   }
 }
 
-export default withRouter(AddEstimateByUser)
+export default connect(null, {addEstimate})(withRouter(AddEstimateByUser));

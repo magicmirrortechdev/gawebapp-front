@@ -16,12 +16,12 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import {connect} from "react-redux";
-import {addTime} from "../../redux/actions/jobAction";
+import {addTime} from "../../redux/actions/timeAction";
 
-var fecha = new Date(); 
-      var mes = fecha.getMonth()+1; 
-      var dia = fecha.getDate(); 
-      var ano = fecha.getFullYear(); 
+var fecha = new Date();
+      var mes = fecha.getMonth()+1;
+      var dia = fecha.getDate();
+      var ano = fecha.getFullYear();
       if(dia<10)
         dia='0'+dia; //agrega cero si es menor de 10
       if(mes<10)
@@ -57,9 +57,9 @@ class AddTime extends React.Component {
     })
   }
 
-  handleSubmit = (e, props) => {
+  handleSubmit = async (e, props) => {
     e.preventDefault()
-    this.props.addTime(this.props.match.params.id, this.props.match.params.workerId, this.state)
+    await this.props.addTime(this.props.match.params.id, this.props.match.params.workerId, this.state)
     this.props.history.push(`/admin/time`)
   }
 
@@ -83,7 +83,7 @@ class AddTime extends React.Component {
                   </Row>
                 </CardHeader>
                 <CardBody>
-                  
+
                   <Form onSubmit={this.handleSubmit}>
                     <div className="pl-lg-4">
                       <Row>
@@ -154,15 +154,15 @@ class AddTime extends React.Component {
                               step="any"
                             />
                           </FormGroup>
-                          
+
                         </Col>
                       </Row>
-                      
-                      
+
+
                       <Row>
                         <Col lg="6">
                           <FormGroup>
-                        
+
                             <Button
                               className="form-control-alternative"
                               color="info"
@@ -176,7 +176,7 @@ class AddTime extends React.Component {
                 </CardBody>
               </Card>
             </Col>
-            
+
           </Row>
         </Container>
       </>
