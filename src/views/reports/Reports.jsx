@@ -322,6 +322,7 @@ class Reports extends React.Component {
 
                     job_.expenses.push(expense)
                 })
+                job_.expenses = job_.expenses.sort(compareValues('date', 'desc'))
             }
 
             this.props.invoices.forEach(invoice => {
@@ -330,6 +331,7 @@ class Reports extends React.Component {
                     job_.invoices.push(invoice)
                 }
             })
+            job_.invoices = job_.invoices.sort(compareValues('invoiceDate', 'desc'))
         })
 
         console.log(workers_);
