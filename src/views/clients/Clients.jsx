@@ -54,17 +54,17 @@ class Clients extends React.Component {
     window.removeEventListener('resize', this.updateWindowDimensions)
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     loggedUser = this.props.userLogged
     if (!this.props.userLogged) return this.props.history.push('/auth/login')
     if (localStorage.getItem("version") !== Global.version) {
-      this.props.logoutUser()
+      await this.props.logoutUser()
       return this.props.history.push('/auth/login')
     }
 
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-    this.props.getClients();
+    await this.props.getClients();
   }
 
   render() {
@@ -119,14 +119,14 @@ class Clients extends React.Component {
                             <td>
                               <ActionButton {...e} removeClient={this.props.removeClient}></ActionButton>
                             </td>
-                            <td>{e.name}</td>
+                            <td>{e.firstName} {e.lastName}</td>
                             <td>{e.email}</td>
                             <td>{e.phone}</td>
                           </>
                           :
                           <>
                             <td>
-                              {e.name}<br/>
+                              {e.firstName} {e.lastName}<br/>
                               <small>{e.email} {!e.phone ? '' : ' - ' + e.phone }</small>
                               <div className="buttonfloat-right buttonfloat-right-clients">
                                 <ActionButton {...e} removeClient={this.props.removeClient}></ActionButton>

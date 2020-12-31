@@ -30,33 +30,27 @@ class UpdateEstimate extends React.Component {
     itemName: '',
     description: '',
     comments: '',
-    nameEstimate: '',
+    estimateName: '',
     quantity: parseInt(''),
     rate: parseInt(''),
-    subtotal: 0,
-    tax: parseInt(''),
-    discount: parseInt(''),
-    paid: parseInt(''),
-    total: 0,    
-    addressEstimate: "",
+    estimateSubtotal: 0,
+    estimateTax: parseInt(''),
+    estimateDiscount: parseInt(''),
+    estimatePaid: parseInt(''),
+    estimateTotal: 0,
+    estimateAddress: "",
     dateCreate: '',
     jobName: '',
   }
   componentDidMount() {
     const estimate = this.props.estimates.filter(item => item._id === this.props.match.params.id)[0]
+    const client = this.props.clients.filter(item => item._id === estimate.clientId)[0]
     this.setState(prevState => {
       return {
         ...prevState,
-        name: estimate.nameEstimate ? estimate.nameEstimate : estimate.clientId.name,
-        email: estimate.clientId.email,
-        address: estimate.addressEstimate ? estimate.addressEstimate : estimate.clientId.address,
-        nameEstimate: estimate.nameEstimate,
-        addressEstimate: estimate.addressEstimate,
-        tax: estimate.tax,
-        discount: estimate.discount,
-        paid: estimate.paid,
-        comments: estimate.comments,
-        ...estimate,
+        email: client.email,
+        name: client.firstName + ' ' + client.lastName,
+        ...estimate
       }
     })
   }
@@ -86,9 +80,9 @@ class UpdateEstimate extends React.Component {
     this.setState(prevState => ({ ...prevState, img }))
   }
 
-  handleSubmit = (e, props) => {
+  handleSubmit = async (e, props) => {
     e.preventDefault()
-    this.props.updateEstimate(this.props.match.params.id, this.state)
+    await this.props.updateEstimate(this.props.match.params.id, this.state)
     this.props.history.push(`/admin/estimates`)
   }
 
@@ -100,14 +94,14 @@ class UpdateEstimate extends React.Component {
       rate: parseInt(this.state.rate),
       subtotal: parseInt(this.state.quantity * this.state.rate),
     }
-    let subtotal = this.state.items.reduce((acc, current, i) => acc + current.subtotal, 0)
-    let tax = (parseInt(this.state.tax) * subtotal) / 100
-    let discount = parseInt(this.state.discount)
-    let paid = parseInt(this.state.paid)
+    let estimateSubtotal = this.state.items.reduce((acc, current, i) => acc + current.subtotal, 0)
+    let tax = (parseInt(this.state.estimateTax) * estimateSubtotal) / 100
+    let discount = parseInt(this.state.estimateDiscount)
+    let paid = parseInt(this.state.estimatePaid)
     let clientName = this.state.clientName
     let address = this.state.address
 
-    let total = subtotal + tax - discount - paid
+    let estimateTotal = estimateSubtotal + tax - discount - paid
     let jobName = address + clientName
 
     console.log('el stateee', this.state)
@@ -136,23 +130,20 @@ class UpdateEstimate extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label d-inline-block"
-                              htmlFor="input-name"
-                            >
+                              htmlFor="input-name">
                               Client Name
                             </label>
                             <Input
-                              defaultValue={`${this.state.nameEstimate ? this.state.nameEstimate : this.state.name}`}
+                              defaultValue={this.state.name}
                               className="form-control-alternative"
                               placeholder="Enter the name client"
                               name="name"
                               type="text"
-                              onChange={this.handleInput}
-                            />
+                              onChange={this.handleInput}/>
                             <br />
                             <label
                               className="form-control-label d-inline-block"
-                              htmlFor="input-name"
-                            >
+                              htmlFor="input-name">
                               Email Client*
                             </label>
                             <Input
@@ -166,12 +157,11 @@ class UpdateEstimate extends React.Component {
                             <br />
                             <label
                               className="form-control-label d-inline-block"
-                              htmlFor="input-name"
-                            >
+                              htmlFor="input-name">
                               Address Estimate*
                             </label>
                             <Input
-                              defaultValue={`${this.state.addressEstimate ? this.state.addressEstimate : this.state.address}`}
+                              defaultValue={this.state.jobAddress}
                               className="form-control-alternative"
                               placeholder="Enter the address client"
                               name="address"
@@ -327,13 +317,12 @@ class UpdateEstimate extends React.Component {
                             <label
                               className="form-control-label"
                               htmlFor="input-first-name"
-                              style={{ display: 'inline-flex', alignItems: 'center' }}
-                            >
+                              style={{ display: 'inline-flex', alignItems: 'center' }}>
                               Subtotal{' '}
                             </label>
                             <Input
-                              name="subtotal"
-                              value={parseInt(subtotal)}
+                              name="estimateSubtotal"
+                              value={parseInt(estimateSubtotal)}
                               className="form-control-alternative"
                               type="number"
                               onChange={this.handleInput}
@@ -344,12 +333,11 @@ class UpdateEstimate extends React.Component {
                             <label
                               className="form-control-label"
                               htmlFor="input-tax"
-                              style={{ display: 'inline-flex', alignItems: 'center' }}
-                            >
+                              style={{ display: 'inline-flex', alignItems: 'center' }}>
                               Tax{' '}
                             </label>
                             <Input
-                              value={this.state.tax}
+                              value={this.state.estimateTax}
                               name="tax"
                               className="form-control-alternative"
                               type="number"
@@ -360,46 +348,41 @@ class UpdateEstimate extends React.Component {
                             <label
                               className="form-control-label"
                               htmlFor="input-first-name"
-                              style={{ display: 'inline-flex', alignItems: 'center' }}
-                            >
+                              style={{ display: 'inline-flex', alignItems: 'center' }}>
                               Discount
                             </label>
                             <Input
-                              value={this.state.discount}
-                              name="discount"
+                              value={this.state.estimateDiscount}
+                              name="estimateDiscount"
                               className="form-control-alternative"
                               type="number"
-                              onChange={this.handleInput}
-                            />
+                              onChange={this.handleInput}/>
                           </FormGroup>
                           <FormGroup>
                             <label
                               className="form-control-label"
                               htmlFor="input-first-name"
-                              style={{ display: 'inline-flex', alignItems: 'center' }}
-                            >
+                              style={{ display: 'inline-flex', alignItems: 'center' }}>
                               Paid{' '}
                             </label>
                             <Input
-                              name="paid"
-                              value={this.state.paid}
+                              name="estimatePaid"
+                              value={this.state.estimatePaid}
                               className="form-control-alternative"
                               type="number"
-                              onChange={this.handleInput}
-                            />
+                              onChange={this.handleInput}/>
                           </FormGroup>
                           <FormGroup>
                             <label
                               className="form-control-label"
                               htmlFor="input-total"
-                              style={{ display: 'inline-flex', alignItems: 'center' }}
-                            >
+                              style={{ display: 'inline-flex', alignItems: 'center' }}>
                               Total{' '}
                             </label>
                             <Input
                               disabled
-                              name="total"
-                              value={total}
+                              name="estimateTotal"
+                              value={estimateTotal}
                               className="form-control-alternative"
                               type="number"
                               onChange={this.handleInput}
@@ -442,6 +425,7 @@ class UpdateEstimate extends React.Component {
 
 const mapStateToProps = state => ({
   estimates: state.job.jobs,
+  clients: state.client.clients
 })
 
 export default connect(mapStateToProps, {updateEstimate})(withRouter(UpdateEstimate));

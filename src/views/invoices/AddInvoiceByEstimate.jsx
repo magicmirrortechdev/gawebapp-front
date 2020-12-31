@@ -15,69 +15,40 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx";
 import {connect} from "react-redux";
-import {convertInvoice, getJobs} from "../../redux/actions/jobAction";
+import {convertInvoice} from "../../redux/actions/invoiceAction";
 import configureStore from "../../redux/store";
 const {store} = configureStore();
 
 let loggedUser;
-var fecha = new Date(); 
-      var mes = fecha.getMonth()+1; 
-      var dia = fecha.getDate(); 
-      var ano = fecha.getFullYear(); 
+var fecha = new Date();
+      var mes = fecha.getMonth()+1;
+      var dia = fecha.getDate();
+      var ano = fecha.getFullYear();
       if(dia<10)
         dia='0'+dia; //agrega cero si es menor de 10
       if(mes<10)
         mes='0'+mes //agrega cero si es menor de 10
 class AddInvoice extends React.Component {
   state = {
-    workerId: "",
     date:ano+"-"+mes+"-"+dia,
-    name: '',
-      email: '',
-      address: '',
-      items: [],
-      itemName: '',
-      description: '',
-      comments: '',
-      subtotal: parseInt(''),
-      tax: parseInt(''),
-      discount: parseInt(''),
-      paid: parseInt(''),
-      total: 0,
-      dateCreate: '',
-      jobName: '',
-  };
+    description: '',
+    estimateTotal: 0,
+    jobName: '',
+    clientId: ''
+   };
 
   constructor(props) {
     super(props);
-    console.log("constructor!!!")
     const {auth} = store.getState();
     loggedUser = auth.userLogged
   }
 
   componentDidMount() {
-    console.log(loggedUser);
     const job = this.props.jobs.filter(item => item._id === this.props.match.params.id)[0]
-    let subtotal = job.items.reduce((acc, current, i) => acc + current.subtotal, 0)
-    let tax = (parseInt(job.tax) * subtotal) / 100
-    let discount = parseInt(job.discount)
-    let paid = parseInt(job.paid)
-
-    this.setState(prevState => {
-      return {
-        ...prevState,
-        workerId: loggedUser._id,
-        name: job.clientId.name,
-        email: job.clientId.email,
-        address: job.clientId.address,
-        tax: job.tax,
-        discount: job.discount,
-        paid: job.paid,
-        comments: job.comments,
-        jobName: job.jobName,
-        items: job.items,
-        total:  parseInt(subtotal + tax - discount - paid)
-      }
+    this.setState({
+        jobName: job.jobName + ' - ' + job.address,
+        ...job,
+        userId: loggedUser._id
     })
   }
 
@@ -91,13 +62,12 @@ class AddInvoice extends React.Component {
 
   handleSubmit = async (e, props) => {
     e.preventDefault()
-    this.props.convertInvoice(this.props.match.params.id, this.state)
+    await this.props.convertInvoice(this.props.match.params.id, this.state)
     this.props.history.push(`/admin/invoices`)
   }
 
-  render() {    
-    console.log(this.state)
-    if(!this.state.workerId||this.state.workerId==='') return <p>Loading</p>
+  render() {
+    if(!this.state.jobName || this.state.jobName==='') return <p>Loading</p>
     return (
       <>
         <Header forms={true}/>
@@ -113,7 +83,7 @@ class AddInvoice extends React.Component {
                     </div>
                   </Row>
                 </CardHeader>
-                <CardBody> 
+                <CardBody>
 
                   <Form onSubmit={this.handleSubmit}>
                     <div className="pl-lg-4">
@@ -122,8 +92,7 @@ class AddInvoice extends React.Component {
                           <FormGroup>
                             <label
                             className="form-control-label d-inline-block"
-                            htmlFor="input-jobName"
-                            >
+                            htmlFor="input-jobName">
                             Job Name
                             </label>
                             <Input
@@ -137,8 +106,7 @@ class AddInvoice extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label d-inline-block"
-                              htmlFor="input-date"
-                            >
+                              htmlFor="input-date">
                               Invoice Date
                             </label>
                             <Input
@@ -151,28 +119,26 @@ class AddInvoice extends React.Component {
                               onChange={this.handleInput}
                             />
                           </FormGroup>
-                        
+
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-merchant"
-                            >
+                              htmlFor="input-merchant">
                               Total Invoice
                             </label>
                             <Input
-                              name="total"
+                              name="estimateTotal"
                               className="form-control-alternative"
                               type="number"
                               onChange={this.handleInput}
-                              value={this.state.total}
+                              value={this.state.estimateTotal}
                               step="any"
                             />
                           </FormGroup>
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-first-name"
-                            >
+                              htmlFor="input-first-name">
                               Description
                             </label>
                             <Input
@@ -185,17 +151,13 @@ class AddInvoice extends React.Component {
                           </FormGroup>
                         </Col>
                       </Row>
-                      
-                      
                       <Row>
                         <Col lg="6">
                           <FormGroup>
-                        
                             <Button
                               className="form-control-alternative"
-                              color="info"
-
-                            >Save</Button>
+                              color="info" >
+                              Save</Button>
                           </FormGroup>
                         </Col>
                       </Row>
@@ -204,7 +166,7 @@ class AddInvoice extends React.Component {
                 </CardBody>
               </Card>
             </Col>
-            
+
           </Row>
         </Container>
       </>
@@ -216,4 +178,4 @@ const mapStateToProps = state => ({
   jobs: state.job.jobs,
 })
 
-export default connect(mapStateToProps, {getJobs, convertInvoice})(withRouter(AddInvoice));
+export default connect(mapStateToProps, {convertInvoice})(withRouter(AddInvoice));

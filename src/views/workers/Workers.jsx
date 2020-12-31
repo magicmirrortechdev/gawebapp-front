@@ -60,10 +60,10 @@ class Workers extends React.Component {
     window.removeEventListener('resize', this.updateWindowDimensions)
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
-    this.props.getUsers();
+    await this.props.getUsers();
   }
 
   render() {
@@ -126,15 +126,15 @@ class Workers extends React.Component {
                             </td>: null}
                             <td>{e.name}</td>
                             <td>{e.email}</td>
-                            <td>{e.payment}</td>
-                            <td>{e.effective}</td>
+                            <td>{e.payRate}</td>
+                            <td>{e.effectiveRate}</td>
                           </>
                           :
                           <>
                             <td>
                               {e.name}<br/>
-                              Payment: <b>{e.payment}</b><br/>
-                              Effective: <b>{e.effective}</b><br/>
+                              Payment: <b>{e.payRate}</b><br/>
+                              Effective: <b>{e.effectiveRate}</b><br/>
                               <small>({e.email})</small><br/>
                               <div className="buttonfloat-right buttonfloat-right-jobs">
                                 <ActionButton {...e} removeUser={this.props.removeUser}></ActionButton>
@@ -149,7 +149,7 @@ class Workers extends React.Component {
                 </Table>
               </Card>
             </Col>
-            
+
           </Row>
         </Container>
       </>

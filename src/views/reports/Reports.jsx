@@ -1,6 +1,7 @@
 import React from "react";
 import {Link} from 'react-router-dom'
 import classnames from 'classnames';
+import _ from 'lodash';
 
 import {
     Card,
@@ -33,21 +34,35 @@ import CustomNavigation from './Navigation';
 import {connect} from "react-redux";
 import {getUsers} from "../../redux/actions/userAction"
 import {getJobs} from "../../redux/actions/jobAction"
-import moment from "moment";
+import {getInvoices} from "../../redux/actions/invoiceAction"
+import {getTimes} from "../../redux/actions/timeAction"
+import {getExpenses} from "../../redux/actions/expenseAction"
+import moment from "moment"
+import configureStore from "../../redux/store";
+const {store} = configureStore();
 
 let pdfFile;
+let loggedUser
 class Reports extends React.Component {
     state = {
-        startDate: moment().startOf('week').add('days', -6).format('YYYY-MM-DD'),
-        endDate: moment().startOf('week').add('days', 0).format('YYYY-MM-DD'),
-        jobs: [],
-        workers: [],
+        startDateLbl: moment().startOf('week').add('days', -6).format('YYYY-MM-DD'),
+        endDateLbl: moment().startOf('week').add('days', 0).format('YYYY-MM-DD'),
+        startDate: moment().startOf('week').add('days', -7).format('YYYY-MM-DD'),
+        endDate: moment().startOf('week').add('days', 1).format('YYYY-MM-DD'),
+        jobsFilter: [],
+        workersFilter: [],
         activeTab: '1',
         buttonActive: '1',
         modal: false,
         extension: '',
         loadFilter: false
     };
+
+    constructor(props) {
+        super(props);
+        const {auth} = store.getState();
+        loggedUser = auth.userLogged
+    }
 
     toggleTab(tab) {
         if (this.state.activeTab !== tab) {
@@ -79,17 +94,10 @@ class Reports extends React.Component {
         })
     }
 
-    handleOpenModal = (estimateId, expenseId) => {
-        const job = this.props.jobs.filter(item => item._id === estimateId)[0]
+    handleOpenModal = (expenseId) => {
+        const expense = this.props.expenses.filter(item => item._id === expenseId)[0]
         this.setState(prevState => {
-            let img = '';
-            const expenses = job.expenses
-            expenses.map((e, i) => {
-                if (e._id === expenseId) {
-                    img = e.img
-                }
-                return {img}
-            })
+            let img = expense.image;
             if (img !== '') {
                 img = img.replace("http", "https");
                 pdfFile = img
@@ -102,7 +110,6 @@ class Reports extends React.Component {
                 extension: img === '' ? '' : img.substring(img.length - 3, img.length).toLowerCase()
             }
         });
-
     }
 
     handleInput = e => {
@@ -111,6 +118,20 @@ class Reports extends React.Component {
             ...prevState,
             [e.target.name]: e.target.value
         }))
+
+        if(e.target.name === "startDateLbl"){
+            this.setState(prevState => ({
+                ...prevState,
+                "startDate": moment(e.target.value).add('days', -1).format('YYYY-MM-DD')
+            }))
+        }
+
+        if(e.target.name === "endDateLbl"){
+            this.setState(prevState => ({
+                ...prevState,
+                "endDate": moment(e.target.value).add('days', +1).format('YYYY-MM-DD')
+            }))
+        }
     }
 
     updateWindowDimensions = () => {
@@ -123,19 +144,24 @@ class Reports extends React.Component {
         window.removeEventListener('resize', this.updateWindowDimensions)
     }
 
-    componentDidMount(props) {
+    async componentDidMount(props) {
+        await this.props.getJobs()
+        await this.props.getUsers()
+        await this.props.getTimes(loggedUser._id)
+        await this.props.getInvoices(loggedUser._id)
+        await this.props.getExpenses(loggedUser._id)
+
         this.updateWindowDimensions()
         window.addEventListener('resize', this.updateWindowDimensions)
-
-        if (this.props.jobs.length === 0) this.props.getJobs()
-        if (this.props.users.length === 0 ) this.props.getUsers()
 
         this.setState(prevState => {
             return {
                 ...prevState,
-                startDate: moment().startOf('week').add('days', -6).format('YYYY-MM-DD'),
-                endDate: moment().startOf('week').add('days', 0).format('YYYY-MM-DD'),
-                workers: this.workersTransformer(
+                startDateLbl: moment().startOf('week').add('days', -6).format('YYYY-MM-DD'),
+                endDateLbl: moment().startOf('week').add('days', 0).format('YYYY-MM-DD'),
+                startDate: moment().startOf('week').add('days', -7).format('YYYY-MM-DD'),
+                endDate: moment().startOf('week').add('days', 1).format('YYYY-MM-DD'),
+                workersFilter: this.workersTransformer(
                     this.props.users.filter(user => user.role === "WORKER" ||
                     user.role ==="PROJECT MANAGER" ||
                     user.role ==="ADMIN"),
@@ -145,225 +171,231 @@ class Reports extends React.Component {
         })
     }
 
-    getOpen = () => {
+    getOpen = async () => {
+        document.getElementById('spinner').style.visibility='visible';
         this.setState(prevState => {
             return {
                 ...prevState,
-                jobs: [],
+                jobsFilter: [],
+                workersFilter: []
             }
         })
-        this.props.getJobs();
-
+        await this.props.getJobs();
+        const data = this.filterJobs(this.props.jobs.filter(job => job.status === 'Approve'), [])
         this.setState(prevState => {
             return {
                 ...prevState,
                 buttonActive: "1",
-                jobs: this.props.jobs.filter(job => job.status === 'Approve')
+                jobsFilter: data[0],
+                workersFilter: this.workersTransformer(data[1])
             }
         })
+        document.getElementById('spinner').style.visibility='hidden';
     }
 
-    getClose = () => {
+    getClose = async () => {
+        document.getElementById('spinner').style.visibility='visible';
         this.setState(prevState => {
             return {
                 ...prevState,
-                jobs: [],
+                jobsFilter: [],
+                workersFilter: []
             }
         })
-        this.props.getJobs();
-
+        await this.props.getJobs();
+        const data = this.filterJobs(this.props.jobs.filter(job => job.status === 'Closed'), [])
         this.setState(prevState => {
             return {
                 ...prevState,
                 buttonActive: "2",
-                jobs: this.props.jobs.filter(job => job.status === 'Closed')
+                jobsFilter: data[0],
+                workersFilter: this.workersTransformer(data[1])
             }
         })
+        document.getElementById('spinner').style.visibility='hidden';
     }
 
-    getAll = () => {
+    getAll = async () => {
+        document.getElementById('spinner').style.visibility='visible';
+
         this.setState(prevState => {
             return {
                 ...prevState,
-                jobs: [],
+                jobsFilter: [],
+                workersFilter: []
             }
         })
-        this.props.getJobs();
+        await this.props.getJobs();
+
+        const data = this.filterJobs(this.props.jobs, [])
 
         this.setState(prevState => {
             return {
                 ...prevState,
                 buttonActive: "3",
-                jobs: this.props.jobs
+                activeTab: "1",
+                loadFilter: true,
+                jobsFilter: data[0],
+                workersFilter: this.workersTransformer(data[1])
             }
         })
+
+        document.getElementById('spinner').style.visibility='hidden';
      }
 
-    filterDate = () => {
+    filterDate = async () => {
         this.setState(prevState => {
             return {
                 ...prevState,
-                jobs: [],
-                workers: [],
+                jobsFilter: [],
+                workersFilter: [],
             }
         })
+        await this.props.getJobs();
 
-        this.props.getJobs();
-        this.props.getUsers();
         document.getElementById('spinner').style.visibility='visible';
-
-        let jobsFilter = this.props.jobs.filter(job => job.status === 'Approve');
-        jobsFilter.forEach(job =>{
-            if(job.expenses.length > 0){
-                job.expenses = job.expenses.filter(expenses =>
-                    expenses.date >= this.state.startDate && expenses.date <= this.state.endDate
-                )
-            }
-
-            if(job.invoices.length > 0){
-                job.invoices = job.invoices.filter(invoices =>
-                    invoices.date >= this.state.startDate && invoices.date <= this.state.endDate
-                )
-            }
-
-            if(job.workers.length > 0){
-                job.workers.forEach(worker =>{
-                    worker.time = worker.time.filter(time =>
-                        time.date >= this.state.startDate && time.date <= this.state.endDate
-                    )
-                })
-                job.workers = job.workers.filter(worker => worker.time.length > 0)
-            }
-        })
-
-        jobsFilter = jobsFilter.sort(compareValues('jobName', 'asc'));
-
-        let workers = this.props.users.filter(user => user.role === "WORKER" ||
-            user.role ==="PROJECT MANAGER" ||
-            user.role ==="ADMIN");
-
-
-        this.setState(prevState => {
-            return {
-                ...prevState,
-                loadFilter: true,
-                jobs: jobsFilter,
-                workers: this.workersTransformer(workers, this.state.startDate, this.state.endDate)
-            }
-        })
-        document.getElementById('spinner').style.visibility='hidden';
-
-    }
-
-    clearFilter = () => {
-
+        const data = this.filterJobs(this.props.jobs.filter(job => job.status === 'Approve'), [])
         this.setState(prevState => {
             return {
                 ...prevState,
                 buttonActive: "1",
-                activeTab: "1",
-                jobs: this.props.jobs.filter(job => job.status === 'Approve'),
-                workers: this.workersTransformer(
-                    this.props.users.filter(user => user.role === "WORKER" ||
-                        user.role ==="PROJECT MANAGER" ||
-                        user.role ==="ADMIN"), null, null)
+                loadFilter: true,
+                jobsFilter: data[0],
+                workersFilter: this.workersTransformer(data[1])
+            }
+        })
+        document.getElementById('spinner').style.visibility='hidden';
+    }
+
+    filterJobs = (jobsFilter_, workers_) => {
+        workers_ = []
+        jobsFilter_.forEach(job_ => {
+            job_.invoices = []
+            job_.expenses = []
+
+            if (job_.workers.length > 0) {
+                job_.workers.forEach(worker => {
+                    worker.time = []
+                    this.props.times.forEach(time => {
+                        if (time.userId === worker.workerId && time.jobId === job_._id) {
+                            worker.time.push(time)
+                            worker.user = this.props.users.filter(user => user._id === worker.workerId)[0]
+                            workers_[worker.user._id] = worker.user
+                            if (!workers_[worker.user._id].times) {
+                                workers_[worker.user._id].times = []
+                            }
+                            workers_[worker.user._id].times.push(time)
+
+                            if (!workers_[worker.user._id].ajobs) {
+                                workers_[worker.user._id].ajobs = []
+                            }
+                            workers_[worker.user._id].ajobs[job_._id] = job_
+                        }
+                    })
+                    worker.time = worker.time.filter(time_ =>
+                        time_.date >= this.state.startDateLbl && time_.date <= this.state.endDate
+                    )
+                })
+                job_.workers = job_.workers.filter(worker => worker.time.length > 0)
+            }
+
+            let expenses = this.props.expenses.filter(expense =>
+                expense.jobId === job_._id && expense.date >= this.state.startDateLbl && expense.date <= this.state.endDate
+            )
+            if (expenses.length > 0) {
+                expenses.forEach(expense => {
+                    if (!workers_[expense.userId]) {
+                        workers_[expense.userId] = this.props.users.filter(user => user._id === expense.userId)[0]
+                        workers_[expense.userId].expenses = []
+                        workers_[expense.userId].jobs = []
+                    }
+
+                    if (!workers_[expense.userId].expenses) {
+                        workers_[expense.userId].expenses = []
+                    }
+
+                    if (expense.userId === workers_[expense.userId]._id &&
+                        expense.jobId === job_._id &&
+                        expense.date >= this.state.startDateLbl && expense.date <= this.state.endDate) {
+                        workers_[expense.userId].expenses.push(expense)
+                    }
+
+                    job_.expenses.push(expense)
+                })
+            }
+
+            this.props.invoices.forEach(invoice => {
+                if (invoice.jobId === job_._id &&
+                    invoice.invoiceDate >= this.state.startDateLbl && invoice.invoiceDate <= this.state.endDate) {
+                    job_.invoices.push(invoice)
+                }
+            })
+        })
+
+        console.log(workers_);
+        let workers__ = []
+        for(let key in workers_ ){
+            workers_[key].jobs = []
+            for(let keyJob in workers_[key].ajobs ){
+                workers_[key].jobs.push(workers_[key].ajobs[keyJob])
+            }
+            workers__.push(workers_[key])
+        }
+
+        jobsFilter_ = jobsFilter_.filter(job_ => job_.invoices.length > 0 || job_.expenses > 0 || job_.workers.length > 0)
+            .sort(compareValues('jobName', 'asc'));
+
+        return [jobsFilter_, workers__]
+    }
+
+    clearFilter = () => {
+        document.getElementById('spinner').style.visibility='visible';
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                startDateLbl: moment().startOf('week').add('days', -6).format('YYYY-MM-DD'),
+                endDateLbl: moment().startOf('week').add('days', 0).format('YYYY-MM-DD'),
+                startDate: moment().startOf('week').add('days', -7).format('YYYY-MM-DD'),
+                endDate: moment().startOf('week').add('days', 1).format('YYYY-MM-DD'),
+                jobsFilter: [],
+                workersFilter: [],
             }
         })
 
-        document.getElementById("startDate").value = "";
-        document.getElementById("endDate").value = "";
+        document.getElementById('spinner').style.visibility='hidden';
     }
 
-    workersTransformer(users, startDate, endDate) {
+    workersTransformer(users, filter = true) {
+        users = users.filter(user => user.expenses || user.jobs )
         users.sort(compareValues('name', 'asc'))
         users.forEach(user => {
             let hoursPerJob = []
 
-            user.jobs = []
-            user.totalPayroll = []
-            user.totalEffective = []
-            user.totalHours = []
-            user.proccessJobs = []
-
-            user.works.sort(compareValues('date', 'desc')).forEach((work, i) => {
-                work.time.sort(compareValues('date', 'desc')).forEach((time, i) => {
+            if(user.times){
+                user.times.forEach(time => {
                     hoursPerJob.push({
                         _id: time._id,
-                        works: work._id ? work._id : work.workId._id,
-                        time: time.hours,
+                        works: time.jobId,
+                        jobName: this.props.jobs.filter(job=> job._id === time.jobId)[0].jobName,
+                        hours: time.hours,
                         date: time.date,
+                        payroll: user.payRate * time.hours,
+                        effective: user.effectiveRate * time.hours,
                     })
                 })
-            })
-
-            hoursPerJob = hoursPerJob.filter((thing, index) => {
-                const _thing = JSON.stringify(thing);
-                return index === hoursPerJob.findIndex(obj => {
-                    return JSON.stringify(obj) === _thing;
-                });
-            });
-
-            user.works.sort(compareValues('date', 'desc')).forEach(works => {
-                if (works.workId && works.workId.workers) {
-                    works.workId.workers.sort(compareValues('date', 'desc')).forEach(worker => {
-                        if (worker.workerId && worker.workerId === user._id) {
-                            hoursPerJob.forEach(hoursTime => {
-                                if ((hoursTime.works === works._id) || (works.workId && hoursTime.works === works.workId._id)) {
-                                    if(hoursTime.date >= this.state.startDate &&
-                                        hoursTime.date <= this.state.endDate){
-                                        user.jobs.push({
-                                            _id:hoursTime._id,
-                                            date: hoursTime.date,
-                                            jobName: works.workId.jobName,
-                                            hours: hoursTime.time,
-                                            hoursT: hoursTime.time,
-                                            payroll: user.payment * hoursTime.time,
-                                            effective: user.effective * hoursTime.time,
-                                        });
-                                    } else if (startDate == null && endDate == null){
-                                        user.jobs.push({
-                                            _id:hoursTime._id,
-                                            date: hoursTime.date,
-                                            jobName: works.workId.jobName,
-                                            hours: hoursTime.time,
-                                            hoursT: hoursTime.time,
-                                            payroll: user.payment * hoursTime.time,
-                                            effective: user.effective * hoursTime.time,
-                                        });
-                                    }
-                                }
-                            });
-                        }
-                    });
+            }
+            user.jobs = _.uniqBy(hoursPerJob, "_id")
+            if (filter){
+                user.jobs = user.jobs.filter(job => job.date >= this.state.startDateLbl &&
+                    job.date <= this.state.endDate )
+                if (user.expenses){
+                    user.expenses = user.expenses.filter(expense => expense.date >= this.state.startDateLbl &&
+                        expense.date <= this.state.endDate )
                 }
-            });
-
-            user.jobs = user.jobs.filter((user__, index) => {
-                const _user = JSON.stringify(user__);
-                return index === user.jobs.findIndex(obj => {
-                    return JSON.stringify(obj) === _user;
-                });
-            });
-
-            user.jobs.forEach((e, i) => {
-                user.totalPayroll.push(e.payroll)
-                user.totalEffective.push(e.effective)
-                user.totalHours.push(e.hours)
-            })
-
-            if(user.expenses.length > 0){
-                user.expenses = user.expenses.filter(expenses =>
-                    expenses.date >= this.state.startDate && expenses.date <= this.state.endDate
-                )
             }
         })
+        users = users.filter(user => (user.expenses && user.expenses.length > 0) || (user.jobs && user.jobs.length > 0))
         return users;
-    }
-
-    componentDidUpdate(){
-        if(!this.state.loadFilter ){
-            this.filterDate();
-        }
     }
 
     render() {
@@ -384,7 +416,7 @@ class Reports extends React.Component {
                                         <div className="col text-right">
                                             <Link to="addreport">
                                                 <p color="primary"
-                                                   size="sm">
+                                                   size="sm" style={{display : 'none'}}>
                                                     Create a Report
                                                 </p>
                                             </Link>
@@ -403,11 +435,11 @@ class Reports extends React.Component {
                                                     From Date
                                                 </label>
                                                 <Input
-                                                    name="startDate"
+                                                    name="startDateLbl"
                                                     className="form-control-alternative"
                                                     type="date"
                                                     id="startDate"
-                                                    value={this.state.startDate}
+                                                    value={this.state.startDateLbl}
                                                     onChange={this.handleInput}
                                                 />
                                             </FormGroup>
@@ -420,11 +452,11 @@ class Reports extends React.Component {
                                                     Up to Date
                                                 </label>
                                                 <Input
-                                                    name="endDate"
+                                                    name="endDateLbl"
                                                     id="endDate"
                                                     className="form-control-alternative"
                                                     type="date"
-                                                    value={this.state.endDate}
+                                                    value={this.state.endDateLbl}
                                                     onChange={this.handleInput}
                                                 />
 
@@ -524,11 +556,11 @@ class Reports extends React.Component {
 
                                 <TabContent activeTab={this.state.activeTab}>
                                     <TabPane tabId="1">
-                                        <ReportJobs jobs={this.state.jobs} openModal={this.handleOpenModal}
+                                        <ReportJobs jobsFilter={this.state.jobsFilter} openModal={this.handleOpenModal}
                                                     isMobileVersion={this.state.isMobileVersion}/>
                                     </TabPane>
                                     <TabPane tabId="2">
-                                        <ReportWorkers workers={this.state.workers}
+                                        <ReportWorkers workersFilter={this.state.workersFilter}
                                                        openModal={this.handleExpenseOpenModal}
                                                        isMobileVersion={this.state.isMobileVersion}/>
                                     </TabPane>
@@ -568,7 +600,10 @@ class Reports extends React.Component {
 
 const mapStateToProps = state => ({
     users: state.user.users,
-    jobs: state.job.jobs
+    jobs: state.job.jobs,
+    expenses: state.expense.expenses,
+    invoices: state.invoice.invoices,
+    times: state.time.times
 })
 
-export default connect(mapStateToProps, {getUsers, getJobs})(Reports);
+export default connect(mapStateToProps, {getUsers, getJobs, getExpenses, getInvoices, getTimes})(Reports);

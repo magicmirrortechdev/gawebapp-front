@@ -27,9 +27,7 @@ export const FETCH_JOB_REMOVE_FAILURE = 'FETCH_JOB_REMOVE_FAILURE'
 export const addEstimate = (data) => async dispatch => {
     try{
         const response = await authService.addEstimate(data);
-        const response2 = await authService.getEstimate(response.data.estimate._id)
-
-        dispatch({type: FETCH_ESTIMATE_ADD_SUCCESS, payload: response2.data.estimate})
+        dispatch({type: FETCH_ESTIMATE_ADD_SUCCESS, payload: response.data.job})
     } catch(err) {
         dispatch({type: FETCH_ESTIMATE_ADD_FAILURE, payload: err.message})
         console.log(err)
@@ -39,7 +37,7 @@ export const addEstimate = (data) => async dispatch => {
 export const updateEstimate = (id, data) => async dispatch => {
     try{
         const response = await authService.updateEstimate(id, data)
-        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: id, data: response.data.estimate}})
+        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: id, data: response.data.job}})
     } catch(err) {
         dispatch({type: FETCH_ESTIMATE_UPDATE_FAILURE, payload: err.message})
         console.log(err)
@@ -95,7 +93,7 @@ export const getJobs = (id = undefined) => async dispatch => {
     }
 }
 
-export const addJob = (data) => async dispatch => {
+export const addJobs = (data) => async dispatch => {
     try{
         const response = await authService.addJob(data);
         dispatch({type: FETCH_ESTIMATE_ADD_SUCCESS, payload: response.data.estimate})
@@ -136,65 +134,6 @@ export const closeJob = (id, item) => async dispatch => {
     }
 }
 
-export const convertInvoice = (id, data) => async dispatch =>{
-    try {
-        const response = await authService.convertInvoice(id, data)
-        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: id, data: response.data.estimate}})
-    } catch (err){
-        dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
-        console.log(err)
-    }
-}
-
-export const addInvoice = (invoice) => async dispatch =>{
-    try {
-        const response = await authService.addInvoice(invoice)
-        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: response.data.estimate._id, data: response.data.estimate}})
-    } catch (err){
-        dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
-        console.log(err)
-    }
-}
-
-export const removeInvoice = (id, invoiceId) => async dispatch =>{
-    try {
-        const response = await authService.invoiceDelete(id, invoiceId)
-        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: id, data: response.data.estimate}})
-    } catch (err){
-        dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
-        console.log(err)
-    }
-}
-
-export const updateInvoice = (id, invoiceId, item) => async dispatch =>{
-    try {
-        const response = await authService.updateInvoice(id, invoiceId, item)
-        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: id, data: response.data.estimate}})
-    } catch (err){
-        dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
-        console.log(err)
-    }
-}
-
-export const payInvoice = (id, invoiceId, item) => async dispatch =>{
-    try {
-        const response = await authService.payInvoice(id, invoiceId, item)
-        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: id, data: response.data.estimate}})
-    } catch (err){
-        dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
-        console.log(err)
-    }
-}
-
-export const sendInvoice = (invoice) => async dispatch =>{
-    try {
-        await authService.sendInvoice(invoice)
-    } catch (err){
-        dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
-        console.log(err)
-    }
-}
-
 export const addWorkers = (id, data) => async dispatch => {
     try {
         const response = await authService.addWorkers(id, data)
@@ -209,66 +148,6 @@ export const addProjectManager = (id, data) => async dispatch => {
     try {
         const response = await authService.addProjectManager(id, data)
         dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: id, data: response.data.estimate}})
-    } catch (err){
-        dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
-        console.log(err)
-    }
-}
-
-export const addExpense = (id, data) => async dispatch =>{
-    try {
-        const response = await authService.addExpense(id, data)
-        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: id, data: response.data.estimate}})
-    } catch (err){
-        dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
-        console.log(err)
-    }
-}
-
-export const removeExpense = (id, expenseId) => async dispatch =>{
-    try {
-        const response = await authService.removeExpense(id, expenseId)
-        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: id, data: response.data.estimate}})
-    } catch (err){
-        dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
-        console.log(err)
-    }
-}
-
-export const updateExpense = (id, expenseId, item) => async dispatch =>{
-    try {
-        const response = await authService.updateExpense(id, expenseId, item)
-        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: id, data: response.data.estimate}})
-    } catch (err){
-        dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
-        console.log(err)
-    }
-}
-
-export const addTime = (estimateId, workerId, data) => async dispatch =>{
-    try {
-        const response = await authService.addTime(estimateId, workerId, data)
-        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: data._id, data: response.data.estimate}})
-    } catch (err){
-        dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
-        console.log(err)
-    }
-}
-
-export const updateTime = (estimateId, workerId, timeId, data) => async dispatch => {
-    try {
-        const response = await authService.updateTime(estimateId, workerId, timeId, data)
-        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: estimateId, data: response.data.estimate}})
-    } catch (err){
-        dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
-        console.log(err)
-    }
-}
-
-export const removeTime = (estimateId, workerId, timeId) => async dispatch =>{
-    try {
-        const response = await authService.removeTime(estimateId, workerId, timeId)
-        dispatch({type: FETCH_ESTIMATE_UPDATE_SUCCESS, payload: {id: estimateId, data: response.data.estimate}})
     } catch (err){
         dispatch({type: FETCH_ESTIMATE_DECLINE_FAILURE, payload: err})
         console.log(err)
