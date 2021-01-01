@@ -322,6 +322,7 @@ class Reports extends React.Component {
 
                     job_.expenses.push(expense)
                 })
+                job_.expenses = job_.expenses.sort(compareValues('date', 'desc'))
             }
 
             this.props.invoices.forEach(invoice => {
@@ -330,6 +331,7 @@ class Reports extends React.Component {
                     job_.invoices.push(invoice)
                 }
             })
+            job_.invoices = job_.invoices.sort(compareValues('invoiceDate', 'desc'))
         })
 
         console.log(workers_);
@@ -342,7 +344,7 @@ class Reports extends React.Component {
             workers__.push(workers_[key])
         }
 
-        jobsFilter_ = jobsFilter_.filter(job_ => job_.invoices.length > 0 || job_.expenses > 0 || job_.workers.length > 0)
+        jobsFilter_ = jobsFilter_.filter(job_ => job_.invoices.length > 0 || job_.expenses.length > 0 || job_.workers.length > 0)
             .sort(compareValues('jobName', 'asc'));
 
         return [jobsFilter_, workers__]
