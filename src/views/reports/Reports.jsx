@@ -344,7 +344,7 @@ class Reports extends React.Component {
             workers__.push(workers_[key])
         }
 
-        jobsFilter_ = jobsFilter_.filter(job_ => job_.invoices.length > 0 || job_.expenses > 0 || job_.workers.length > 0)
+        jobsFilter_ = jobsFilter_.filter(job_ => job_.invoices.length > 0 || job_.expenses.length > 0 || job_.workers.length > 0)
             .sort(compareValues('jobName', 'asc'));
 
         return [jobsFilter_, workers__]
