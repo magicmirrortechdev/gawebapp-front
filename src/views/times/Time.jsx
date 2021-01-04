@@ -187,7 +187,7 @@ class Time extends React.Component {
                   </thead>
                   {times.length === 0 ?  <tbody><tr><td>No times register</td></tr></tbody>:
                    times.map((e,i)=>{
-                     const user = users.filter(user => user._id === e.userId)[0]
+                     let user = users.filter(user => user._id === e.userId)[0]
                      if(user){
                        user.name = user.name ? user.name : ''
                      }else{
@@ -232,7 +232,12 @@ class Time extends React.Component {
                   {//nuevo bloque
                     loggedUser.level <= 1 ?
                         times.map((e, i) => {
-                          const user = users.filter(user => user._id === e.userId)[0]
+                          let user = users.filter(user => user._id === e.userId)[0]
+                          if(user){
+                            user.name = user.name ? user.name : ''
+                          }else{
+                            user = {name : ''}
+                          }
                           const job = jobs.filter(job => job._id === e.jobId)[0]
                           if (!e.userId) return <th scope="row">Worker Delete</th>
                           return (
