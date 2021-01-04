@@ -193,7 +193,12 @@ class Time extends React.Component {
                      }else{
                        user = {name : ''}
                      }
-                     const job = jobs.filter(job => job._id === e.jobId)[0]
+                     let job = jobs.filter(job => job._id === e.jobId)[0]
+                     if(job){
+                       job.jobName = job.jobName ? job.jobName : ''
+                     }else{
+                       job = {jobName : ''}
+                     }
                      return(
                         loggedUser.level >= 2 ?
                         <tbody key={i}>
@@ -238,7 +243,12 @@ class Time extends React.Component {
                           }else{
                             user = {name : ''}
                           }
-                          const job = jobs.filter(job => job._id === e.jobId)[0]
+                          let job = jobs.filter(job => job._id === e.jobId)[0]
+                          if(job){
+                            job.jobName = job.jobName ? job.jobName : ''
+                          }else{
+                            job = {jobName : ''}
+                          }
                           if (!e.userId) return <th scope="row">Worker Delete</th>
                           return (
                             <tbody key={i}>
