@@ -307,7 +307,11 @@ class Reports extends React.Component {
                     if (!workers_[expense.userId]) {
                         workers_[expense.userId] = this.props.users.filter(user => user._id === expense.userId)[0]
                         if(!workers_[expense.userId]) {
-                            delete workers_[expense.userId]
+                            workers_[expense.userId] = {
+                                _id :0,
+                                jobs: [],
+                                expenses: []
+                            }
                         }else{
                             workers_[expense.userId].jobs = []
                             workers_[expense.userId].expenses = []
