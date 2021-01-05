@@ -145,6 +145,11 @@ class Expenses extends React.Component {
                     {expenses.length === 0 ?  <tbody><tr><td>No expenses register</td></tr></tbody>:
                       expenses.map((e,i)=>{
                       let user = users.filter(user => user._id === e.userId)[0]
+                      if(user){
+                        user.name = user.name ? user.name : ''
+                      }else{
+                        user = {name : ''}
+                      }
                       return(
                         <tr>
                           {!this.state.isMobileVersion ?
