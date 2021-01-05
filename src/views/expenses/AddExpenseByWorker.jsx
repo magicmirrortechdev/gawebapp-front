@@ -16,6 +16,8 @@ import {
 import Header from "components/Headers/Header.jsx";
 import {connect} from "react-redux";
 import {addExpense} from "../../redux/actions/expenseAction";
+import {getUsers} from "../../redux/actions/userAction";
+import {getJobs} from "../../redux/actions/jobAction";
 import configureStore from "../../redux/store";
 import Global from "../../global";
 import * as axios from "axios";
@@ -45,7 +47,13 @@ class AddExpense extends React.Component {
     this.selectRef = React.createRef();
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    await this.props.getUsers()
+    if(loggedUser.level <=1) {
+      await this.props.getJobs(loggedUser._id)
+    }else{
+      await this.props.getJobs();
+    }
     this.setState({
       userId: loggedUser._id,
       jobs: this.props.jobs.filter(job => job.status === 'Approve'),
@@ -285,6 +293,7 @@ class AddExpense extends React.Component {
 
 const mapStateToProps = state => ({
   jobs: state.job.jobs,
+  users: state.user.users
 })
 
-export default connect(mapStateToProps, {addExpense})(withRouter(AddExpense));
+export default connect(mapStateToProps, {getUsers, getJobs, addExpense})(withRouter(AddExpense));

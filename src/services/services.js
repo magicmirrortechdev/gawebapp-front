@@ -3,12 +3,13 @@ import Global from "../global";
 import AxiosOffline from 'axios-offline'
 import LocalForage from "localforage"
 const baseURL = Global.url;
+const env = Global.urlEnvironment
 
 class AuthService {
     constructor() {
         let AxiosOfflineAdapter = AxiosOffline({
             defaultAdapter: axios.defaults.adapter, //require, basic adapter
-            storageName: "axiosreply", //optional, default: "axios-stack"
+            storageName: "axiosreply" + env, //optional, default: "axios-stack"
             storageDriver: LocalForage.WEBSQL //optional, default: LocalForage.LOCALSTORAGE
         })
 
