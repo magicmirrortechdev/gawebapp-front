@@ -306,12 +306,12 @@ class Reports extends React.Component {
                 expenses.forEach(expense => {
                     if (!workers_[expense.userId]) {
                         workers_[expense.userId] = this.props.users.filter(user => user._id === expense.userId)[0]
-                        workers_[expense.userId].expenses = []
-                        workers_[expense.userId].jobs = []
-                    }
-
-                    if (!workers_[expense.userId].expenses) {
-                        workers_[expense.userId].expenses = []
+                        if(!workers_[expense.userId]) {
+                            delete workers_[expense.userId]
+                        }else{
+                            workers_[expense.userId].jobs = []
+                            workers_[expense.userId].expenses = []
+                        }
                     }
 
                     if (expense.userId === workers_[expense.userId]._id &&
