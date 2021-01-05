@@ -14,6 +14,9 @@ import { timeReducer } from "./reducers/timeReducer";
 import {invoiceReducer} from "./reducers/invoiceReducer";
 import {expenseReducer} from './reducers/expenseReducer'
 import axios from "axios";
+import Global from "../global";
+const env = Global.urlEnvironment
+const version = Global.version
 
 const effect = (effect, _action) => axios(effect);
 const discard = async(error, _action, _retries) => {
@@ -22,6 +25,13 @@ const discard = async(error, _action, _retries) => {
     if (!response) return false; // There was no response
     return 400 <= response.status && response.status < 500;
 };
+
+localforage.config({
+    name        : 'GA:' + env,
+    version     : version,
+    storeName   : 'keyvaluepairs', // Should be alphanumeric, with underscores.
+    description : 'GA database'
+});
 
 const authPersistConfig = {
     key: 'ga:auth',

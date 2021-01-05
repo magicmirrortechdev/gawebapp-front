@@ -17,7 +17,12 @@ import {
 import Header from "components/Headers/Header.jsx";
 import {connect} from "react-redux";
 import {addTime} from "../../redux/actions/timeAction";
+import {getJobs} from "../../redux/actions/jobAction";
+import {getUsers} from "../../redux/actions/userAction";
+import configureStore from "../../redux/store";
+const {store} = configureStore();
 
+let loggedUser;
 var fecha = new Date();
       var mes = fecha.getMonth()+1;
       var dia = fecha.getDate();
@@ -34,6 +39,12 @@ class AddTime extends React.Component {
 
   };
 
+  constructor(props) {
+    super(props);
+    const {auth} = store.getState();
+    loggedUser = auth.userLogged
+  }
+
   handleInput = e => {
     e.persist()
     this.setState(prevState => ({
@@ -42,8 +53,13 @@ class AddTime extends React.Component {
     }))
   }
 
-  componentDidMount() {
-    if (this.props.jobs.length === 0) this.props.history.push(`/admin/times`)
+  async componentDidMount() {
+    await this.props.getUsers()
+    if(loggedUser.level <=1) {
+      await this.props.getJobs(loggedUser._id)
+    }else{
+      await this.props.getJobs();
+    }
     const job = this.props.jobs.filter(item => item._id === this.props.match.params.estimateId)[0]
     const user = this.props.users.filter(item => item._id === this.props.match.params.workerId)[0]
     this.setState(prevState => {
@@ -189,4 +205,4 @@ const mapStateToProps = state => ({
   users: state.user.users
 })
 
-export default connect(mapStateToProps, {addTime})(withRouter(AddTime));
+export default connect(mapStateToProps, {getUsers, getJobs, addTime})(withRouter(AddTime));

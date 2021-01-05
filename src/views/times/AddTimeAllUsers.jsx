@@ -16,6 +16,8 @@ import {
 import Header from "components/Headers/Header.jsx";
 import {connect} from "react-redux";
 import {addTime} from "../../redux/actions/timeAction"
+import {getJobs} from "../../redux/actions/jobAction";
+import {getUsers} from "../../redux/actions/userAction";
 import configureStore from "../../redux/store";
 import {compareValues} from "../../global";
 const {store} = configureStore();
@@ -58,31 +60,45 @@ class AddTime extends React.Component {
         let user = null
         let users = []
         console.log(item)
-        item.workers.forEach((worker) => {
-            if(worker.workerId && worker.workerId === loggedUser._id){
-                user = this.props.users.filter(item => item._id === worker.workerId)[0]
-                users.push(user)
-            }else{
-                users.push(this.props.users.filter(item => item._id === worker.workerId)[0])
-            }
-        });
+        if(item){
+            item.workers.forEach((worker) => {
+                if(worker.workerId && worker.workerId === loggedUser._id){
+                    user = this.props.users.filter(item => item._id === worker.workerId)[0]
+                    users.push(user)
+                }else{
+                    users.push(this.props.users.filter(item => item._id === worker.workerId)[0])
+                }
+            });
 
-        if(user !== null){
-            this.setState(prevState => ({
-                ...prevState,
-                workers: users,
-                userId: user._id,
-            }))
+            if(user !== null){
+                this.setState(prevState => ({
+                    ...prevState,
+                    workers: users,
+                    userId: user._id,
+                }))
+            }else{
+                this.setState(prevState => ({
+                    ...prevState,
+                    workers: users
+                }))
+            }
         }else{
             this.setState(prevState => ({
                 ...prevState,
-                workers: users
+                workers: [],
+                userId: null
             }))
         }
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    await this.props.getUsers()
+    if(loggedUser.level <=1) {
+      await this.props.getJobs(loggedUser._id)
+    }else{
+      await this.props.getJobs();
+    }
     this.setState(prevState => {
         return {
             ...prevState,
@@ -217,4 +233,4 @@ const mapStateToProps = state => ({
     users: state.user.users
 })
 
-export default connect(mapStateToProps, {addTime})(withRouter(AddTime));
+export default connect(mapStateToProps, {getUsers, getJobs, addTime})(withRouter(AddTime));
