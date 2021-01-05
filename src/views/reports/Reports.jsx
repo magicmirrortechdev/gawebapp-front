@@ -328,6 +328,7 @@ class Reports extends React.Component {
                         if (!workers_[expense.userId].expenses) {
                             workers_[expense.userId].expenses = []
                         }
+                        expense.jobName = this.props.jobs.filter(job => job._id === expense.jobId)[0].jobName
                         workers_[expense.userId].expenses.push(expense)
                     }
 
