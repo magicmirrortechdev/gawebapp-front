@@ -306,17 +306,29 @@ class Reports extends React.Component {
                 expenses.forEach(expense => {
                     if (!workers_[expense.userId]) {
                         workers_[expense.userId] = this.props.users.filter(user => user._id === expense.userId)[0]
-                        if(!workers_[expense.userId]) {
-                            delete workers_[expense.userId]
-                        }else{
-                            workers_[expense.userId].jobs = []
-                            workers_[expense.userId].expenses = []
+                        if(workers_[expense.userId]){
+                            if (typeof workers_[expense.userId].jobs === 'undefined') {
+                                workers_[expense.userId].jobs = []
+                            }
+                            if (typeof workers_[expense.userId].expenses === 'undefined') {
+                                workers_[expense.userId].expenses = []
+                            }
+                        } else {
+                            workers_[expense.userId] = {
+                                _id: '',
+                                jobs: [],
+                                expenses: []
+                            }
                         }
                     }
 
                     if (expense.userId === workers_[expense.userId]._id &&
                         expense.jobId === job_._id &&
                         expense.date >= this.state.startDateLbl && expense.date <= this.state.endDate) {
+                        if (!workers_[expense.userId].expenses) {
+                            workers_[expense.userId].expenses = []
+                        }
+                        expense.jobName = this.props.jobs.filter(job => job._id === expense.jobId)[0].jobName
                         workers_[expense.userId].expenses.push(expense)
                     }
 
