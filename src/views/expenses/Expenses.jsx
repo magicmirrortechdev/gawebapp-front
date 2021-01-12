@@ -168,7 +168,7 @@ class Expenses extends React.Component {
                             :
                             <>
                               <td>
-                                <Moment add={{days: 1}} date={new Date(e.expense.date)}  format={"MMM D, YY"} /><br/>
+                                <Moment add={{days: 1}} date={new Date(e.date)}  format={"MMM D, YY"} /><br/>
                                 {user.name}<br/>
                                 {e.description}<br/>
                                 {e.category}<br/>
