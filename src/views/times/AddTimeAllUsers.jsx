@@ -164,7 +164,7 @@ class AddTime extends React.Component {
                               onChange={this.handleInput}>
                             <option>Select worker</option>
                             { this.state.workers.map((e,i)=>{
-                              if(!e._id)return <option>Worker Delete</option>
+                              if(!e || !e._id)return <option>Worker Delete</option>
                               return(
                                 loggedUser._id === e._id ?  <option selected key={i} value={ `${e._id}`}>{e.name}</option> :
                                  <option key={i} value={`${e._id}`}>{e.name}</option>)
